@@ -1,0 +1,16 @@
+/* @krds-community/tailwind — Tailwind CSS v4 theme entrypoint. */
+@import '@krds-community/tokens/css';
+
+@theme {
+  --color-krds-primary: var(--krds-color-light-primary-50);
+  --color-krds-primary-strong: var(--krds-color-light-primary-60);
+  --color-krds-secondary: var(--krds-color-light-secondary-50, #eef2f7);
+  --color-krds-danger: var(--krds-color-light-danger-50, #de3412);
+  --radius-krds: var(--krds-radius-2, 0.25rem);
+  --font-family-krds: var(--krds-font-family-sans, system-ui, sans-serif);
+}
+
+@utility krds-focus-ring {
+  outline: 3px solid var(--krds-color-light-primary-50, #256ef4);
+  outline-offset: 2px;
+}

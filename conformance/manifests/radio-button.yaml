@@ -1,0 +1,16 @@
+id: radio-button
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/radio_button.html
+fixtures:
+  - id: radio-button.default
+    sourceSelector: ".krds-form-check input[type=radio]"
+    mandatory: true
+    viewport: desktop
+    props: {}
+    states: [default, focus-visible]
+contract:
+  semanticElement: button
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

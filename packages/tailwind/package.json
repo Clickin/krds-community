@@ -1,0 +1,22 @@
+{
+  "name": "@krds-community/tailwind",
+  "version": "0.1.0",
+  "description": "KRDS token을 Tailwind CSS v4 theme에 연결하는 통합 패키지.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": "./dist/index.css"
+  },
+  "dependencies": {
+    "@krds-community/tokens": "workspace:*"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "lint": "node scripts/build.mjs --check"
+  }
+}

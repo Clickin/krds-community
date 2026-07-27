@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "projects": {
+    "krds-storybook": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": ".storybook/angular",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/angular-storybook-browser",
+            "index": ".storybook/angular/index.html",
+            "browser": ".storybook/angular/main.ts",
+            "tsConfig": ".storybook/angular/tsconfig.json",
+            "assets": [],
+            "styles": ["packages/styles/dist/index.css"]
+          }
+        },
+        "build-storybook": {
+          "builder": "@storybook/angular:build-storybook",
+          "options": {
+            "browserTarget": "krds-storybook:build",
+            "configDir": ".storybook/angular",
+            "outputDir": "storybook-static/angular",
+            "compodoc": false
+          }
+        },
+        "storybook": {
+          "builder": "@storybook/angular:start-storybook",
+          "options": {
+            "browserTarget": "krds-storybook:build",
+            "configDir": ".storybook/angular",
+            "port": 6010,
+            "noOpen": true
+          }
+        }
+      }
+    }
+  }
+}

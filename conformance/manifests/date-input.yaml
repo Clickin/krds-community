@@ -1,0 +1,16 @@
+id: date-input
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/date_input.html
+fixtures:
+  - id: date-input.default
+    sourceSelector: ".krds-calendar-area"
+    mandatory: true
+    viewport: desktop
+    props: {}
+    states: [default, focus-visible]
+contract:
+  semanticElement: label-and-input
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

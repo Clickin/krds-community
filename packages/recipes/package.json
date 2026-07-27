@@ -1,0 +1,25 @@
+{
+  "name": "@krds-community/recipes",
+  "version": "0.1.0",
+  "description": "프레임워크 독립 KRDS class recipe와 동작 계약.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "clsx": "catalog:"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  }
+}

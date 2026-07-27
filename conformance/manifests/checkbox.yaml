@@ -1,0 +1,27 @@
+id: checkbox
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/checkbox.html
+    - upstream/krds-html/html/code/checkbox_size.html
+fixtures:
+  - id: checkbox.default.medium
+    sourceSelector: "input[type=checkbox]"
+    mandatory: true
+    viewport: desktop
+    props:
+      size: medium
+    states: [default, checked, disabled, disabled-checked, focus-visible]
+  - id: checkbox.default.large
+    sourceSelector: ".krds-form-check.large input"
+    mandatory: true
+    viewport: desktop
+    props:
+      size: large
+    states: [default, checked, disabled, focus-visible]
+contract:
+  semanticElement: input
+  accessibleRole: checkbox
+  requiredAttributes: {}
+  accessibility: [label-for-id, checked-state, disabled-semantics, native-form-participation]

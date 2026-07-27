@@ -1,0 +1,44 @@
+id: text-input
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/text_input.html
+    - upstream/krds-html/html/code/text_input_size.html
+    - upstream/krds-html/html/code/text_input_state.html
+fixtures:
+  - id: text-input.default.medium
+    sourceSelector: ".krds-input"
+    mandatory: true
+    viewport: desktop
+    props:
+      state: default
+      size: medium
+    states: [default, placeholder, readonly, disabled, focus-visible]
+  - id: text-input.error.medium
+    sourceSelector: ".form-conts.is-error .krds-input"
+    mandatory: true
+    viewport: desktop
+    props:
+      state: error
+    states: [invalid, focus-visible]
+  - id: text-input.success.medium
+    sourceSelector: ".form-conts.is-success .krds-input"
+    mandatory: true
+    viewport: desktop
+    props:
+      state: success
+    states: [default, focus-visible]
+  - id: text-input.information.medium
+    sourceSelector: ".form-conts.is-information .krds-input"
+    mandatory: true
+    viewport: desktop
+    props:
+      state: information
+    states: [default, focus-visible]
+contract:
+  semanticElement: input
+  accessibleRole: textbox
+  requiredAttributes: {}
+  accessibility:
+    [label-for-id, describedby-for-message, aria-invalid-for-error, native-form-participation]

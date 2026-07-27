@@ -1,0 +1,9 @@
+{
+  "repository": "KRDS-uiux/krds-uiux",
+  "ref": "1.1.0",
+  "commit": "d6bb184c823e4757f05807ea4646a23e3133b6e6",
+  "packageVersion": "1.1.0",
+  "tarballIntegrity": "sha512-5552a538e6127bf3745a58640cf234d457c2444d32da5e2a2eeee68d2934f0cdfd370d46d212b3061ce388f050672a65955dd1f96c53a71459ae96d875643444",
+  "retrievedAt": "2026-07-26T00:00:00Z",
+  "license": "KOGL-Type-1"
+}

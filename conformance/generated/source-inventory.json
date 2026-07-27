@@ -1,0 +1,457 @@
+{
+  "generatedFrom": {
+    "repository": "KRDS-uiux/krds-uiux",
+    "ref": "1.1.0",
+    "commit": "d6bb184c823e4757f05807ea4646a23e3133b6e6",
+    "packageVersion": "1.1.0",
+    "tarballIntegrity": "sha512-5552a538e6127bf3745a58640cf234d457c2444d32da5e2a2eeee68d2934f0cdfd370d46d212b3061ce388f050672a65955dd1f96c53a71459ae96d875643444",
+    "retrievedAt": "2026-07-26T00:00:00Z",
+    "license": "KOGL-Type-1"
+  },
+  "components": [
+    {
+      "id": "accordion",
+      "source": "upstream/krds-html/html/code/accordion.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "accordion-line",
+      "source": "upstream/krds-html/html/code/accordion_line.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "badge",
+      "source": "upstream/krds-html/html/code/badge.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "badge-number",
+      "source": "upstream/krds-html/html/code/badge_number.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "badge-size",
+      "source": "upstream/krds-html/html/code/badge_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "breadcrumb",
+      "source": "upstream/krds-html/html/code/breadcrumb.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "button",
+      "source": "upstream/krds-html/html/code/button.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "button-hierarchy",
+      "source": "upstream/krds-html/html/code/button_hierarchy.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "button-icon",
+      "source": "upstream/krds-html/html/code/button_icon.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "button-size",
+      "source": "upstream/krds-html/html/code/button_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "button-text",
+      "source": "upstream/krds-html/html/code/button_text.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "button-with-icon",
+      "source": "upstream/krds-html/html/code/button_with_icon.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "calendar",
+      "source": "upstream/krds-html/html/code/calendar.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "calendar-range",
+      "source": "upstream/krds-html/html/code/calendar_range.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "carousel",
+      "source": "upstream/krds-html/html/code/carousel.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "carousel-banner",
+      "source": "upstream/krds-html/html/code/carousel_banner.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "checkbox",
+      "source": "upstream/krds-html/html/code/checkbox.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "checkbox-chip",
+      "source": "upstream/krds-html/html/code/checkbox_chip.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "checkbox-size",
+      "source": "upstream/krds-html/html/code/checkbox_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "coach-mark",
+      "source": "upstream/krds-html/html/code/coach_mark.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "contextual-help",
+      "source": "upstream/krds-html/html/code/contextual_help.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "critical-alerts",
+      "source": "upstream/krds-html/html/code/critical_alerts.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "date-input",
+      "source": "upstream/krds-html/html/code/date_input.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "disclosure",
+      "source": "upstream/krds-html/html/code/disclosure.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "favicon",
+      "source": "upstream/krds-html/html/code/favicon.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "file-upload",
+      "source": "upstream/krds-html/html/code/file_upload.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "footer",
+      "source": "upstream/krds-html/html/code/footer.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "header",
+      "source": "upstream/krds-html/html/code/header.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "help-panel",
+      "source": "upstream/krds-html/html/code/help_panel.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "identifier",
+      "source": "upstream/krds-html/html/code/identifier.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "in-page-navigation",
+      "source": "upstream/krds-html/html/code/in_page_navigation.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "language-switcher",
+      "source": "upstream/krds-html/html/code/language_switcher.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "language-switcher-page",
+      "source": "upstream/krds-html/html/code/language_switcher_page.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "link",
+      "source": "upstream/krds-html/html/code/link.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "main-menu-mobile",
+      "source": "upstream/krds-html/html/code/main_menu_mobile.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "main-menu-pc",
+      "source": "upstream/krds-html/html/code/main_menu_pc.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "masthead",
+      "source": "upstream/krds-html/html/code/masthead.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "modal",
+      "source": "upstream/krds-html/html/code/modal.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "modal-sample",
+      "source": "upstream/krds-html/html/code/modal_sample.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "pagination",
+      "source": "upstream/krds-html/html/code/pagination.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "radio-button",
+      "source": "upstream/krds-html/html/code/radio_button.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "radio-chip",
+      "source": "upstream/krds-html/html/code/radio_chip.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "radio-size",
+      "source": "upstream/krds-html/html/code/radio_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "resize",
+      "source": "upstream/krds-html/html/code/resize.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "select",
+      "source": "upstream/krds-html/html/code/select.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "select-size",
+      "source": "upstream/krds-html/html/code/select_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "select-sorting",
+      "source": "upstream/krds-html/html/code/select_sorting.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "select-state",
+      "source": "upstream/krds-html/html/code/select_state.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "side-navigation",
+      "source": "upstream/krds-html/html/code/side_navigation.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "skip-link",
+      "source": "upstream/krds-html/html/code/skip_link.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "spinner",
+      "source": "upstream/krds-html/html/code/spinner.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "step-indicator",
+      "source": "upstream/krds-html/html/code/step_indicator.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "structured-list",
+      "source": "upstream/krds-html/html/code/structured_list.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "structured-list-table",
+      "source": "upstream/krds-html/html/code/structured_list_table.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tab",
+      "source": "upstream/krds-html/html/code/tab.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "table",
+      "source": "upstream/krds-html/html/code/table.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tag",
+      "source": "upstream/krds-html/html/code/tag.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tag-link",
+      "source": "upstream/krds-html/html/code/tag_link.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "text-input",
+      "source": "upstream/krds-html/html/code/text_input.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "text-input-icon",
+      "source": "upstream/krds-html/html/code/text_input_icon.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "text-input-size",
+      "source": "upstream/krds-html/html/code/text_input_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "text-input-state",
+      "source": "upstream/krds-html/html/code/text_input_state.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "text-list",
+      "source": "upstream/krds-html/html/code/text_list.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "text-list-ordered",
+      "source": "upstream/krds-html/html/code/text_list_ordered.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "textarea",
+      "source": "upstream/krds-html/html/code/textarea.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "toggle-switch",
+      "source": "upstream/krds-html/html/code/toggle_switch.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "toggle-switch-size",
+      "source": "upstream/krds-html/html/code/toggle_switch_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tooltip",
+      "source": "upstream/krds-html/html/code/tooltip.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tooltip-box",
+      "source": "upstream/krds-html/html/code/tooltip_box.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tooltip-vertical",
+      "source": "upstream/krds-html/html/code/tooltip_vertical.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tts",
+      "source": "upstream/krds-html/html/code/tts.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tts-icon",
+      "source": "upstream/krds-html/html/code/tts_icon.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tts-size",
+      "source": "upstream/krds-html/html/code/tts_size.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    },
+    {
+      "id": "tutorial-panel",
+      "source": "upstream/krds-html/html/code/tutorial_panel.html",
+      "fixtureCount": 1,
+      "status": "unmapped"
+    }
+  ]
+}

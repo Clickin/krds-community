@@ -1,0 +1,159 @@
+---
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { iconSvg, type KrdsIconName } from '@krds-community/icons';
+import type { Pattern } from '../data/patterns';
+import { AngularPatternExample } from './angular/AngularPatternExample';
+import ReactPatternExample from './patterns/ReactPatternExample';
+import SolidPatternExample from './patterns/SolidPatternExample';
+import SveltePatternExample from './patterns/SveltePatternExample.svelte';
+import VuePatternExample from './patterns/VuePatternExample.vue';
+
+const { pattern } = Astro.props as { pattern: Pattern };
+type Framework = 'react' | 'vue' | 'svelte' | 'solid' | 'angular';
+const frameworks: { id: Framework; label: string; icon: KrdsIconName; source: string }[] = [
+  { id: 'react', label: 'React', icon: 'react', source: 'ReactPatternExample.tsx' },
+  { id: 'vue', label: 'Vue', icon: 'vue', source: 'VuePatternExample.vue' },
+  { id: 'svelte', label: 'Svelte', icon: 'svelte', source: 'SveltePatternExample.svelte' },
+  { id: 'solid', label: 'SolidJS', icon: 'solid', source: 'SolidPatternExample.tsx' },
+  { id: 'angular', label: 'Angular', icon: 'angular', source: 'AngularPatternExample.ts' },
+];
+const frameworkTraits: Record<Framework, { state: string; events: string; forms: string; ssr: string }> = {
+  react: {
+    state: 'useState로 검색·동의·정렬·설정 상태를 관리한다.',
+    events: 'onChange와 onSubmit에서 네이티브 이벤트를 보존한다.',
+    forms: '제어·비제어 입력을 함께 사용하고 preventDefault 후 결과를 표시한다.',
+    ssr: 'Astro client:load island가 서버 HTML을 React 상태로 hydration한다.',
+  },
+  vue: {
+    state: 'ref·computed로 반응형 상태와 ID를 파생한다.',
+    events: 'v-model과 @submit·@click으로 이벤트를 연결한다.',
+    forms: 'label·required 네이티브 폼과 v-model을 사용한다.',
+    ssr: 'Astro client:load island가 서버 HTML을 Vue 상태로 hydration한다.',
+  },
+  svelte: {
+    state: '$state·$derived rune으로 상태와 파생 ID를 관리한다.',
+    events: 'onsubmit·onclick과 bind 문법으로 네이티브 동작을 보존한다.',
+    forms: 'bind:value·bind:checked와 네이티브 required 폼을 사용한다.',
+    ssr: 'Astro client:load island가 서버 HTML을 Svelte 상태로 hydration한다.',
+  },
+  solid: {
+    state: 'createSignal과 반응형 props accessor로 상태를 읽는다.',
+    events: 'onInput·onSubmit에서 currentTarget과 네이티브 이벤트를 사용한다.',
+    forms: '네이티브 label·required 컨트롤과 signal 기반 제어 입력을 사용한다.',
+    ssr: 'Astro client:load island가 서버 HTML을 Solid 반응성으로 hydration한다.',
+  },
+  angular: {
+    state: 'standalone component 필드로 검색·동의·정렬·설정 상태를 관리한다.',
+    events: 'ngSubmit·click과 Angular Forms 이벤트를 사용한다.',
+    forms: 'FormsModule의 ngModel과 네이티브 required 컨트롤을 사용한다.',
+    ssr: 'Astro client:load island가 서버 HTML을 Angular component로 hydration한다.',
+  },
+};
+const sources: Record<Framework, string> = {
+  react: await readFile(join(process.cwd(), 'src/components/patterns/ReactPatternExample.tsx'), 'utf8'),
+  vue: await readFile(join(process.cwd(), 'src/components/patterns/VuePatternExample.vue'), 'utf8'),
+  svelte: await readFile(join(process.cwd(), 'src/components/patterns/SveltePatternExample.svelte'), 'utf8'),
+  solid: await readFile(join(process.cwd(), 'src/components/patterns/SolidPatternExample.tsx'), 'utf8'),
+  angular: await readFile(join(process.cwd(), 'src/components/angular/AngularPatternExample.ts'), 'utf8'),
+};
+const panelId = `pattern-panel-${pattern.id}`;
+---
+
+<section class="pattern-explorer" aria-labelledby={`${pattern.id}-explorer-title`}>
+  <div class="pattern-explorer-heading">
+    <div>
+      <p class="pattern-eyebrow">{pattern.category}</p>
+      <h2 id={`${pattern.id}-explorer-title`}>{pattern.title} 구현 예시</h2>
+      <p class="pattern-explorer-description">각 탭은 해당 프레임워크의 독립 런타임으로 같은 패턴 과업을 렌더링합니다.</p>
+    </div>
+    <div class="pattern-levels" aria-label="공식 KRDS 적용 수준">
+      {pattern.officialLevels ? pattern.officialLevels.map((level) => <span>{level}</span>) : <span>공식 원문에 적용 수준 별도 표기 없음</span>}
+    </div>
+  </div>
+
+  <div class="pattern-tabs" role="tablist" aria-label={`${pattern.title} 프레임워크 선택`}>
+    {frameworks.map((framework, index) => (
+      <button
+        id={`${panelId}-tab-${framework.id}`}
+        type="button"
+        role="tab"
+        aria-selected={index === 0 ? 'true' : 'false'}
+        aria-controls={`${panelId}-${framework.id}`}
+        tabindex={index === 0 ? 0 : -1}
+        class:list={{ 'is-active': index === 0 }}
+        data-tab={framework.id}
+      >
+        <span class="framework-icon" aria-hidden="true" set:html={iconSvg(framework.icon)}></span>
+        <span>{framework.label}</span>
+      </button>
+    ))}
+  </div>
+
+  {frameworks.map((framework, index) => (
+    <div
+      id={`${panelId}-${framework.id}`}
+      role="tabpanel"
+      aria-labelledby={`${panelId}-tab-${framework.id}`}
+      class="pattern-tab-panel"
+      data-panel={framework.id}
+      hidden={index !== 0}
+      tabindex="0"
+    >
+      <div class="pattern-source">
+        <div class="pattern-panel-label"><span>{framework.label} 실제 소스</span><a href={`#${framework.id}-source`}>{framework.source}</a></div>
+        <pre id={`${framework.id}-source`} tabindex="0"><code>{sources[framework.id]}</code></pre>
+      </div>
+      <div class="pattern-rendered">
+        <div class="pattern-panel-label"><span>{framework.label} 렌더링 뷰</span><span>실행 가능한 미리보기</span></div>
+        <dl class="pattern-traits" aria-label={`${framework.label} 구현 특성`}>
+          <div><dt>상태</dt><dd>{frameworkTraits[framework.id].state}</dd></div>
+          <div><dt>이벤트</dt><dd>{frameworkTraits[framework.id].events}</dd></div>
+          <div><dt>폼</dt><dd>{frameworkTraits[framework.id].forms}</dd></div>
+          <div><dt>SSR·hydration</dt><dd>{frameworkTraits[framework.id].ssr}</dd></div>
+        </dl>
+        <div class="pattern-preview-content" data-pattern={pattern.id} data-framework={framework.id}>
+          {framework.id === 'react' && <ReactPatternExample patternId={pattern.id} client:load />}
+          {framework.id === 'vue' && <VuePatternExample patternId={pattern.id} client:load />}
+          {framework.id === 'svelte' && <SveltePatternExample patternId={pattern.id} client:load />}
+          {framework.id === 'solid' && <SolidPatternExample patternId={pattern.id} client:load />}
+          {framework.id === 'angular' && <AngularPatternExample {...({ patternId: pattern.id } as any)} client:load />}
+        </div>
+      </div>
+    </div>
+  ))}
+
+  <p class="pattern-explorer-note">
+    공식 개요: <a href={pattern.officialOverview} target="_blank" rel="noreferrer">KRDS 원문</a>
+    · 사례/가이드: <a href={pattern.officialExample} target="_blank" rel="noreferrer">공식 페이지</a>
+    · {pattern.sourceNote}
+  </p>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.pattern-explorer').forEach((explorer) => {
+    const tabs = Array.from(explorer.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(explorer.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+    const select = (tab: HTMLButtonElement) => {
+      tabs.forEach((candidate) => {
+        const selected = candidate === tab;
+        candidate.setAttribute('aria-selected', String(selected));
+        candidate.tabIndex = selected ? 0 : -1;
+        candidate.classList.toggle('is-active', selected);
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.id === tab.getAttribute('aria-controls') ? false : true;
+      });
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1) + tabs.length) % tabs.length;
+        tabs[nextIndex]?.focus();
+        select(tabs[nextIndex]);
+      });
+    });
+  });
+</script>

@@ -1,0 +1,21 @@
+---
+import PatternExplorer from './PatternExplorer.astro';
+import { findPattern } from '../data/patterns';
+
+const { patternId } = Astro.props as { patternId: string };
+const pattern = findPattern(patternId);
+---
+
+<header class="pattern-page-intro">
+  <p class="pattern-eyebrow">{pattern.category}</p>
+  <h2>{pattern.title}</h2>
+  <p class="pattern-lede">{pattern.description}</p>
+</header>
+
+<section class="pattern-guidance" aria-labelledby={`${pattern.id}-guidance-title`}>
+  <h2 id={`${pattern.id}-guidance-title`}>이 패턴의 사용 맥락</h2>
+  <p>아래 예시는 공식 KRDS 패턴의 목적과 과업 흐름을 확인할 수 있는 최소한의 상호작용 예시입니다. 제품에 적용할 때는 공식 원문의 세부 가이드라인과 서비스 맥락을 함께 검토하세요.</p>
+  <p class="pattern-source-links"><a href={pattern.officialOverview} target="_blank" rel="noreferrer">공식 개요 확인</a><a href={pattern.officialExample} target="_blank" rel="noreferrer">공식 사례·가이드 확인</a></p>
+</section>
+
+<PatternExplorer pattern={pattern} />

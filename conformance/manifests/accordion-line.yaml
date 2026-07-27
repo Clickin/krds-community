@@ -1,0 +1,16 @@
+id: accordion-line
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/accordion_line.html
+fixtures:
+  - id: accordion-line.default
+    sourceSelector: ".krds-accordion.type-line"
+    mandatory: true
+    viewport: desktop
+    props: {}
+    states: [default, focus-visible]
+contract:
+  semanticElement: details-summary
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

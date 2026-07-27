@@ -1,0 +1,20 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/tokens/tsconfig.json" },
+    { "path": "packages/styles/tsconfig.json" },
+    { "path": "packages/tailwind/tsconfig.json" },
+    { "path": "packages/recipes/tsconfig.json" },
+    { "path": "packages/icons/tsconfig.json" },
+    { "path": "packages/react/tsconfig.json" },
+    { "path": "packages/vue/tsconfig.json" },
+    { "path": "packages/solid/tsconfig.json" },
+    { "path": "packages/angular/tsconfig.json" },
+    { "path": "packages/conformance/tsconfig.json" },
+    { "path": "packages/test-utils/tsconfig.json" },
+    { "path": "apps/docs/tsconfig.json" },
+    { "path": "apps/conformance-viewer/tsconfig.json" },
+    { "path": "apps/playground/tsconfig.json" },
+    { "path": "tests/tsconfig.json" }
+  ]
+}

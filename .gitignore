@@ -1,0 +1,22 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vite/
+.svelte-kit/
+.turbo/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Upstream snapshots are immutable source, not build output.
+# Do not ignore upstream/krds-html.
+apps/conformance-viewer/public/reports/
+.astro/
+storybook-static/
+.playwright-cli/
+.pnpm-store/
+/reports

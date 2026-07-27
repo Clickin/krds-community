@@ -1,0 +1,16 @@
+id: favicon
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/favicon.html
+fixtures:
+  - id: favicon.default
+    sourceSelector: 'link[rel="icon"]'
+    mandatory: true
+    viewport: desktop
+    props: {}
+    states: [default, focus-visible]
+contract:
+  semanticElement: link
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

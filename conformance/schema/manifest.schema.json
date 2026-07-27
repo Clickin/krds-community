@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://krds-community.dev/schemas/conformance-manifest.json",
+  "type": "object",
+  "required": ["id", "upstream", "fixtures", "contract", "status"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "status": {
+      "enum": [
+        "unmapped",
+        "mapped",
+        "implementing",
+        "implemented",
+        "passing",
+        "deviating",
+        "blocked-upstream",
+        "waived",
+        "not-applicable"
+      ]
+    },
+    "upstream": {
+      "type": "object",
+      "required": ["version", "files"],
+      "properties": {
+        "version": { "type": "string" },
+        "files": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "sourceSelector", "mandatory", "states"],
+        "properties": {
+          "id": { "type": "string" },
+          "sourceSelector": { "type": "string" },
+          "mandatory": { "type": "boolean" },
+          "viewport": { "enum": ["mobile", "tablet", "desktop"] },
+          "states": { "type": "array", "items": { "type": "string" } },
+          "props": { "type": "object" }
+        }
+      }
+    },
+    "contract": {
+      "type": "object",
+      "required": ["semanticElement"],
+      "properties": {
+        "semanticElement": { "type": "string" },
+        "accessibleRole": { "type": "string" },
+        "requiredAttributes": { "type": "object" },
+        "forbiddenAttributes": { "type": "array", "items": { "type": "string" } },
+        "accessibility": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

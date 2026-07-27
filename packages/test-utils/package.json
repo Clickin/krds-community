@@ -1,0 +1,25 @@
+{
+  "name": "@krds-community/test-utils",
+  "version": "0.1.0",
+  "description": "공유 conformance 시나리오와 테스트 보조 기능.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@krds-community/conformance": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  }
+}

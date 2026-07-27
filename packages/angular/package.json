@@ -1,0 +1,38 @@
+{
+  "name": "@krds-community/angular",
+  "version": "0.1.0",
+  "description": "KRDS용 standalone Angular 네이티브 컴포넌트.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "peerDependencies": {
+    "@angular/common": ">=20.0.0",
+    "@angular/core": ">=20.0.0",
+    "@angular/forms": ">=20.0.0"
+  },
+  "dependencies": {
+    "@krds-community/recipes": "workspace:*",
+    "@krds-community/styles": "workspace:*"
+  },
+  "devDependencies": {
+    "@angular/common": "catalog:",
+    "@angular/compiler": "catalog:",
+    "@angular/core": "catalog:",
+    "@angular/forms": "catalog:",
+    "@angular/platform-browser": "catalog:"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  }
+}

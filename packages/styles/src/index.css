@@ -1,0 +1,604 @@
+/* Community CSS is opt-in. Generated token values are imported, no global reset is applied. */
+@import '@krds-community/tokens/css';
+
+:where(.krds-button, .krds-input, .krds-form-check input, .krds-form-toggle-switch input) {
+  font: inherit;
+}
+
+.krds-button {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.5rem;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.625rem 1rem;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    color 120ms ease;
+}
+.krds-button[data-variant='primary'] {
+  background: var(--krds-mode-light-color-button-primary-fill);
+  color: var(--krds-mode-light-color-action-white);
+}
+.krds-button[data-variant='secondary'] {
+  background: var(--krds-mode-light-color-button-secondary-fill);
+  color: var(--krds-mode-light-color-text-primary);
+}
+.krds-button[data-variant='tertiary'] {
+  background: transparent;
+  border-color: var(--krds-mode-light-color-button-tertiary-border);
+  color: var(--krds-mode-light-color-text-primary);
+}
+.krds-button[data-size='xsmall'] {
+  min-height: 2rem;
+  padding: 0.375rem 0.625rem;
+}
+.krds-button[data-size='small'] {
+  min-height: 2.25rem;
+  padding: 0.5rem 0.75rem;
+}
+.krds-button[data-size='large'] {
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+}
+.krds-button[data-size='xlarge'] {
+  min-height: 3.5rem;
+  padding: 0.875rem 1.5rem;
+}
+.krds-button:focus-visible,
+.krds-input:focus-visible,
+.krds-form-check input:focus-visible + label,
+.krds-form-toggle-switch input:focus-visible + label,
+.krds-accordion-trigger:focus-visible {
+  outline: 3px solid var(--krds-mode-light-color-border-primary);
+  outline-offset: 2px;
+}
+.krds-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.krds-field {
+  display: grid;
+  gap: 0.5rem;
+}
+.krds-field-label {
+  font-weight: 700;
+}
+.krds-input {
+  border: 1px solid var(--krds-mode-light-color-input-border);
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  min-height: 2.75rem;
+  padding: 0.625rem 0.75rem;
+  width: 100%;
+}
+.krds-input[data-size='small'] {
+  min-height: 2.25rem;
+}
+.krds-input[data-size='large'] {
+  min-height: 3.25rem;
+}
+.krds-input[data-state='error'] {
+  border-color: var(--krds-mode-light-color-input-border-error);
+}
+.krds-input[data-state='success'] {
+  border-color: var(--krds-mode-light-color-border-success);
+}
+.krds-field-message {
+  font-size: 0.875rem;
+}
+.krds-field-message[data-state='error'] {
+  color: var(--krds-mode-light-color-text-danger);
+}
+
+.krds-form-check,
+.krds-form-toggle-switch {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+.krds-form-check label,
+.krds-form-toggle-switch label {
+  cursor: pointer;
+}
+.krds-form-check input,
+.krds-form-toggle-switch input {
+  block-size: 1.25rem;
+  inline-size: 1.25rem;
+}
+.krds-form-check[data-size='large'] input {
+  block-size: 1.5rem;
+  inline-size: 1.5rem;
+}
+.krds-form-toggle-switch .switch-toggle {
+  background: var(--krds-mode-light-color-element-gray);
+  border-radius: 999px;
+  display: inline-flex;
+  height: 1.5rem;
+  padding: 0.125rem;
+  transition: background-color 120ms ease;
+  width: 2.75rem;
+}
+.krds-form-toggle-switch .switch-toggle i {
+  background: var(--krds-mode-light-color-action-white);
+  border-radius: 50%;
+  display: block;
+  height: 1.25rem;
+  transform: translateX(0);
+  transition: transform 120ms ease;
+  width: 1.25rem;
+}
+.krds-form-toggle-switch input {
+  block-size: 1px;
+  inline-size: 1px;
+  opacity: 0;
+  position: absolute;
+}
+.krds-form-toggle-switch input:checked + label .switch-toggle {
+  background: var(--krds-mode-light-color-button-primary-fill);
+}
+.krds-form-toggle-switch input:checked + label .switch-toggle i {
+  transform: translateX(1.25rem);
+}
+
+.krds-accordion {
+  display: grid;
+}
+.krds-accordion-item {
+  border-block-start: 1px solid var(--krds-mode-light-color-border-gray);
+}
+.krds-accordion-item:last-child {
+  border-block-end: 1px solid var(--krds-mode-light-color-border-gray);
+}
+.krds-accordion[data-type='line'] .krds-accordion-item {
+  border-block-start-color: var(--krds-mode-light-color-border-primary-light);
+}
+.krds-accordion-trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  padding: 1rem 0;
+  text-align: start;
+  width: 100%;
+}
+.krds-accordion-panel {
+  padding: 0 0 1rem;
+}
+.krds-accordion-panel[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .krds-button,
+  .krds-form-toggle-switch .switch-toggle,
+  .krds-form-toggle-switch .switch-toggle i {
+    transition-duration: 0.01ms;
+  }
+}
+@media (forced-colors: active) {
+  .krds-button:focus-visible,
+  .krds-input:focus-visible,
+  .krds-accordion-trigger:focus-visible {
+    outline: 2px solid CanvasText;
+  }
+}
+@media print {
+  .krds-button {
+    background: transparent !important;
+    color: #000 !important;
+  }
+}
+
+/* Shared foundations for the inventory components. Components add only
+ * framework-native markup; visual values continue to come from tokens. */
+.krds-badge,
+.krds-btn-tag,
+.krds-spinner,
+.krds-masthead {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.25rem;
+}
+.krds-badge {
+  border: 1px solid transparent;
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  font-size: 0.875rem;
+  font-weight: 700;
+  min-height: 1.75rem;
+  padding: 0.25rem 0.625rem;
+}
+.krds-badge.outline-primary,
+.krds-btn-tag.link {
+  background: transparent;
+  border-color: var(--krds-mode-light-color-border-primary);
+  color: var(--krds-mode-light-color-text-primary);
+}
+.krds-badge.bg-primary,
+.krds-btn-tag.bg-primary {
+  background: var(--krds-mode-light-color-button-primary-fill);
+  color: var(--krds-mode-light-color-action-white);
+}
+.krds-badge.bg-secondary,
+.krds-btn-tag.bg-secondary {
+  background: var(--krds-mode-light-color-button-secondary-fill);
+  color: var(--krds-mode-light-color-text-primary);
+}
+.krds-badge.bg-danger,
+.krds-btn-tag.bg-danger {
+  background: var(
+    --krds-mode-light-color-button-danger-fill,
+    var(--krds-mode-light-color-text-danger)
+  );
+  color: var(--krds-mode-light-color-action-white);
+}
+.krds-badge.bg-gray,
+.krds-btn-tag.bg-gray {
+  background: var(--krds-mode-light-color-element-gray);
+  color: var(--krds-mode-light-color-action-white);
+}
+.krds-btn,
+.krds-link,
+.krds-btn-tag,
+.krds-tts,
+.krds-pagination button,
+.krds-tab-area [role='tab'],
+.krds-tooltip {
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  cursor: pointer;
+  min-height: 2.75rem;
+  padding: 0.625rem 0.875rem;
+}
+.krds-btn {
+  background: var(--krds-mode-light-color-button-primary-fill);
+  border: 1px solid transparent;
+  color: var(--krds-mode-light-color-action-white);
+  font: inherit;
+  font-weight: 700;
+}
+.krds-btn.text,
+.krds-link,
+.krds-btn-tag.link {
+  background: transparent;
+  color: var(--krds-mode-light-color-text-primary);
+}
+.krds-btn.icon {
+  min-width: 2.75rem;
+  padding-inline: 0.5rem;
+}
+.krds-btn:disabled,
+.krds-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.krds-breadcrumb-wrap ol,
+.krds-pagination,
+.krds-pagination .page-links,
+.krds-step-wrap,
+.krds-info-list,
+.krds-structured-list,
+.krds-in-page-navigation-area ul,
+.krds-side-navigation ul,
+.krds-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.krds-breadcrumb-wrap ol,
+.krds-pagination,
+.krds-pagination .page-links,
+.krds-step-wrap {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.krds-breadcrumb-wrap a,
+.krds-in-page-navigation-area a,
+.krds-side-navigation a,
+.krds-footer a,
+.krds-main-menu a,
+.krds-main-menu-mobile a {
+  color: inherit;
+  text-decoration: none;
+}
+.krds-field,
+.krds-resize,
+.krds-language,
+.krds-file-upload,
+.krds-input-with-icon,
+.krds-contextual-help,
+.krds-disclosure,
+.krds-help-panel,
+.krds-coach-mark,
+.krds-critical-alerts,
+.krds-carousel,
+.krds-modal,
+.krds-tooltip-wrap,
+.krds-tab-area,
+.krds-table-wrap,
+.krds-structured-list,
+.krds-in-page-navigation-area,
+.krds-side-navigation,
+.krds-main-menu,
+.krds-main-menu-mobile,
+.krds-footer,
+.krds-header,
+.krds-identifier,
+.krds-masthead,
+.krds-tts {
+  box-sizing: border-box;
+}
+.krds-field,
+.krds-file-upload,
+.krds-input-with-icon,
+.krds-contextual-help,
+.krds-disclosure,
+.krds-help-panel,
+.krds-coach-mark,
+.krds-critical-alerts,
+.krds-carousel,
+.krds-modal,
+.krds-tab-area,
+.krds-table-wrap,
+.krds-structured-list,
+.krds-in-page-navigation-area,
+.krds-side-navigation,
+.krds-main-menu,
+.krds-main-menu-mobile,
+.krds-footer,
+.krds-header,
+.krds-identifier,
+.krds-masthead {
+  padding: 1rem;
+}
+.krds-field,
+.krds-file-upload,
+.krds-input-with-icon {
+  display: grid;
+  gap: 0.5rem;
+}
+.krds-input-with-icon {
+  grid-template-columns: 1fr auto;
+}
+.krds-input-with-icon .krds-input {
+  grid-column: 1;
+}
+.krds-input-with-icon .krds-btn,
+.krds-input-with-icon button {
+  grid-column: 2;
+  grid-row: 1;
+}
+.krds-calendar-area {
+  align-items: end;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+}
+.krds-calendar-area input,
+.krds-form-select,
+.krds-resize select,
+.krds-language select {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.625rem;
+}
+.krds-resize,
+.krds-language {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+.krds-form-chip,
+.krds-form-check {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+}
+.krds-form-chip input,
+.krds-form-check input {
+  block-size: 1.25rem;
+  inline-size: 1.25rem;
+}
+.krds-form-chip {
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  border-radius: 999px;
+  padding-inline: 0.875rem;
+}
+.krds-form-chip:has(input:checked) {
+  border-color: var(--krds-mode-light-color-border-primary);
+  background: var(--krds-mode-light-color-background-primary-light);
+}
+.krds-critical-alerts {
+  border-inline-start: 0.25rem solid var(--krds-mode-light-color-text-danger);
+}
+.krds-critical-alerts ul,
+.krds-help-panel ul,
+.krds-coach-mark ul {
+  margin-block: 0;
+  padding-inline-start: 1.25rem;
+}
+.krds-disclosure summary,
+.krds-contextual-help summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+}
+.krds-coach-mark,
+.krds-help-panel,
+.krds-modal {
+  background: var(
+    --krds-mode-light-color-background-gray,
+    var(--krds-mode-light-color-element-gray)
+  );
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  max-width: 32rem;
+}
+.krds-modal::backdrop {
+  background: var(
+    --krds-mode-light-color-background-overlay,
+    var(--krds-mode-light-color-element-gray)
+  );
+  opacity: 0.65;
+}
+.krds-carousel {
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  display: grid;
+  gap: 0.75rem;
+}
+.krds-carousel button,
+.krds-pagination button,
+.krds-tab-area [role='tab'] {
+  background: transparent;
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  font: inherit;
+}
+.krds-pagination .active,
+.krds-tab-area [aria-selected='true'] {
+  background: var(--krds-mode-light-color-button-primary-fill);
+  color: var(--krds-mode-light-color-action-white);
+}
+.krds-step-wrap li {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.375rem;
+}
+.krds-step-wrap li > span {
+  align-items: center;
+  background: var(--krds-mode-light-color-element-gray);
+  border-radius: 50%;
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+}
+.krds-step-wrap li.done > span,
+.krds-step-wrap li[aria-current='step'] > span {
+  background: var(--krds-mode-light-color-button-primary-fill);
+  color: var(--krds-mode-light-color-action-white);
+}
+.krds-table-wrap {
+  overflow-x: auto;
+}
+.krds-table-wrap table {
+  border-collapse: collapse;
+  min-width: 100%;
+}
+.krds-table-wrap th,
+.krds-table-wrap td {
+  border-block-end: 1px solid var(--krds-mode-light-color-border-gray);
+  padding: 0.75rem;
+  text-align: start;
+}
+.krds-tab-area [role='tablist'] {
+  border-block-end: 1px solid var(--krds-mode-light-color-border-gray);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.krds-tab-area [role='tabpanel'] {
+  padding-block: 1rem;
+}
+.krds-tooltip-wrap {
+  display: inline-flex;
+  position: relative;
+}
+.krds-tooltip-wrap [role='tooltip'] {
+  background: var(
+    --krds-mode-light-color-background-gray,
+    var(--krds-mode-light-color-element-gray)
+  );
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  inset-block-start: calc(100% + 0.25rem);
+  inset-inline-start: 0;
+  min-width: 12rem;
+  padding: 0.5rem;
+  position: absolute;
+  z-index: 1;
+}
+.krds-tts {
+  background: transparent;
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  font: inherit;
+}
+.krds-skip-link {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  position: absolute;
+  transform: translateY(-200%);
+  z-index: 10;
+}
+.krds-skip-link:focus-within {
+  transform: translateY(0);
+}
+.krds-sr-only,
+.sr-only {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+:where(
+  .krds-btn,
+  .krds-link,
+  .krds-btn-tag,
+  .krds-tts,
+  .krds-pagination button,
+  .krds-tab-area [role='tab'],
+  .krds-tooltip,
+  .krds-input,
+  .krds-form-select,
+  .krds-resize select,
+  .krds-language select,
+  .krds-form-chip,
+  .krds-form-check,
+  .krds-disclosure summary,
+  .krds-contextual-help summary
+):focus-visible {
+  outline: 3px solid var(--krds-mode-light-color-border-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .krds-button,
+  .krds-btn,
+  .krds-form-toggle-switch .switch-toggle,
+  .krds-form-toggle-switch .switch-toggle i {
+    transition-duration: 0.01ms;
+  }
+}
+@media (forced-colors: active) {
+  :where(
+    .krds-btn,
+    .krds-link,
+    .krds-btn-tag,
+    .krds-tts,
+    .krds-pagination button,
+    .krds-tab-area [role='tab'],
+    .krds-tooltip,
+    .krds-input,
+    .krds-form-select,
+    .krds-form-chip,
+    .krds-form-check
+  ):focus-visible {
+    outline: 2px solid CanvasText;
+  }
+}

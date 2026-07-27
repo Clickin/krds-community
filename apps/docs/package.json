@@ -1,0 +1,50 @@
+{
+  "name": "@krds-community/docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "astro check"
+  },
+  "dependencies": {
+    "@analogjs/astro-angular": "catalog:",
+    "@angular/animations": "catalog:",
+    "@angular/build": "catalog:",
+    "@angular/common": "catalog:",
+    "@angular/compiler": "catalog:",
+    "@angular/compiler-cli": "catalog:",
+    "@angular/core": "catalog:",
+    "@angular/forms": "catalog:",
+    "@angular/language-service": "catalog:",
+    "@angular/platform-browser": "catalog:",
+    "@angular/platform-server": "catalog:",
+    "@astrojs/react": "catalog:",
+    "@astrojs/solid-js": "catalog:",
+    "@astrojs/starlight": "catalog:",
+    "@astrojs/svelte": "catalog:",
+    "@astrojs/vue": "catalog:",
+    "@krds-community/angular": "workspace:*",
+    "@krds-community/icons": "workspace:*",
+    "@krds-community/react": "workspace:*",
+    "@krds-community/recipes": "workspace:*",
+    "@krds-community/solid": "workspace:*",
+    "@krds-community/styles": "workspace:*",
+    "@krds-community/svelte": "workspace:*",
+    "@krds-community/vue": "workspace:*",
+    "astro": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "rxjs": "catalog:",
+    "solid-js": "catalog:",
+    "svelte": "catalog:",
+    "tslib": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@krds-community/conformance-viewer",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/copy-report.mjs && vite build",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "vite": "catalog:"
+  }
+}

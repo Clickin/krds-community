@@ -1,0 +1,35 @@
+{
+  "name": "@krds-community/react",
+  "version": "0.1.0",
+  "description": "KRDS용 React 네이티브 컴포넌트.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "peerDependencies": {
+    "react": ">=18.3.0"
+  },
+  "dependencies": {
+    "@krds-community/recipes": "workspace:*",
+    "@krds-community/styles": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  }
+}

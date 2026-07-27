@@ -1,0 +1,16 @@
+id: select-size
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/select_size.html
+fixtures:
+  - id: select-size.default
+    sourceSelector: ".krds-form-select"
+    mandatory: true
+    viewport: desktop
+    props: {}
+    states: [default, focus-visible]
+contract:
+  semanticElement: label-and-select
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

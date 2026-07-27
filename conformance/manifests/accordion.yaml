@@ -1,0 +1,39 @@
+id: accordion
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/accordion.html
+    - upstream/krds-html/html/code/accordion_line.html
+fixtures:
+  - id: accordion.default.single
+    sourceSelector: ".krds-accordion"
+    mandatory: true
+    viewport: desktop
+    props:
+      type: default
+      multiple: false
+    states: [collapsed, expanded, focus-visible, keyboard-toggle]
+  - id: accordion.line.single
+    sourceSelector: ".krds-accordion.type-line"
+    mandatory: true
+    viewport: desktop
+    props:
+      type: line
+      multiple: false
+    states: [collapsed, expanded, focus-visible, keyboard-toggle]
+contract:
+  semanticElement: button-and-region
+  accessibleRole: button
+  requiredAttributes:
+    button: [type=button, aria-expanded, aria-controls]
+    panel: [aria-labelledby, role=region]
+  accessibility:
+    [
+      expanded-state,
+      controls-relationship,
+      labelledby-relationship,
+      native-button-keyboard,
+      focus-restoration,
+    ]
+  referenceImplementationNotes: Initializer-org/krds-vue explicitly binds aria-expanded, aria-controls, and aria-labelledby; this contract keeps those attributes in every adapter.

@@ -1,0 +1,36 @@
+name: Upstream tracking
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.12.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - id: upstream
+        continue-on-error: true
+        run: pnpm upstream:check
+      - if: steps.upstream.outcome == 'failure'
+        run: pnpm upstream:diff
+      - if: steps.upstream.outcome == 'failure'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "Upstream KRDS revision requires review"
+          content-filepath: reports/upstream-diff.md
+          labels: upstream,conformance

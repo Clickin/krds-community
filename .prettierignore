@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.astro/
+upstream/krds-html/
+packages/tokens/src/generated.ts
+packages/tokens/src/krds.css
+conformance/generated/
+reports/
+pnpm-lock.yaml
+AGENTS.md
+ARCHITECTURE.md
+storybook-static/
+.playwright-cli/

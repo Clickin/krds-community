@@ -1,0 +1,16 @@
+id: skip-link
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/skip_link.html
+fixtures:
+  - id: skip-link.default
+    sourceSelector: "#krds-skip-link a"
+    mandatory: true
+    viewport: desktop
+    props: {}
+    states: [default, focus-visible]
+contract:
+  semanticElement: navigation
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

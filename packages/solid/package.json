@@ -1,0 +1,32 @@
+{
+  "name": "@krds-community/solid",
+  "version": "0.1.0",
+  "description": "KRDS용 SolidJS 네이티브 컴포넌트.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "peerDependencies": {
+    "solid-js": ">=1.8.0"
+  },
+  "dependencies": {
+    "@krds-community/recipes": "workspace:*",
+    "@krds-community/styles": "workspace:*"
+  },
+  "devDependencies": {
+    "solid-js": "catalog:"
+  },
+  "scripts": {
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  }
+}

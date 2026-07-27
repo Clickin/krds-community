@@ -1,0 +1,40 @@
+id: button
+status: passing
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/button.html
+    - upstream/krds-html/html/code/button_hierarchy.html
+    - upstream/krds-html/html/code/button_size.html
+fixtures:
+  - id: button.primary.medium.default
+    sourceSelector: ".krds-btn.primary"
+    mandatory: true
+    viewport: desktop
+    props:
+      variant: primary
+      size: medium
+    states: [default, hover, focus-visible, active, disabled]
+  - id: button.secondary.medium.default
+    sourceSelector: ".krds-btn.secondary"
+    mandatory: true
+    viewport: desktop
+    props:
+      variant: secondary
+      size: medium
+    states: [default, focus-visible, disabled]
+  - id: button.tertiary.medium.default
+    sourceSelector: ".krds-btn.tertiary"
+    mandatory: true
+    viewport: desktop
+    props:
+      variant: tertiary
+      size: medium
+    states: [default, focus-visible, disabled]
+contract:
+  semanticElement: button
+  accessibleRole: button
+  requiredAttributes:
+    type: button
+  forbiddenAttributes: [role=button]
+  accessibility: [native-button-keyboard, visible-focus, disabled-semantics]
