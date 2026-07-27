@@ -3,13 +3,61 @@
   type Props = Omit<TextInputContractProps, 'value'> & {
     value?: string;
     id?: string;
+    class?: string;
+    className?: string;
   };
 
-  let { value = $bindable(''), label = '', hint = '', state = 'default', size = 'medium', id = 'krds-input', disabled = false, readonly = false, required = false, ...restProps }: Props = $props();
+  const generatedId = $props.id();
+  let {
+    value = $bindable(''),
+    label = '',
+    hint = '',
+    state = 'default',
+    size,
+    id = generatedId,
+    disabled = false,
+    readonly = false,
+    required = false,
+    class: classValue = '',
+    className = '',
+    ...restProps
+  }: Props = $props();
 </script>
 
-<label class="krds-field">
-  {#if label}<span class="krds-field-label">{label}</span>{/if}
-  <input {...restProps} bind:value {id} {disabled} {readonly} {required} class="krds-input" data-state={state} data-size={size} aria-invalid={state === 'error' ? 'true' : undefined} aria-describedby={hint ? `${id}-hint` : undefined} />
-  {#if hint}<span id={`${id}-hint`} class="krds-field-message" data-state={state}>{hint}</span>{/if}
-</label>
+<div class="form-group">
+  <div class="form-tit">
+    <label for={id}>{label}</label>
+  </div>
+  <div
+    class="form-conts"
+    class:is-error={state === 'error'}
+    class:is-success={state === 'success'}
+    class:is-information={state === 'information'}
+  >
+    <input
+      {...restProps}
+      bind:value
+      {id}
+      {disabled}
+      {readonly}
+      {required}
+      class={`krds-input${size ? ` ${size}` : ''}${classValue ? ` ${classValue}` : ''}${className ? ` ${className}` : ''}`}
+      aria-invalid={state === 'error' ? 'true' : undefined}
+      aria-describedby={hint ? `${id}-hint` : undefined}
+    />
+  </div>
+  {#if hint}
+    <p
+      id={`${id}-hint`}
+      class={state === 'error'
+        ? 'form-hint-invalid'
+        : state === 'success'
+          ? 'form-hint-success'
+          : state === 'information'
+            ? 'form-hint-information'
+            : 'form-hint'}
+    >
+      {hint}
+    </p>
+  {/if}
+</div>

@@ -20,18 +20,41 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - run: pnpm lint
-      - run: pnpm format:check
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm test:browser
-      - run: pnpm test:conformance
-      - run: pnpm test:visual
-      - run: pnpm test:packages
-      - run: pnpm build
-      - run: pnpm docs:build
-      - run: pnpm storybook:build
-      - run: pnpm publint
-      - run: pnpm changeset:status
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install browser runtimes
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Check formatting
+        run: pnpm format:check
+      - name: Lint repository
+        run: pnpm lint:oxide
+      - name: Check React compiler rules
+        run: pnpm lint:react-compiler
+      - name: Lint every workspace
+        run: pnpm lint:packages
+      - name: Typecheck project references
+        run: pnpm typecheck
+      - name: Run unit tests
+        run: pnpm test:unit
+      - name: Run framework reactivity tests
+        run: pnpm test:reactivity
+      - name: Run SSR and hydration tests
+        run: pnpm test:ssr
+      - name: Run cross-browser behavior tests
+        run: pnpm test:browser
+      - name: Run Chromium visual tests
+        run: pnpm test:visual
+      - name: Generate and gate full runtime conformance evidence
+        run: pnpm test:conformance
+      - name: Build every workspace
+        run: pnpm build
+      - name: Check publishable package artifacts
+        run: pnpm test:packages
+      - name: Build documentation
+        run: pnpm docs:build
+      - name: Build Storybook
+        run: pnpm storybook:build
+      - name: Audit rendered Storybook inventories
+        run: pnpm test:storybook:audit
+      - name: Check release metadata
+        run: pnpm changeset:status

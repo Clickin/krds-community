@@ -1,0 +1,14 @@
+---
+import Select from './Select.astro';
+import type { Props as SelectProps } from './Select.astro';
+
+export interface Props extends Omit<SelectProps, 'state' | 'surfaceOnly' | 'variant'> {}
+
+const { size = 'large', class: className, ...rest } = Astro.props;
+---
+
+<Select {...rest} size={size} class={className} variant="size">
+  {Astro.slots.has('default') && <slot />}
+  {Astro.slots.has('label') && <Fragment slot="label"><slot name="label" /></Fragment>}
+  {Astro.slots.has('hint') && <Fragment slot="hint"><slot name="hint" /></Fragment>}
+</Select>

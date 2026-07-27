@@ -13,7 +13,6 @@ const config: StorybookConfig = {
         ...config.resolve?.alias,
         '@krds-community/solid': resolve('packages/solid/dist/index.js'),
         '@krds-community/styles/css': resolve('packages/styles/dist/index.css'),
-        'solid-js/jsx-runtime': resolve('node_modules/solid-js/h/jsx-runtime/dist/jsx.js'),
       },
     },
   }),

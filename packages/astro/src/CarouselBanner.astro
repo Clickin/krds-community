@@ -1,0 +1,248 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { KrdsCarouselSlide } from '@krds-community/recipes';
+
+export interface CarouselBannerSlide extends KrdsCarouselSlide {
+  imageAlt?: string;
+  imageSrc?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list'> {
+  slides: CarouselBannerSlide[];
+  previousLabel: string;
+  nextLabel: string;
+  moreLabel: string;
+  playLabel: string;
+  stopLabel: string;
+  imageLabel?: string;
+  moreHref?: string;
+  autoPlay?: boolean;
+  interval?: number;
+  initialIndex?: number;
+  class?: string;
+}
+
+const {
+  slides,
+  previousLabel,
+  nextLabel,
+  moreLabel,
+  playLabel,
+  stopLabel,
+  imageLabel,
+  moreHref = '#',
+  autoPlay = true,
+  interval = 2500,
+  initialIndex = 0,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const safeInitialIndex = slides.length
+  ? Math.min(Math.max(Math.trunc(initialIndex), 0), slides.length - 1)
+  : 0;
+---
+
+<div
+  {...rest}
+  class:list={['main-d-ban-swiper', className]}
+  data-krds-carousel-banner
+  data-initial-index={safeInitialIndex}
+  data-auto-play={autoPlay ? 'true' : 'false'}
+  data-interval={Math.max(interval, 0)}
+>
+  <div class="swiper">
+    <ul class="swiper-wrapper">
+      {slides.map((slide) => {
+        const resolvedImageLabel = slide.imageAlt ?? imageLabel;
+        return (
+          <li class="swiper-slide" data-slide-id={slide.id}>
+            <div class="text">
+              <p class="cate">{slide.description}</p>
+              <p class="tit">{slide.title}</p>
+            </div>
+            <div class="im">
+              {slide.imageSrc ? (
+                <img src={slide.imageSrc} alt={resolvedImageLabel ?? ''} />
+              ) : (
+                <svg
+                  width="243"
+                  height="178"
+                  viewBox="0 0 243 178"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role={resolvedImageLabel ? 'img' : undefined}
+                  aria-label={resolvedImageLabel}
+                  aria-hidden={resolvedImageLabel ? undefined : 'true'}
+                >
+                  <rect
+                    width="243"
+                    height="178"
+                    fill="var(--krds-primitive-color-light-gray-10)"
+                  />
+                </svg>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+  <div class="swiper-indicator">
+    <div class="swiper-pagination" aria-live="polite"></div>
+    <div class="swiper-controller">
+      <button type="button" class="swiper-button-play" hidden={autoPlay} disabled={slides.length < 2}>
+        <span class="sr-only">{playLabel}</span>
+      </button>
+      <button type="button" class="swiper-button-stop" hidden={!autoPlay} disabled={slides.length < 2}>
+        <span class="sr-only">{stopLabel}</span>
+      </button>
+    </div>
+    <div class="swiper-navigation">
+      <button type="button" class="swiper-button-prev" disabled={slides.length < 2}>
+        <span class="sr-only">{previousLabel}</span>
+      </button>
+      <button type="button" class="swiper-button-next" disabled={slides.length < 2}>
+        <span class="sr-only">{nextLabel}</span>
+      </button>
+      <a href={moreHref} class="swiper-button-more">
+        <span class="sr-only">{moreLabel}</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const enhancedBannerCarousels = new WeakSet<HTMLElement>();
+
+  function enhanceBannerCarousels() {
+    document.querySelectorAll<HTMLElement>('[data-krds-carousel-banner]').forEach((root) => {
+      if (enhancedBannerCarousels.has(root)) return;
+      enhancedBannerCarousels.add(root);
+
+      const slides = Array.from(root.querySelectorAll<HTMLElement>('.swiper-slide'));
+      const previous = root.querySelector<HTMLButtonElement>('.swiper-button-prev');
+      const next = root.querySelector<HTMLButtonElement>('.swiper-button-next');
+      const play = root.querySelector<HTMLButtonElement>('.swiper-button-play');
+      const stop = root.querySelector<HTMLButtonElement>('.swiper-button-stop');
+      const pagination = root.querySelector<HTMLElement>('.swiper-pagination');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const interval = Number(root.dataset.interval) || 0;
+      let current = Math.min(
+        Math.max(Number(root.dataset.initialIndex) || 0, 0),
+        Math.max(slides.length - 1, 0),
+      );
+      let playing = root.dataset.autoPlay === 'true' && !reducedMotion.matches;
+      let pointerPaused = false;
+      let focusPaused = false;
+      let timer: number | undefined;
+
+      const currentPage = document.createElement('span');
+      currentPage.className = 'swiper-pagination-current';
+      const separator = document.createTextNode(' / ');
+      const totalPages = document.createElement('span');
+      totalPages.className = 'swiper-pagination-total';
+      totalPages.textContent = String(slides.length);
+      pagination?.replaceChildren(currentPage, separator, totalPages);
+
+      function syncPlaybackControls() {
+        if (play) play.hidden = playing;
+        if (stop) stop.hidden = !playing;
+      }
+
+      function show(index: number, announce: boolean) {
+        if (!slides.length) return;
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+          const active = slideIndex === current;
+          slide.hidden = !active;
+          slide.inert = !active;
+          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        currentPage.textContent = String(current + 1);
+        if (announce) {
+          root.dispatchEvent(
+            new CustomEvent('krds:slidechange', {
+              bubbles: true,
+              detail: { index: current, id: slides[current]?.dataset.slideId },
+            }),
+          );
+        }
+      }
+
+      function clearTimer() {
+        if (timer !== undefined) window.clearTimeout(timer);
+        timer = undefined;
+      }
+
+      function schedule() {
+        clearTimer();
+        if (
+          !playing ||
+          pointerPaused ||
+          focusPaused ||
+          slides.length < 2 ||
+          interval <= 0
+        ) {
+          return;
+        }
+        timer = window.setTimeout(() => {
+          show(current + 1, false);
+          schedule();
+        }, interval);
+      }
+
+      function setPlaying(nextPlaying: boolean, userInitiated: boolean) {
+        playing = nextPlaying;
+        syncPlaybackControls();
+        schedule();
+        if (userInitiated) {
+          root.dispatchEvent(
+            new CustomEvent('krds:playingchange', {
+              bubbles: true,
+              detail: { playing },
+            }),
+          );
+        }
+      }
+
+      previous?.addEventListener('click', () => {
+        show(current - 1, true);
+        schedule();
+      });
+      next?.addEventListener('click', () => {
+        show(current + 1, true);
+        schedule();
+      });
+      play?.addEventListener('click', () => setPlaying(true, true));
+      stop?.addEventListener('click', () => setPlaying(false, true));
+      root.addEventListener('mouseenter', () => {
+        pointerPaused = true;
+        clearTimer();
+      });
+      root.addEventListener('mouseleave', () => {
+        pointerPaused = false;
+        schedule();
+      });
+      root.addEventListener('focusin', () => {
+        focusPaused = true;
+        clearTimer();
+      });
+      root.addEventListener('focusout', (event) => {
+        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
+        focusPaused = false;
+        schedule();
+      });
+      reducedMotion.addEventListener('change', () => {
+        if (reducedMotion.matches) setPlaying(false, false);
+      });
+
+      show(current, false);
+      syncPlaybackControls();
+      schedule();
+    });
+  }
+
+  enhanceBannerCarousels();
+  document.addEventListener('astro:page-load', enhanceBannerCarousels);
+</script>

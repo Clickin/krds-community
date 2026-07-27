@@ -9,6 +9,7 @@ upstream:
 fixtures:
   - id: button.primary.medium.default
     sourceSelector: ".krds-btn.primary"
+    sourceFile: upstream/krds-html/html/code/button_hierarchy.html
     mandatory: true
     viewport: desktop
     props:
@@ -17,6 +18,7 @@ fixtures:
     states: [default, hover, focus-visible, active, disabled]
   - id: button.secondary.medium.default
     sourceSelector: ".krds-btn.secondary"
+    sourceFile: upstream/krds-html/html/code/button_hierarchy.html
     mandatory: true
     viewport: desktop
     props:
@@ -25,6 +27,7 @@ fixtures:
     states: [default, focus-visible, disabled]
   - id: button.tertiary.medium.default
     sourceSelector: ".krds-btn.tertiary"
+    sourceFile: upstream/krds-html/html/code/button_hierarchy.html
     mandatory: true
     viewport: desktop
     props:

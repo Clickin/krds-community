@@ -235,21 +235,20 @@ import { FormsModule } from '@angular/forms';
         </form>
       }
       @case ('confirm') {
-        <section
-          role="alertdialog"
-          [attr.aria-labelledby]="id + '-title'"
-          [attr.aria-describedby]="id + '-description'"
-        >
-          <h3 [id]="id + '-title'">신청을 제출할까요?</h3>
-          <p [id]="id + '-description'">제출한 뒤에는 내용을 수정할 수 없습니다.</p>
-          <div class="pattern-inline">
-            <button type="button" (click)="submit('제출을 취소했습니다.')">취소</button
-            ><button type="button" (click)="submit('신청을 제출했습니다.')">제출</button>
-          </div>
-          @if (message) {
-            <output role="status">{{ message }}</output>
-          }
-        </section>
+        <details>
+          <summary>제출 전 확인 열기</summary>
+          <section [attr.aria-labelledby]="id + '-title'" [attr.aria-describedby]="id + '-description'">
+            <h3 [id]="id + '-title'">신청을 제출할까요?</h3>
+            <p [id]="id + '-description'">제출한 뒤에는 내용을 수정할 수 없습니다.</p>
+            <div class="pattern-inline">
+              <button type="button" (click)="submit('제출을 취소했습니다.')">취소</button
+              ><button type="button" (click)="submit('신청을 제출했습니다.')">제출</button>
+            </div>
+            @if (message) {
+              <output role="status">{{ message }}</output>
+            }
+          </section>
+        </details>
       }
       @case ('mobile-notification') {
         <section [attr.aria-labelledby]="id + '-title'">

@@ -1,0 +1,21 @@
+{
+  // Oxfmt formats the JS/TS/JSON/CSS/HTML/Vue surface. Astro and Svelte
+  // templates stay on the Astro/Svelte compiler checks run by workspace lint.
+  "ignorePatterns": [
+    "upstream/krds-html/**",
+    "conformance/generated/**",
+    "reports/**",
+    "apps/conformance-viewer/public/reports/**",
+    "packages/tokens/src/generated.ts",
+    "packages/tokens/src/krds.css",
+    "dist/**",
+    ".astro/**",
+    "storybook-static/**",
+    ".playwright-cli/**",
+    "**/*.astro",
+    "**/*.svelte",
+    "pnpm-lock.yaml",
+    "AGENTS.md",
+    "ARCHITECTURE.md"
+  ]
+}

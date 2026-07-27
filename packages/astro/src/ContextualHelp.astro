@@ -1,0 +1,141 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export type ContextualHelpPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'title'> {
+  label?: string;
+  caption?: string;
+  message?: string;
+  title?: string;
+  description?: string;
+  children?: string;
+  href?: string;
+  linkLabel?: string;
+  closeLabel?: string;
+  position?: ContextualHelpPosition;
+  open?: boolean;
+  defaultOpen?: boolean;
+  class?: string;
+}
+
+const {
+  label,
+  caption,
+  message,
+  title,
+  description,
+  children,
+  href,
+  linkLabel,
+  closeLabel,
+  position = 'top-left',
+  open,
+  defaultOpen = false,
+  class: className,
+  ...rest
+} = Astro.props;
+const expanded = open ?? defaultOpen;
+const [verticalPosition, horizontalPosition] = position.split('-');
+const instanceId = `krds-contextual-help-${crypto.randomUUID()}`;
+---
+
+<div
+  {...rest}
+  class={cx('krds-contextual-help', verticalPosition, horizontalPosition, className)}
+  data-krds-contextual-help={instanceId}
+>
+  <p class="tooltip-txt"><slot name="caption">{caption}</slot></p>
+  <div class="tooltip-action">
+    <button
+      type="button"
+      class="krds-btn medium icon tooltip-btn"
+      aria-expanded={expanded ? 'true' : 'false'}
+    >
+      <span class="sr-only">{label}</span>
+      <i class="svg-icon ico-tooltip" aria-hidden="true"></i>
+    </button>
+    <div class="tooltip-popover" role="tooltip" style={expanded ? 'display: block;' : undefined}>
+      <h4 class="tooltip-title"><slot name="title">{title}</slot></h4>
+      <div class="tooltip-contents">
+        <p><slot>{description ?? message ?? children}</slot></p>
+        {href && linkLabel && (
+          <div class="btn-wrap">
+            <a href={href} class="krds-btn xsmall link basic">
+              {linkLabel} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+            </a>
+          </div>
+        )}
+      </div>
+      <button type="button" class="krds-btn xsmall icon tooltip-close">
+        <span class="sr-only">{closeLabel}</span>
+        <i class="svg-icon ico-modal-close" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const setContextualHelpOpen = (
+    root: HTMLElement,
+    open: boolean,
+    focusInside = false,
+    restoreTrigger = false,
+  ) => {
+    const trigger = root.querySelector<HTMLButtonElement>('.tooltip-btn');
+    const popover = root.querySelector<HTMLElement>('.tooltip-popover');
+    if (!trigger || !popover) return;
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    popover.style.display = open ? 'block' : 'none';
+
+    if (open && focusInside) {
+      popover
+        .querySelector<HTMLElement>('a, button, [tabindex="0"], input, textarea, select')
+        ?.focus();
+    } else if (!open && restoreTrigger) {
+      trigger.focus();
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const trigger = target.closest<HTMLButtonElement>('.tooltip-btn');
+    const triggerRoot = trigger?.closest<HTMLElement>('[data-krds-contextual-help]');
+    if (trigger && triggerRoot) {
+      const open = trigger.getAttribute('aria-expanded') !== 'true';
+      setContextualHelpOpen(triggerRoot, open, open);
+      return;
+    }
+
+    const close = target.closest<HTMLButtonElement>('.tooltip-close');
+    const closeRoot = close?.closest<HTMLElement>('[data-krds-contextual-help]');
+    if (close && closeRoot) {
+      setContextualHelpOpen(closeRoot, false, false, true);
+      return;
+    }
+
+    document
+      .querySelectorAll<HTMLElement>('[data-krds-contextual-help]')
+      .forEach((root) => {
+        if (!root.contains(target) && root.querySelector('.tooltip-btn')?.getAttribute('aria-expanded') === 'true') {
+          setContextualHelpOpen(root, false);
+        }
+      });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const focused = document.activeElement;
+    if (!(focused instanceof Element)) return;
+    const root = focused.closest<HTMLElement>('[data-krds-contextual-help]');
+    if (root) setContextualHelpOpen(root, false, false, true);
+  });
+</script>

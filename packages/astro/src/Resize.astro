@@ -1,0 +1,166 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface ResizeOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'open'> {
+  options?: ResizeOption[];
+  selected?: string;
+  value?: string;
+  defaultValue?: string;
+  label?: string;
+  selectedLabel?: string;
+  resetLabel?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
+  class?: string;
+}
+
+const {
+  options = [],
+  selected,
+  value,
+  defaultValue,
+  label,
+  selectedLabel,
+  resetLabel,
+  open,
+  defaultOpen = false,
+  class: className,
+  ...rest
+} = Astro.props;
+const activeValue = value ?? selected ?? defaultValue ?? options[0]?.value;
+const resetValue = defaultValue ?? activeValue;
+const openState = open ?? defaultOpen;
+---
+
+<div
+  {...rest}
+  class={cx('krds-drop-wrap', 'krds-resize', className)}
+  data-adjust="scale"
+  data-default-scale={resetValue}
+  data-krds-resize
+>
+  <button
+    type="button"
+    class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
+    aria-expanded={openState ? 'true' : 'false'}
+  >
+    {label} <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+  </button>
+  <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
+    <div class="drop-in">
+      <ul class="drop-list">
+        {options.map((option) => {
+          const active = option.value === activeValue;
+          return (
+            <li>
+              <button
+                type="button"
+                class={cx('item-link', option.value, active && 'active')}
+                data-adjust-scale={option.value}
+                aria-selected={active ? 'true' : 'false'}
+                disabled={option.disabled}
+              >
+                {option.label}<span class="sr-only">{active ? selectedLabel : undefined}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <div class="drop-bottom">
+        <button type="button" class="krds-btn medium text" data-adjust-scale={resetValue}>
+          <i class="svg-icon ico-reset" aria-hidden="true"></i> {resetLabel}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const scaleTokenByValue: Record<string, string> = {
+    sm: '--krds-zoom-small',
+    md: '--krds-zoom-medium',
+    lg: '--krds-zoom-large',
+    xlg: '--krds-zoom-xlarge',
+    xxlg: '--krds-zoom-xxlarge',
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-krds-resize]').forEach((root) => {
+    const button = root.querySelector<HTMLButtonElement>(':scope > .drop-btn');
+    const menu = root.querySelector<HTMLElement>(':scope > .drop-menu');
+    const options = Array.from(menu?.querySelectorAll<HTMLButtonElement>('.drop-list .item-link') ?? []);
+    const reset = menu?.querySelector<HTMLButtonElement>('.drop-bottom [data-adjust-scale]');
+    const selectionMessage =
+      menu?.querySelector<HTMLElement>('.item-link.active .sr-only')?.textContent ?? '';
+    if (!button || !menu) return;
+
+    const close = (restoreFocus = false) => {
+      menu.style.display = 'none';
+      button.classList.remove('active');
+      button.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) button.focus();
+    };
+    const applyScale = (nextValue: string) => {
+      options.forEach((option) => {
+        const active = option.dataset.adjustScale === nextValue;
+        option.classList.toggle('active', active);
+        option.setAttribute('aria-selected', String(active));
+        const text = option.querySelector<HTMLElement>('.sr-only');
+        if (text) text.textContent = active ? selectionMessage : '';
+      });
+      const token = scaleTokenByValue[nextValue];
+      const zoom = token
+        ? getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+        : '';
+      if (zoom) document.body.style.setProperty('zoom', zoom);
+      else document.body.style.removeProperty('zoom');
+      root.dispatchEvent(
+        new CustomEvent('krds:resize', {
+          bubbles: true,
+          detail: { value: nextValue, zoom: zoom || undefined },
+        }),
+      );
+    };
+
+    button.addEventListener('click', () => {
+      const nextOpen = button.getAttribute('aria-expanded') !== 'true';
+      if (!nextOpen) {
+        close();
+        return;
+      }
+      menu.style.display = 'block';
+      button.classList.add('active');
+      button.setAttribute('aria-expanded', 'true');
+    });
+    options.forEach((option) => {
+      option.addEventListener('click', () => {
+        const nextValue = option.dataset.adjustScale;
+        if (nextValue) applyScale(nextValue);
+        close(true);
+      });
+    });
+    reset?.addEventListener('click', () => {
+      const nextValue = reset.dataset.adjustScale ?? root.dataset.defaultScale;
+      if (nextValue) applyScale(nextValue);
+      close(true);
+    });
+    root.addEventListener('focusout', (event) => {
+      if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
+      close();
+    });
+    root.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      close(true);
+    });
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !root.contains(event.target)) close();
+    });
+  });
+</script>

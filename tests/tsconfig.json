@@ -11,6 +11,13 @@
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": [
+    "dist",
+    "docs-links.test.ts",
+    "conformance-adapter.test.ts",
+    "framework/**/*.ts",
+    "framework/**/*.tsx"
+  ],
   "references": [
     { "path": "../packages/recipes/tsconfig.json" },
     { "path": "../packages/conformance/tsconfig.json" }

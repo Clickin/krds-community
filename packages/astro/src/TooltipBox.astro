@@ -1,0 +1,48 @@
+---
+import Tooltip from './Tooltip.astro';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props
+  extends Omit<
+    HTMLAttributes<'button'>,
+    'aria-labelledby' | 'class' | 'class:list' | 'disabled' | 'type'
+  > {
+  label?: string;
+  children?: string;
+  message: string;
+  tooltipId?: string;
+  iconClass?: string;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  'aria-labelledby'?: string;
+}
+
+const {
+  label,
+  children,
+  message,
+  tooltipId,
+  iconClass,
+  disabled,
+  type,
+  class: className,
+  'aria-labelledby': ariaLabelledBy,
+  ...rest
+} = Astro.props;
+---
+
+<Tooltip
+  {...rest}
+  label={label ?? children}
+  message={message}
+  tooltipId={tooltipId}
+  placement="box"
+  iconClass={iconClass}
+  disabled={disabled}
+  type={type}
+  class={className}
+  aria-labelledby={ariaLabelledBy}
+>
+  <slot>{label ?? children}</slot>
+</Tooltip>

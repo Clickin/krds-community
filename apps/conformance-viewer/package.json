@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "node scripts/copy-report.mjs && vite build",
+    "dev": "node scripts/copy-report.mjs && vite",
+    "build": "node scripts/copy-report.mjs && vite build --base=./",
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

@@ -1,0 +1,94 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cx } from '@krds-community/recipes';
+
+export interface SelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+  selected?: boolean;
+}
+
+export interface Props extends Omit<HTMLAttributes<'select'>, 'class' | 'class:list' | 'size' | 'title'> {
+  options?: SelectOption[];
+  label?: string;
+  hint?: string;
+  title?: string;
+  value?: string | number;
+  size?: 'small' | 'medium' | 'large';
+  state?: 'default' | 'error' | 'complete';
+  variant?: 'default' | 'size' | 'state' | 'sorting';
+  surfaceOnly?: boolean;
+  class?: string;
+}
+
+const {
+  options = [],
+  label,
+  hint,
+  title,
+  value,
+  size,
+  state = 'default',
+  variant = 'default',
+  surfaceOnly = false,
+  id: providedId,
+  'aria-describedby': consumerDescribedBy,
+  'aria-invalid': consumerAriaInvalid,
+  class: className,
+  ...rest
+} = Astro.props;
+const id = providedId ?? `krds-select-${crypto.randomUUID()}`;
+const hintId = hint !== undefined || Astro.slots.has('hint') ? `${id}-hint` : undefined;
+const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;
+const valueIndex = value === undefined
+  ? -1
+  : options.findIndex((option) => option.value === String(value));
+const isSelected = (option: SelectOption, index: number) =>
+  option.selected ?? (valueIndex >= 0 ? index === valueIndex : variant === 'size' && index === 0 ? true : undefined);
+const selectClass = cx(
+  variant === 'sorting' ? 'krds-form-select-sort' : 'krds-form-select',
+  variant === 'size' && size,
+  state === 'error' && 'is-error',
+  state === 'complete' && 'completed',
+  className,
+);
+---
+
+{surfaceOnly || variant === 'sorting' ? (
+  <select
+    {...rest}
+    id={id}
+    class={selectClass}
+    title={title}
+    aria-describedby={describedBy}
+    aria-invalid={state === 'error' ? 'true' : consumerAriaInvalid}
+  >
+    {options.map((option, index) => (
+      <option value={option.value} disabled={option.disabled} selected={isSelected(option, index)}>{option.label}</option>
+    ))}
+    <slot />
+  </select>
+) : (
+  <div class="form-group">
+    {(label !== undefined || Astro.slots.has('label')) && (
+      <div class="form-tit">
+        <label for={id}><slot name="label">{label}</slot></label>
+      </div>
+    )}
+    <div class="form-conts">
+      <Astro.self
+        {...Astro.props}
+        id={id}
+        surfaceOnly={true}
+      >
+        {Astro.slots.has('default') && <slot />}
+      </Astro.self>
+    </div>
+    {hintId && (
+      <p id={hintId} class={state === 'error' ? 'form-hint-invalid' : 'form-hint'}>
+        <slot name="hint">{hint}</slot>
+      </p>
+    )}
+  </div>
+)}

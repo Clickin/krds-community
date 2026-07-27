@@ -1,0 +1,59 @@
+---
+import * as Components from '@krds-community/astro';
+import catalogData from '@krds-community/conformance-host/fixtures.json';
+import { baseProps } from '@krds-community/conformance-host/fixture-props';
+import '@krds-community/conformance-host/host.css';
+import type {
+  FixtureCatalog,
+  FixtureDefinition,
+  FixtureState,
+} from '@krds-community/conformance-host/protocol';
+
+interface Props {
+  fixture: FixtureDefinition;
+  state: FixtureState;
+}
+
+export async function getStaticPaths() {
+  const { default: catalogData } = await import('@krds-community/conformance-host/fixtures.json');
+  const catalog = catalogData as FixtureCatalog;
+  return catalog.fixtures.flatMap((fixture) =>
+    fixture.states.map((state) => ({
+      params: { fixture: fixture.id, state: state.id },
+      props: { fixture, state },
+    })),
+  );
+}
+
+const { fixture, state } = Astro.props;
+const componentExport = fixture.componentId
+  .split('-')
+  .map((part) => `${part.charAt(0).toLocaleUpperCase('en-US')}${part.slice(1)}`)
+  .join('');
+const Component = Components[componentExport as keyof typeof Components] as any;
+if (!Component) throw new Error(`Astro package export is missing: ${componentExport}`);
+
+const componentProps = { ...baseProps(fixture), ...state.props };
+const initialStateId = fixture.states[0]?.id;
+if (!initialStateId) throw new Error(`Fixture has no declared states: ${fixture.id}`);
+const runtimeData = JSON.stringify({
+  fixture,
+  upstream: (catalogData as FixtureCatalog).upstream,
+  currentStateId: state.id,
+  initialStateId,
+}).replaceAll('<', '\\u003c');
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KRDS Astro conformance fixture</title>
+  </head>
+  <body data-framework="astro" data-state={state.id}>
+    <main id="fixture-root"><Component {...componentProps} /></main>
+    <script id="fixture-runtime-data" type="application/json" is:inline set:html={runtimeData}></script>
+    <script src="../../runtime.ts"></script>
+  </body>
+</html>

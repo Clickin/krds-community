@@ -1,0 +1,16 @@
+html,
+body {
+  margin: 0;
+  min-width: 0;
+}
+
+#fixture-root {
+  display: block;
+}
+
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+}

@@ -5,23 +5,67 @@ upstream:
   files:
     - upstream/krds-html/html/code/accordion.html
     - upstream/krds-html/html/code/accordion_line.html
+errata:
+  - errata.accordion.state-and-panel-relationship
 fixtures:
   - id: accordion.default.single
     sourceSelector: ".krds-accordion"
+    sourceFile: upstream/krds-html/html/code/accordion.html
     mandatory: true
     viewport: desktop
     props:
       type: default
       multiple: false
-    states: [collapsed, expanded, focus-visible, keyboard-toggle]
+    states:
+      - id: collapsed
+      - id: expanded
+        setup:
+          - action: click
+            target: ".btn-accordion"
+          - action: add-class
+            target: ".accordion-collapse"
+            value: show
+      - id: focus-visible
+        setup:
+          - action: keyboard-focus
+            target: ".btn-accordion"
+      - id: keyboard-toggle
+        setup:
+          - action: press
+            target: ".btn-accordion"
+            key: Enter
+          - action: add-class
+            target: ".accordion-collapse"
+            value: show
   - id: accordion.line.single
     sourceSelector: ".krds-accordion.type-line"
+    sourceFile: upstream/krds-html/html/code/accordion_line.html
     mandatory: true
     viewport: desktop
     props:
       type: line
       multiple: false
-    states: [collapsed, expanded, focus-visible, keyboard-toggle]
+    states:
+      - id: collapsed
+      - id: expanded
+        setup:
+          - action: click
+            target: ".btn-accordion"
+          - action: add-class
+            target: ".accordion-collapse"
+            value: show
+      - id: focus-visible
+        setup:
+          - action: keyboard-focus
+            target: ".btn-accordion"
+      - id: keyboard-toggle
+        setup:
+          - action: press
+            target: ".btn-accordion"
+            key: Enter
+          - action: add-class
+            target: ".accordion-collapse"
+            value: show
 contract:
   semanticElement: button-and-region
   accessibleRole: button

@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.tooltip.generated-external-reference
 contract:
   semanticElement: button-and-tooltip
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

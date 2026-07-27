@@ -1,0 +1,84 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface InPageNavigationItem {
+  id: string;
+  label: string;
+  href: string;
+  current?: boolean;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'title'> {
+  title?: string;
+  pageTitle?: string;
+  items?: InPageNavigationItem[];
+  actionLabel?: string;
+  actionInfo?: string;
+  actionCount?: string;
+  actionType?: 'button' | 'submit' | 'reset';
+  actionName?: string;
+  actionValue?: string;
+  actionDisabled?: boolean;
+  navigationLabel?: string;
+  class?: string;
+}
+
+const {
+  title,
+  pageTitle,
+  items = [],
+  actionLabel,
+  actionInfo,
+  actionCount,
+  actionType = 'button',
+  actionName,
+  actionValue,
+  actionDisabled = false,
+  navigationLabel,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<div {...rest} class={cx('krds-in-page-navigation-area', className)}>
+  <div class="in-page-navigation-header">
+    <p class="quick-caption">{title}</p>
+    <p class="quick-title">{pageTitle}</p>
+  </div>
+  <nav class="in-page-navigation-list" aria-label={navigationLabel}>
+    <ul>
+      {items.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class={item.current ? 'active' : undefined}
+            target={item.target}
+            rel={item.rel}
+            title={item.title}
+            aria-current={item.current ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+  <div class="in-page-navigation-action">
+    <button
+      type={actionType}
+      class="krds-btn medium"
+      name={actionName}
+      value={actionValue}
+      disabled={actionDisabled}
+    >
+      {actionLabel}
+    </button>
+    <p class="quick-info">
+      {actionInfo}{actionInfo && actionCount ? ' ' : undefined}{actionCount && <strong>{actionCount}</strong>}
+    </p>
+  </div>
+</div>

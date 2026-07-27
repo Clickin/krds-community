@@ -6,6 +6,7 @@ const frameworks = [
   ['svelte', 'Svelte', 'SveltePatternExample.svelte'],
   ['solid', 'SolidJS', 'SolidPatternExample.tsx'],
   ['angular', 'Angular', 'AngularPatternExample.ts'],
+  ['astro', 'Astro', 'AstroPatternExample.astro'],
 ] as const;
 
 const patterns = [
@@ -29,12 +30,12 @@ const patterns = [
   ['basic-patterns', 'mobile-settings', '모바일 설정'],
 ] as const;
 
-test('renders every pattern page with five accessible framework tabs', async ({ page }) => {
+test('renders every pattern page with six accessible framework tabs', async ({ page }) => {
   for (const [category, slug, title] of patterns) {
     await page.goto(`/${category}/${slug}/`);
     await expect(page.getByRole('heading', { name: title, level: 1 })).toBeVisible();
     const tablist = page.getByRole('tablist', { name: `${title} 프레임워크 선택` });
-    await expect(tablist.getByRole('tab')).toHaveCount(5);
+    await expect(tablist.getByRole('tab')).toHaveCount(6);
     await expect(tablist.getByRole('tab', { name: 'React' })).toHaveAttribute(
       'aria-selected',
       'true',
@@ -58,6 +59,17 @@ test('framework tabs support mouse and keyboard interaction without navigation',
     'true',
   );
   await expect(page).toHaveURL(/\/service-patterns\/search\/$/);
+});
+test('persists the selected framework across pattern pages', async ({ page }) => {
+  await page.goto('/service-patterns/search/');
+  await page.getByRole('tab', { name: 'SolidJS' }).click();
+  await page.goto('/service-patterns/visit/');
+  const tablist = page.getByRole('tablist', { name: '방문 프레임워크 선택' });
+  await expect(tablist.getByRole('tab', { name: 'SolidJS' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(page.locator('[role="tabpanel"][data-panel="solid"]')).toBeVisible();
 });
 
 async function exercisePattern(pattern: string, panel: Locator) {
@@ -103,7 +115,11 @@ async function exercisePattern(pattern: string, panel: Locator) {
       await expect(view.getByText('신청서를 작성하고 내용을 확인한 뒤 제출하세요.')).toBeVisible();
       break;
     case 'consent':
-      await view.getByRole('checkbox').check();
+      await view
+        .locator('label')
+        .filter({ hasText: '이용약관에 동의합니다.' })
+        .click();
+      await expect(view.getByLabel('이용약관에 동의합니다.')).toBeChecked();
       await view.getByRole('button', { name: '다음' }).click();
       await expect(view.getByRole('status')).toHaveText('동의 내용을 확인했습니다.');
       break;
@@ -111,7 +127,8 @@ async function exercisePattern(pattern: string, panel: Locator) {
       await expect(view.getByRole('link', { name: '서비스 이용 안내' })).toBeVisible();
       break;
     case 'feedback':
-      await view.getByLabel('만족', { exact: true }).check();
+      await view.getByLabel('만족', { exact: true }).locator('xpath=..').click();
+      await expect(view.getByLabel('만족', { exact: true })).toBeChecked();
       await view.getByRole('button', { name: '의견 보내기' }).click();
       await expect(view.getByRole('status')).toHaveText('의견을 보내주셔서 감사합니다.');
       break;
@@ -146,7 +163,8 @@ async function exercisePattern(pattern: string, panel: Locator) {
       break;
     }
     case 'confirm': {
-      const dialog = view.getByRole('alertdialog');
+      const dialog = view.locator('details').filter({ hasText: '신청을 제출할까요?' });
+      await dialog.getByText('제출 전 확인 열기', { exact: true }).click();
       await dialog.getByRole('button', { name: '제출' }).click();
       await expect(dialog.getByRole('status')).toHaveText('신청을 제출했습니다.');
       break;
@@ -158,7 +176,8 @@ async function exercisePattern(pattern: string, panel: Locator) {
     case 'mobile-settings': {
       const setting = view.getByRole('switch');
       await expect(setting).toBeChecked();
-      await setting.uncheck();
+      await view.getByText('푸시 알림', { exact: true }).click();
+      await expect(setting).not.toBeChecked();
       await expect(view.getByRole('status')).toHaveText('푸시 알림 꺼짐');
       break;
     }

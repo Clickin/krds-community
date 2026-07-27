@@ -1,0 +1,81 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'title'> {
+  title?: string;
+  description?: string;
+  children?: string;
+  items?: string[];
+  open?: boolean;
+  defaultOpen?: boolean;
+  disabled?: boolean;
+  buttonId?: string;
+  panelId?: string;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  children,
+  items = [],
+  open,
+  defaultOpen = false,
+  disabled,
+  buttonId,
+  panelId,
+  class: className,
+  ...rest
+} = Astro.props;
+const expanded = open ?? defaultOpen;
+const instanceId = `krds-disclosure-${crypto.randomUUID()}`;
+const resolvedPanelId = panelId || `${instanceId}-panel`;
+---
+
+<div
+  {...rest}
+  class={cx('krds-disclosure', 'conts-expand-area', expanded && 'active', className)}
+  data-krds-disclosure={instanceId}
+>
+  <button
+    id={buttonId}
+    type="button"
+    class="btn-conts-expand"
+    aria-expanded={expanded ? 'true' : 'false'}
+    aria-controls={resolvedPanelId}
+    disabled={disabled}
+  >
+    <slot name="title">{title}</slot>
+  </button>
+  <div id={resolvedPanelId} class="expand-wrap" inert={!expanded}>
+    <div class="expand-in">
+      {items.length > 0 ? (
+        <ul class="krds-info-list dash">
+          {items.map((item) => <li>{item}</li>)}
+        </ul>
+      ) : (
+        <slot>{description ?? children}</slot>
+      )}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>(
+      '[data-krds-disclosure] > .btn-conts-expand',
+    );
+    if (!button || button.disabled) return;
+    const root = button.closest<HTMLElement>('[data-krds-disclosure]');
+    const panelId = button.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+    if (!root || !(panel instanceof HTMLElement) || !root.contains(panel)) return;
+
+    const expanded = button.getAttribute('aria-expanded') !== 'true';
+    button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    root.classList.toggle('active', expanded);
+    panel.toggleAttribute('inert', !expanded);
+  });
+</script>

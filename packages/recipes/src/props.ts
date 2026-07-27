@@ -28,7 +28,7 @@ export interface ChoiceContractProps {
 }
 
 export interface RadioContractProps extends ChoiceContractProps {
-  value: string | number | boolean;
+  value?: string | number | boolean;
 }
 
 export interface AccordionItemContract {

@@ -1,0 +1,447 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface MainMenuDescriptionItem {
+  id?: string;
+  title: string;
+  description?: string;
+  href?: string;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  externalTitle?: string;
+}
+
+export interface MainMenuBanner {
+  badge?: string;
+  label?: string;
+  href?: string;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+  disabled?: boolean;
+}
+
+export interface MainMenuItem {
+  id?: string;
+  label: string;
+  href?: string;
+  current?: boolean;
+  active?: boolean;
+  button?: boolean;
+  disabled?: boolean;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+  titleHref?: string;
+  titleLinkLabel?: string;
+  descriptionItems?: MainMenuDescriptionItem[];
+  banner?: MainMenuBanner;
+  children?: MainMenuItem[];
+}
+
+export interface Props extends Omit<HTMLAttributes<'nav'>, 'class' | 'class:list'> {
+  items?: MainMenuItem[];
+  sample?: boolean;
+  menuLabel?: string;
+  navigationLabel?: string;
+  class?: string;
+}
+
+const {
+  items = [],
+  sample = false,
+  menuLabel,
+  navigationLabel,
+  class: className,
+  'aria-label': ariaLabel,
+  ...rest
+} = Astro.props;
+const mainPanelId = (item: MainMenuItem, index: number) =>
+  `gnb-main-menu-${item.id ?? index + 1}`;
+const subPanelId = (item: MainMenuItem, fallback: string) =>
+  `gnb-sub-menu-${item.id ?? fallback}`;
+---
+
+<nav
+  {...rest}
+  class={cx('krds-main-menu', sample && 'sample', className)}
+  aria-label={ariaLabel ?? navigationLabel}
+  data-krds-main-menu-pc
+>
+  <div class="inner">
+    <ul class="gnb-menu" aria-label={menuLabel}>
+      {items.map((item, itemIndex) => {
+        if (item.href) {
+          return (
+            <li>
+              <a
+                href={item.href}
+                class="gnb-main-trigger is-link"
+                data-trigger="gnb"
+                target={item.target}
+                rel={item.rel}
+                title={item.title}
+                aria-current={item.current ? 'page' : undefined}
+                aria-disabled={item.disabled ? 'true' : undefined}
+                tabindex={item.disabled ? -1 : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        }
+        if (item.button) {
+          return (
+            <li>
+              <button
+                type="button"
+                class="gnb-main-trigger is-link"
+                data-trigger="gnb"
+                disabled={item.disabled}
+              >
+                {item.label}
+              </button>
+            </li>
+          );
+        }
+        const single = Boolean(item.title);
+        const panelId = mainPanelId(item, itemIndex);
+        return (
+          <li>
+            <button
+              type="button"
+              class={cx('gnb-main-trigger', item.active && 'active')}
+              data-trigger="gnb"
+              aria-controls={panelId}
+              aria-expanded={item.active ? 'true' : 'false'}
+              aria-haspopup="true"
+              disabled={item.disabled}
+            >
+              {item.label}
+            </button>
+            <div id={panelId} class={cx('gnb-toggle-wrap', item.active && 'is-open')}>
+              <div class="gnb-main-list" data-has-submenu={single ? undefined : 'true'}>
+                {single ? (
+                  <div class="gnb-sub-list single-list between">
+                    <div class="gnb-sub-content">
+                      {item.title && (
+                        <h2 class="sub-title">
+                          {item.titleHref ? (
+                            <>
+                              {item.title}
+                              <a href={item.titleHref} class="krds-btn link basic small">
+                                <span class="underline">{item.titleLinkLabel}</span>
+                                <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                              </a>
+                            </>
+                          ) : (
+                            <span>{item.title}</span>
+                          )}
+                        </h2>
+                      )}
+                      {item.descriptionItems?.length ? (
+                        <ul class="type-description">
+                          {item.descriptionItems.map((description) => (
+                            <li>
+                              <h3 class="tit">
+                                {description.href ? (
+                                  <a
+                                    href={description.href}
+                                    target={description.target}
+                                    rel={description.rel}
+                                    title={description.externalTitle}
+                                  >
+                                    {description.title}
+                                    {description.target && <i class="svg-icon ico-go" aria-hidden="true"></i>}
+                                  </a>
+                                ) : (
+                                  <span>{description.title}</span>
+                                )}
+                              </h3>
+                              {description.description && <p class="txt">{description.description}</p>}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : item.children?.length ? (
+                        <ul>
+                          {item.children.map((child) => (
+                            <li>
+                              {child.href ? (
+                                <a
+                                  href={child.href}
+                                  target={child.target}
+                                  rel={child.rel}
+                                  title={child.title}
+                                  aria-current={child.current ? 'page' : undefined}
+                                >
+                                  {child.label}
+                                </a>
+                              ) : (
+                                <button type="button" disabled={child.disabled}>{child.label}</button>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
+                    {item.banner && (
+                      <div class="gnb-sub-banner">
+                        {item.banner.badge && <span class="krds-badge bg-secondary">{item.banner.badge}</span>}
+                        {item.banner.label && (
+                          item.banner.href ? (
+                            <a
+                              href={item.banner.href}
+                              class="krds-btn medium text"
+                              target={item.banner.target}
+                              rel={item.banner.rel}
+                              title={item.banner.title}
+                            >
+                              {item.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                            </a>
+                          ) : (
+                            <button type="button" class="krds-btn medium text" disabled={item.banner.disabled}>
+                              {item.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                            </button>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <ul>
+                    {item.children?.map((subItem, subIndex) => {
+                      if (subItem.href) {
+                        return (
+                          <li>
+                            <a
+                              href={subItem.href}
+                              class={cx('gnb-sub-trigger', 'is-link', subItem.target && 'external-link')}
+                              data-trigger="gnb"
+                              target={subItem.target}
+                              rel={subItem.rel}
+                              title={subItem.title}
+                              aria-current={subItem.current ? 'page' : undefined}
+                              aria-disabled={subItem.disabled ? 'true' : undefined}
+                              tabindex={subItem.disabled ? -1 : undefined}
+                            >
+                              {subItem.label}
+                            </a>
+                          </li>
+                        );
+                      }
+                      const subId = subPanelId(subItem, `${itemIndex + 1}-${subIndex + 1}`);
+                      return (
+                        <li>
+                          <button
+                            type="button"
+                            class={cx('gnb-sub-trigger', subItem.active && 'active')}
+                            data-trigger="gnb"
+                            aria-controls={subId}
+                            aria-expanded={subItem.active ? 'true' : 'false'}
+                            aria-haspopup="true"
+                            disabled={subItem.disabled}
+                          >
+                            {subItem.label}
+                          </button>
+                          <div
+                            id={subId}
+                            class={cx('gnb-sub-list', subItem.active && 'active', subIndex > 0 && 'between')}
+                          >
+                            <div class="gnb-sub-content">
+                              {subItem.title && (
+                                <h2 class="sub-title">
+                                  {subItem.titleHref ? (
+                                    <>
+                                      {subItem.title}
+                                      <a href={subItem.titleHref} class="krds-btn link basic small">
+                                        <span class="underline">{subItem.titleLinkLabel}</span>
+                                        <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                      </a>
+                                    </>
+                                  ) : (
+                                    <span>{subItem.title}</span>
+                                  )}
+                                </h2>
+                              )}
+                              {subItem.descriptionItems?.length ? (
+                                <ul class="type-description">
+                                  {subItem.descriptionItems.map((description) => (
+                                    <li>
+                                      <h3 class="tit">
+                                        {description.href ? (
+                                          <a
+                                            href={description.href}
+                                            target={description.target}
+                                            rel={description.rel}
+                                            title={description.externalTitle}
+                                          >
+                                            {description.title}
+                                            {description.target && <i class="svg-icon ico-go" aria-hidden="true"></i>}
+                                          </a>
+                                        ) : (
+                                          <span>{description.title}</span>
+                                        )}
+                                      </h3>
+                                      {description.description && <p class="txt">{description.description}</p>}
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : subItem.children?.length ? (
+                                <ul>
+                                  {subItem.children.map((child) => (
+                                    <li>
+                                      {child.href ? (
+                                        <a
+                                          href={child.href}
+                                          target={child.target}
+                                          rel={child.rel}
+                                          title={child.title}
+                                          aria-current={child.current ? 'page' : undefined}
+                                        >
+                                          {child.label}
+                                        </a>
+                                      ) : (
+                                        <button type="button" disabled={child.disabled}>{child.label}</button>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : null}
+                            </div>
+                            {subItem.banner && (
+                              <div class="gnb-sub-banner">
+                                {subItem.banner.badge && (
+                                  <span class="krds-badge bg-secondary">{subItem.banner.badge}</span>
+                                )}
+                                {subItem.banner.label && (
+                                  subItem.banner.href ? (
+                                    <a
+                                      href={subItem.banner.href}
+                                      class="krds-btn medium text"
+                                      target={subItem.banner.target}
+                                      rel={subItem.banner.rel}
+                                      title={subItem.banner.title}
+                                    >
+                                      {subItem.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                    </a>
+                                  ) : (
+                                    <button
+                                      type="button"
+                                      class="krds-btn medium text"
+                                      disabled={subItem.banner.disabled}
+                                    >
+                                      {subItem.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                    </button>
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</nav>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-krds-main-menu-pc]').forEach((root) => {
+    const mainTriggers = Array.from(
+      root.querySelectorAll<HTMLButtonElement>('.gnb-menu > li > button.gnb-main-trigger:not(.is-link)'),
+    );
+    const closeMainMenus = (except?: HTMLButtonElement) => {
+      mainTriggers.forEach((trigger) => {
+        if (trigger === except) return;
+        trigger.classList.remove('active');
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.nextElementSibling?.classList.remove('is-open');
+      });
+    };
+
+    mainTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        closeMainMenus(expanded ? undefined : trigger);
+        trigger.classList.toggle('active', !expanded);
+        trigger.setAttribute('aria-expanded', String(!expanded));
+        trigger.nextElementSibling?.classList.toggle('is-open', !expanded);
+        if (!expanded) {
+          const list = trigger.nextElementSibling?.querySelector<HTMLElement>('.gnb-main-list');
+          const subTriggers = Array.from(
+            list?.querySelectorAll<HTMLButtonElement>('.gnb-sub-trigger:not(.is-link)') ?? [],
+          );
+          if (subTriggers.length && !list?.querySelector('.gnb-sub-trigger.active')) {
+            const first = subTriggers[0];
+            first.classList.add('active');
+            first.setAttribute('aria-expanded', 'true');
+            first.nextElementSibling?.classList.add('active');
+          }
+          root.dispatchEvent(
+            new CustomEvent('krds:menu-change', {
+              bubbles: true,
+              detail: { id: trigger.getAttribute('aria-controls'), level: 1 },
+            }),
+          );
+        }
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('.gnb-sub-trigger:not(.is-link)').forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        const list = trigger.closest('.gnb-main-list');
+        list?.querySelectorAll<HTMLButtonElement>('.gnb-sub-trigger:not(.is-link)').forEach((candidate) => {
+          const active = candidate === trigger;
+          candidate.classList.toggle('active', active);
+          candidate.setAttribute('aria-expanded', String(active));
+          candidate.nextElementSibling?.classList.toggle('active', active);
+        });
+        root.dispatchEvent(
+          new CustomEvent('krds:menu-change', {
+            bubbles: true,
+            detail: { id: trigger.getAttribute('aria-controls'), level: 2 },
+          }),
+        );
+      });
+    });
+
+    root.addEventListener('keydown', (event) => {
+      const trigger = event.target instanceof HTMLElement
+        ? event.target.closest<HTMLElement>('[data-trigger="gnb"]')
+        : null;
+      if (!trigger) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMainMenus();
+        trigger.focus();
+        return;
+      }
+      const list = trigger.closest('ul');
+      const siblings = Array.from(
+        list?.querySelectorAll<HTMLElement>(':scope > li > [data-trigger="gnb"]') ?? [],
+      ).filter((item) => item.getAttribute('aria-disabled') !== 'true');
+      const index = siblings.indexOf(trigger);
+      let next: HTMLElement | undefined;
+      if (event.key === 'Home') next = siblings[0];
+      else if (event.key === 'End') next = siblings[siblings.length - 1];
+      else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+        next = siblings[(index + 1) % siblings.length];
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+        next = siblings[(index - 1 + siblings.length) % siblings.length];
+      }
+      if (!next) return;
+      event.preventDefault();
+      next.focus();
+    });
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !root.contains(event.target)) closeMainMenus();
+    });
+  });
+</script>

@@ -1,0 +1,12 @@
+---
+import Select from './Select.astro';
+import type { Props as SelectProps } from './Select.astro';
+
+export interface Props extends Omit<SelectProps, 'surfaceOnly' | 'variant'> {}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<Select {...rest} class={className} variant="sorting">
+  {Astro.slots.has('default') && <slot />}
+</Select>

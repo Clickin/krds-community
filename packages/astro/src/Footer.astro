@@ -1,0 +1,149 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface FooterLink {
+  id?: string;
+  label: string;
+  href: string;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+  icon?: string;
+  emphasis?: boolean;
+}
+
+export interface FooterRelatedSite {
+  id: string;
+  label: string;
+  title?: string;
+  disabled?: boolean;
+  name?: string;
+  value?: string;
+}
+
+export interface FooterContact {
+  id?: string;
+  title: string;
+  description?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'footer'>, 'class' | 'class:list'> {
+  relatedSites?: FooterRelatedSite[];
+  logoLabel?: string;
+  address?: string;
+  contacts?: FooterContact[];
+  links?: FooterLink[];
+  socialLinks?: FooterLink[];
+  policyLinks?: FooterLink[];
+  copyright?: string;
+  organization?: string;
+  description?: string;
+  class?: string;
+}
+
+const {
+  relatedSites = [],
+  logoLabel,
+  address,
+  contacts = [],
+  links = [],
+  socialLinks = [],
+  policyLinks = [],
+  copyright,
+  organization,
+  description,
+  id = 'krds-footer',
+  class: className,
+  ...rest
+} = Astro.props;
+---
+<footer {...rest} id={id} class={className}>
+  <div class="foot-quick">
+    <div class="inner">
+      {relatedSites.map((site) => (
+        <button
+          type="button"
+          class="link"
+          title={site.title}
+          disabled={site.disabled}
+          name={site.name}
+          value={site.value ?? site.id}
+        >
+          {site.label}
+        </button>
+      ))}
+    </div>
+  </div>
+  <div class="inner">
+    <div class="f-logo">
+      <slot name="logo"><span class="sr-only">{logoLabel}</span></slot>
+    </div>
+    <div class="f-cnt">
+      <div class="f-info">
+        <p class="info-addr">{address}</p>
+        <ul class="info-cs">
+          {contacts.map((contact) => (
+            <li>
+              <strong class="strong">{contact.title}</strong>
+              {contact.description && <span class="span">{contact.description}</span>}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="f-link">
+        <div class="link-go">
+          {links.map((item) => (
+            <a
+              href={item.href}
+              class="krds-btn medium text"
+              target={item.target}
+              rel={item.rel}
+              title={item.title}
+            >
+              {item.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+            </a>
+          ))}
+        </div>
+        <div class="link-sns">
+          {socialLinks.map((item) => (
+            <a
+              href={item.href}
+              class="krds-btn xlarge icon border"
+              target={item.target}
+              rel={item.rel}
+              title={item.title}
+            >
+              <span class="sr-only">{item.label}</span>
+              <i class={cx('svg-icon', item.icon && `ico-${item.icon}`)} aria-hidden="true"></i>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="f-btm">
+      <div class="f-btm-text">
+        <div class="f-menu">
+          {policyLinks.map((item) => (
+            <a
+              href={item.href}
+              class={item.emphasis ? 'point' : undefined}
+              target={item.target}
+              rel={item.rel}
+              title={item.title}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+        <p class="f-copy">{copyright}</p>
+      </div>
+      <div class="krds-identifier">
+        <span class="logo">
+          <slot name="identifier-logo"><span class="sr-only">{organization}</span></slot>
+        </span>
+        <span class="ban-txt">{description}</span>
+      </div>
+    </div>
+  </div>
+</footer>

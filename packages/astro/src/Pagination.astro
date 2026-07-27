@@ -1,0 +1,97 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface PaginationPage {
+  value: number;
+  label?: string;
+  href?: string;
+  disabled?: boolean;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+}
+
+export type PaginationItem = number | 'ellipsis' | PaginationPage;
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'title'> {
+  items?: PaginationItem[];
+  current?: number;
+  previousDisabled?: boolean;
+  nextDisabled?: boolean;
+  previousLabel?: string;
+  nextLabel?: string;
+  title?: string;
+  label?: string;
+  message?: string;
+  previousHref?: string;
+  nextHref?: string;
+  pageHref?: string | ((page: number) => string);
+  navigationLabel?: string;
+  class?: string;
+}
+
+const {
+  items = [],
+  current = 1,
+  previousDisabled = current <= 1,
+  nextDisabled = false,
+  previousLabel,
+  nextLabel,
+  title,
+  label,
+  message,
+  previousHref = '#',
+  nextHref = '#',
+  pageHref = '#',
+  navigationLabel,
+  class: className,
+  ...rest
+} = Astro.props;
+const resolvedPreviousLabel = previousLabel ?? title;
+const resolvedNextLabel = nextLabel ?? label;
+const resolveHref = (page: number, explicit?: string) =>
+  explicit ?? (typeof pageHref === 'function' ? pageHref(page) : pageHref);
+---
+
+<div
+  {...rest}
+  class={cx('krds-pagination', className)}
+  role="navigation"
+  aria-label={navigationLabel}
+>
+  {previousDisabled ? (
+    <span {...{ href: previousHref }} class="page-navi prev disabled">{resolvedPreviousLabel}</span>
+  ) : (
+    <a class="page-navi prev" href={previousHref}>{resolvedPreviousLabel}</a>
+  )}
+  <div class="page-links">
+    {items.map((item) => {
+      if (item === 'ellipsis') return <span class="page-link link-dot"></span>;
+      const page = typeof item === 'number' ? item : item.value;
+      const pageLabel = typeof item === 'number' ? String(item) : (item.label ?? String(item.value));
+      const pageDisabled = typeof item === 'number' ? false : item.disabled;
+      if (pageDisabled) {
+        return <span class="page-link disabled" aria-disabled="true">{pageLabel}</span>;
+      }
+      return (
+        <a
+          class={cx('page-link', page === current && 'active')}
+          href={resolveHref(page, typeof item === 'number' ? undefined : item.href)}
+          target={typeof item === 'number' ? undefined : item.target}
+          rel={typeof item === 'number' ? undefined : item.rel}
+          title={typeof item === 'number' ? undefined : item.title}
+          aria-current={page === current ? 'page' : undefined}
+        >
+          {page === current && message && <span class="sr-only">{message} </span>}
+          {pageLabel}
+        </a>
+      );
+    })}
+  </div>
+  {nextDisabled ? (
+    <span {...{ href: nextHref }} class="page-navi next disabled">{resolvedNextLabel}</span>
+  ) : (
+    <a class="page-navi next" href={nextHref}>{resolvedNextLabel}</a>
+  )}
+</div>

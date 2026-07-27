@@ -192,20 +192,18 @@ function submit(event: Event, text: string) {
     </fieldset>
     <output aria-live="polite">{{ message || '결과 12건' }}</output>
   </form>
-  <section
-    v-else-if="patternId === 'confirm'"
-    role="alertdialog"
-    :aria-labelledby="`${id}-title`"
-    :aria-describedby="`${id}-description`"
-  >
-    <h3 :id="`${id}-title`">신청을 제출할까요?</h3>
-    <p :id="`${id}-description`">제출한 뒤에는 내용을 수정할 수 없습니다.</p>
-    <div class="pattern-inline">
-      <button type="button" @click="message = '제출을 취소했습니다.'">취소</button
-      ><button type="button" @click="message = '신청을 제출했습니다.'">제출</button>
-    </div>
-    <output v-if="message" role="status">{{ message }}</output>
-  </section>
+  <details v-else-if="patternId === 'confirm'">
+    <summary>제출 전 확인 열기</summary>
+    <section :aria-labelledby="`${id}-title`" :aria-describedby="`${id}-description`">
+      <h3 :id="`${id}-title`">신청을 제출할까요?</h3>
+      <p :id="`${id}-description`">제출한 뒤에는 내용을 수정할 수 없습니다.</p>
+      <div class="pattern-inline">
+        <button type="button" @click="message = '제출을 취소했습니다.'">취소</button
+        ><button type="button" @click="message = '신청을 제출했습니다.'">제출</button>
+      </div>
+      <output v-if="message" role="status">{{ message }}</output>
+    </section>
+  </details>
   <section v-else-if="patternId === 'mobile-notification'" :aria-labelledby="`${id}-title`">
     <h3 :id="`${id}-title`">알림</h3>
     <p role="status">신청 결과가 준비되었습니다.</p>

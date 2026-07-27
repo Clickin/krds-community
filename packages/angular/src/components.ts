@@ -1,13 +1,20 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  EventEmitter,
   forwardRef,
+  inject,
   Input,
   Output,
-  EventEmitter,
 } from '@angular/core';
-import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormsModule,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import type { SimpleChanges } from '@angular/core';
 import type { ControlValueAccessor } from '@angular/forms';
 import type {
   AccordionContractProps,
@@ -17,6 +24,13 @@ import type {
   TextInputContractProps,
 } from '@krds-community/recipes';
 
+let nextAngularId = 0;
+
+function createStableId(prefix: string): string {
+  nextAngularId += 1;
+  return `${prefix}-${nextAngularId.toString(36)}`;
+}
+
 @Component({
   selector: 'krds-button',
   standalone: true,
@@ -24,16 +38,14 @@ import type {
   template: `<button
     [attr.type]="type"
     [disabled]="disabled"
-    [class]="'krds-button ' + className"
-    [attr.data-variant]="variant"
-    [attr.data-size]="size"
+    [class]="'krds-btn' + (variant ? ' ' + variant : '') + (size === 'medium' ? '' : ' ' + size) + (className ? ' ' + className : '')"
     (click)="clicked.emit($event)"
   >
     <ng-content />
   </button>`,
 })
 export class KrdsButtonComponent implements ButtonContractProps {
-  @Input() variant: 'primary' | 'secondary' | 'tertiary' = 'primary';
+  @Input() variant?: 'primary' | 'secondary' | 'tertiary';
   @Input() size: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
   @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() disabled = false;
@@ -53,47 +65,67 @@ export class KrdsButtonComponent implements ButtonContractProps {
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<label class="krds-field"
-    ><span *ngIf="label" class="krds-field-label">{{ label }}</span
-    ><input
-      [id]="id"
-      [name]="name"
-      [type]="type"
-      [value]="value"
-      [placeholder]="placeholder"
-      [disabled]="disabled"
-      [readonly]="readonly"
-      [required]="required"
-      [class]="'krds-input ' + className"
-      [attr.data-state]="state"
-      [attr.data-size]="size"
-      [attr.aria-invalid]="state === 'error' ? 'true' : null"
-      [attr.aria-describedby]="hint ? id + '-hint' : null"
-      (input)="input($event)"
-      (blur)="blur()"
-    /><span *ngIf="hint" [id]="id + '-hint'" class="krds-field-message" [attr.data-state]="state">{{
-      hint
-    }}</span></label
-  >`,
+  template: `<div class="form-group">
+    <div class="form-tit">
+      <label [for]="id">{{ label }}</label>
+    </div>
+    <div
+      class="form-conts"
+      [class.is-error]="state === 'error'"
+      [class.is-success]="state === 'success'"
+      [class.is-information]="state === 'information'"
+    >
+      <input
+        [id]="id"
+        [attr.name]="name"
+        [type]="type"
+        [value]="value"
+        [attr.value]="value || null"
+        [placeholder]="placeholder"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [required]="required"
+        [class]="'krds-input' + (size ? ' ' + size : '') + (className ? ' ' + className : '')"
+        [attr.aria-invalid]="state === 'error' ? 'true' : null"
+        [attr.aria-describedby]="hint ? id + '-hint' : null"
+        (input)="input($event)"
+        (blur)="blur()"
+      />
+    </div>
+    <p
+      *ngIf="hint"
+      [id]="id + '-hint'"
+      [class.form-hint]="state === 'default'"
+      [class.form-hint-invalid]="state === 'error'"
+      [class.form-hint-success]="state === 'success'"
+      [class.form-hint-information]="state === 'information'"
+    >
+      {{ hint }}
+    </p>
+  </div>`,
 })
 export class KrdsTextInputComponent implements ControlValueAccessor, TextInputContractProps {
-  @Input() id = 'krds-input';
+  @Input() id = createStableId('krds-input');
   @Input() name: string | null = null;
   @Input() type = 'text';
   @Input() label = '';
   @Input() hint = '';
   @Input() placeholder = '';
   @Input() state: 'default' | 'error' | 'success' | 'information' = 'default';
-  @Input() size: 'small' | 'medium' | 'large' = 'medium';
+  @Input() size?: 'small' | 'medium' | 'large';
   @Input() className = '';
   @Input() required = false;
   @Input() readonly = false;
-  disabled = false;
-  value = '';
+  @Input() disabled = false;
+  @Input() value = '';
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
+
+  private readonly changeDetector = inject(ChangeDetectorRef, { optional: true });
+
   writeValue(value: string | null): void {
     this.value = value ?? '';
+    this.changeDetector?.markForCheck();
   }
   registerOnChange(fn: (value: string) => void): void {
     this.onChange = fn;
@@ -103,6 +135,7 @@ export class KrdsTextInputComponent implements ControlValueAccessor, TextInputCo
   }
   setDisabledState(disabled: boolean): void {
     this.disabled = disabled;
+    this.changeDetector?.markForCheck();
   }
   input(event: Event): void {
     this.value = (event.target as HTMLInputElement).value;
@@ -116,93 +149,207 @@ export class KrdsTextInputComponent implements ControlValueAccessor, TextInputCo
 @Component({
   selector: 'krds-checkbox',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => KrdsCheckboxComponent),
+      multi: true,
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<div class="krds-form-check" [attr.data-size]="size">
+  template: `<div [class]="'krds-form-check' + (size ? ' ' + size : '')">
     <input
       [id]="id"
-      [name]="name"
+      [attr.name]="name ?? null"
       type="checkbox"
       [checked]="checked"
       [disabled]="disabled"
+      [attr.aria-describedby]="description ? id + '-description' : null"
       (change)="changed($event)"
-    /><label [for]="id">{{ label }}</label
-    ><span *ngIf="description" class="krds-field-message">{{ description }}</span>
+      (blur)="blur()"
+    />
+    <label [for]="id">{{ label }}</label>
+    <div *ngIf="description" class="krds-form-check-cnt">
+      <p [id]="id + '-description'" class="krds-form-check-p">{{ description }}</p>
+    </div>
   </div>`,
 })
-export class KrdsCheckboxComponent implements ChoiceContractProps {
-  @Input() id = 'krds-checkbox';
+export class KrdsCheckboxComponent implements ControlValueAccessor, ChoiceContractProps {
+  @Input() id = createStableId('krds-checkbox');
   @Input() name: string | undefined = undefined;
   @Input() label = '';
   @Input() description = '';
-  @Input() size: 'medium' | 'large' = 'medium';
+  @Input() size?: 'medium' | 'large';
   @Input() checked = false;
   @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
+  private onChange: (value: boolean) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
+
+  private readonly changeDetector = inject(ChangeDetectorRef, { optional: true });
+
+  writeValue(value: boolean | null): void {
+    this.checked = Boolean(value);
+    this.changeDetector?.markForCheck();
+  }
+  registerOnChange(fn: (value: boolean) => void): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+  setDisabledState(disabled: boolean): void {
+    this.disabled = disabled;
+    this.changeDetector?.markForCheck();
+  }
   changed(event: Event): void {
     if (!this.disabled) {
-      this.checkedChange.emit((event.target as HTMLInputElement).checked);
+      this.checked = (event.target as HTMLInputElement).checked;
+      this.checkedChange.emit(this.checked);
+      this.onChange(this.checked);
     }
+  }
+  blur(): void {
+    this.onTouched();
   }
 }
 
 @Component({
   selector: 'krds-radio',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => KrdsRadioComponent),
+      multi: true,
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<div class="krds-form-check" [attr.data-size]="size">
+  template: `<div [class]="'krds-form-check' + (size ? ' ' + size : '')">
     <input
       [id]="id"
       [name]="name"
       type="radio"
-      [value]="value"
+      [attr.value]="value ?? null"
       [checked]="checked"
       [disabled]="disabled"
-      (change)="selected.emit(value)"
-    /><label [for]="id">{{ label }}</label
-    ><span *ngIf="description" class="krds-field-message">{{ description }}</span>
+      [attr.aria-describedby]="description ? id + '-description' : null"
+      (change)="changed()"
+      (blur)="blur()"
+    />
+    <label [for]="id">{{ label }}</label>
+    <div *ngIf="description" class="krds-form-check-cnt">
+      <p [id]="id + '-description'" class="krds-form-check-p">{{ description }}</p>
+    </div>
   </div>`,
 })
-export class KrdsRadioComponent implements RadioContractProps {
-  @Input() id = 'krds-radio';
+export class KrdsRadioComponent implements ControlValueAccessor, RadioContractProps {
+  @Input() id = createStableId('krds-radio');
   @Input() name = '';
   @Input() label = '';
   @Input() description = '';
-  @Input() size: 'medium' | 'large' = 'medium';
-  @Input() value = '';
+  @Input() size?: 'medium' | 'large';
+  @Input() value?: string;
   @Input() checked = false;
   @Input() disabled = false;
   @Output() selected = new EventEmitter<string>();
+  private onChange: (value: string) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
+
+  private readonly changeDetector = inject(ChangeDetectorRef, { optional: true });
+
+  writeValue(value: string | null): void {
+    this.checked = value !== null && value === this.value;
+    this.changeDetector?.markForCheck();
+  }
+  registerOnChange(fn: (value: string) => void): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+  setDisabledState(disabled: boolean): void {
+    this.disabled = disabled;
+    this.changeDetector?.markForCheck();
+  }
+  changed(): void {
+    if (!this.disabled) {
+      this.checked = true;
+      const value = this.value ?? 'on';
+      this.selected.emit(value);
+      this.onChange(value);
+    }
+  }
+  blur(): void {
+    this.onTouched();
+  }
 }
 
 @Component({
   selector: 'krds-switch',
   standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => KrdsSwitchComponent),
+      multi: true,
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<div class="krds-form-toggle-switch" [attr.data-size]="size">
+  template: `<div [class]="'krds-form-toggle-switch' + (size ? ' ' + size : '')">
     <input
       [id]="id"
-      [name]="name"
+      [attr.name]="name ?? null"
       type="checkbox"
       [checked]="checked"
       [disabled]="disabled"
       (change)="changed($event)"
-    /><label [for]="id"
-      ><span class="switch-toggle" aria-hidden="true"><i></i></span>{{ label }}</label
-    >
+      (blur)="blur()"
+    />
+    <label [for]="id">
+      <span class="switch-toggle"><i></i></span>{{ label }}
+    </label>
   </div>`,
 })
-export class KrdsSwitchComponent implements ChoiceContractProps {
-  @Input() id = 'krds-switch';
+export class KrdsSwitchComponent implements ControlValueAccessor, ChoiceContractProps {
+  @Input() id = createStableId('krds-switch');
   @Input() name: string | undefined = undefined;
   @Input() label = '';
-  @Input() size: 'medium' | 'large' = 'medium';
+  @Input() size?: 'medium' | 'large';
   @Input() checked = false;
   @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
+  private onChange: (value: boolean) => void = () => undefined;
+  private onTouched: () => void = () => undefined;
+
+  private readonly changeDetector = inject(ChangeDetectorRef, { optional: true });
+
+  writeValue(value: boolean | null): void {
+    this.checked = Boolean(value);
+    this.changeDetector?.markForCheck();
+  }
+  registerOnChange(fn: (value: boolean) => void): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+  setDisabledState(disabled: boolean): void {
+    this.disabled = disabled;
+    this.changeDetector?.markForCheck();
+  }
   changed(event: Event): void {
-    this.checkedChange.emit((event.target as HTMLInputElement).checked);
+    if (!this.disabled) {
+      this.checked = (event.target as HTMLInputElement).checked;
+      this.checkedChange.emit(this.checked);
+      this.onChange(this.checked);
+    }
+  }
+  blur(): void {
+    this.onTouched();
   }
 }
 
@@ -217,12 +364,12 @@ export interface KrdsAccordionItem {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<div class="krds-accordion" [attr.data-type]="type">
-    <div *ngFor="let item of items" class="krds-accordion-item" [class.is-open]="isOpen(item.id)">
-      <h5 class="krds-accordion-heading">
+  template: `<div class="krds-accordion" [class.type-line]="type === 'line'">
+    <div *ngFor="let item of items" class="accordion-item">
+      <h5 class="accordion-header">
         <button
           type="button"
-          class="krds-accordion-trigger"
+          class="btn-accordion"
           [id]="'krds-accordion-header-' + item.id"
           [attr.aria-expanded]="isOpen(item.id)"
           [attr.aria-controls]="'krds-accordion-panel-' + item.id"
@@ -233,13 +380,14 @@ export interface KrdsAccordionItem {
         </button>
       </h5>
       <div
-        class="krds-accordion-panel"
+        class="accordion-collapse collapse"
+        [class.show]="isOpen(item.id)"
         role="region"
         [id]="'krds-accordion-panel-' + item.id"
         [attr.aria-labelledby]="'krds-accordion-header-' + item.id"
         [hidden]="!isOpen(item.id)"
       >
-        {{ item.content }}
+        <div class="accordion-body">{{ item.content }}</div>
       </div>
     </div>
   </div>`,
@@ -248,10 +396,30 @@ export class KrdsAccordionComponent implements AccordionContractProps {
   @Input() items: KrdsAccordionItem[] = [];
   @Input() type: 'default' | 'line' = 'default';
   @Input() multiple = false;
-  @Input() defaultOpen: string[] = [];
+  private _defaultOpen: string[] = [];
+  @Input()
+  get defaultOpen(): string[] {
+    return this._defaultOpen;
+  }
+  set defaultOpen(value: string[]) {
+    this._defaultOpen = value;
+    this.openItems = [...value];
+  }
   openItems: string[] = [];
   ngOnInit(): void {
     this.openItems = [...this.defaultOpen];
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['defaultOpen']) {
+      this.openItems = [...this.defaultOpen];
+    }
+  }
+  private syncedDefaultOpen: string[] = [];
+  ngDoCheck(): void {
+    if (this.defaultOpen !== this.syncedDefaultOpen) {
+      this.syncedDefaultOpen = this.defaultOpen;
+      this.openItems = [...this.defaultOpen];
+    }
   }
   isOpen(id: string): boolean {
     return this.openItems.includes(id);

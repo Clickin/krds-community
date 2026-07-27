@@ -1,0 +1,42 @@
+id: errata.tooltip.generated-external-reference
+component: tooltip
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/tooltip.html
+    - upstream/krds-html/html/code/tooltip_box.html
+    - upstream/krds-html/html/code/tooltip_vertical.html
+defect:
+  type: nondeterministic-external-id-reference
+  literalSource:
+    selectors:
+      - ".krds-tooltip[aria-labelledby]"
+      - "body > .krds-tooltip-popover[id]"
+    behavior: >-
+      The pinned runtime appends the tooltip popover outside the selected fixture subtree and
+      assigns it an id containing Math.random(). A subtree DOM comparison therefore sees a
+      nondeterministic aria-labelledby value but cannot see or normalize its target.
+correction:
+  behavior: >-
+    Preserve the button-to-tooltip accessible-name relationship while allowing each framework
+    to allocate a stable generated id. The referenced tooltip must exist in the document and
+    expose the same accessible tooltip text.
+  attributes:
+    - selector: ".krds-tooltip"
+      attribute: aria-labelledby
+      rule: "must-reference: document .krds-tooltip-popover[id]"
+fixtures:
+  - tooltip.default
+  - tooltip-box.default
+  - tooltip-vertical.default
+normalization:
+  whitelist:
+    - selector: ".krds-tooltip"
+      attribute: aria-labelledby
+      rule: "stable-generated-id; must-reference: document .krds-tooltip-popover[id]"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/
+  rationale: >-
+    Tooltip trigger and tooltip content require a programmatic relationship, but the concrete
+    id token is non-semantic and framework generated ids are expected to differ.

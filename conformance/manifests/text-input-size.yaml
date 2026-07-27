@@ -4,9 +4,12 @@ upstream:
   version: 1.1.0
   files:
     - upstream/krds-html/html/code/text_input_size.html
+errata:
+  - errata.text-input.hint-description
 fixtures:
   - id: text-input-size.default
     sourceSelector: "input.krds-input"
+    sourceAncestorSelector: ".form-group"
     mandatory: true
     viewport: desktop
     props: {}

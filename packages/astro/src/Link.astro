@@ -1,0 +1,45 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'a'>, 'class' | 'class:list' | 'href' | 'size'> {
+  href: string;
+  label?: string;
+  children?: string;
+  size?: 'small' | 'medium' | 'large';
+  variant?: 'pure' | 'basic';
+  external?: boolean;
+  underline?: boolean;
+  underlineOnInteraction?: boolean;
+  icon?: boolean | string;
+  class?: string;
+}
+
+const {
+  href,
+  label,
+  children,
+  size = 'small',
+  variant,
+  external = false,
+  underline = true,
+  underlineOnInteraction = false,
+  icon = external,
+  class: className,
+  ...rest
+} = Astro.props;
+const content = label ?? children;
+const iconClass = typeof icon === 'string' ? icon : external ? 'ico-go' : undefined;
+const labelClass = cx(underline && 'underline', underlineOnInteraction && 'hidden-underline') || undefined;
+---
+
+<a {...rest} href={href} class={cx('krds-btn', size, 'link', variant, className)}>
+  <span class={labelClass}>
+    <slot>{content}</slot>
+  </span>
+  {icon && (
+    <slot name="icon">
+      <i class={cx('svg-icon', iconClass)} aria-hidden="true"></i>
+    </slot>
+  )}
+</a>

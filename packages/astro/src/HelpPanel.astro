@@ -1,0 +1,440 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface HelpPanelTab {
+  id: string;
+  label: string;
+  panelId: string;
+  value: string;
+  disabled?: boolean;
+}
+
+export interface HelpPanelLink {
+  label: string;
+  href: string;
+  target?: string;
+  title?: string;
+  rel?: string;
+  icon?: string;
+}
+
+export interface HelpPanelRelatedGroup {
+  title: string;
+  links: HelpPanelLink[];
+}
+
+export interface HelpPanelTask {
+  id?: string;
+  title: string;
+  current?: boolean;
+  summary: string;
+  steps: string[];
+  open?: boolean;
+}
+
+export interface Props
+  extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'id' | 'title'> {
+  id?: string;
+  open?: boolean;
+  activeTab?: string;
+  tabs: HelpPanelTab[];
+  selectedLabel: string;
+  helpTitle: string;
+  helpDescription?: string;
+  downloadLinks: HelpPanelLink[];
+  relatedGroups: HelpPanelRelatedGroup[];
+  tutorialTitle: string;
+  tutorialHref?: string;
+  tutorialBackTitle?: string;
+  backTitle?: string;
+  externalTitle?: string;
+  tasks: HelpPanelTask[];
+  stopLabel: string;
+  collapseLabel: string;
+  label: string;
+  title?: string;
+  children?: string;
+  class?: string;
+}
+
+const {
+  id: providedId,
+  open = false,
+  activeTab,
+  tabs,
+  selectedLabel,
+  helpTitle,
+  helpDescription,
+  downloadLinks,
+  relatedGroups,
+  tutorialTitle,
+  tutorialHref = '#;',
+  tutorialBackTitle,
+  backTitle,
+  externalTitle,
+  tasks,
+  stopLabel,
+  collapseLabel,
+  label,
+  title: triggerTitle,
+  children,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const panelId = providedId ?? `krds-help-panel-${crypto.randomUUID()}`;
+const triggerId = `${panelId}-trigger`;
+const resolvedTabs = tabs.map((tab) => ({
+  ...tab,
+  domId: `${panelId}-${tab.id}`,
+  domPanelId: `${panelId}-${tab.panelId}`,
+}));
+const selectedTab =
+  resolvedTabs.find((tab) => !tab.disabled && (tab.value === activeTab || tab.id === activeTab)) ??
+  resolvedTabs.find((tab) => !tab.disabled);
+const helpTab = resolvedTabs.find((tab) => tab.value === 'help') ?? resolvedTabs[0];
+const tutorialTab = resolvedTabs.find((tab) => tab.value === 'tutorial') ?? resolvedTabs[1];
+const resolvedTasks = tasks.map((task, index) => ({
+  ...task,
+  disclosureId: `${panelId}-task-${task.id ?? index + 1}`,
+}));
+const resolvedDescription = helpDescription ?? children;
+---
+
+<button
+  type="button"
+  id={triggerId}
+  class="krds-btn small tertiary btn-help-panel expand btn-help-exec"
+  aria-controls={panelId}
+  aria-expanded={open ? 'true' : 'false'}
+  title={triggerTitle}
+>
+  <i class="svg-icon ico-fold"></i> {label}
+</button>
+<div
+  {...rest}
+  id={panelId}
+  class:list={['krds-help-panel', open && 'expand', className]}
+  aria-hidden={open ? 'false' : 'true'}
+  data-krds-help-panel
+  data-help-trigger-id={triggerId}
+  data-active-tab={selectedTab?.value}
+  data-selected-label={selectedLabel}
+>
+  <div class="help-panel-wrap" tabindex={open ? -1 : undefined}>
+    <div class="help-conts-area">
+      <div class="krds-tab-area layer">
+        <div class="tab line">
+          <ul role="tablist">
+            {resolvedTabs.map((tab) => {
+              const selected = tab.value === selectedTab?.value;
+              return (
+                <li
+                  id={tab.domId}
+                  role="tab"
+                  aria-selected={selected ? 'true' : 'false'}
+                  aria-controls={tab.domPanelId}
+                  aria-disabled={tab.disabled ? 'true' : undefined}
+                  class:list={[selected && 'active']}
+                  data-tab-value={tab.value}
+                >
+                  <button
+                    type="button"
+                    class="btn-tab"
+                    tabindex={selected ? 0 : -1}
+                    disabled={tab.disabled}
+                  >
+                    {tab.label}
+                    {selected && <i class="sr-only created"> {selectedLabel}</i>}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div class="tab-conts-wrap">
+          {helpTab && (
+            <section
+              id={helpTab.domPanelId}
+              role="tabpanel"
+              aria-labelledby={helpTab.domId}
+              class:list={['tab-conts', helpTab.value === selectedTab?.value && 'active']}
+              hidden={helpTab.value !== selectedTab?.value}
+            >
+              <h3 class="sr-only">{helpTab.label}</h3>
+              <div class="help-conts-area-inner">
+                <div class="conts-area help-conts">
+                  <div class="conts-wrap">
+                    <h4 class="help-title">
+                      {helpTitle}
+                      <span class="krds-btn medium icon">
+                        <span class="sr-only">{label}</span>
+                        <i class="svg-icon ico-help"></i>
+                      </span>
+                    </h4>
+                    <div class="conts-desc">
+                      <p>{resolvedDescription}</p>
+                    </div>
+                    <ul class="link-list">
+                      {downloadLinks.map((link) => (
+                        <li>
+                          <a
+                            href={link.href}
+                            target={link.target}
+                            rel={link.rel ?? (link.target === '_blank' ? 'noopener noreferrer' : undefined)}
+                            title={link.title ?? (link.target === '_blank' ? externalTitle : undefined)}
+                            class="krds-btn xsmall link basic"
+                          >
+                            {link.label}
+                            <i class="svg-icon ico-go"></i>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div class="conts-area related-service">
+                  {relatedGroups.map((group) => (
+                    <div class="conts-wrap">
+                      <h4 class="help-title">{group.title}</h4>
+                      <ul class="link-list">
+                        {group.links.map((link) => (
+                          <li>
+                            <a
+                              href={link.href}
+                              target={link.target}
+                              rel={link.rel ?? (link.target === '_blank' ? 'noopener noreferrer' : undefined)}
+                              title={link.title ?? (link.target === '_blank' ? externalTitle : undefined)}
+                              class="krds-btn xsmall link basic"
+                            >
+                              {link.icon && <i class:list={['svg-icon', `ico-${link.icon}`]}></i>}
+                              {link.label}
+                              {!link.icon && <i class="svg-icon ico-angle right"></i>}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {tutorialTab && (
+            <section
+              id={tutorialTab.domPanelId}
+              role="tabpanel"
+              aria-labelledby={tutorialTab.domId}
+              class:list={['tab-conts', tutorialTab.value === selectedTab?.value && 'active']}
+              hidden={tutorialTab.value !== selectedTab?.value}
+            >
+              <h3 class="sr-only">{tutorialTab.label}</h3>
+              <div class="help-conts-area-inner">
+                <div class="conts-area">
+                  <h4 class="help-title">
+                    <a
+                      href={tutorialHref}
+                      title={tutorialBackTitle ?? backTitle}
+                      data-tutorial-back
+                    >
+                      {tutorialTitle}
+                    </a>
+                  </h4>
+                  <ul class="coach-help-process">
+                    {resolvedTasks.map((task) => (
+                      <li>
+                        <h4 class:list={['tit', task.current && 'current']}>{task.title}</h4>
+                        <div class:list={['krds-disclosure', 'conts-expand-area', task.open && 'active']}>
+                          <button
+                            type="button"
+                            class="btn-conts-expand"
+                            aria-expanded={task.open ? 'true' : 'false'}
+                            aria-controls={task.disclosureId}
+                          >
+                            {task.summary}
+                          </button>
+                          <div
+                            id={task.disclosureId}
+                            class="expand-wrap"
+                            hidden={!task.open}
+                            aria-hidden={task.open ? 'false' : 'true'}
+                          >
+                            <div class="expand-in">
+                              <ul class="krds-info-list decimal">
+                                {task.steps.map((step) => <li>{step}</li>)}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="help-panel-action">
+                  <button
+                    type="button"
+                    class="krds-btn medium secondary coach-btn-stop"
+                    data-tutorial-stop
+                  >
+                    {stopLabel}
+                  </button>
+                </div>
+              </div>
+            </section>
+          )}
+        </div>
+      </div>
+
+      <button type="button" class="krds-btn small tertiary btn-help-panel fold" data-help-collapse>
+        <span class="sr-only">{label}</span> {collapseLabel} <i class="svg-icon ico-angle right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const enhancedHelpPanels = new WeakSet<HTMLElement>();
+
+  function enhanceHelpPanels() {
+    document.querySelectorAll<HTMLElement>('[data-krds-help-panel]').forEach((root) => {
+      if (enhancedHelpPanels.has(root)) return;
+      enhancedHelpPanels.add(root);
+
+      const trigger = document.getElementById(root.dataset.helpTriggerId ?? '') as HTMLButtonElement | null;
+      const panelWrap = root.querySelector<HTMLElement>('.help-panel-wrap');
+      const collapse = root.querySelector<HTMLButtonElement>('[data-help-collapse]');
+      const tabs = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+      const selectedLabel = root.dataset.selectedLabel ?? '';
+      let returnFocus: HTMLElement | null = trigger;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        root.style.transition = 'none';
+        panelWrap?.style.setProperty('transition', 'none');
+        root.querySelectorAll<HTMLElement>('.expand-wrap').forEach((element) => {
+          element.style.transition = 'none';
+        });
+      }
+
+      const setOpen = (open: boolean, source?: HTMLElement) => {
+        if (open && source) returnFocus = source;
+        root.classList.toggle('expand', open);
+        root.setAttribute('aria-hidden', open ? 'false' : 'true');
+        root.inert = !open;
+        if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) panelWrap?.focus({ preventScroll: true });
+        else if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
+        root.dispatchEvent(
+          new CustomEvent('krds:helpopenchange', {
+            bubbles: true,
+            detail: { open },
+          }),
+        );
+      };
+
+      const setTab = (value: string, emit: boolean) => {
+        const requested = tabs.find(
+          (tab) => tab.dataset.tabValue === value && tab.getAttribute('aria-disabled') !== 'true',
+        );
+        const activeTab = requested ?? tabs.find((tab) => tab.getAttribute('aria-disabled') !== 'true');
+        if (!activeTab) return;
+        tabs.forEach((tab) => {
+          const active = tab === activeTab;
+          tab.classList.toggle('active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+          const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
+          if (!button) return;
+          button.tabIndex = active ? 0 : -1;
+          button.querySelector('.created')?.remove();
+          if (active) {
+            const marker = document.createElement('i');
+            marker.className = 'sr-only created';
+            marker.textContent = ` ${selectedLabel}`;
+            button.append(marker);
+          }
+        });
+        panels.forEach((panel) => {
+          const active = panel.id === activeTab.getAttribute('aria-controls');
+          panel.classList.toggle('active', active);
+          panel.hidden = !active;
+        });
+        root.dataset.activeTab = activeTab.dataset.tabValue;
+        if (emit) {
+          root.dispatchEvent(
+            new CustomEvent('krds:tabchange', {
+              bubbles: true,
+              detail: { value: activeTab.dataset.tabValue },
+            }),
+          );
+        }
+      };
+
+      tabs.forEach((tab) => {
+        const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
+        if (!button || button.disabled) return;
+        button.addEventListener('click', () => setTab(tab.dataset.tabValue ?? '', true));
+        button.addEventListener('keydown', (event) => {
+          const enabled = tabs.filter((item) => item.getAttribute('aria-disabled') !== 'true');
+          const current = enabled.indexOf(tab);
+          let next = current;
+          if (event.key === 'ArrowRight') next = (current + 1) % enabled.length;
+          else if (event.key === 'ArrowLeft') next = (current - 1 + enabled.length) % enabled.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = enabled.length - 1;
+          else return;
+          event.preventDefault();
+          const nextTab = enabled[next];
+          setTab(nextTab.dataset.tabValue ?? '', true);
+          nextTab.querySelector<HTMLButtonElement>('.btn-tab')?.focus();
+        });
+      });
+
+      root.querySelectorAll<HTMLElement>('.krds-disclosure').forEach((disclosure) => {
+        const button = disclosure.querySelector<HTMLButtonElement>('.btn-conts-expand');
+        const content = disclosure.querySelector<HTMLElement>('.expand-wrap');
+        if (!button || !content) return;
+        content.inert = button.getAttribute('aria-expanded') !== 'true';
+        button.addEventListener('click', () => {
+          const expanded = button.getAttribute('aria-expanded') !== 'true';
+          button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+          disclosure.classList.toggle('active', expanded);
+          content.hidden = !expanded;
+          content.inert = !expanded;
+          content.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+          root.dispatchEvent(
+            new CustomEvent('krds:disclosurechange', {
+              bubbles: true,
+              detail: { id: content.id, open: expanded },
+            }),
+          );
+        });
+      });
+
+      trigger?.addEventListener('click', () => setOpen(true, trigger));
+      collapse?.addEventListener('click', () => setOpen(false));
+      root.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        setOpen(false);
+      });
+      root.querySelector<HTMLAnchorElement>('[data-tutorial-back]')?.addEventListener('click', (event) => {
+        const link = event.currentTarget as HTMLAnchorElement;
+        if (link.getAttribute('href') === '#;') event.preventDefault();
+        root.dispatchEvent(new CustomEvent('krds:tutorialback', { bubbles: true }));
+      });
+      root.querySelector<HTMLButtonElement>('[data-tutorial-stop]')?.addEventListener('click', () => {
+        root.dispatchEvent(new CustomEvent('krds:tutorialstop', { bubbles: true }));
+      });
+
+      const initiallyOpen = root.classList.contains('expand');
+      root.inert = !initiallyOpen;
+      if (trigger) trigger.setAttribute('aria-expanded', initiallyOpen ? 'true' : 'false');
+      setTab(root.dataset.activeTab ?? '', false);
+    });
+  }
+
+  enhanceHelpPanels();
+  document.addEventListener('astro:page-load', enhanceHelpPanels);
+</script>

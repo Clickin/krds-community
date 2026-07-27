@@ -80,4 +80,20 @@ export {
   KrdsTtsSizeComponent,
   KrdsTutorialPanelComponent,
 } from './additional.js';
+export {
+  ANGULAR_ADDITIONAL_KINDS,
+} from './additional.js';
+export type {
+  AngularAdditionalKind,
+  AngularAdditionalSupport,
+  AngularCalendarCell,
+  AngularImplementedAdditionalKind,
+  AngularNavItem,
+  AngularTableAction,
+  AngularTablePagination,
+  AngularUnverifiedAdditionalKind,
+  HeaderMobileMenu,
+  HeaderMyMenu,
+  HeaderUtilityItem,
+} from './additional.js';
 export type { KrdsAdditionalProps } from '@krds-community/recipes';

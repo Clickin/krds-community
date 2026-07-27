@@ -1,0 +1,28 @@
+---
+import Accordion from './Accordion.astro';
+import type { AccordionProps } from './types';
+
+export interface Props extends Omit<AccordionProps, 'type'> {
+  defaultOpen?: string[];
+  open?: string[];
+}
+
+const {
+  items,
+  multiple,
+  defaultOpen,
+  open,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<Accordion
+  {...rest}
+  items={items}
+  type="line"
+  multiple={multiple}
+  defaultOpen={defaultOpen}
+  open={open}
+  class={className}
+/>

@@ -1,0 +1,68 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { KrdsTableColumn } from '@krds-community/recipes';
+
+export interface TableColumn extends KrdsTableColumn {
+  width?: string;
+  visuallyHidden?: boolean;
+}
+
+export type TableCell = string | number | boolean | null | undefined;
+export type TableRow = Record<string, TableCell>;
+
+export interface Props extends Omit<HTMLAttributes<'table'>, 'class' | 'class:list'> {
+  columns: TableColumn[];
+  rows: TableRow[];
+  caption: string;
+  wrapperClass?: string;
+  class?: string;
+}
+
+const {
+  columns,
+  rows,
+  caption,
+  wrapperClass,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const displayCell = (value: TableCell) => value === null || value === undefined ? '' : String(value);
+---
+
+<div class:list={['krds-table-wrap', wrapperClass]}>
+  <table {...rest} class:list={['tbl', 'col', 'data', className]}>
+    <caption>{caption}</caption>
+    <colgroup>
+      {columns.map((column) => (
+        <col style={column.width ? `width: ${column.width};` : undefined} />
+      ))}
+    </colgroup>
+    <thead>
+      <tr>
+        {columns.map((column) => (
+          <th scope="col">
+            {column.visuallyHidden ? (
+              <span class="sr-only">{column.label}</span>
+            ) : (
+              column.label
+            )}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          {columns.map((column, columnIndex) =>
+            columnIndex === 0 ? (
+              <th scope="row">{displayCell(row[column.key])}</th>
+            ) : (
+              <td>{displayCell(row[column.key])}</td>
+            ),
+          )}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

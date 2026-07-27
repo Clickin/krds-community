@@ -1,0 +1,39 @@
+{
+  "name": "@krds-community/conformance-host",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./fixture-props": "./src/fixture-props.ts",
+    "./fixtures.json": "./public/fixtures.json",
+    "./host.css": "./src/host.css",
+    "./protocol": "./src/protocol.ts"
+  },
+  "scripts": {
+    "build": "node scripts/prepare.mjs && vite build",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@angular/compiler": "catalog:",
+    "@angular/core": "catalog:",
+    "@angular/platform-browser": "catalog:",
+    "@krds-community/angular": "workspace:*",
+    "@krds-community/conformance": "workspace:*",
+    "@krds-community/react": "workspace:*",
+    "@krds-community/solid": "workspace:*",
+    "@krds-community/styles": "workspace:*",
+    "@krds-community/svelte": "workspace:*",
+    "@krds-community/vue": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "solid-js": "catalog:",
+    "svelte": "catalog:",
+    "vite": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}

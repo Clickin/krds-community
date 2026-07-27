@@ -1,0 +1,20 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list'> {
+  organization?: string;
+  description?: string;
+  children?: string;
+  class?: string;
+}
+
+const { organization, description, children, class: className, ...rest } = Astro.props;
+---
+
+<div {...rest} class={cx('krds-identifier', className)}>
+  <span class="logo">
+    <span class="sr-only"><slot name="organization">{organization}</slot></span>
+  </span>
+  <span class="ban-txt"><slot>{description ?? children}</slot></span>
+</div>

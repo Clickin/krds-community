@@ -23,21 +23,48 @@
       "required": ["version", "files"],
       "properties": {
         "version": { "type": "string" },
-        "files": { "type": "array", "items": { "type": "string" } }
+        "files": { "type": "array", "minItems": 1, "items": { "type": "string" } }
       }
+    },
+    "errata": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9._-]+$" }
     },
     "fixtures": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "sourceSelector", "mandatory", "states"],
+        "required": ["id", "sourceSelector", "mandatory", "viewport", "states"],
+        "additionalProperties": false,
         "properties": {
-          "id": { "type": "string" },
-          "sourceSelector": { "type": "string" },
+          "id": { "type": "string", "minLength": 1 },
+          "sourceSelector": { "type": "string", "minLength": 1 },
+          "sourceFile": { "type": "string", "minLength": 1 },
+          "sourceIndex": { "type": "integer", "minimum": 0 },
+          "sourceAncestorSelector": { "type": "string", "minLength": 1 },
+          "visualSelector": { "type": "string", "minLength": 1 },
+          "visualAncestorSelector": { "type": "string", "minLength": 1 },
           "mandatory": { "type": "boolean" },
-          "viewport": { "enum": ["mobile", "tablet", "desktop"] },
-          "states": { "type": "array", "items": { "type": "string" } },
-          "props": { "type": "object" }
+          "viewport": {
+            "oneOf": [
+              { "enum": ["mobile", "tablet", "desktop"] },
+              { "$ref": "#/$defs/viewport" }
+            ]
+          },
+          "states": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "oneOf": [
+                { "type": "string", "minLength": 1 },
+                { "$ref": "#/$defs/fixtureState" }
+              ]
+            }
+          },
+          "props": { "type": "object" },
+          "expectations": { "type": "object" },
+          "comparisons": { "$ref": "#/$defs/comparisons" }
         }
       }
     },
@@ -45,11 +72,113 @@
       "type": "object",
       "required": ["semanticElement"],
       "properties": {
-        "semanticElement": { "type": "string" },
+        "semanticElement": { "type": "string", "minLength": 1 },
         "accessibleRole": { "type": "string" },
         "requiredAttributes": { "type": "object" },
         "forbiddenAttributes": { "type": "array", "items": { "type": "string" } },
         "accessibility": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/frameworkEvidence" }
+    }
+  },
+  "$defs": {
+    "viewport": {
+      "type": "object",
+      "required": ["name", "width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "enum": ["mobile", "tablet", "desktop"] },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "fixtureAction": {
+      "type": "object",
+      "required": ["action"],
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "click",
+            "hover",
+            "pointer-down",
+            "pointer-up",
+            "keyboard-focus",
+            "press",
+            "fill",
+            "select-option",
+            "check",
+            "uncheck",
+            "submit",
+            "open",
+            "close",
+            "add-class",
+            "remove-class",
+            "set-attribute",
+            "remove-attribute"
+          ]
+        },
+        "target": { "type": "string", "minLength": 1 },
+        "key": { "type": "string", "minLength": 1 },
+        "value": { "type": ["string", "number", "boolean"] }
+      }
+    },
+    "fixtureState": {
+      "type": "object",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "setup": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fixtureAction" }
+        },
+        "props": { "type": "object" },
+        "expectations": { "type": "object" }
+      }
+    },
+    "comparisons": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dom": { "enum": ["strict", "semantic", "none"] },
+        "visual": { "enum": ["exact", "none"] },
+        "accessibility": { "enum": ["strict", "none"] }
+      }
+    },
+    "fixtureResult": {
+      "type": "object",
+      "required": ["fixtureId", "status"],
+      "properties": {
+        "fixtureId": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["unverified", "implemented", "passing", "failing"] },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "frameworkEvidence": {
+      "type": "object",
+      "required": [
+        "framework",
+        "status",
+        "fixtureResults",
+        "unresolvedSelectors",
+        "errata",
+        "errors"
+      ],
+      "properties": {
+        "framework": { "enum": ["react", "vue", "svelte", "solid", "angular", "astro"] },
+        "status": { "enum": ["unverified", "implemented", "passing", "failing"] },
+        "fixtureResults": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fixtureResult" }
+        },
+        "unresolvedSelectors": { "type": "array", "items": { "type": "string" } },
+        "errata": { "type": "array", "items": { "type": "string" } },
+        "errors": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string" }
       }
     }
   }

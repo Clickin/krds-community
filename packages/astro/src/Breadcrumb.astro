@@ -1,0 +1,53 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface BreadcrumbItem {
+  id: string;
+  label: string;
+  href: string;
+  current?: boolean;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'nav'>, 'class' | 'class:list'> {
+  items?: BreadcrumbItem[];
+  label?: string;
+  class?: string;
+}
+
+const {
+  items = [],
+  label,
+  id = 'breadcrumb',
+  class: className,
+  'aria-label': ariaLabel,
+  ...rest
+} = Astro.props;
+---
+
+<nav
+  {...rest}
+  id={id}
+  class={cx('krds-breadcrumb-wrap', className)}
+  aria-label={ariaLabel ?? label}
+>
+  <ol class="breadcrumb">
+    {items.map((item, index) => (
+      <li class={index === 0 ? 'home' : undefined}>
+        <a
+          href={item.href}
+          class="txt"
+          target={item.target}
+          rel={item.rel}
+          title={item.title}
+          aria-current={item.current ? 'page' : undefined}
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>

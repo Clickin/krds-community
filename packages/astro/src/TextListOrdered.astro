@@ -1,0 +1,52 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface TextListOrderedItemObject {
+  id?: string;
+  label?: string | number;
+  title?: string | number;
+  marker?: string | number;
+  children?: TextListOrderedItem[];
+}
+
+export type TextListOrderedItem = string | number | TextListOrderedItemObject;
+
+export interface Props extends Omit<HTMLAttributes<'ol'>, 'class' | 'class:list'> {
+  items: TextListOrderedItem[];
+  ordered?: boolean;
+  depth?: number;
+  class?: string;
+}
+
+const {
+  items,
+  ordered: _ordered,
+  depth = 0,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const markerFor = (index: number) => {
+  if (depth === 0) return `${index + 1}. `;
+  if (depth === 1) {
+    const letter = 'abcdefghijklmnopqrstuvwxyz'[index];
+    return `${letter ?? index + 1}. `;
+  }
+  return index < 20 ? String.fromCodePoint(0x2460 + index) : `${index + 1}. `;
+};
+
+const normalizedItems = items.map((item, index) => {
+  const normalized: TextListOrderedItemObject =
+    typeof item === 'object' ? item : { label: item };
+  return { ...normalized, resolvedMarker: normalized.marker ?? markerFor(index) };
+});
+---
+
+<ol {...rest} class:list={['krds-info-list', 'ordered', className]}>
+  {normalizedItems.map((item) => (
+    <li>
+      <span class="num">{item.resolvedMarker}</span>{item.label ?? item.title}
+      {item.children?.length && <Astro.self items={item.children} depth={depth + 1} />}
+    </li>
+  ))}
+</ol>

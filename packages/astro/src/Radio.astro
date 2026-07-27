@@ -1,0 +1,51 @@
+---
+import { choiceRecipe } from '@krds-community/recipes';
+import type { RadioProps } from './types';
+
+export interface Props extends RadioProps {
+  checked?: boolean;
+  name: string;
+}
+
+const {
+  id: providedId,
+  name,
+  value,
+  label,
+  description,
+  size,
+  disabled,
+  checked,
+  'aria-describedby': consumerDescribedBy,
+  class: className,
+  ...rest
+} = Astro.props;
+const id = providedId ?? `krds-radio-${crypto.randomUUID()}`;
+const inputValue = typeof value === 'boolean' ? String(value) : value;
+const hasLabel = label !== undefined || Astro.slots.has('default');
+const hasDescription = description !== undefined || Astro.slots.has('description');
+const descriptionId = hasDescription ? `${id}-description` : undefined;
+const ariaDescribedBy = [consumerDescribedBy, descriptionId].filter(Boolean).join(' ') || undefined;
+const recipe = choiceRecipe({ size, className });
+---
+
+<div class={recipe.className}>
+  <input
+    {...rest}
+    id={id}
+    type="radio"
+    name={name}
+    value={inputValue}
+    disabled={disabled}
+    checked={checked}
+    aria-describedby={ariaDescribedBy}
+  />
+  {hasLabel && <label for={id}><slot>{label}</slot></label>}
+  {hasDescription && (
+    <div class="krds-form-check-cnt">
+      <p id={descriptionId} class="krds-form-check-p">
+        <slot name="description">{description}</slot>
+      </p>
+    </div>
+  )}
+</div>

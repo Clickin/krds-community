@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   buildReport,
   frameworks,
   loadManifests,
+  readEvidence,
   toHtml,
   toJUnit,
   toMarkdown,
@@ -23,12 +24,27 @@ const lock = JSON.parse(
   packageVersion: string;
 };
 const manifests = await loadManifests(join(packageRoot, 'conformance/manifests'));
-const report = buildReport(manifests, {
-  repository: lock.repository,
-  ref: lock.ref,
-  commit: lock.commit,
-  packageVersion: lock.packageVersion,
-});
+const evidenceFlagIndex = process.argv.indexOf('--evidence');
+const evidencePath =
+  evidenceFlagIndex >= 0
+    ? process.argv[evidenceFlagIndex + 1]
+      ? resolve(packageRoot, process.argv[evidenceFlagIndex + 1]!)
+      : undefined
+    : undefined;
+if (evidenceFlagIndex >= 0 && !evidencePath) {
+  throw new Error('--evidence requires a deterministic runtime evidence JSON path');
+}
+const evidence = evidencePath ? await readEvidence(evidencePath) : undefined;
+const report = buildReport(
+  manifests,
+  {
+    repository: lock.repository,
+    ref: lock.ref,
+    commit: lock.commit,
+    packageVersion: lock.packageVersion,
+  },
+  evidence,
+);
 
 const command = process.argv[2] ?? 'report';
 const strictRequested = process.argv.includes('--strict');
@@ -36,7 +52,13 @@ const requested =
   process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : undefined;
 const framework = requested && frameworks.includes(requested as Framework) ? requested : undefined;
 if (command === 'inventory') {
-  console.log(JSON.stringify({ upstream: report.upstream, manifests: report.manifests }, null, 2));
+  console.log(
+    JSON.stringify(
+      { reportType: 'catalog', upstream: report.upstream, manifests: report.manifests },
+      null,
+      2,
+    ),
+  );
 } else if (command === 'check') {
   const selected = framework
     ? report.frameworks.filter((summary) => summary.framework === framework)
@@ -44,9 +66,14 @@ if (command === 'inventory') {
   console.log(
     JSON.stringify(
       {
+        reportType: report.reportType,
         upstream: report.upstream,
         frameworks: selected,
         strictConformance: report.strictConformance,
+        fixtureCount: report.fixtureCount,
+        evidenceCount: report.evidenceCount,
+        unresolvedCount: report.unresolvedCount,
+        errataCount: report.errataCount,
       },
       null,
       2,
@@ -71,6 +98,6 @@ if (command === 'inventory') {
   await writeReport(report, join(packageRoot, 'reports'));
 } else {
   throw new Error(
-    `Unknown command ${command}. Use inventory, check [--strict], diff-upstream, or report.`,
+    `Unknown command ${command}. Use inventory, check [--strict], diff-upstream, or report [--evidence <path>].`,
   );
 }

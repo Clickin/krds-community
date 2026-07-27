@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // Oxlint covers JS/TS (and Vue when its plugin is enabled); framework template
+  // checks stay with the existing Astro, Svelte, and Angular compiler scripts.
+  "plugins": ["typescript", "unicorn", "oxc", "vue"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": [
+    "upstream/krds-html/**",
+    "conformance/generated/**",
+    "reports/**",
+    "apps/conformance-viewer/public/reports/**",
+    "packages/tokens/src/generated.ts",
+    "packages/tokens/src/krds.css",
+    "dist/**",
+    ".astro/**",
+    "storybook-static/**",
+    ".playwright-cli/**",
+    "**/*.astro",
+    "**/*.svelte"
+  ],
+  "rules": {},
+  "env": {
+    "builtin": true
+  }
+}

@@ -1,0 +1,30 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { ButtonProps } from './types';
+
+export interface Props extends ButtonProps {
+  label?: string;
+  iconClass?: string;
+}
+
+const {
+  label,
+  iconClass = 'ico-sch',
+  variant,
+  size,
+  disabled,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<button
+  {...rest}
+  type={type}
+  disabled={disabled}
+  class={cx('krds-btn', variant, size, className)}
+>
+  <slot>{label}</slot>
+  <slot name="icon"><i class={cx('svg-icon', iconClass)} aria-hidden="true"></i></slot>
+</button>

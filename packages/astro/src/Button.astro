@@ -1,0 +1,28 @@
+---
+import { buttonRecipe } from '@krds-community/recipes';
+import type { ButtonProps } from './types';
+
+export interface Props extends ButtonProps {
+  label?: string;
+}
+
+const {
+  label,
+  variant,
+  size,
+  disabled,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+const recipe = buttonRecipe({ variant, size, disabled, className });
+---
+
+<button
+  {...rest}
+  type={type}
+  disabled={disabled}
+  class={recipe.className}
+>
+  <slot>{label}</slot>
+</button>

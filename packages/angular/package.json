@@ -4,6 +4,9 @@
   "description": "KRDS용 standalone Angular 네이티브 컴포넌트.",
   "license": "Apache-2.0",
   "type": "module",
+  "sideEffects": false,
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "files": [
     "dist",
     "LICENSE",
@@ -12,7 +15,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "peerDependencies": {
@@ -27,12 +31,13 @@
   "devDependencies": {
     "@angular/common": "catalog:",
     "@angular/compiler": "catalog:",
+    "@angular/compiler-cli": "catalog:",
     "@angular/core": "catalog:",
     "@angular/forms": "catalog:",
     "@angular/platform-browser": "catalog:"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "lint": "tsc -p tsconfig.json --noEmit"
+    "build": "ngc -p tsconfig.json",
+    "lint": "ngc -p tsconfig.json --noEmit"
   }
 }

@@ -1,0 +1,137 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface TabItem {
+  id: string;
+  label: string;
+  disabled?: boolean;
+  tabId?: string;
+  panelId?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list'> {
+  tabs?: TabItem[];
+  panels?: Record<string, string>;
+  defaultValue?: string;
+  selected?: string;
+  value?: string;
+  message?: string;
+  panelTitle?: string | Record<string, string>;
+  class?: string;
+}
+
+const {
+  tabs = [],
+  panels = {},
+  defaultValue,
+  selected,
+  value,
+  message,
+  panelTitle,
+  class: className,
+  ...rest
+} = Astro.props;
+const activeValue = value ?? selected ?? defaultValue ?? tabs[0]?.id;
+const tabId = (tab: TabItem) => tab.tabId ?? `tab_${tab.id}`;
+const panelId = (tab: TabItem) => tab.panelId ?? `panel_${tab.id}`;
+const resolvePanelTitle = (tab: TabItem) =>
+  typeof panelTitle === 'string' ? panelTitle : panelTitle?.[tab.id];
+---
+
+<div {...rest} class={cx('krds-tab-area', 'layer', className)} data-krds-tab>
+  <div class="tab line full">
+    <ul role="tablist">
+      {tabs.map((tab) => {
+        const active = tab.id === activeValue;
+        return (
+          <li
+            id={tabId(tab)}
+            role="tab"
+            aria-selected={active ? 'true' : 'false'}
+            aria-controls={panelId(tab)}
+            aria-disabled={tab.disabled ? 'true' : undefined}
+            class={active ? 'active' : undefined}
+          >
+            <button type="button" class="btn-tab" disabled={tab.disabled}>
+              {tab.label}
+              {active && message && <i class="sr-only created"> {message}</i>}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+  <div class="tab-conts-wrap">
+    {tabs.map((tab) => {
+      const active = tab.id === activeValue;
+      return (
+        <section
+          id={panelId(tab)}
+          role="tabpanel"
+          aria-labelledby={tabId(tab)}
+          class={cx('tab-conts', active && 'active')}
+          data-quick-nav="false"
+        >
+          {resolvePanelTitle(tab) && <h3 class="sr-only">{resolvePanelTitle(tab)}</h3>}
+          {panels[tab.id]}
+        </section>
+      );
+    })}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-krds-tab]').forEach((area) => {
+    const tabElements = Array.from(area.querySelectorAll<HTMLElement>('[role="tab"]'));
+    const panels = Array.from(area.querySelectorAll<HTMLElement>(':scope > .tab-conts-wrap > .tab-conts'));
+    const selectionMessage =
+      area.querySelector<HTMLElement>('[role="tab"].active .created')?.textContent ?? '';
+
+    const selectTab = (tab: HTMLElement) => {
+      if (tab.getAttribute('aria-disabled') === 'true') return;
+      const controlledPanel = tab.getAttribute('aria-controls');
+      tabElements.forEach((candidate) => {
+        const active = candidate === tab;
+        candidate.classList.toggle('active', active);
+        candidate.setAttribute('aria-selected', String(active));
+        candidate.querySelector('.created')?.remove();
+      });
+      panels.forEach((panel) => panel.classList.toggle('active', panel.id === controlledPanel));
+      const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
+      if (button && selectionMessage) {
+        const text = document.createElement('i');
+        text.className = 'sr-only created';
+        text.textContent = selectionMessage;
+        button.append(text);
+      }
+      area.dispatchEvent(
+        new CustomEvent('krds:tab-change', {
+          bubbles: true,
+          detail: { id: tab.id, panelId: controlledPanel },
+        }),
+      );
+    };
+
+    tabElements.forEach((tab, index) => {
+      const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
+      button?.addEventListener('click', () => selectTab(tab));
+      button?.addEventListener('keydown', (event) => {
+        const enabled = tabElements.filter(
+          (candidate) => candidate.getAttribute('aria-disabled') !== 'true',
+        );
+        const currentIndex = enabled.indexOf(tab);
+        let next: HTMLElement | undefined;
+        if (event.key === 'ArrowRight') next = enabled[(currentIndex + 1) % enabled.length];
+        else if (event.key === 'ArrowLeft') {
+          next = enabled[(currentIndex - 1 + enabled.length) % enabled.length];
+        } else if (event.key === 'Home') next = enabled[0];
+        else if (event.key === 'End') next = enabled[enabled.length - 1];
+        if (!next) return;
+        event.preventDefault();
+        next.querySelector<HTMLButtonElement>('.btn-tab')?.focus();
+      });
+      if (index === 0 && !area.querySelector('[role="tab"].active')) selectTab(tab);
+    });
+  });
+</script>

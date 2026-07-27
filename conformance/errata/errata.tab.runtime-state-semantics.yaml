@@ -1,0 +1,47 @@
+id: errata.tab.runtime-state-semantics
+component: tab
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/tab.html
+    - upstream/krds-html/html/code/help_panel.html
+    - upstream/krds-html/html/code/tutorial_panel.html
+defect:
+  type: incorrect-selected-state-and-private-runtime-marker
+  literalSource:
+    selectors:
+      - "[role=tab].active"
+      - "[role=tab][data-listener-attached]"
+    behavior: >-
+      After the pinned imperative runtime initializes, the visibly active tab may expose
+      aria-selected=false and each tab receives a private data-listener-attached marker. The
+      marker is not semantic, while the selected-state value contradicts the active tab.
+correction:
+  behavior: >-
+    Expose aria-selected=true on the active tab and false on inactive tabs. Framework-native
+    listeners must not reproduce the upstream runtime's private listener bookkeeping attribute.
+  attributes:
+    - selector: "[role=tab].active"
+      attribute: aria-selected
+      rule: "exact-value:true"
+    - selector: "[role=tab]"
+      attribute: data-listener-attached
+      rule: omitted
+fixtures:
+  - tab.default
+  - help-panel.default
+  - tutorial-panel.default
+normalization:
+  whitelist:
+    - selector: "[role=tab]"
+      attribute: data-listener-attached
+      rule: "non-semantic-runtime-bookkeeping"
+    - selector: "[role=tab].active"
+      attribute: aria-selected
+      rule: "exact-value:true"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
+  rationale: >-
+    The selected tab must expose aria-selected=true. Listener bookkeeping is private to the
+    imperative implementation and has no place in framework-native DOM.

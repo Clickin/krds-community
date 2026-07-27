@@ -1,0 +1,51 @@
+id: errata.text-input.hint-description
+component: text-input
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/text_input.html
+    - upstream/krds-html/html/code/text_input_size.html
+    - upstream/krds-html/html/code/text_input_state.html
+defect:
+  type: missing-hint-relationship
+  literalSource:
+    selectors:
+      - ".form-group .krds-input"
+      - ".form-hint"
+      - ".form-hint-success"
+      - ".form-hint-information"
+    behavior: >-
+      Visible hint, success, and information text follows the field but has no stable id
+      referenced by the native input, so assistive technology does not receive it as a
+      programmatic description.
+correction:
+  behavior: >-
+    Preserve the native label-for/id relationship and associate each visible field message
+    with its input through a stable message id and aria-describedby.
+  attributes:
+    - selector: ".form-group .krds-input"
+      attribute: aria-describedby
+      rule: "references: adjacent field message[id]"
+    - selector: ".form-hint, .form-hint-success, .form-hint-information"
+      attribute: id
+      rule: "stable-generated-id; referenced-by: input[aria-describedby]"
+fixtures:
+  - text-input.default.medium
+  - text-input.success.medium
+  - text-input.information.medium
+  - text-input-size.default
+  - text-input-state.default
+normalization:
+  whitelist:
+    - selector: ".form-group .krds-input"
+      attribute: aria-describedby
+      rule: "must-reference: adjacent field message[id]"
+    - selector: ".form-hint, .form-hint-success, .form-hint-information"
+      attribute: id
+      rule: stable-generated-id
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1
+  rationale: >-
+    WAI-ARIA technique ARIA1 identifies aria-describedby as the mechanism for exposing
+    descriptive text that supplements a form control's accessible name.

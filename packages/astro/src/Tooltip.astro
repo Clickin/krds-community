@@ -1,0 +1,153 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props
+  extends Omit<
+    HTMLAttributes<'button'>,
+    'aria-labelledby' | 'class' | 'class:list' | 'disabled' | 'type'
+  > {
+  label?: string;
+  children?: string;
+  message: string;
+  tooltipId?: string;
+  placement?: 'horizontal' | 'box' | 'vertical';
+  iconClass?: string;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  'aria-labelledby'?: string;
+}
+
+const {
+  label,
+  children,
+  message,
+  tooltipId,
+  placement = 'horizontal',
+  iconClass = 'ico-angle right',
+  disabled,
+  type = 'button',
+  class: className,
+  'aria-labelledby': ariaLabelledBy,
+  ...rest
+} = Astro.props;
+const resolvedTooltipId = tooltipId || `tooltip-popover-${crypto.randomUUID()}`;
+const labelledBy = [ariaLabelledBy, resolvedTooltipId].filter(Boolean).join(' ');
+const placementClass =
+  placement === 'box' ? 'tooltip-box' : placement === 'vertical' ? 'tooltip-vertical' : undefined;
+---
+
+<button
+  {...rest}
+  type={type}
+  disabled={disabled}
+  class={cx('krds-btn', 'small', 'text', 'krds-tooltip', placementClass, className)}
+  data-tooltip={message}
+  data-krds-tooltip={resolvedTooltipId}
+  aria-labelledby={labelledBy}
+>
+  <slot>{label ?? children}</slot>
+  <slot name="icon"><i class={cx('svg-icon', iconClass)} aria-hidden="true"></i></slot>
+</button>
+<div
+  id={resolvedTooltipId}
+  class="krds-tooltip-popover"
+  role="tooltip"
+  aria-hidden="true"
+  data-tooltip-placement={placement}
+>
+  <span class="sr-only">{label ?? children}</span>
+  {message}
+</div>
+
+<script>
+  const tooltipPopoverFor = (button: HTMLButtonElement) => {
+    const tooltipId = button.dataset.krdsTooltip;
+    if (!tooltipId) return null;
+    const popover = document.getElementById(tooltipId);
+    return popover instanceof HTMLElement && popover.classList.contains('krds-tooltip-popover')
+      ? popover
+      : null;
+  };
+
+  const closeTooltip = (button: HTMLButtonElement) => {
+    const popover = tooltipPopoverFor(button);
+    if (!popover) return;
+    popover.className = 'krds-tooltip-popover';
+    popover.style.removeProperty('top');
+    popover.style.removeProperty('left');
+    popover.setAttribute('aria-hidden', 'true');
+  };
+
+  const showTooltip = (button: HTMLButtonElement) => {
+    if (button.disabled) return;
+    const popover = tooltipPopoverFor(button);
+    if (!popover) return;
+
+    const placement = popover.dataset.tooltipPlacement;
+    popover.className = 'krds-tooltip-popover';
+    if (placement === 'box') popover.classList.add('tooltip-box');
+    if (placement === 'vertical') popover.classList.add('tooltip-vertical');
+    popover.classList.add('active');
+    popover.setAttribute('aria-hidden', 'false');
+
+    const buttonRect = button.getBoundingClientRect();
+    const popoverRect = popover.getBoundingClientRect();
+    const gap = 12;
+    const vertical =
+      placement === 'box' || placement === 'vertical' || window.innerWidth < 1024;
+    let top: number;
+    let left: number;
+
+    if (vertical) {
+      if (buttonRect.bottom > window.innerHeight / 2) {
+        top = buttonRect.top - popoverRect.height - gap;
+        popover.classList.add('top');
+      } else {
+        top = buttonRect.bottom + gap;
+        popover.classList.add('bottom');
+      }
+      left = buttonRect.left + (buttonRect.width - popoverRect.width) / 2;
+      if (left < 0) {
+        left = buttonRect.left;
+        popover.classList.add('left');
+      } else if (left + popoverRect.width > window.innerWidth) {
+        left = buttonRect.right - popoverRect.width;
+        popover.classList.add('right');
+      }
+    } else {
+      top = buttonRect.top + (buttonRect.height - popoverRect.height) / 2;
+      if (buttonRect.right > window.innerWidth / 2) {
+        left = buttonRect.left - popoverRect.width - gap;
+        popover.classList.add('right');
+      } else {
+        left = buttonRect.right + gap;
+      }
+    }
+
+    popover.style.top = `${top}px`;
+    popover.style.left = window.innerWidth <= 420 ? '50%' : `${left}px`;
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('button[data-krds-tooltip]').forEach((button) => {
+    button.addEventListener('mouseenter', () => showTooltip(button));
+    button.addEventListener('mouseleave', () => closeTooltip(button));
+    button.addEventListener('focus', () => showTooltip(button));
+    button.addEventListener('blur', () => closeTooltip(button));
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeTooltip(button);
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    document
+      .querySelectorAll<HTMLButtonElement>('button[data-krds-tooltip]')
+      .forEach(closeTooltip);
+  });
+  window.addEventListener('resize', () => {
+    document
+      .querySelectorAll<HTMLButtonElement>('button[data-krds-tooltip]')
+      .forEach(closeTooltip);
+  });
+</script>

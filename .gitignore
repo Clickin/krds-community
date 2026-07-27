@@ -15,8 +15,10 @@ test-results/
 # Upstream snapshots are immutable source, not build output.
 # Do not ignore upstream/krds-html.
 apps/conformance-viewer/public/reports/
+apps/conformance-host/public/fixtures.json
 .astro/
 storybook-static/
 .playwright-cli/
 .pnpm-store/
 /reports
+/audit-input

@@ -1,0 +1,39 @@
+id: errata.navigation.missing-landmark-semantics
+component: navigation
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/main_menu_mobile.html
+    - upstream/krds-html/html/code/pagination.html
+defect:
+  type: missing-navigation-landmark
+  literalSource:
+    selectors:
+      - ".krds-main-menu-mobile"
+      - ".krds-pagination"
+    behavior: >-
+      The mobile global menu and pagination controls are rendered in generic div containers
+      without a native nav element or navigation role, so assistive technology cannot identify
+      either control group as a navigation landmark.
+correction:
+  behavior: >-
+    Preserve the literal container hierarchy and interactive descendants while exposing each
+    container as a labelled navigation landmark.
+  attributes:
+    - selector: ".krds-main-menu-mobile, .krds-pagination"
+      attribute: role
+      rule: "exact-value:navigation"
+fixtures:
+  - main-menu-mobile.default
+  - pagination.default
+normalization:
+  whitelist:
+    - selector: ".krds-main-menu-mobile, .krds-pagination"
+      attribute: role
+      rule: "exact-value:navigation"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html
+  rationale: >-
+    Navigation landmarks let assistive-technology users discover global-menu and pagination
+    controls without changing the visible KRDS hierarchy.

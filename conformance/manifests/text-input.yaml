@@ -6,17 +6,23 @@ upstream:
     - upstream/krds-html/html/code/text_input.html
     - upstream/krds-html/html/code/text_input_size.html
     - upstream/krds-html/html/code/text_input_state.html
+errata:
+  - errata.text-input.error-description
+  - errata.text-input.hint-description
 fixtures:
   - id: text-input.default.medium
     sourceSelector: ".krds-input"
+    sourceAncestorSelector: ".form-group"
+    sourceFile: upstream/krds-html/html/code/text_input.html
     mandatory: true
     viewport: desktop
     props:
       state: default
-      size: medium
     states: [default, placeholder, readonly, disabled, focus-visible]
   - id: text-input.error.medium
     sourceSelector: ".form-conts.is-error .krds-input"
+    sourceAncestorSelector: ".form-group"
+    sourceFile: upstream/krds-html/html/code/text_input_state.html
     mandatory: true
     viewport: desktop
     props:
@@ -24,6 +30,8 @@ fixtures:
     states: [invalid, focus-visible]
   - id: text-input.success.medium
     sourceSelector: ".form-conts.is-success .krds-input"
+    sourceAncestorSelector: ".form-group"
+    sourceFile: upstream/krds-html/html/code/text_input_state.html
     mandatory: true
     viewport: desktop
     props:
@@ -31,13 +39,15 @@ fixtures:
     states: [default, focus-visible]
   - id: text-input.information.medium
     sourceSelector: ".form-conts.is-information .krds-input"
+    sourceAncestorSelector: ".form-group"
+    sourceFile: upstream/krds-html/html/code/text_input_state.html
     mandatory: true
     viewport: desktop
     props:
       state: information
     states: [default, focus-visible]
 contract:
-  semanticElement: input
+  semanticElement: label-and-input
   accessibleRole: textbox
   requiredAttributes: {}
   accessibility:

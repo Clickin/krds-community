@@ -1,0 +1,395 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { KrdsPaginationItem, KrdsTableColumn } from '@krds-community/recipes';
+
+export interface StructuredListTableColumn extends KrdsTableColumn {
+  width?: string;
+  visuallyHidden?: boolean;
+}
+
+export interface StructuredListTableAction {
+  id?: string;
+  label: string;
+  icon?: string;
+  disabled?: boolean;
+}
+
+export interface StructuredListTableRow {
+  id: string;
+  selected?: boolean;
+  disabled?: boolean;
+  selectionLabel?: string;
+  [key: string]: string | number | boolean | null | undefined;
+}
+
+export interface StructuredListTablePagination {
+  current: number;
+  items: KrdsPaginationItem[];
+  previousDisabled?: boolean;
+  nextDisabled?: boolean;
+  previousLabel: string;
+  nextLabel: string;
+  currentLabel: string;
+  hrefs?: Record<string, string>;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list'> {
+  columns: StructuredListTableColumn[];
+  rows: StructuredListTableRow[];
+  caption: string;
+  selectAllLabel: string;
+  actions: StructuredListTableAction[];
+  countLabel: string;
+  countOptions: string[];
+  countValue?: string;
+  sortLabel: string;
+  sortOptions: string[];
+  sortValue: string;
+  pagination: StructuredListTablePagination;
+  selectionName?: string;
+  tableClass?: string;
+  className?: string;
+  class?: string;
+}
+
+const {
+  columns,
+  rows,
+  caption,
+  selectAllLabel,
+  actions,
+  countLabel,
+  countOptions,
+  countValue,
+  sortLabel,
+  sortOptions,
+  sortValue,
+  pagination,
+  selectionName,
+  tableClass,
+  className,
+  class: classProp,
+  id: providedId,
+  ...rest
+} = Astro.props;
+
+const rootId = providedId ?? `krds-structured-table-${crypto.randomUUID()}`;
+const selectAllId = `${rootId}-select-all`;
+const countId = `${rootId}-count`;
+const sortId = `${rootId}-sort`;
+const selectableRows = rows.filter((row) => !row.disabled);
+const selectedRows = selectableRows.filter((row) => row.selected);
+const allSelected = selectableRows.length > 0 && selectedRows.length === selectableRows.length;
+const partiallySelected = selectedRows.length > 0 && !allSelected;
+const titleColumn = columns.find((column) => column.key === 'title');
+const pageHref = (key: string | number) => pagination.hrefs?.[String(key)] ?? '#';
+const displayCell = (value: StructuredListTableRow[string]) =>
+  value === null || value === undefined ? '' : String(value);
+---
+
+<div
+  {...rest}
+  id={rootId}
+  class:list={['krds-structured-list-table', className, classProp]}
+  data-krds-structured-list-table
+>
+  <div class="search-list-top">
+    <div class="sch-left">
+      <div class="krds-check-area">
+        <div class="krds-form-check">
+          <input
+            type="checkbox"
+            class="chk"
+            id={selectAllId}
+            checked={allSelected}
+            aria-checked={partiallySelected ? 'mixed' : allSelected ? 'true' : 'false'}
+            data-select-all
+          />
+          <label for={selectAllId}>{selectAllLabel}</label>
+        </div>
+      </div>
+      <ul class="side-line-ul">
+        {actions.map((action) => (
+          <li>
+            <button
+              type="button"
+              class="krds-btn medium text"
+              disabled={action.disabled}
+              data-table-action={action.id}
+            >
+              {action.icon && <i class:list={['svg-icon', `ico-${action.icon}`]}></i>}
+              {action.label}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <ul class="sch-sort">
+      <li>
+        <strong class="sort-label"><label for={countId}>{countLabel}</label></strong>
+        <select class="krds-form-select-sort" id={countId} data-count-select>
+          {countOptions.map((option, index) => (
+            <option value={option} selected={countValue ? option === countValue : index === 0}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </li>
+      <li>
+        <strong class="sort-label"><label for={sortId}>{sortLabel}</label></strong>
+        <div class="w-sort-btn">
+          {sortOptions.map((option) => (
+            <button
+              type="button"
+              class:list={[option === sortValue && 'active']}
+              aria-pressed={option === sortValue ? 'true' : 'false'}
+              data-sort-value={option}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <div class="m-sort-btn">
+          <select class="krds-form-select-sort" id={sortId} data-sort-select>
+            {sortOptions.map((option) => (
+              <option value={option} selected={option === sortValue}>{option}</option>
+            ))}
+          </select>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="krds-table-wrap">
+    <table class:list={['tbl', 'col', 'data', tableClass]}>
+      <caption>{caption}</caption>
+      <colgroup>
+        {columns.map((column) => (
+          <col style={column.width ? `width: ${column.width};` : undefined} />
+        ))}
+        <col />
+      </colgroup>
+      <thead>
+        <tr>
+          {columns.map((column) => (
+            <th scope="col">
+              {column.visuallyHidden ? (
+                <span class="sr-only">{column.label}</span>
+              ) : (
+                column.label
+              )}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => {
+          const rowInputId = `${rootId}-row-${row.id}`;
+          const rowSelectionLabel =
+            row.selectionLabel ?? displayCell(titleColumn ? row[titleColumn.key] : row.id);
+          return (
+            <tr data-row-id={row.id}>
+              {columns.map((column, columnIndex) => {
+                if (column.key === 'selected') {
+                  return (
+                    <th scope="row">
+                      <div class="krds-form-check">
+                        <input
+                          type="checkbox"
+                          class="chk"
+                          id={rowInputId}
+                          name={selectionName}
+                          value={row.id}
+                          checked={row.selected}
+                          disabled={row.disabled}
+                          data-row-select
+                        />
+                        <label for={rowInputId}>
+                          <span class="sr-only">{rowSelectionLabel}</span>
+                        </label>
+                      </div>
+                    </th>
+                  );
+                }
+                if (column.key === 'download') {
+                  return (
+                    <td>
+                      <button type="button" class="krds-btn medium text" data-download-row={row.id}>
+                        <i class="svg-icon ico-down"></i>
+                        {displayCell(row[column.key])}
+                      </button>
+                    </td>
+                  );
+                }
+                return columnIndex === 0 ? (
+                  <th scope="row">{displayCell(row[column.key])}</th>
+                ) : (
+                  <td>{displayCell(row[column.key])}</td>
+                );
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="krds-pagination" aria-label={caption}>
+    {pagination.previousDisabled ? (
+      <span class="page-navi prev disabled" aria-disabled="true">{pagination.previousLabel}</span>
+    ) : (
+      <a
+        class="page-navi prev"
+        href={pageHref('previous')}
+        rel="prev"
+        data-page={pagination.current - 1}
+      >
+        {pagination.previousLabel}
+      </a>
+    )}
+    <div class="page-links">
+      {pagination.items.map((item) =>
+        item === 'ellipsis' ? (
+          <span class="page-link link-dot" aria-hidden="true"></span>
+        ) : (
+          <a
+            class:list={['page-link', item === pagination.current && 'active']}
+            href={pageHref(item)}
+            aria-current={item === pagination.current ? 'page' : undefined}
+            data-page={item}
+          >
+            {item === pagination.current && (
+              <span class="sr-only">{pagination.currentLabel} </span>
+            )}
+            {item}
+          </a>
+        ),
+      )}
+    </div>
+    {pagination.nextDisabled ? (
+      <span class="page-navi next disabled" aria-disabled="true">{pagination.nextLabel}</span>
+    ) : (
+      <a
+        class="page-navi next"
+        href={pageHref('next')}
+        rel="next"
+        data-page={pagination.current + 1}
+      >
+        {pagination.nextLabel}
+      </a>
+    )}
+  </div>
+</div>
+
+<script>
+  const enhancedStructuredTables = new WeakSet<HTMLElement>();
+
+  function enhanceStructuredTables() {
+    document.querySelectorAll<HTMLElement>('[data-krds-structured-list-table]').forEach((root) => {
+      if (enhancedStructuredTables.has(root)) return;
+      enhancedStructuredTables.add(root);
+
+      const selectAll = root.querySelector<HTMLInputElement>('[data-select-all]');
+      const rowChecks = Array.from(root.querySelectorAll<HTMLInputElement>('[data-row-select]'));
+      const enabledRowChecks = rowChecks.filter((checkbox) => !checkbox.disabled);
+      const sortSelect = root.querySelector<HTMLSelectElement>('[data-sort-select]');
+      const sortButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-sort-value]'));
+      const countSelect = root.querySelector<HTMLSelectElement>('[data-count-select]');
+
+      const selectedIds = () => rowChecks.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
+
+      const syncSelection = (emit: boolean) => {
+        if (selectAll) {
+          const selectedCount = enabledRowChecks.filter((checkbox) => checkbox.checked).length;
+          selectAll.checked = enabledRowChecks.length > 0 && selectedCount === enabledRowChecks.length;
+          selectAll.indeterminate = selectedCount > 0 && selectedCount < enabledRowChecks.length;
+          selectAll.setAttribute(
+            'aria-checked',
+            selectAll.indeterminate ? 'mixed' : selectAll.checked ? 'true' : 'false',
+          );
+        }
+        if (emit) {
+          root.dispatchEvent(
+            new CustomEvent('krds:selectionchange', {
+              bubbles: true,
+              detail: { ids: selectedIds() },
+            }),
+          );
+        }
+      };
+
+      selectAll?.addEventListener('change', () => {
+        enabledRowChecks.forEach((checkbox) => {
+          checkbox.checked = selectAll.checked;
+        });
+        syncSelection(true);
+      });
+      rowChecks.forEach((checkbox) => checkbox.addEventListener('change', () => syncSelection(true)));
+
+      const setSort = (value: string, emit: boolean) => {
+        if (sortSelect) sortSelect.value = value;
+        sortButtons.forEach((button) => {
+          const active = button.dataset.sortValue === value;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+        if (emit) {
+          root.dispatchEvent(
+            new CustomEvent('krds:sortchange', { bubbles: true, detail: { value } }),
+          );
+        }
+      };
+
+      sortButtons.forEach((button) => {
+        button.addEventListener('click', () => setSort(button.dataset.sortValue ?? '', true));
+      });
+      sortSelect?.addEventListener('change', () => setSort(sortSelect.value, true));
+      countSelect?.addEventListener('change', () => {
+        root.dispatchEvent(
+          new CustomEvent('krds:countchange', {
+            bubbles: true,
+            detail: { value: countSelect.value },
+          }),
+        );
+      });
+      root.querySelectorAll<HTMLButtonElement>('[data-table-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          root.dispatchEvent(
+            new CustomEvent('krds:tableaction', {
+              bubbles: true,
+              detail: { id: button.dataset.tableAction, selectedIds: selectedIds() },
+            }),
+          );
+        });
+      });
+      root.querySelectorAll<HTMLButtonElement>('[data-download-row]').forEach((button) => {
+        button.addEventListener('click', () => {
+          root.dispatchEvent(
+            new CustomEvent('krds:download', {
+              bubbles: true,
+              detail: { id: button.dataset.downloadRow },
+            }),
+          );
+        });
+      });
+      root.querySelectorAll<HTMLAnchorElement>('[data-page]').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          if (link.getAttribute('href') === '#') event.preventDefault();
+          root.dispatchEvent(
+            new CustomEvent('krds:pagechange', {
+              bubbles: true,
+              detail: { page: Number(link.dataset.page) },
+            }),
+          );
+        });
+      });
+
+      syncSelection(false);
+      if (sortSelect) setSort(sortSelect.value, false);
+    });
+  }
+
+  enhanceStructuredTables();
+  document.addEventListener('astro:page-load', enhanceStructuredTables);
+</script>

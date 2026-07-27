@@ -1,0 +1,63 @@
+---
+import { cx, inputRecipe } from '@krds-community/recipes';
+import type { TextInputProps } from './types';
+
+export interface Props extends TextInputProps {
+  error?: string;
+}
+
+const {
+  id: providedId,
+  label,
+  hint,
+  error,
+  state = 'default',
+  size,
+  value,
+  readonly,
+  type = 'text',
+  'aria-describedby': consumerDescribedBy,
+  'aria-invalid': consumerAriaInvalid,
+  class: className,
+  ...rest
+} = Astro.props;
+const id = providedId ?? `krds-input-${crypto.randomUUID()}`;
+const message = state === 'error' ? (error ?? hint) : hint;
+const hasLabel = label !== undefined || Astro.slots.has('label');
+const hasMessage = message !== undefined || Astro.slots.has('hint');
+const messageId = hasMessage ? `${id}-message` : undefined;
+const ariaDescribedBy = [consumerDescribedBy, messageId].filter(Boolean).join(' ') || undefined;
+const ariaInvalid = state === 'error' ? 'true' : consumerAriaInvalid;
+const messageClass =
+  state === 'default'
+    ? 'form-hint'
+    : state === 'error'
+      ? 'form-hint-invalid'
+      : `form-hint-${state}`;
+const recipe = inputRecipe({ state, size, className });
+---
+
+<div class="form-group">
+  {hasLabel && (
+    <div class="form-tit">
+      <label for={id}><slot name="label">{label}</slot></label>
+    </div>
+  )}
+  <div class={cx('form-conts', state === 'default' ? undefined : `is-${state}`)}>
+    <input
+      {...rest}
+      type={type}
+      id={id}
+      class={recipe.className}
+      value={value}
+      readonly={readonly}
+      aria-invalid={ariaInvalid}
+      aria-describedby={ariaDescribedBy}
+    />
+  </div>
+  {hasMessage && (
+    <p id={messageId} class={messageClass}>
+      <slot name="hint">{message}</slot>
+    </p>
+  )}
+</div>

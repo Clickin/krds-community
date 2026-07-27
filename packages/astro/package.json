@@ -1,0 +1,35 @@
+{
+  "name": "@krds-community/astro",
+  "version": "0.1.0",
+  "description": "KRDS용 Astro 네이티브 컴포넌트.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./*": "./dist/*.astro"
+  },
+  "peerDependencies": {
+    "astro": ">=5.0.0"
+  },
+  "dependencies": {
+    "@krds-community/recipes": "workspace:*",
+    "@krds-community/styles": "workspace:*"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "astro": "catalog:"
+  },
+  "scripts": {
+    "build": "astro check && node scripts/build.mjs",
+    "lint": "astro check"
+  }
+}

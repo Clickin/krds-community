@@ -12,5 +12,5 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 contract:
-  semanticElement: navigation
+  semanticElement: link
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

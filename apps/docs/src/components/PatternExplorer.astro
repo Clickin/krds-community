@@ -8,15 +8,17 @@ import ReactPatternExample from './patterns/ReactPatternExample';
 import SolidPatternExample from './patterns/SolidPatternExample';
 import SveltePatternExample from './patterns/SveltePatternExample.svelte';
 import VuePatternExample from './patterns/VuePatternExample.vue';
+import AstroPatternExample from './patterns/AstroPatternExample.astro';
 
 const { pattern } = Astro.props as { pattern: Pattern };
-type Framework = 'react' | 'vue' | 'svelte' | 'solid' | 'angular';
-const frameworks: { id: Framework; label: string; icon: KrdsIconName; source: string }[] = [
+type Framework = 'react' | 'vue' | 'svelte' | 'solid' | 'angular' | 'astro';
+const frameworks: { id: Framework; label: string; icon?: KrdsIconName; source: string }[] = [
   { id: 'react', label: 'React', icon: 'react', source: 'ReactPatternExample.tsx' },
   { id: 'vue', label: 'Vue', icon: 'vue', source: 'VuePatternExample.vue' },
   { id: 'svelte', label: 'Svelte', icon: 'svelte', source: 'SveltePatternExample.svelte' },
   { id: 'solid', label: 'SolidJS', icon: 'solid', source: 'SolidPatternExample.tsx' },
   { id: 'angular', label: 'Angular', icon: 'angular', source: 'AngularPatternExample.ts' },
+  { id: 'astro', label: 'Astro', source: 'AstroPatternExample.astro' },
 ];
 const frameworkTraits: Record<Framework, { state: string; events: string; forms: string; ssr: string }> = {
   react: {
@@ -49,6 +51,12 @@ const frameworkTraits: Record<Framework, { state: string; events: string; forms:
     forms: 'FormsModule의 ngModel과 네이티브 required 컨트롤을 사용한다.',
     ssr: 'Astro client:load island가 서버 HTML을 Angular component로 hydration한다.',
   },
+  astro: {
+    state: 'Astro frontmatter은 patternId만 선택하고, 브라우저 상태는 native form과 data 속성으로 관리한다.',
+    events: '일반 DOM submit·click·change 이벤트를 사용하며 Astro client framework wrapper를 사용하지 않는다.',
+    forms: 'label·required·fieldset 같은 네이티브 폼 계약과 서버 제출 가능한 HTML을 그대로 렌더링한다.',
+    ssr: 'Astro가 서버에서 HTML을 렌더링하고 작은 script가 필요한 상호작용만 enhance한다.',
+  },
 };
 const sources: Record<Framework, string> = {
   react: await readFile(join(process.cwd(), 'src/components/patterns/ReactPatternExample.tsx'), 'utf8'),
@@ -56,6 +64,7 @@ const sources: Record<Framework, string> = {
   svelte: await readFile(join(process.cwd(), 'src/components/patterns/SveltePatternExample.svelte'), 'utf8'),
   solid: await readFile(join(process.cwd(), 'src/components/patterns/SolidPatternExample.tsx'), 'utf8'),
   angular: await readFile(join(process.cwd(), 'src/components/angular/AngularPatternExample.ts'), 'utf8'),
+  astro: await readFile(join(process.cwd(), 'src/components/patterns/AstroPatternExample.astro'), 'utf8'),
 };
 const panelId = `pattern-panel-${pattern.id}`;
 ---
@@ -65,7 +74,7 @@ const panelId = `pattern-panel-${pattern.id}`;
     <div>
       <p class="pattern-eyebrow">{pattern.category}</p>
       <h2 id={`${pattern.id}-explorer-title`}>{pattern.title} 구현 예시</h2>
-      <p class="pattern-explorer-description">각 탭은 해당 프레임워크의 독립 런타임으로 같은 패턴 과업을 렌더링합니다.</p>
+      <p class="pattern-explorer-description">각 탭은 해당 프레임워크의 독립 런타임 또는 Astro native SSR로 같은 패턴 과업을 렌더링합니다.</p>
     </div>
     <div class="pattern-levels" aria-label="공식 KRDS 적용 수준">
       {pattern.officialLevels ? pattern.officialLevels.map((level) => <span>{level}</span>) : <span>공식 원문에 적용 수준 별도 표기 없음</span>}
@@ -84,7 +93,7 @@ const panelId = `pattern-panel-${pattern.id}`;
         class:list={{ 'is-active': index === 0 }}
         data-tab={framework.id}
       >
-        <span class="framework-icon" aria-hidden="true" set:html={iconSvg(framework.icon)}></span>
+        {framework.icon ? <span class="framework-icon" aria-hidden="true" set:html={iconSvg(framework.icon)}></span> : <span class="framework-icon framework-icon-astro" aria-hidden="true">A</span>}
         <span>{framework.label}</span>
       </button>
     ))}
@@ -118,6 +127,7 @@ const panelId = `pattern-panel-${pattern.id}`;
           {framework.id === 'svelte' && <SveltePatternExample patternId={pattern.id} client:load />}
           {framework.id === 'solid' && <SolidPatternExample patternId={pattern.id} client:load />}
           {framework.id === 'angular' && <AngularPatternExample {...({ patternId: pattern.id } as any)} client:load />}
+          {framework.id === 'astro' && <AstroPatternExample patternId={pattern.id} />}
         </div>
       </div>
     </div>
@@ -125,16 +135,26 @@ const panelId = `pattern-panel-${pattern.id}`;
 
   <p class="pattern-explorer-note">
     공식 개요: <a href={pattern.officialOverview} target="_blank" rel="noreferrer">KRDS 원문</a>
-    · 사례/가이드: <a href={pattern.officialExample} target="_blank" rel="noreferrer">공식 페이지</a>
+    · 체크리스트: <a href={pattern.officialChecklist} target="_blank" rel="noreferrer">적용 수준 확인</a>
+    · 단계 링크 {pattern.officialStageLinks.length}개
+    · {pattern.officialVersionBoundary}
     · {pattern.sourceNote}
   </p>
 </section>
-
 <script>
+  const frameworkPreferenceKey = 'krds-docs-framework';
+  const preferredFramework = (() => {
+    try {
+      return window.localStorage.getItem(frameworkPreferenceKey);
+    } catch {
+      return null;
+    }
+  })();
+
   document.querySelectorAll<HTMLElement>('.pattern-explorer').forEach((explorer) => {
     const tabs = Array.from(explorer.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
     const panels = Array.from(explorer.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
-    const select = (tab: HTMLButtonElement) => {
+    const select = (tab: HTMLButtonElement, persist = true) => {
       tabs.forEach((candidate) => {
         const selected = candidate === tab;
         candidate.setAttribute('aria-selected', String(selected));
@@ -144,7 +164,17 @@ const panelId = `pattern-panel-${pattern.id}`;
       panels.forEach((panel) => {
         panel.hidden = panel.id === tab.getAttribute('aria-controls') ? false : true;
       });
+      if (persist) {
+        try {
+          window.localStorage.setItem(frameworkPreferenceKey, tab.dataset.tab ?? '');
+        } catch {
+          // Storage can be unavailable in privacy-restricted browsers.
+        }
+      }
     };
+    const initialTab =
+      tabs.find((tab) => tab.dataset.tab === preferredFramework) ?? tabs[0];
+    if (initialTab) select(initialTab, false);
     tabs.forEach((tab, index) => {
       tab.addEventListener('click', () => select(tab));
       tab.addEventListener('keydown', (event) => {
@@ -152,8 +182,9 @@ const panelId = `pattern-panel-${pattern.id}`;
         event.preventDefault();
         const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1) + tabs.length) % tabs.length;
         tabs[nextIndex]?.focus();
-        select(tabs[nextIndex]);
+        if (tabs[nextIndex]) select(tabs[nextIndex]);
       });
     });
   });
 </script>
+

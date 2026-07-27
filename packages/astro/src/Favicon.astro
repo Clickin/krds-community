@@ -1,0 +1,16 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props
+  extends Omit<HTMLAttributes<'link'>, 'class' | 'class:list' | 'href' | 'rel' | 'sizes' | 'type'> {
+  href: string;
+  sizes?: string;
+  size?: string;
+  type?: string;
+  class?: string;
+}
+
+const { href, sizes, size, type, class: className, ...rest } = Astro.props;
+---
+
+<link {...rest} rel="icon" href={href} sizes={sizes ?? size} type={type} class={className} />

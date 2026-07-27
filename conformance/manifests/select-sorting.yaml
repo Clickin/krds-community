@@ -6,7 +6,7 @@ upstream:
     - upstream/krds-html/html/code/select_sorting.html
 fixtures:
   - id: select-sorting.default
-    sourceSelector: ".krds-form-select"
+    sourceSelector: ".krds-form-select-sort"
     mandatory: true
     viewport: desktop
     props: {}

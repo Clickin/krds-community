@@ -1,0 +1,58 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface CriticalAlertItem {
+  id?: string;
+  badge?: 'danger' | 'ok' | 'info' | string;
+  tone?: 'danger' | 'ok' | 'info';
+  badgeLabel?: string;
+  message?: string;
+  title?: string;
+  text?: string;
+  href?: string;
+  linkLabel?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'ul'>, 'class' | 'class:list' | 'role'> {
+  items?: Array<string | CriticalAlertItem>;
+  class?: string;
+}
+
+const { items = [], class: className, ...rest } = Astro.props;
+const alerts = items.map((rawItem) => {
+  const item: CriticalAlertItem = typeof rawItem === 'string' ? { message: rawItem } : rawItem;
+  const badgeTone =
+    item.tone ??
+    (item.badge === 'danger' || item.badge === 'ok' || item.badge === 'info'
+      ? item.badge
+      : undefined);
+  return {
+    ...item,
+    badgeTone,
+    badgeLabel: item.badgeLabel ?? (item.badge === badgeTone ? undefined : item.badge),
+    content: item.message ?? item.text ?? item.title,
+  };
+});
+---
+
+<div class="main-urgent-wrap">
+  <ul {...rest} class={cx('krds-critical-alerts', className)} role="alert">
+    {alerts.map((item) => (
+      <li>
+        <div class="critical-ban">
+          {item.badgeLabel && (
+            <span class={cx('critical-badge', item.badgeTone)}>{item.badgeLabel}</span>
+          )}
+          <p class="critical-txt">{item.content}</p>
+          {item.href && item.linkLabel && (
+            <a href={item.href} class="krds-btn medium link basic">
+              <span class="m-hide">{item.linkLabel}</span>
+              <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+            </a>
+          )}
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>

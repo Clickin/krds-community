@@ -8,21 +8,23 @@ upstream:
 fixtures:
   - id: radio.default.medium
     sourceSelector: "input[type=radio]"
+    sourceAncestorSelector: ".krds-form-check"
+    sourceFile: upstream/krds-html/html/code/radio_button.html
     mandatory: true
     viewport: desktop
-    props:
-      size: medium
     states: [default, checked, disabled, focus-visible]
   - id: radio.default.large
     sourceSelector: ".krds-form-check.large input"
+    sourceAncestorSelector: ".krds-form-check"
+    sourceFile: upstream/krds-html/html/code/radio_size.html
     mandatory: true
     viewport: desktop
     props:
       size: large
     states: [default, checked, disabled, focus-visible]
 contract:
-  semanticElement: input
+  semanticElement: label-and-radio
   accessibleRole: radio
   requiredAttributes:
-    name: grouped
+    name: true
   accessibility: [label-for-id, checked-state, disabled-semantics, native-radio-keyboard]

@@ -1,0 +1,16 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'role'> {
+  label?: string;
+  children?: string;
+  class?: string;
+}
+
+const { label, children, class: className, ...rest } = Astro.props;
+---
+
+<div {...rest} class={cx('krds-spinner', className)} role="status">
+  <span class="sr-only"><slot>{label ?? children}</slot></span>
+</div>

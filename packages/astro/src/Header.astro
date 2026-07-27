@@ -1,0 +1,452 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+import MainMenuMobile from './MainMenuMobile.astro';
+import MainMenuPc from './MainMenuPc.astro';
+
+export interface HeaderLinkItem {
+  id?: string;
+  label: string;
+  href?: string;
+  current?: boolean;
+  active?: boolean;
+  button?: boolean;
+  disabled?: boolean;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+  className?: string;
+  value?: string;
+  selected?: boolean;
+  titleHref?: string;
+  titleLinkLabel?: string;
+  descriptionItems?: Array<{
+    id?: string;
+    title: string;
+    description?: string;
+    href?: string;
+    target?: HTMLAttributes<'a'>['target'];
+    rel?: string;
+    externalTitle?: string;
+  }>;
+  banner?: {
+    badge?: string;
+    label?: string;
+    href?: string;
+    target?: HTMLAttributes<'a'>['target'];
+    rel?: string;
+    title?: string;
+    disabled?: boolean;
+  };
+  children?: HeaderLinkItem[];
+}
+
+export interface HeaderUtilityItem extends HeaderLinkItem {
+  id: string;
+  kind: 'link' | 'dropdown' | 'resize';
+  items?: HeaderLinkItem[];
+  selectedLabel?: string;
+  resetLabel?: string;
+  defaultValue?: string;
+}
+
+export interface HeaderMyMenu {
+  label: string;
+  userName?: string;
+  timeLabel?: string;
+  time?: string;
+  extendLabel?: string;
+  items?: HeaderLinkItem[];
+  logoutLabel?: string;
+}
+
+export interface HeaderMobileMenu {
+  id?: string;
+  utilityItems?: HeaderLinkItem[];
+  loginLabel?: string;
+  loginHref?: string;
+  serviceItems?: HeaderLinkItem[];
+  searchPlaceholder?: string;
+  searchTitle?: string;
+  searchLabel?: string;
+  searchName?: string;
+  searchValue?: string;
+  defaultSearchValue?: string;
+  items?: HeaderLinkItem[];
+  previousLabel?: string;
+  closeLabel?: string;
+  bottomItems?: HeaderLinkItem[];
+  bottomSize?: 'small' | 'medium';
+  closeButtonId?: string;
+  open?: boolean;
+  navigationLabel?: string;
+  class?: string;
+  style?: HTMLAttributes<'div'>['style'];
+}
+
+export interface Props extends Omit<HTMLAttributes<'header'>, 'class' | 'class:list' | 'title'> {
+  menuLabel?: string;
+  utilityItems?: HeaderUtilityItem[];
+  logoLabel?: string;
+  logoHref?: string;
+  searchLabel?: string;
+  searchTitle?: string;
+  loginLabel?: string;
+  loginHref?: string;
+  joinLabel?: string;
+  joinHref?: string;
+  allMenuLabel?: string;
+  myMenu?: HeaderMyMenu;
+  desktopItems?: HeaderLinkItem[];
+  nav?: HeaderLinkItem[];
+  links?: HeaderLinkItem[];
+  mobileMenu?: HeaderMobileMenu;
+  mobileMenuId?: string;
+  desktopNavigationLabel?: string;
+  mobileNavigationLabel?: string;
+  title?: string;
+  class?: string;
+}
+
+const {
+  menuLabel,
+  utilityItems = [],
+  logoLabel,
+  logoHref,
+  searchLabel,
+  searchTitle,
+  loginLabel,
+  loginHref,
+  joinLabel,
+  joinHref,
+  allMenuLabel,
+  myMenu,
+  desktopItems,
+  nav,
+  links,
+  mobileMenu = {},
+  mobileMenuId = 'mobile-nav',
+  desktopNavigationLabel,
+  mobileNavigationLabel,
+  title,
+  id = 'krds-header',
+  class: className,
+  ...rest
+} = Astro.props;
+const resolvedDesktopItems = desktopItems ?? nav ?? links ?? [];
+const resolvedLogoLabel = logoLabel ?? title;
+const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
+const selectedUtilityValue = (item: HeaderUtilityItem) =>
+  item.defaultValue ?? item.items?.find((option) => option.selected)?.value ??
+  item.items?.find((option) => option.selected)?.className ?? item.items?.[0]?.value ??
+  item.items?.[0]?.className;
+---
+
+<header {...rest} id={id} class={className} data-krds-header>
+  <div class="header-in">
+    <div class="header-container">
+      <div class="inner">
+        <div class="header-utility">
+          <ul class="utility-list">
+            {utilityItems.map((item) => (
+              <li>
+                {item.kind === 'link' ? (
+                  item.href ? (
+                    <a
+                      href={item.href}
+                      class="krds-btn small text"
+                      target={item.target}
+                      rel={item.rel}
+                      title={item.title}
+                    >
+                      {item.label}
+                      {item.target && <i class="svg-icon ico-go" aria-hidden="true"></i>}
+                    </a>
+                  ) : (
+                    <button type="button" class="krds-btn small text" disabled={item.disabled}>
+                      {item.label}
+                    </button>
+                  )
+                ) : item.kind === 'resize' ? (
+                  <div
+                    class="krds-drop-wrap krds-resize"
+                    data-adjust="scale"
+                    data-default-scale={selectedUtilityValue(item)}
+                    data-header-dropdown
+                    data-header-resize
+                  >
+                    <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
+                      {item.label} <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+                    </button>
+                    <div class="drop-menu">
+                      <div class="drop-in">
+                        <ul class="drop-list">
+                          {item.items?.map((option) => {
+                            const optionValue = option.value ?? option.className;
+                            return (
+                              <li>
+                                <button
+                                  type="button"
+                                  class={cx('item-link', option.className, option.selected && 'active')}
+                                  data-adjust-scale={optionValue}
+                                  aria-selected={option.selected ? 'true' : 'false'}
+                                  disabled={option.disabled}
+                                >
+                                  {option.label}
+                                  <span class="sr-only">{option.selected ? item.selectedLabel : undefined}</span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <div class="drop-bottom">
+                          <button
+                            type="button"
+                            class="krds-btn medium text"
+                            data-adjust-scale={selectedUtilityValue(item)}
+                          >
+                            <i class="svg-icon ico-reset" aria-hidden="true"></i> {item.resetLabel}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div class="krds-drop-wrap" data-header-dropdown>
+                    <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
+                      {item.label} <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+                    </button>
+                    <div class="drop-menu">
+                      <div class="drop-in">
+                        <ul class="drop-list">
+                          {item.items?.map((option) => (
+                            <li>
+                              {option.href ? (
+                                <a
+                                  href={option.href}
+                                  class={cx('item-link', option.className)}
+                                  target={option.target}
+                                  rel={option.rel}
+                                  title={option.title}
+                                  aria-current={option.current ? 'page' : undefined}
+                                  aria-disabled={option.disabled ? 'true' : undefined}
+                                  tabindex={option.disabled ? -1 : undefined}
+                                >
+                                  {option.label}
+                                </a>
+                              ) : (
+                                <button
+                                  type="button"
+                                  class={cx('item-link', option.className)}
+                                  disabled={option.disabled}
+                                >
+                                  {option.label}
+                                </button>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="header-branding">
+          <h2 class="logo">
+            <a href={logoHref}>
+              <slot name="logo"><span class="sr-only">{resolvedLogoLabel}</span></slot>
+            </a>
+          </h2>
+          <div class="header-actions">
+            <button type="button" class="btn-navi sch" title={searchTitle}>{searchLabel}</button>
+            {loginHref ? (
+              <a href={loginHref} class="btn-navi login">{loginLabel}</a>
+            ) : (
+              <button type="button" class="btn-navi login">{loginLabel}</button>
+            )}
+            {joinHref ? (
+              <a href={joinHref} class="btn-navi join">{joinLabel}</a>
+            ) : (
+              <button type="button" class="btn-navi join">{joinLabel}</button>
+            )}
+            {myMenu && (
+              <div class="krds-drop-wrap my-drop" data-header-dropdown>
+                <button type="button" class="btn-navi my drop-btn" aria-expanded="false">
+                  {myMenu.label}
+                </button>
+                <div class="drop-menu">
+                  <div class="drop-in">
+                    <div class="drop-top">
+                      {myMenu.userName && <p class="my-name">{myMenu.userName}</p>}
+                      {(myMenu.timeLabel || myMenu.time || myMenu.extendLabel) && (
+                        <dl class="my-time">
+                          <dt>{myMenu.timeLabel}</dt>
+                          <dd>
+                            <span class="time">{myMenu.time}</span>
+                            <button type="button" class="krds-btn medium text">{myMenu.extendLabel}</button>
+                          </dd>
+                        </dl>
+                      )}
+                    </div>
+                    <ul class="drop-list">
+                      {myMenu.items?.map((item) => (
+                        <li>
+                          {item.href ? (
+                            <a
+                              href={item.href}
+                              class="item-link"
+                              target={item.target}
+                              rel={item.rel}
+                              title={item.title}
+                              aria-current={item.current ? 'page' : undefined}
+                            >
+                              {item.label}
+                            </a>
+                          ) : (
+                            <button type="button" class="item-link" disabled={item.disabled}>{item.label}</button>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                    <div class="drop-bottom">
+                      <button type="button" class="krds-btn medium text">
+                        <i class="svg-icon ico-logout" aria-hidden="true"></i> {myMenu.logoutLabel}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <button
+              type="button"
+              class="btn-navi all"
+              aria-controls={resolvedMobileId}
+              aria-expanded="false"
+            >
+              {allMenuLabel}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <MainMenuPc
+      items={resolvedDesktopItems}
+      sample={false}
+      menuLabel={menuLabel}
+      navigationLabel={desktopNavigationLabel}
+    />
+  </div>
+  <MainMenuMobile
+    {...mobileMenu}
+    id={resolvedMobileId}
+    sample={false}
+    navigationLabel={mobileMenu.navigationLabel ?? mobileNavigationLabel}
+  />
+</header>
+
+<script>
+  const headerScaleTokenByValue: Record<string, string> = {
+    sm: '--krds-zoom-small',
+    md: '--krds-zoom-medium',
+    lg: '--krds-zoom-large',
+    xlg: '--krds-zoom-xlarge',
+    xxlg: '--krds-zoom-xxlarge',
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-krds-header]').forEach((header) => {
+    const dropdowns = Array.from(header.querySelectorAll<HTMLElement>('[data-header-dropdown]'));
+    const closeDropdown = (dropdown: HTMLElement, restoreFocus = false) => {
+      const button = dropdown.querySelector<HTMLButtonElement>(':scope > .drop-btn');
+      const menu = dropdown.querySelector<HTMLElement>(':scope > .drop-menu');
+      if (!button || !menu) return;
+      menu.style.display = 'none';
+      button.classList.remove('active');
+      button.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) button.focus();
+    };
+    const closeAll = (except?: HTMLElement) => {
+      dropdowns.forEach((dropdown) => {
+        if (dropdown !== except) closeDropdown(dropdown);
+      });
+    };
+    const applyHeaderScale = (dropdown: HTMLElement, value: string) => {
+      const options = Array.from(
+        dropdown.querySelectorAll<HTMLButtonElement>('.drop-list [data-adjust-scale]'),
+      );
+      const selectedMessage =
+        dropdown.querySelector<HTMLElement>('.item-link.active .sr-only')?.textContent ?? '';
+      options.forEach((option) => {
+        const active = option.dataset.adjustScale === value;
+        option.classList.toggle('active', active);
+        option.setAttribute('aria-selected', String(active));
+        const text = option.querySelector<HTMLElement>('.sr-only');
+        if (text) text.textContent = active ? selectedMessage : '';
+      });
+      const token = headerScaleTokenByValue[value];
+      const zoom = token
+        ? getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+        : '';
+      if (zoom) document.body.style.setProperty('zoom', zoom);
+      else document.body.style.removeProperty('zoom');
+      header.dispatchEvent(
+        new CustomEvent('krds:resize', { bubbles: true, detail: { value, zoom: zoom || undefined } }),
+      );
+    };
+
+    dropdowns.forEach((dropdown) => {
+      const button = dropdown.querySelector<HTMLButtonElement>(':scope > .drop-btn');
+      const menu = dropdown.querySelector<HTMLElement>(':scope > .drop-menu');
+      if (!button || !menu) return;
+      button.addEventListener('click', () => {
+        const nextOpen = button.getAttribute('aria-expanded') !== 'true';
+        closeAll(nextOpen ? dropdown : undefined);
+        if (!nextOpen) {
+          closeDropdown(dropdown);
+          return;
+        }
+        menu.style.display = 'block';
+        button.classList.add('active');
+        button.setAttribute('aria-expanded', 'true');
+      });
+      menu.querySelectorAll<HTMLElement>('.item-link').forEach((item) => {
+        item.addEventListener('click', (event) => {
+          if (item.getAttribute('aria-disabled') === 'true') {
+            event.preventDefault();
+            return;
+          }
+          if (dropdown.hasAttribute('data-header-resize')) {
+            const value = item.dataset.adjustScale;
+            if (value) applyHeaderScale(dropdown, value);
+          }
+          closeDropdown(dropdown, item instanceof HTMLButtonElement);
+        });
+      });
+      dropdown.querySelector<HTMLButtonElement>('.drop-bottom [data-adjust-scale]')
+        ?.addEventListener('click', (event) => {
+          const reset = event.currentTarget as HTMLButtonElement;
+          const value = reset.dataset.adjustScale ?? dropdown.dataset.defaultScale;
+          if (value) applyHeaderScale(dropdown, value);
+          closeDropdown(dropdown, true);
+        });
+      dropdown.addEventListener('focusout', (event) => {
+        if (event.relatedTarget instanceof Node && dropdown.contains(event.relatedTarget)) return;
+        closeDropdown(dropdown);
+      });
+    });
+    header.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const openDropdown = dropdowns.find(
+        (dropdown) => dropdown.querySelector('.drop-btn')?.getAttribute('aria-expanded') === 'true',
+      );
+      if (!openDropdown) return;
+      event.preventDefault();
+      closeDropdown(openDropdown, true);
+    });
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !header.contains(event.target)) closeAll();
+    });
+  });
+</script>

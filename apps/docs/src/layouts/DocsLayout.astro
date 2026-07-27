@@ -1,0 +1,53 @@
+---
+import '@krds-community/styles/css';
+import '../styles/theme.css';
+import DocsHeader from '../components/docs/DocsHeader.astro';
+import DocsSidebar from '../components/docs/DocsSidebar.astro';
+import DocsFooter from '../components/docs/DocsFooter.astro';
+import DocsSkipLink from '../components/docs/DocsSkipLink.astro';
+import { withBase } from '../data/links';
+
+interface Props {
+  title: string;
+  description?: string;
+  slug?: string;
+  template?: string;
+}
+
+const { title, description, slug = '' } = Astro.props;
+const canonicalPath = slug ? `/${slug}/` : '/';
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description ?? 'KRDS Community 문서'} />
+    <link rel="canonical" href={new URL(withBase(canonicalPath), Astro.site ?? Astro.url).href} />
+    <title>{title} | KRDS Community</title>
+  </head>
+  <body>
+    <DocsSkipLink />
+    <DocsHeader currentPath={Astro.url.pathname} />
+    <div class="docs-shell">
+      <DocsSidebar currentPath={Astro.url.pathname} />
+      <main id="main-content" class="docs-main">
+        <nav class="docs-breadcrumb" aria-label="현재 위치">
+          <a href={withBase('/')}>홈</a>
+          {slug && <span aria-hidden="true">›</span>}
+          {slug && <span aria-current="page">{title}</span>}
+        </nav>
+        <article class:list={['docs-article', { 'docs-home': !slug }]}>
+          <header class:list={['docs-page-header', { 'docs-hero': !slug }]}>
+            {!slug && <p class="docs-eyebrow">KRDS COMMUNITY</p>}
+            <h1>{title}</h1>
+            {description && <p class="docs-page-description">{description}</p>}
+          </header>
+          <div class="docs-prose"><slot /></div>
+        </article>
+      </main>
+    </div>
+    <DocsFooter />
+  </body>
+</html>

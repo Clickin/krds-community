@@ -12,446 +12,446 @@
     {
       "id": "accordion",
       "source": "upstream/krds-html/html/code/accordion.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 2,
+      "status": "mapped"
     },
     {
       "id": "accordion-line",
       "source": "upstream/krds-html/html/code/accordion_line.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "badge",
       "source": "upstream/krds-html/html/code/badge.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "badge-number",
       "source": "upstream/krds-html/html/code/badge_number.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "badge-size",
       "source": "upstream/krds-html/html/code/badge_size.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "breadcrumb",
       "source": "upstream/krds-html/html/code/breadcrumb.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "button",
       "source": "upstream/krds-html/html/code/button.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "button-hierarchy",
       "source": "upstream/krds-html/html/code/button_hierarchy.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 4,
+      "status": "mapped"
     },
     {
       "id": "button-icon",
       "source": "upstream/krds-html/html/code/button_icon.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "button-size",
       "source": "upstream/krds-html/html/code/button_size.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 4,
+      "status": "mapped"
     },
     {
       "id": "button-text",
       "source": "upstream/krds-html/html/code/button_text.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "button-with-icon",
       "source": "upstream/krds-html/html/code/button_with_icon.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "calendar",
       "source": "upstream/krds-html/html/code/calendar.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "calendar-range",
       "source": "upstream/krds-html/html/code/calendar_range.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "carousel",
       "source": "upstream/krds-html/html/code/carousel.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "carousel-banner",
       "source": "upstream/krds-html/html/code/carousel_banner.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "checkbox",
       "source": "upstream/krds-html/html/code/checkbox.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 2,
+      "status": "mapped"
     },
     {
       "id": "checkbox-chip",
       "source": "upstream/krds-html/html/code/checkbox_chip.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "checkbox-size",
       "source": "upstream/krds-html/html/code/checkbox_size.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "coach-mark",
       "source": "upstream/krds-html/html/code/coach_mark.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "contextual-help",
       "source": "upstream/krds-html/html/code/contextual_help.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "critical-alerts",
       "source": "upstream/krds-html/html/code/critical_alerts.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "date-input",
       "source": "upstream/krds-html/html/code/date_input.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "disclosure",
       "source": "upstream/krds-html/html/code/disclosure.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "favicon",
       "source": "upstream/krds-html/html/code/favicon.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "file-upload",
       "source": "upstream/krds-html/html/code/file_upload.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "footer",
       "source": "upstream/krds-html/html/code/footer.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "header",
       "source": "upstream/krds-html/html/code/header.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "help-panel",
       "source": "upstream/krds-html/html/code/help_panel.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "identifier",
       "source": "upstream/krds-html/html/code/identifier.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "in-page-navigation",
       "source": "upstream/krds-html/html/code/in_page_navigation.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "language-switcher",
       "source": "upstream/krds-html/html/code/language_switcher.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "language-switcher-page",
       "source": "upstream/krds-html/html/code/language_switcher_page.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "link",
       "source": "upstream/krds-html/html/code/link.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "main-menu-mobile",
       "source": "upstream/krds-html/html/code/main_menu_mobile.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "main-menu-pc",
       "source": "upstream/krds-html/html/code/main_menu_pc.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "masthead",
       "source": "upstream/krds-html/html/code/masthead.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "modal",
       "source": "upstream/krds-html/html/code/modal.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "modal-sample",
       "source": "upstream/krds-html/html/code/modal_sample.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "pagination",
       "source": "upstream/krds-html/html/code/pagination.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "radio-button",
       "source": "upstream/krds-html/html/code/radio_button.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "radio-chip",
       "source": "upstream/krds-html/html/code/radio_chip.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "radio-size",
       "source": "upstream/krds-html/html/code/radio_size.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "resize",
       "source": "upstream/krds-html/html/code/resize.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "select",
       "source": "upstream/krds-html/html/code/select.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "select-size",
       "source": "upstream/krds-html/html/code/select_size.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "select-sorting",
       "source": "upstream/krds-html/html/code/select_sorting.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "select-state",
       "source": "upstream/krds-html/html/code/select_state.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "side-navigation",
       "source": "upstream/krds-html/html/code/side_navigation.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "skip-link",
       "source": "upstream/krds-html/html/code/skip_link.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "spinner",
       "source": "upstream/krds-html/html/code/spinner.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "step-indicator",
       "source": "upstream/krds-html/html/code/step_indicator.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "structured-list",
       "source": "upstream/krds-html/html/code/structured_list.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "structured-list-table",
       "source": "upstream/krds-html/html/code/structured_list_table.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tab",
       "source": "upstream/krds-html/html/code/tab.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "table",
       "source": "upstream/krds-html/html/code/table.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tag",
       "source": "upstream/krds-html/html/code/tag.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tag-link",
       "source": "upstream/krds-html/html/code/tag_link.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "text-input",
       "source": "upstream/krds-html/html/code/text_input.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 4,
+      "status": "mapped"
     },
     {
       "id": "text-input-icon",
       "source": "upstream/krds-html/html/code/text_input_icon.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "text-input-size",
       "source": "upstream/krds-html/html/code/text_input_size.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 5,
+      "status": "mapped"
     },
     {
       "id": "text-input-state",
       "source": "upstream/krds-html/html/code/text_input_state.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 5,
+      "status": "mapped"
     },
     {
       "id": "text-list",
       "source": "upstream/krds-html/html/code/text_list.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "text-list-ordered",
       "source": "upstream/krds-html/html/code/text_list_ordered.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "textarea",
       "source": "upstream/krds-html/html/code/textarea.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "toggle-switch",
       "source": "upstream/krds-html/html/code/toggle_switch.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "toggle-switch-size",
       "source": "upstream/krds-html/html/code/toggle_switch_size.html",
-      "fixtureCount": 1,
-      "status": "unmapped"
+      "fixtureCount": 3,
+      "status": "mapped"
     },
     {
       "id": "tooltip",
       "source": "upstream/krds-html/html/code/tooltip.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tooltip-box",
       "source": "upstream/krds-html/html/code/tooltip_box.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tooltip-vertical",
       "source": "upstream/krds-html/html/code/tooltip_vertical.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tts",
       "source": "upstream/krds-html/html/code/tts.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tts-icon",
       "source": "upstream/krds-html/html/code/tts_icon.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tts-size",
       "source": "upstream/krds-html/html/code/tts_size.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     },
     {
       "id": "tutorial-panel",
       "source": "upstream/krds-html/html/code/tutorial_panel.html",
       "fixtureCount": 1,
-      "status": "unmapped"
+      "status": "mapped"
     }
   ]
 }

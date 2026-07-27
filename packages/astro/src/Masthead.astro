@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list'> {
+  message?: string;
+  children?: string;
+  class?: string;
+}
+
+const {
+  id = 'krds-masthead',
+  message,
+  children,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<div {...rest} id={id} class={className}>
+  <div class="toggle-wrap">
+    <div class="toggle-head">
+      <div class="inner">
+        <span class="nuri-txt"><slot>{message ?? children}</slot></span>
+      </div>
+    </div>
+  </div>
+</div>

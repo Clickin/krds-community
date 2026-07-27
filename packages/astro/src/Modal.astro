@@ -1,0 +1,267 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props
+  extends Omit<HTMLAttributes<'section'>, 'class' | 'class:list' | 'id' | 'title'> {
+  id?: string;
+  open?: boolean;
+  title: string;
+  description?: string;
+  children?: string;
+  items?: string[];
+  cancelLabel: string;
+  confirmLabel: string;
+  closeLabel: string;
+  triggerLabel?: string;
+  triggerClass?: string;
+  class?: string;
+}
+
+const {
+  id: providedId,
+  open = false,
+  title,
+  description,
+  children,
+  items,
+  cancelLabel,
+  confirmLabel,
+  closeLabel,
+  triggerLabel,
+  triggerClass,
+  class: className,
+  'aria-labelledby': ariaLabelledby,
+  ...rest
+} = Astro.props;
+
+const modalId = providedId ?? `krds-modal-${crypto.randomUUID()}`;
+const titleId = `${modalId}-title`;
+const hasBodySlot = Astro.slots.has('default');
+const hasTriggerSlot = Astro.slots.has('trigger');
+---
+
+{hasTriggerSlot && <slot name="trigger" />}
+{triggerLabel && (
+  <button
+    type="button"
+    class:list={['krds-btn', 'large', 'open-modal', triggerClass]}
+    data-target={modalId}
+    aria-controls={modalId}
+    aria-haspopup="dialog"
+    aria-expanded={open ? 'true' : 'false'}
+  >
+    {triggerLabel}
+  </button>
+)}
+<section
+  {...rest}
+  id={modalId}
+  class:list={['krds-modal', 'fade', open && 'in', open && 'shown', className]}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={ariaLabelledby ?? titleId}
+  aria-hidden={open ? 'false' : 'true'}
+  data-krds-modal
+>
+  <div class="modal-dialog">
+    <div class="modal-content" tabindex="-1">
+      <div class="modal-header">
+        <h2 id={titleId} class="modal-title">{title}</h2>
+      </div>
+      <div class="modal-conts">
+        <div class="conts-area">
+          {hasBodySlot ? (
+            <slot />
+          ) : items?.length ? (
+            items.map((item, index) => (
+              <Fragment>
+                {item}{index < items.length - 1 && <br />}
+              </Fragment>
+            ))
+          ) : (
+            description ?? children
+          )}
+        </div>
+      </div>
+      <div class="modal-btn btn-wrap">
+        <button
+          type="button"
+          class="krds-btn medium tertiary close-modal"
+          data-modal-action="cancel"
+        >
+          {cancelLabel}
+        </button>
+        <button
+          type="button"
+          class="krds-btn medium primary close-modal"
+          data-modal-action="confirm"
+        >
+          {confirmLabel}
+        </button>
+      </div>
+      <button
+        type="button"
+        class="krds-btn medium icon btn-close close-modal"
+        data-modal-action="close"
+      >
+        <span class="sr-only">{closeLabel}</span>
+        <i class="svg-icon ico-popup-close"></i>
+      </button>
+    </div>
+  </div>
+  <div class:list={['modal-back', open && 'in']} data-modal-backdrop></div>
+</section>
+
+<script>
+  const enhancedModals = new WeakSet<HTMLElement>();
+  const enhancedModalTriggers = new WeakSet<HTMLElement>();
+  const modalReturnFocus = new WeakMap<HTMLElement, HTMLElement>();
+  const modalFocusableSelector = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(',');
+
+  function enhanceModals() {
+    document.querySelectorAll<HTMLElement>('[data-krds-modal]').forEach((modal) => {
+      if (enhancedModals.has(modal)) return;
+      enhancedModals.add(modal);
+
+      const content = modal.querySelector<HTMLElement>('.modal-content');
+      const backdrop = modal.querySelector<HTMLElement>('[data-modal-backdrop]');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reducedMotion) {
+        modal.style.transition = 'none';
+        if (backdrop) backdrop.style.transition = 'none';
+      }
+
+      const matchingTriggers = () =>
+        Array.from(document.querySelectorAll<HTMLElement>('.open-modal[data-target]')).filter(
+          (trigger) => trigger.dataset.target === modal.id,
+        );
+
+      const focusableElements = () =>
+        content
+          ? Array.from(content.querySelectorAll<HTMLElement>(modalFocusableSelector)).filter(
+              (element) =>
+                !element.hasAttribute('hidden') && element.getAttribute('aria-hidden') !== 'true',
+            )
+          : [];
+
+      const focusInside = () => {
+        const target = focusableElements()[0] ?? content ?? modal;
+        target.focus({ preventScroll: true });
+      };
+
+      const syncTriggers = (expanded: boolean) => {
+        matchingTriggers().forEach((trigger) => {
+          trigger.setAttribute('aria-controls', modal.id);
+          trigger.setAttribute('aria-haspopup', 'dialog');
+          trigger.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        });
+      };
+
+      const setOpen = (
+        nextOpen: boolean,
+        trigger?: HTMLElement,
+        reason = nextOpen ? 'open' : 'close',
+        moveFocus = true,
+      ) => {
+        if (nextOpen) {
+          if (trigger) modalReturnFocus.set(modal, trigger);
+          modal.classList.add('shown', 'in');
+          backdrop?.classList.add('in');
+          modal.setAttribute('aria-hidden', 'false');
+          modal.inert = false;
+          document.body.classList.add('scroll-no');
+          syncTriggers(true);
+          if (moveFocus) focusInside();
+          modal.dispatchEvent(
+            new CustomEvent('krds:modalopen', {
+              bubbles: true,
+              detail: { id: modal.id },
+            }),
+          );
+          return;
+        }
+
+        modal.classList.remove('in', 'shown');
+        backdrop?.classList.remove('in');
+        modal.setAttribute('aria-hidden', 'true');
+        modal.inert = true;
+        syncTriggers(false);
+        if (!document.querySelector('.krds-modal.shown')) {
+          document.body.classList.remove('scroll-no');
+        }
+        const returnTarget = modalReturnFocus.get(modal);
+        modalReturnFocus.delete(modal);
+        if (moveFocus && returnTarget?.isConnected) returnTarget.focus({ preventScroll: true });
+        modal.dispatchEvent(
+          new CustomEvent('krds:modalclose', {
+            bubbles: true,
+            detail: { id: modal.id, reason },
+          }),
+        );
+      };
+
+      matchingTriggers().forEach((trigger) => {
+        if (enhancedModalTriggers.has(trigger)) return;
+        enhancedModalTriggers.add(trigger);
+        trigger.addEventListener('click', (event) => {
+          event.preventDefault();
+          setOpen(true, trigger);
+        });
+      });
+
+      modal.querySelectorAll<HTMLButtonElement>('[data-modal-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.modalAction ?? 'close';
+          modal.dispatchEvent(
+            new CustomEvent('krds:modalaction', {
+              bubbles: true,
+              detail: { id: modal.id, action },
+            }),
+          );
+          setOpen(false, undefined, action);
+        });
+      });
+
+      backdrop?.addEventListener('click', focusInside);
+      modal.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          setOpen(false, undefined, 'escape');
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        const focusables = focusableElements();
+        if (!focusables.length) {
+          event.preventDefault();
+          (content ?? modal).focus({ preventScroll: true });
+          return;
+        }
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      const initiallyOpen = modal.classList.contains('shown');
+      modal.inert = !initiallyOpen;
+      syncTriggers(initiallyOpen);
+      if (initiallyOpen) document.body.classList.add('scroll-no');
+    });
+  }
+
+  enhanceModals();
+  document.addEventListener('astro:page-load', enhanceModals);
+</script>

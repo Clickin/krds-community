@@ -23,10 +23,12 @@
     "@krds-community/styles": "workspace:*"
   },
   "devDependencies": {
-    "solid-js": "catalog:"
+    "solid-js": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:"
   },
   "scripts": {
-    "build": "node scripts/clean.mjs && tsc -p tsconfig.json",
+    "build": "node scripts/clean.mjs && vite build --config scripts/vite.config.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
     "lint": "tsc -p tsconfig.json --noEmit"
   }
 }

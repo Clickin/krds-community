@@ -1,0 +1,18 @@
+{
+  "name": "@krds-community/conformance-host-astro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "astro build",
+    "lint": "astro check"
+  },
+  "dependencies": {
+    "@krds-community/astro": "workspace:*",
+    "@krds-community/conformance-host": "workspace:*",
+    "astro": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:",
+    "typescript": "catalog:"
+  }
+}

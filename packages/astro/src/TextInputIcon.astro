@@ -1,0 +1,132 @@
+---
+import { cx, inputRecipe } from '@krds-community/recipes';
+import type { TextInputProps } from './types';
+
+export interface Props extends TextInputProps {
+  togglePassword?: boolean;
+  clearable?: boolean;
+  showPasswordLabel?: string;
+  hidePasswordLabel?: string;
+  clearLabel?: string;
+}
+
+const {
+  id: providedId,
+  label,
+  hint,
+  type = 'password',
+  value,
+  size,
+  readonly,
+  togglePassword = type === 'password',
+  clearable = false,
+  showPasswordLabel,
+  hidePasswordLabel,
+  clearLabel,
+  'aria-describedby': consumerDescribedBy,
+  class: className,
+  ...rest
+} = Astro.props;
+const id = providedId ?? `krds-input-icon-${crypto.randomUUID()}`;
+const hintId = hint !== undefined || Astro.slots.has('hint') ? `${id}-hint` : undefined;
+const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;
+const recipe = inputRecipe({ size, className });
+const visible = type !== 'password';
+const showLabel = showPasswordLabel ?? label;
+const hideLabel = hidePasswordLabel ?? showLabel;
+const toggleLabel = visible ? hideLabel : showLabel;
+const toggleIcon = visible ? 'ico-pw-visible-on' : 'ico-pw-visible';
+---
+
+<div class="form-group" data-krds-input-icon="">
+  {(label !== undefined || Astro.slots.has('label')) && (
+    <div class="form-tit">
+      <label for={id}><slot name="label">{label}</slot></label>
+    </div>
+  )}
+  <div class={cx('form-conts', 'btn-ico-wrap')} data-delete={clearable ? 'true' : undefined}>
+    <input
+      {...rest}
+      type={type}
+      id={id}
+      class={recipe.className}
+      value={value}
+      readonly={readonly}
+      aria-describedby={describedBy}
+    />
+    {togglePassword && clearable ? (
+      <div class="btn-group">
+        <button type="button" class="krds-btn medium icon pure btn-delete-input" data-input-action="clear" aria-controls={id}>
+          <span class="sr-only">{clearLabel ?? label}</span>
+          <i class="svg-icon ico-delete-fill"></i>
+        </button>
+        <button
+          type="button"
+          class="krds-btn medium icon"
+          data-input-action="password"
+          data-show-label={showLabel}
+          data-hide-label={hideLabel}
+          aria-controls={id}
+          aria-pressed={visible ? 'true' : 'false'}
+        >
+          <span class="sr-only">{toggleLabel}</span>
+          <i class={cx('svg-icon', toggleIcon)}></i>
+        </button>
+      </div>
+    ) : (
+      <>
+        {clearable && (
+          <button type="button" class="krds-btn medium icon pure btn-delete-input" data-input-action="clear" aria-controls={id}>
+            <span class="sr-only">{clearLabel ?? label}</span>
+            <i class="svg-icon ico-delete-fill"></i>
+          </button>
+        )}
+        {togglePassword && (
+          <button
+            type="button"
+            class="krds-btn medium icon"
+            data-input-action="password"
+            data-show-label={showLabel}
+            data-hide-label={hideLabel}
+            aria-controls={id}
+            aria-pressed={visible ? 'true' : 'false'}
+          >
+            <span class="sr-only">{toggleLabel}</span>
+            <i class={cx('svg-icon', toggleIcon)}></i>
+          </button>
+        )}
+      </>
+    )}
+  </div>
+  {hintId && <p id={hintId} class="form-hint"><slot name="hint">{hint}</slot></p>}
+</div>
+
+<script>
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>('[data-krds-input-icon] [data-input-action]');
+    if (!button || button.disabled) return;
+    const root = button.closest<HTMLElement>('[data-krds-input-icon]');
+    const inputId = button.getAttribute('aria-controls');
+    const input = inputId ? root?.querySelector<HTMLInputElement>(`#${CSS.escape(inputId)}`) : null;
+    if (!input) return;
+
+    if (button.dataset.inputAction === 'clear') {
+      input.value = '';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      input.focus();
+      return;
+    }
+
+    const reveal = input.type === 'password';
+    input.type = reveal ? 'text' : 'password';
+    button.setAttribute('aria-pressed', reveal ? 'true' : 'false');
+    const text = button.querySelector<HTMLElement>('.sr-only');
+    if (text) text.textContent = reveal ? (button.dataset.hideLabel ?? '') : (button.dataset.showLabel ?? '');
+    const icon = button.querySelector<HTMLElement>('.svg-icon');
+    icon?.classList.toggle('ico-pw-visible', !reveal);
+    icon?.classList.toggle('ico-pw-visible-on', reveal);
+    input.focus();
+  });
+</script>

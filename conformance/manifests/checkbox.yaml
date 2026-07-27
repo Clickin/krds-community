@@ -8,20 +8,22 @@ upstream:
 fixtures:
   - id: checkbox.default.medium
     sourceSelector: "input[type=checkbox]"
+    sourceAncestorSelector: ".krds-form-check"
+    sourceFile: upstream/krds-html/html/code/checkbox.html
     mandatory: true
     viewport: desktop
-    props:
-      size: medium
     states: [default, checked, disabled, disabled-checked, focus-visible]
   - id: checkbox.default.large
     sourceSelector: ".krds-form-check.large input"
+    sourceAncestorSelector: ".krds-form-check"
+    sourceFile: upstream/krds-html/html/code/checkbox_size.html
     mandatory: true
     viewport: desktop
     props:
       size: large
     states: [default, checked, disabled, focus-visible]
 contract:
-  semanticElement: input
+  semanticElement: label-and-checkbox
   accessibleRole: checkbox
   requiredAttributes: {}
   accessibility: [label-for-id, checked-state, disabled-semantics, native-form-participation]

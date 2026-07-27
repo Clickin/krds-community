@@ -1,0 +1,220 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cx } from '@krds-community/recipes';
+
+export interface FileUploadItem {
+  id: string;
+  name: string;
+  status: 'uploading' | 'complete' | 'deletable' | 'error' | 'downloadable';
+  statusLabel?: string;
+  deleteLabel?: string;
+  errors?: string[];
+  downloadLabel?: string;
+  previewLabel?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'input'>, 'class' | 'class:list' | 'id' | 'name' | 'title' | 'type'> {
+  title?: string;
+  description?: string;
+  prompt?: string;
+  name?: string;
+  inputId?: string;
+  selectLabel?: string;
+  currentCount?: number;
+  maxCount?: number;
+  files?: FileUploadItem[];
+  deleteAllLabel?: string;
+  label?: string;
+  line?: boolean;
+  rootAttributes?: Omit<HTMLAttributes<'div'>, 'class' | 'class:list'>;
+  class?: string;
+}
+
+const {
+  title,
+  description,
+  prompt,
+  name,
+  inputId: providedInputId,
+  selectLabel,
+  currentCount,
+  maxCount,
+  files = [],
+  deleteAllLabel,
+  label,
+  line = true,
+  rootAttributes = {},
+  class: className,
+  multiple,
+  ...rest
+} = Astro.props;
+const inputId = providedInputId ?? `krds-file-upload-${crypto.randomUUID()}`;
+const displayedCount = currentCount ?? files.length;
+const hasList = files.length > 0 || currentCount !== undefined || maxCount !== undefined || deleteAllLabel !== undefined;
+---
+
+<div
+  {...rootAttributes}
+  class={cx('krds-file-upload', line && 'line', className)}
+  data-krds-file-upload=""
+  data-current-count={displayedCount}
+>
+  {(title !== undefined || description !== undefined || Astro.slots.has('title') || Astro.slots.has('description')) && (
+    <div class="file-head">
+      {(title !== undefined || Astro.slots.has('title')) && <h3 class="tit"><slot name="title">{title}</slot></h3>}
+      {(description !== undefined || Astro.slots.has('description')) && (
+        <div><p><slot name="description">{description}</slot></p></div>
+      )}
+    </div>
+  )}
+
+  <div class="file-upload" data-file-drop-zone="">
+    {(prompt !== undefined || Astro.slots.has('prompt')) && <p class="txt"><slot name="prompt">{prompt}</slot></p>}
+    <div class="file-upload-btn-wrap">
+      <input
+        {...rest}
+        type="file"
+        name={name}
+        id={inputId}
+        multiple={multiple}
+        aria-label={label}
+        hidden
+      />
+      <label for={inputId}>
+        <button type="button" class="krds-btn medium" data-file-action="select">
+          <i class="svg-icon ico-upload"></i><slot name="select-label">{selectLabel}</slot>
+        </button>
+      </label>
+    </div>
+  </div>
+
+  {hasList && (
+    <div class="file-list">
+      <div class="total"><span class="current">{displayedCount}개</span>{maxCount !== undefined && <> / {maxCount}개</>}</div>
+      <ul class="upload-list">
+        {files.map((file) => (
+          <li class={file.status === 'error' ? 'is-error' : undefined} data-file-id={file.id}>
+            <div class={cx('file-info', file.status === 'downloadable' && 'm-column')}>
+              <div class="file-name">{file.name}</div>
+              <div class="btn-wrap">
+                {file.status === 'uploading' && (
+                  <span class="krds-spinner" role="status">
+                    {file.statusLabel !== undefined && <span class="sr-only">{file.statusLabel}</span>}
+                  </span>
+                )}
+                {file.status === 'complete' && (
+                  <span class="ico-invalid complete">
+                    {file.statusLabel !== undefined && <em class="sr-only">{file.statusLabel}</em>}
+                  </span>
+                )}
+                {(file.status === 'deletable' || file.status === 'error') && file.deleteLabel !== undefined && (
+                  <button type="button" class="krds-btn medium text" data-file-action="delete">
+                    {file.deleteLabel} <i class="svg-icon ico-delete-fill"></i>
+                  </button>
+                )}
+                {file.status === 'downloadable' && (
+                  <>
+                    {file.downloadLabel !== undefined && (
+                      <button type="button" class="krds-btn medium text" data-file-action="download">
+                        {file.downloadLabel} <i class="svg-icon ico-down"></i>
+                      </button>
+                    )}
+                    {file.previewLabel !== undefined && (
+                      <button type="button" class="krds-btn medium text" data-file-action="preview">
+                        {file.previewLabel} <i class="svg-icon ico-angle right"></i>
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+            {file.status === 'error' && file.errors && file.errors.length > 0 && (
+              <p class="file-hint-invalid">
+                {file.errors.map((error, index) => (
+                  <Fragment>{error}{index < file.errors!.length - 1 && <br />}</Fragment>
+                ))}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+      {deleteAllLabel !== undefined && (
+        <div class="upload-delete-btn">
+          <button type="button" class="krds-btn xsmall tertiary" data-file-action="delete-all">
+            {deleteAllLabel}<i class="svg-icon ico-angle right"></i>
+          </button>
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
+<script>
+  const updateFileCount = (root: HTMLElement, count: number) => {
+    root.dataset.currentCount = String(Math.max(0, count));
+    const current = root.querySelector<HTMLElement>('.file-list .total .current');
+    if (current) current.textContent = `${Math.max(0, count)}개`;
+  };
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>('[data-krds-file-upload] [data-file-action]');
+    if (!button || button.disabled) return;
+    const root = button.closest<HTMLElement>('[data-krds-file-upload]');
+    const input = root?.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!root || !input) return;
+    const action = button.dataset.fileAction;
+    if (action === 'select') {
+      input.click();
+      return;
+    }
+    if (action === 'delete') {
+      const item = button.closest<HTMLLIElement>('li[data-file-id]');
+      if (!item) return;
+      const id = item.dataset.fileId;
+      item.remove();
+      updateFileCount(root, Number(root.dataset.currentCount ?? 0) - 1);
+      root.dispatchEvent(new CustomEvent('krds:file-remove', { bubbles: true, detail: { id } }));
+      return;
+    }
+    if (action === 'delete-all') {
+      root.querySelectorAll('.upload-list > li').forEach((item) => item.remove());
+      input.value = '';
+      updateFileCount(root, 0);
+      root.dispatchEvent(new CustomEvent('krds:file-remove-all', { bubbles: true }));
+    }
+  });
+
+  document.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLInputElement) || event.target.type !== 'file') return;
+    const root = event.target.closest<HTMLElement>('[data-krds-file-upload]');
+    if (root && event.target.files) updateFileCount(root, event.target.files.length);
+  });
+
+  document.addEventListener('dragover', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const zone = event.target.closest<HTMLElement>('[data-file-drop-zone]');
+    if (!zone) return;
+    event.preventDefault();
+    zone.classList.add('active');
+  });
+
+  document.addEventListener('dragleave', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const zone = event.target.closest<HTMLElement>('[data-file-drop-zone]');
+    if (zone && !zone.contains(event.relatedTarget as Node | null)) zone.classList.remove('active');
+  });
+
+  document.addEventListener('drop', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const zone = event.target.closest<HTMLElement>('[data-file-drop-zone]');
+    const root = zone?.closest<HTMLElement>('[data-krds-file-upload]');
+    const input = root?.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!zone || !input) return;
+    event.preventDefault();
+    zone.classList.remove('active');
+    if (!event.dataTransfer?.files.length) return;
+    input.files = event.dataTransfer.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+</script>

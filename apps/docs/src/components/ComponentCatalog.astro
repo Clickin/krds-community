@@ -1,0 +1,107 @@
+---
+import {
+  coverageSummary,
+  publicComponentExports,
+  type FixtureCatalogEntry,
+} from '../data/component-catalog';
+import { pinnedKrdsSnapshot } from '../data/provenance';
+
+const formatValue = (value: unknown) => {
+  if (value === undefined) return 'manifest에 선언되지 않음';
+  const serialized = JSON.stringify(value);
+  return serialized === undefined ? 'manifest에 선언되지 않음' : serialized;
+};
+
+const behaviorSummary = (fixture: FixtureCatalogEntry) =>
+  fixture.behavior
+    .map(({ state, setup }) => {
+      if (!setup.length) return state;
+      const actions = setup.map((step) => {
+        const target = step.target ? ` ${step.target}` : '';
+        const key = step.key ? ` ${step.key}` : '';
+        const value = step.value ? `=${step.value}` : '';
+        return `${step.action}${target}${key}${value}`;
+      });
+      return `${state}: ${actions.join(', ')}`;
+    })
+    .join(' · ');
+---
+
+<section class="component-catalog" aria-labelledby="component-catalog-title">
+  <header class="component-page-intro">
+    <p class="pattern-eyebrow">Generated inventory</p>
+    <h2 id="component-catalog-title">전체 public export와 공식 fixture</h2>
+    <p>
+      아래 목록은 Astro 패키지의 생성된 public 선언과 고정 KRDS HTML fixture manifest를 조합합니다.
+      각 항목에서 공식 source path·selector, 상태, API/폼 계약, 접근성 요구사항과 동작 setup의 근거를 확인할 수 있습니다.
+    </p>
+    <p>
+      snapshot <code>{pinnedKrdsSnapshot.ref}</code> · fixture
+      <strong>{coverageSummary.fixtures.covered}/{coverageSummary.fixtures.expected}</strong> · public export
+      <strong>{coverageSummary.exports.covered}/{coverageSummary.exports.expected}</strong>
+    </p>
+  </header>
+
+  <div class="component-catalog-summary" role="status" aria-live="polite">
+    <p>
+      fixture ID discoverability <strong>{coverageSummary.fixtures.discovered}/{coverageSummary.fixtures.expected}</strong>
+      · Astro export discoverability <strong>{coverageSummary.exports.discovered}/{coverageSummary.exports.expected}</strong>
+    </p>
+    <p>
+      Source data: <code>{coverageSummary.source.fixtures}</code> · <code>{coverageSummary.source.exports}</code>
+    </p>
+  </div>
+
+  <nav aria-label="컴포넌트 public export 목차">
+    <ul class="component-catalog-index">
+      {publicComponentExports.map((entry) => (
+        <li><a href={`#export-${entry.id}`}><code>{entry.name}</code></a></li>
+      ))}
+    </ul>
+  </nav>
+
+  <div class="component-catalog-list">
+    {publicComponentExports.map((entry) => (
+      <article id={`export-${entry.id}`} class="component-catalog-entry" aria-labelledby={`export-${entry.id}-title`}>
+        <header>
+          <p class="pattern-eyebrow">{entry.id}</p>
+          <h3 id={`export-${entry.id}-title`}>{entry.name}</h3>
+          <p><code>{entry.importPath}</code></p>
+          <p>Astro source: <code>{entry.sourceFile}</code></p>
+        </header>
+
+        {entry.manifest ? (
+          <>
+            <p>
+              Official HTML source: {entry.manifest.files.map((file) => <code>{file}</code>)}
+              · manifest <code>conformance/manifests/{entry.id}.yaml</code>
+            </p>
+            <div class="component-catalog-fixtures">
+              {entry.fixtures.map((fixture) => (
+                <section class="component-catalog-fixture" aria-labelledby={`fixture-${fixture.id}`}>
+                  <h4 id={`fixture-${fixture.id}`}><code>{fixture.id}</code></h4>
+                  <dl>
+                    <div><dt>Source</dt><dd><code>{fixture.source.file}</code> · <code>{fixture.source.selector}</code></dd></div>
+                    <div><dt>Viewport</dt><dd>{fixture.viewport}</dd></div>
+                    <div><dt>States</dt><dd>{fixture.states.map((state) => <code>{state}</code>)}</dd></div>
+                    <div><dt>API / props</dt><dd><code>{formatValue(fixture.props)}</code> · semantic <code>{fixture.api.semanticElement ?? 'manifest에 선언되지 않음'}</code> · role <code>{fixture.api.accessibleRole ?? 'manifest에 선언되지 않음'}</code> · required <code>{formatValue(fixture.api.requiredAttributes)}</code> · forbidden <code>{formatValue(fixture.api.forbiddenAttributes)}</code></dd></div>
+                    <div><dt>Events</dt><dd>{fixture.events.length ? fixture.events.map((event) => <code>{event}</code>) : 'setup 이벤트가 manifest에 선언되지 않음'}</dd></div>
+                    <div><dt>Forms</dt><dd>{fixture.forms.declared ? 'fixture props에 form 관련 키가 선언됨' : 'fixture manifest에 별도 form prop이 선언되지 않음'} · provenance <code>{fixture.forms.source}</code></dd></div>
+                    <div><dt>Accessibility</dt><dd>{fixture.accessibility.length ? fixture.accessibility.map((item) => <code>{item}</code>) : 'manifest에 선언되지 않음'}</dd></div>
+                    <div><dt>Behavior setup</dt><dd>{behaviorSummary(fixture) || '상태 setup 없음'} · provenance <code>{fixture.provenance.manifest}</code></dd></div>
+                  </dl>
+                  {fixture.provenance.referenceImplementationNotes && <p>Reference implementation: {fixture.provenance.referenceImplementationNotes}</p>}
+                  {fixture.provenance.errata.length > 0 && (
+                    <p>Errata: {fixture.provenance.errata.map((erratum) => <code>{erratum}</code>)}</p>
+                  )}
+                </section>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p role="alert">이 export에 대응하는 generated fixture manifest가 없습니다.</p>
+        )}
+      </article>
+    ))}
+  </div>
+</section>

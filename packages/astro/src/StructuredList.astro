@@ -1,0 +1,138 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { KrdsListItem } from '@krds-community/recipes';
+
+export interface StructuredListItem extends KrdsListItem {
+  badgeClass?: string;
+  dateLabel?: string;
+  dateValue?: string;
+  tags?: string[];
+  actionLabel?: string;
+  actionHref?: string;
+  actionTitle?: string;
+  shareLabel?: string;
+  favoriteLabel?: string;
+  favorite?: boolean;
+}
+
+export interface Props extends Omit<HTMLAttributes<'ul'>, 'class' | 'class:list'> {
+  items: StructuredListItem[];
+  dateLabel: string;
+  dateValue: string;
+  tags: string[];
+  actionLabel: string;
+  shareLabel: string;
+  favoriteLabel: string;
+  class?: string;
+}
+
+const {
+  items,
+  dateLabel,
+  dateValue,
+  tags,
+  actionLabel,
+  shareLabel,
+  favoriteLabel,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<ul
+  {...rest}
+  class:list={['krds-structured-list', 'type-full', className]}
+  data-krds-structured-list
+>
+  {items.map((item) => {
+    const itemTags = item.tags ?? tags;
+    const resolvedActionLabel = item.actionLabel ?? actionLabel;
+    const resolvedShareLabel = item.shareLabel ?? shareLabel;
+    const resolvedFavoriteLabel = item.favoriteLabel ?? favoriteLabel;
+    return (
+      <li class="structured-item" data-item-id={item.id}>
+        <div class="in">
+          <div class="card-top">
+            {item.badge && (
+              <span class:list={['krds-badge', item.badgeClass]}>{item.badge}</span>
+            )}
+          </div>
+          <div class="card-body">
+            <a href={item.href ?? '#'} class="c-text">
+              <p class="c-tit"><span class="span">{item.title}</span></p>
+              {item.description && <p class="c-txt">{item.description}</p>}
+              <p class="c-date">
+                <strong class="key">{item.dateLabel ?? dateLabel}</strong>
+                <span class="value">{item.dateValue ?? dateValue}</span>
+              </p>
+            </a>
+            <div class="c-btn">
+              <a
+                href={item.actionHref ?? item.href ?? '#'}
+                class="krds-btn secondary"
+                title={item.actionTitle ?? item.title}
+              >
+                {resolvedActionLabel}
+              </a>
+            </div>
+          </div>
+          <div class="card-btm">
+            {itemTags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+          <div class="card-btn">
+            <button
+              type="button"
+              class="krds-btn medium text"
+              title={item.title}
+              data-structured-action="share"
+            >
+              <i class="svg-icon ico-share"></i> {resolvedShareLabel}
+            </button>
+            <button
+              type="button"
+              class="krds-btn medium text"
+              title={item.title}
+              aria-pressed={item.favorite ? 'true' : 'false'}
+              data-structured-action="favorite"
+            >
+              <i class="svg-icon ico-like"></i> {resolvedFavoriteLabel}
+            </button>
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
+<script>
+  const enhancedStructuredLists = new WeakSet<HTMLElement>();
+
+  function enhanceStructuredLists() {
+    document.querySelectorAll<HTMLElement>('[data-krds-structured-list]').forEach((root) => {
+      if (enhancedStructuredLists.has(root)) return;
+      enhancedStructuredLists.add(root);
+
+      root.querySelectorAll<HTMLButtonElement>('[data-structured-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const item = button.closest<HTMLElement>('[data-item-id]');
+          const action = button.dataset.structuredAction;
+          if (!item || !action) return;
+          let pressed: boolean | undefined;
+          if (action === 'favorite') {
+            pressed = button.getAttribute('aria-pressed') !== 'true';
+            button.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+          }
+          root.dispatchEvent(
+            new CustomEvent('krds:structuredlistaction', {
+              bubbles: true,
+              detail: { id: item.dataset.itemId, action, pressed },
+            }),
+          );
+        });
+      });
+    });
+  }
+
+  enhanceStructuredLists();
+  document.addEventListener('astro:page-load', enhanceStructuredLists);
+</script>

@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.tab.runtime-state-semantics
 contract:
   semanticElement: native-element
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

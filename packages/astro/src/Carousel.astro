@@ -1,0 +1,235 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { KrdsCarouselSlide } from '@krds-community/recipes';
+
+export interface CarouselSlide extends KrdsCarouselSlide {
+  actionLabel?: string;
+  imageAlt?: string;
+  imageSrc?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list'> {
+  slides: CarouselSlide[];
+  previousLabel: string;
+  nextLabel: string;
+  moreLabel: string;
+  imageLabel?: string;
+  actionLabel: string;
+  moreHref?: string;
+  autoPlay?: boolean;
+  interval?: number;
+  initialIndex?: number;
+  class?: string;
+}
+
+const {
+  slides,
+  previousLabel,
+  nextLabel,
+  moreLabel,
+  imageLabel,
+  actionLabel,
+  moreHref = '#',
+  autoPlay = false,
+  interval = 5000,
+  initialIndex = 0,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const safeInitialIndex = slides.length
+  ? Math.min(Math.max(Math.trunc(initialIndex), 0), slides.length - 1)
+  : 0;
+---
+
+<div
+  {...rest}
+  class:list={['main-vban-wrap', 'bg', className]}
+  data-krds-carousel
+  data-initial-index={safeInitialIndex}
+  data-auto-play={autoPlay ? 'true' : 'false'}
+  data-interval={Math.max(interval, 0)}
+>
+  <div class="inner">
+    <div class="vb-swiper">
+      <div class="swiper">
+        <ul class="swiper-wrapper">
+          {slides.map((slide) => {
+            const resolvedImageLabel = slide.imageAlt ?? imageLabel;
+            return (
+              <li class="swiper-slide" data-slide-id={slide.id}>
+                <div class="in">
+                  <div class="text">
+                    <p class="tit">
+                      {slide.title} <br class="w-hide" />{slide.title}
+                    </p>
+                    <p class="txt">
+                      {slide.description} <br class="w-hide" />{slide.description}
+                    </p>
+                    <a href={slide.href ?? '#'} class="krds-btn primary">
+                      {slide.actionLabel ?? actionLabel}
+                    </a>
+                  </div>
+                  <div class="im">
+                    {slide.imageSrc ? (
+                      <img src={slide.imageSrc} alt={resolvedImageLabel ?? ''} />
+                    ) : (
+                      <svg
+                        width="243"
+                        height="178"
+                        viewBox="0 0 243 178"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        role={resolvedImageLabel ? 'img' : undefined}
+                        aria-label={resolvedImageLabel}
+                        aria-hidden={resolvedImageLabel ? undefined : 'true'}
+                      >
+                        <rect
+                          width="243"
+                          height="178"
+                          fill="var(--krds-primitive-color-light-gray-10)"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <button type="button" class="swiper-button-prev" disabled={slides.length < 2}>
+        <span class="sr-only">{previousLabel}</span>
+      </button>
+      <button type="button" class="swiper-button-next" disabled={slides.length < 2}>
+        <span class="sr-only">{nextLabel}</span>
+      </button>
+      <div class="swiper-indicator text-center">
+        <div class="swiper-pagination"></div>
+        <a href={moreHref} class="swiper-button-more">
+          <span class="sr-only">{moreLabel}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const enhancedCarousels = new WeakSet<HTMLElement>();
+
+  function enhanceCarousels() {
+    document.querySelectorAll<HTMLElement>('[data-krds-carousel]').forEach((root) => {
+      if (enhancedCarousels.has(root)) return;
+      enhancedCarousels.add(root);
+
+      const slides = Array.from(root.querySelectorAll<HTMLElement>('.swiper-slide'));
+      const previous = root.querySelector<HTMLButtonElement>('.swiper-button-prev');
+      const next = root.querySelector<HTMLButtonElement>('.swiper-button-next');
+      const pagination = root.querySelector<HTMLElement>('.swiper-pagination');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const requestedAutoplay = root.dataset.autoPlay === 'true';
+      const interval = Number(root.dataset.interval) || 0;
+      let current = Math.min(
+        Math.max(Number(root.dataset.initialIndex) || 0, 0),
+        Math.max(slides.length - 1, 0),
+      );
+      let timer: number | undefined;
+      let pointerPaused = false;
+      let focusPaused = false;
+
+      const bullets = slides.map((_slide, index) => {
+        const bullet = document.createElement('button');
+        bullet.type = 'button';
+        bullet.className = 'swiper-pagination-bullet';
+        bullet.setAttribute('aria-label', String(index + 1));
+        bullet.addEventListener('click', () => {
+          show(index, true);
+          schedule();
+        });
+        pagination?.append(bullet);
+        return bullet;
+      });
+
+      function show(index: number, announce: boolean) {
+        if (!slides.length) return;
+        current = (index + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+          const active = slideIndex === current;
+          slide.hidden = !active;
+          slide.inert = !active;
+          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        bullets.forEach((bullet, bulletIndex) => {
+          const active = bulletIndex === current;
+          bullet.classList.toggle('swiper-pagination-bullet-active', active);
+          if (active) bullet.setAttribute('aria-current', 'true');
+          else bullet.removeAttribute('aria-current');
+        });
+        if (announce) {
+          root.dispatchEvent(
+            new CustomEvent('krds:slidechange', {
+              bubbles: true,
+              detail: { index: current, id: slides[current]?.dataset.slideId },
+            }),
+          );
+        }
+      }
+
+      function clearTimer() {
+        if (timer !== undefined) window.clearTimeout(timer);
+        timer = undefined;
+      }
+
+      function schedule() {
+        clearTimer();
+        if (
+          !requestedAutoplay ||
+          reducedMotion.matches ||
+          pointerPaused ||
+          focusPaused ||
+          slides.length < 2 ||
+          interval <= 0
+        ) {
+          return;
+        }
+        timer = window.setTimeout(() => {
+          show(current + 1, false);
+          schedule();
+        }, interval);
+      }
+
+      previous?.addEventListener('click', () => {
+        show(current - 1, true);
+        schedule();
+      });
+      next?.addEventListener('click', () => {
+        show(current + 1, true);
+        schedule();
+      });
+      root.addEventListener('mouseenter', () => {
+        pointerPaused = true;
+        clearTimer();
+      });
+      root.addEventListener('mouseleave', () => {
+        pointerPaused = false;
+        schedule();
+      });
+      root.addEventListener('focusin', () => {
+        focusPaused = true;
+        clearTimer();
+      });
+      root.addEventListener('focusout', (event) => {
+        if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
+        focusPaused = false;
+        schedule();
+      });
+      reducedMotion.addEventListener('change', schedule);
+
+      show(current, false);
+      schedule();
+    });
+  }
+
+  enhanceCarousels();
+  document.addEventListener('astro:page-load', enhanceCarousels);
+</script>

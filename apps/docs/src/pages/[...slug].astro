@@ -1,0 +1,41 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+
+interface DocModule {
+  default: unknown;
+  frontmatter: {
+    title: string;
+    description?: string;
+  };
+}
+
+export function getStaticPaths() {
+  const modules = import.meta.glob('../content/docs/**/*.{md,mdx}', { eager: true }) as Record<string, DocModule>;
+  return Object.keys(modules).map((filePath) => {
+    const rawId = filePath
+      .replace('../content/docs/', '')
+      .replace(/\.(?:md|mdx)$/, '')
+      .replace(/\/index$/, '');
+    const id = rawId === 'index' ? '' : rawId;
+    return { params: { slug: id || undefined }, props: { id } };
+  });
+}
+
+const modules = import.meta.glob('../content/docs/**/*.{md,mdx}', { eager: true }) as Record<string, DocModule>;
+const id = String(Astro.params.slug ?? '');
+const filePath = Object.keys(modules).find((candidate) => {
+  const rawId = candidate
+    .replace('../content/docs/', '')
+    .replace(/\.(?:md|mdx)$/, '')
+    .replace(/\/index$/, '');
+  const candidateId = rawId === 'index' ? '' : rawId;
+  return candidateId === id;
+});
+if (!filePath) throw new Error(`Documentation page not found: ${id || 'index'}`);
+const module = modules[filePath];
+const Content = module.default as any;
+---
+
+<DocsLayout title={module.frontmatter.title} description={module.frontmatter.description} slug={id}>
+  <Content />
+</DocsLayout>

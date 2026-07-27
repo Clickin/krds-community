@@ -1,0 +1,95 @@
+---
+import { withBase } from '../../data/links';
+
+interface NavItem {
+  label: string;
+  path: string;
+}
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const groups: Array<{ label: string; items: NavItem[] }> = [
+  {
+    label: '시작하기',
+    items: [
+      { label: '소개', path: '/' },
+      { label: '설치와 테마', path: '/getting-started/installation/' },
+      { label: '복사한 컴포넌트 업데이트', path: '/getting-started/copy-paste-migration/' },
+      { label: '공식 가이드라인 검토', path: '/guides/krds-guidelines/' },
+    ],
+  },
+  {
+    label: '컴포넌트',
+    items: [
+      { label: '전체 인벤토리', path: '/components/' },
+      { label: 'Button', path: '/components/button/' },
+      { label: 'TextInput', path: '/components/text-input/' },
+      { label: 'Checkbox', path: '/components/checkbox/' },
+      { label: 'Radio', path: '/components/radio/' },
+      { label: 'Switch', path: '/components/switch/' },
+      { label: 'Accordion', path: '/components/accordion/' },
+    ],
+  },
+  {
+    label: '서비스 패턴',
+    items: [
+      { label: '전체 개요', path: '/service-patterns/' },
+      { label: '방문', path: '/service-patterns/visit/' },
+      { label: '검색', path: '/service-patterns/search/' },
+      { label: '로그인', path: '/service-patterns/login/' },
+      { label: '신청', path: '/service-patterns/application/' },
+      { label: '정책', path: '/service-patterns/policy/' },
+    ],
+  },
+  {
+    label: '기본 패턴',
+    items: [
+      { label: '전체 개요', path: '/basic-patterns/' },
+      { label: '개인 식별', path: '/basic-patterns/personal-information/' },
+      { label: '모바일 설정', path: '/basic-patterns/mobile-settings/' },
+      { label: '모바일 알림', path: '/basic-patterns/mobile-notification/' },
+      { label: '목록', path: '/basic-patterns/list/' },
+      { label: '도움', path: '/basic-patterns/help/' },
+      { label: '입력 폼', path: '/basic-patterns/form/' },
+      { label: '필터·정렬', path: '/basic-patterns/filter-sort/' },
+      { label: '피드백', path: '/basic-patterns/feedback/' },
+      { label: '오류', path: '/basic-patterns/error/' },
+      { label: '상세', path: '/basic-patterns/detail/' },
+      { label: '동의', path: '/basic-patterns/consent/' },
+      { label: '확인', path: '/basic-patterns/confirm/' },
+      { label: '첨부', path: '/basic-patterns/attachment/' },
+    ],
+  },
+  {
+    label: '개발 도구',
+    items: [
+      { label: '프레임워크 예제', path: '/framework-examples/' },
+      { label: 'Conformance 판정', path: '/conformance/' },
+      { label: 'Storybook 포털', path: '/storybook/' },
+      { label: 'Runtime evidence', path: '/conformance-report/' },
+    ],
+  },
+];
+
+const active = (path: string) => currentPath === withBase(path);
+---
+
+<aside class="docs-sidebar" aria-label="문서 섹션">
+  {groups.map((group) => (
+    <section class="docs-sidebar-group">
+      <h2>{group.label}</h2>
+      <ul>
+        {group.items.map((item) => (
+          <li>
+            <a class:list={{ current: active(item.path) }} href={withBase(item.path)} aria-current={active(item.path) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</aside>

@@ -7,6 +7,7 @@ upstream:
 fixtures:
   - id: file-upload.default
     sourceSelector: '.krds-file-upload input[type="file"]'
+    sourceAncestorSelector: ".krds-file-upload"
     mandatory: true
     viewport: desktop
     props: {}

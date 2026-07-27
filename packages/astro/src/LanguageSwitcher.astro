@@ -1,0 +1,149 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface LanguageOption {
+  value: string;
+  label: string;
+  href: string;
+  lang?: string;
+  disabled?: boolean;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+}
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'open'> {
+  languages?: LanguageOption[];
+  options?: LanguageOption[];
+  selected?: string;
+  value?: string;
+  defaultValue?: string;
+  label?: string;
+  selectedLabel?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
+  class?: string;
+}
+
+const {
+  languages,
+  options,
+  selected,
+  value,
+  defaultValue,
+  label,
+  selectedLabel,
+  open,
+  defaultOpen = false,
+  class: className,
+  ...rest
+} = Astro.props;
+const entries = languages ?? options ?? [];
+const activeValue = value ?? selected ?? defaultValue ?? entries[0]?.value;
+const openState = open ?? defaultOpen;
+---
+
+<div {...rest} class={cx('krds-drop-wrap', 'krds-language', className)} data-krds-language>
+  <button
+    type="button"
+    class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
+    aria-expanded={openState ? 'true' : 'false'}
+  >
+    <i class="svg-icon ico-global" aria-hidden="true"></i>
+    {label}
+    <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+  </button>
+  <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
+    <div class="drop-in">
+      <ul class="drop-list">
+        {entries.map((language) => {
+          const active = language.value === activeValue;
+          return (
+            <li>
+              <a
+                href={language.href}
+                class={cx('item-link', active && 'active')}
+                lang={language.lang ?? language.value}
+                target={language.target}
+                rel={language.rel}
+                title={language.title}
+                aria-selected={active ? 'true' : 'false'}
+                aria-disabled={language.disabled ? 'true' : undefined}
+                tabindex={language.disabled ? -1 : undefined}
+                data-language-value={language.value}
+              >
+                {language.label}
+                <span class="sr-only">{active ? selectedLabel : undefined}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-krds-language]').forEach((root) => {
+    const button = root.querySelector<HTMLButtonElement>(':scope > .drop-btn');
+    const menu = root.querySelector<HTMLElement>(':scope > .drop-menu');
+    const links = Array.from(menu?.querySelectorAll<HTMLAnchorElement>('.item-link') ?? []);
+    const selectionMessage =
+      menu?.querySelector<HTMLElement>('.item-link.active .sr-only')?.textContent ?? '';
+    if (!button || !menu) return;
+
+    const close = (restoreFocus = false) => {
+      menu.style.display = 'none';
+      button.classList.remove('active');
+      button.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) button.focus();
+    };
+    const toggle = () => {
+      const nextOpen = button.getAttribute('aria-expanded') !== 'true';
+      if (!nextOpen) {
+        close();
+        return;
+      }
+      menu.style.display = 'block';
+      button.classList.add('active');
+      button.setAttribute('aria-expanded', 'true');
+    };
+
+    button.addEventListener('click', toggle);
+    links.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (link.getAttribute('aria-disabled') === 'true') {
+          event.preventDefault();
+          return;
+        }
+        links.forEach((candidate) => {
+          const active = candidate === link;
+          candidate.classList.toggle('active', active);
+          candidate.setAttribute('aria-selected', String(active));
+          const text = candidate.querySelector<HTMLElement>('.sr-only');
+          if (text) text.textContent = active ? selectionMessage : '';
+        });
+        close();
+        root.dispatchEvent(
+          new CustomEvent('krds:language-change', {
+            bubbles: true,
+            detail: { value: link.dataset.languageValue, href: link.href },
+          }),
+        );
+      });
+    });
+    root.addEventListener('focusout', (event) => {
+      if (event.relatedTarget instanceof Node && root.contains(event.relatedTarget)) return;
+      close();
+    });
+    root.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      close(true);
+    });
+    document.addEventListener('click', (event) => {
+      if (event.target instanceof Node && !root.contains(event.target)) close();
+    });
+  });
+</script>

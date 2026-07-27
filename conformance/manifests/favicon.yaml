@@ -10,7 +10,7 @@ fixtures:
     mandatory: true
     viewport: desktop
     props: {}
-    states: [default, focus-visible]
+    states: [default]
 contract:
   semanticElement: link
-  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]
+  accessibility: [semantic-element]

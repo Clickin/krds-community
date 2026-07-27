@@ -1,11 +1,11 @@
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { loadManifests } from '../packages/conformance/dist/index.js';
-
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const storybookStaticRoot = resolve(process.env.STORYBOOK_STATIC_ROOT ?? join(root, 'storybook-static'));
 const frameworkIds = ['react', 'vue', 'svelte', 'solid', 'angular'];
 const packageSources = Object.fromEntries(
   frameworkIds.map((framework) => [
@@ -42,18 +42,22 @@ const selectorTokens = (selector) => {
 
 const parseFixtureBlocks = (text) => {
   const fixturesText = text.split(/^fixtures:\s*$/m)[1]?.split(/^contract:\s*$/m)[0] ?? '';
-  const matches = [...fixturesText.matchAll(/^\s+- id:\s*([^\s]+)\s*$/gm)];
+  const matches = [...fixturesText.matchAll(/^ {2}- id:\s*([^\s]+)\s*$/gm)];
   return matches.map((match, index) => {
     const block = fixturesText.slice(match.index, matches[index + 1]?.index ?? fixturesText.length);
+    const inlineStates = block.match(/^\s+states:\s*\[([^\]]*)\]/m)?.[1];
+    const states = inlineStates
+      ? inlineStates
+          .split(',')
+          .map((state) => state.trim())
+          .filter(Boolean)
+      : [...block.matchAll(/^ {6}- id:\s*([^\s]+)\s*$/gm)].map((state) => state[1]);
     return {
       id: match[1],
       sourceSelector: unquote(block.match(/^\s+sourceSelector:\s*(.+)$/m)?.[1] ?? ''),
       mandatory: /^\s+mandatory:\s*true\s*$/m.test(block),
       viewport: block.match(/^\s+viewport:\s*([^\s]+)\s*$/m)?.[1] ?? '',
-      states: (block.match(/^\s+states:\s*\[([^\]]*)\]/m)?.[1] ?? '')
-        .split(',')
-        .map((state) => state.trim())
-        .filter(Boolean),
+      states,
     };
   });
 };
@@ -67,6 +71,7 @@ const readFixtureData = async (manifest) => {
 const assertManifestContracts = async (manifests) => {
   const failures = [];
   const sourceCache = new Map();
+  const referencedSources = new Set();
   const getSource = async (path) => {
     if (!sourceCache.has(path)) sourceCache.set(path, await readFile(path, 'utf8'));
     return sourceCache.get(path);
@@ -75,6 +80,17 @@ const assertManifestContracts = async (manifests) => {
   for (const manifest of manifests) {
     const { text, fixtures } = await readFixtureData(manifest);
     if (manifest.status !== 'passing') failures.push(`${manifest.id}: status=${manifest.status}`);
+    if (manifest.schemaValid === false) {
+      for (const error of manifest.validationErrors ?? []) {
+        failures.push(`${manifest.id}: schema=${error}`);
+      }
+    }
+    if (manifest.statusConsistent === false) {
+      failures.push(`${manifest.id}: status is inconsistent with manifest evidence`);
+    }
+    for (const selector of manifest.unresolvedSelectors ?? []) {
+      failures.push(`${manifest.id}: unresolved selector=${selector}`);
+    }
     if (fixtures.length === 0) failures.push(`${manifest.id}: fixture is missing`);
     if (fixtures.some((fixture) => !fixture.mandatory)) {
       failures.push(`${manifest.id}: every fixture must be mandatory`);
@@ -97,6 +113,7 @@ const assertManifestContracts = async (manifests) => {
       (match) => match[1],
     );
     const upstreamText = [];
+    upstreamFiles.forEach((relativePath) => referencedSources.add(relativePath));
     for (const relativePath of upstreamFiles) {
       const absolutePath = join(root, relativePath);
       try {
@@ -123,6 +140,14 @@ const assertManifestContracts = async (manifests) => {
       if (!source.includes(componentName)) {
         failures.push(`${manifest.id}: ${framework} export is missing (${componentName})`);
       }
+    }
+  }
+  const officialFixtureFiles = (await readdir(join(root, 'upstream/krds-html/html/code')))
+    .filter((entry) => entry.endsWith('.html'))
+    .map((entry) => `upstream/krds-html/html/code/${entry}`);
+  for (const source of officialFixtureFiles) {
+    if (!referencedSources.has(source)) {
+      failures.push(`official fixture is unmapped: ${source}`);
     }
   }
   return failures;
@@ -187,15 +212,25 @@ const findInventoryStory = async (baseUrl, framework) => {
 };
 
 const checkRenderedInventories = async (manifests) => {
-  const { server, baseUrl } = await serveStatic(join(root, 'storybook-static'));
+  const { server, baseUrl } = await serveStatic(storybookStaticRoot);
   const axePath = await findAxe();
   const browser = await chromium.launch({ headless: true });
   const failures = [];
+  const fixtureFailures = Object.fromEntries(frameworkIds.map((framework) => [framework, {}]));
+  const fixtureContracts = (
+    await Promise.all(manifests.map(async (manifest) => (await readFixtureData(manifest)).fixtures))
+  ).flat();
   try {
     for (const framework of frameworkIds) {
       const storyId = await findInventoryStory(baseUrl, framework);
       const page = await browser.newPage();
       const consoleErrors = [];
+      const markFixtureFailure = (fixtureId, message) => {
+        const current = fixtureFailures[framework][fixtureId] ?? [];
+        if (!current.includes(message)) current.push(message);
+        fixtureFailures[framework][fixtureId] = current;
+        failures.push(message);
+      };
       page.on('console', (message) => {
         if (message.type() === 'error') consoleErrors.push(message.text());
       });
@@ -209,6 +244,27 @@ const checkRenderedInventories = async (manifests) => {
           null,
           { timeout: 10_000 },
         );
+        const rootLocator = page.locator('#storybook-root');
+        for (const fixture of fixtureContracts) {
+          try {
+            const fixtureRoot =
+              fixture.sourceSelector === 'link[rel="icon"]' ? page : rootLocator;
+            const count = await fixtureRoot.locator(fixture.sourceSelector).count();
+            if (count === 0) {
+              markFixtureFailure(
+                fixture.id,
+                `${framework}: ${fixture.id}: official selector not rendered (${fixture.sourceSelector})`,
+              );
+            }
+          } catch (error) {
+            markFixtureFailure(
+              fixture.id,
+              `${framework}: ${fixture.id}: invalid official selector (${fixture.sourceSelector}): ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            );
+          }
+        }
         const bodyText = await page.locator('body').innerText();
         if (/couldn't find story|failed to render|error occurred/i.test(bodyText)) {
           failures.push(`${framework}: Storybook reported a render error`);
@@ -220,19 +276,20 @@ const checkRenderedInventories = async (manifests) => {
           );
         }
         const semanticFindings = await page.evaluate(() => {
+          const root = document.querySelector('#storybook-root') ?? document;
           const findings = [];
-          const nativeButtonRoles = document.querySelectorAll('button[role="button"]').length;
+          const nativeButtonRoles = root.querySelectorAll('button[role="button"]').length;
           if (nativeButtonRoles)
             findings.push(`${nativeButtonRoles} native buttons repeat role=button`);
 
-          for (const element of document.querySelectorAll('[aria-expanded]')) {
+          for (const element of root.querySelectorAll('[aria-expanded]')) {
             const controls = element.getAttribute('aria-controls');
             if (!controls || !document.getElementById(controls)) {
               findings.push('aria-expanded is missing a valid aria-controls target');
             }
           }
 
-          for (const tablist of document.querySelectorAll('[role="tablist"]')) {
+          for (const tablist of root.querySelectorAll('[role="tablist"]')) {
             const tabs = tablist.querySelectorAll('[role="tab"]');
             if (!tabs.length) findings.push('tablist has no tab descendants');
             for (const tab of tabs) {
@@ -243,7 +300,7 @@ const checkRenderedInventories = async (manifests) => {
             }
           }
 
-          for (const table of document.querySelectorAll('table')) {
+          for (const table of root.querySelectorAll('table')) {
             if (table.closest('[aria-hidden="true"]')) continue;
             if (!table.querySelector('caption') && !table.getAttribute('aria-label')) {
               findings.push('table is missing caption or accessible name');
@@ -251,7 +308,7 @@ const checkRenderedInventories = async (manifests) => {
             if (!table.querySelector('th')) findings.push('table is missing a header cell');
           }
 
-          for (const control of document.querySelectorAll('input, select, textarea')) {
+          for (const control of root.querySelectorAll('input, select, textarea')) {
             if (control.type === 'hidden' || control.getAttribute('aria-hidden') === 'true')
               continue;
             const id = control.getAttribute('id');
@@ -268,8 +325,26 @@ const checkRenderedInventories = async (manifests) => {
         for (const finding of semanticFindings) failures.push(`${framework}: ${finding}`);
 
         await page.evaluate(() => {
-          document.body.setAttribute('tabindex', '-1');
-          document.body.focus();
+          const root = document.querySelector('#storybook-root') ?? document.body;
+          root.setAttribute('tabindex', '-1');
+          root.focus();
+          if (document.activeElement !== root) {
+            const candidate = Array.from(
+              root.querySelectorAll(
+                'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"]),[contenteditable="true"]',
+              ),
+            ).find((element) => {
+              const rect = element.getBoundingClientRect();
+              const style = getComputedStyle(element);
+              return (
+                rect.width > 0 &&
+                rect.height > 0 &&
+                style.visibility !== 'hidden' &&
+                style.display !== 'none'
+              );
+            });
+            candidate?.focus();
+          }
         });
         const keyboardFindings = [];
         for (let index = 0; index < 12; index += 1) {
@@ -297,7 +372,10 @@ const checkRenderedInventories = async (manifests) => {
 
         await page.addScriptTag({ path: axePath });
         const violations = await page.evaluate(async () => {
-          const result = await window.axe.run(document, { resultTypes: ['violations'] });
+          const result = await window.axe.run(
+            document.querySelector('#storybook-root') ?? document,
+            { resultTypes: ['violations'] },
+          );
           return result.violations.map((violation) => ({
             id: violation.id,
             count: violation.nodes.length,
@@ -329,21 +407,28 @@ const checkRenderedInventories = async (manifests) => {
     await browser.close();
     await new Promise((resolvePromise) => server.close(resolvePromise));
   }
-  return failures;
+  return { failures, fixtureFailures };
 };
+
 
 const main = async () => {
   const manifests = await loadManifests(join(root, 'conformance', 'manifests'));
-  const failures = [...(await assertManifestContracts(manifests))];
-  failures.push(...(await checkRenderedInventories(manifests)));
+  const manifestFailures = await assertManifestContracts(manifests);
+  let runtimeFailures = [];
+  try {
+    runtimeFailures = (await checkRenderedInventories(manifests)).failures;
+  } catch (error) {
+    runtimeFailures = [`runtime: ${error instanceof Error ? error.message : String(error)}`];
+  }
+  const failures = [...manifestFailures, ...runtimeFailures].sort();
   if (failures.length) {
-    console.error(`Strict conformance failed (${failures.length} findings):`);
+    console.error(`Storybook inventory audit failed (${failures.length} findings):`);
     for (const failure of failures) console.error(`- ${failure}`);
     process.exitCode = 1;
     return;
   }
   console.log(
-    `Strict conformance evidence passed for ${manifests.length} manifests across ${frameworkIds.length} frameworks.`,
+    `Storybook inventory audit passed for ${manifests.length} manifests across ${frameworkIds.length} frameworks.`,
   );
 };
 

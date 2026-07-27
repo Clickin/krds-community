@@ -1,0 +1,37 @@
+---
+import {
+  Accordion,
+  Checkbox,
+  TextInput,
+} from '../../../../packages/astro/src/index.js';
+
+const accordionItems = [
+  { id: 'first', title: 'First section', content: 'First section content' },
+  { id: 'second', title: 'Second section', content: 'Second section content' },
+];
+---
+
+<form action="/search" method="post">
+  <TextInput
+    id="astro-query"
+    name="query"
+    label="Search query"
+    value="server value"
+    required
+  />
+  <Checkbox
+    id="astro-accepted"
+    name="accepted"
+    value="yes"
+    label="Accept terms"
+    checked
+  />
+  <Checkbox
+    id="astro-updates"
+    name="updates"
+    value="weekly"
+    label="Receive updates"
+  />
+  <Accordion items={accordionItems} defaultOpen={['first']} />
+  <button type="submit">Submit</button>
+</form>

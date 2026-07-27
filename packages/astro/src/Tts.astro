@@ -1,0 +1,135 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props
+  extends Omit<HTMLAttributes<'button'>, 'class' | 'class:list' | 'disabled' | 'onclick' | 'type'> {
+  label?: string;
+  children?: string;
+  text?: string;
+  size?: 'xsmall' | 'small' | 'medium' | 'large';
+  variant?: 'default' | 'play';
+  playing?: boolean;
+  iconOnly?: boolean;
+  iconClass?: string;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  onclick?: never;
+}
+
+const {
+  label,
+  children,
+  text,
+  size = 'medium',
+  variant = 'default',
+  playing = false,
+  iconOnly = false,
+  iconClass,
+  disabled,
+  type = 'button',
+  class: className,
+  'aria-label': ariaLabel,
+  onclick: ignoredOnclick,
+  ...rest
+} = Astro.props;
+void ignoredOnclick;
+const spokenText = text ?? label ?? children;
+const accessibleLabel = ariaLabel ?? label ?? children;
+const variantClass = variant === 'play' ? (playing ? 'pause' : 'play') : undefined;
+const resolvedIconClass =
+  iconClass ?? (variant === 'play' ? (playing ? 'ico-stop' : 'ico-play') : 'ico-volume');
+const instanceId = `krds-tts-${crypto.randomUUID()}`;
+---
+
+<button
+  {...rest}
+  type={type}
+  disabled={disabled}
+  class={cx('krds-tts', size, variantClass, playing && 'is-playing', className)}
+  aria-pressed={playing ? 'true' : 'false'}
+  aria-label={iconOnly ? accessibleLabel : ariaLabel}
+  data-krds-tts={instanceId}
+  data-krds-tts-variant={variant}
+  data-tts-text={spokenText}
+>
+  <span class="krds-tts-icon" aria-hidden="true">
+    <slot name="icon"><i class={cx('svg-icon', resolvedIconClass)}></i></slot>
+  </span>
+  {!iconOnly && (
+    <span class="krds-tts-text"><slot>{label ?? children}</slot></span>
+  )}
+</button>
+
+<script>
+  let activeTtsButton: HTMLButtonElement | null = null;
+
+  const setTtsPlaying = (button: HTMLButtonElement, playing: boolean) => {
+    const variant = button.dataset.krdsTtsVariant;
+    const icon = button.querySelector<HTMLElement>('.krds-tts-icon .svg-icon');
+    button.classList.toggle('is-playing', playing);
+    button.setAttribute('aria-pressed', playing ? 'true' : 'false');
+
+    if (variant === 'play') {
+      button.classList.toggle('play', !playing);
+      button.classList.toggle('pause', playing);
+      icon?.classList.toggle('ico-play', !playing);
+      icon?.classList.toggle('ico-stop', playing);
+    }
+  };
+
+  const stopTts = (button: HTMLButtonElement) => {
+    window.speechSynthesis?.cancel();
+    setTtsPlaying(button, false);
+    if (activeTtsButton === button) activeTtsButton = null;
+  };
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>('button[data-krds-tts]');
+    if (!button || button.disabled) return;
+    const text = button.dataset.ttsText?.trim();
+    if (!text || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+      return;
+    }
+
+    if (button.getAttribute('aria-pressed') === 'true') {
+      stopTts(button);
+      return;
+    }
+
+    if (activeTtsButton && activeTtsButton !== button) {
+      window.speechSynthesis.cancel();
+      setTtsPlaying(activeTtsButton, false);
+      activeTtsButton = null;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    const language = button.lang || document.documentElement.lang;
+    if (language) utterance.lang = language;
+    activeTtsButton = button;
+    setTtsPlaying(button, true);
+    utterance.onend = () => {
+      if (activeTtsButton === button) {
+        setTtsPlaying(button, false);
+        activeTtsButton = null;
+      }
+    };
+    utterance.onerror = () => {
+      if (activeTtsButton === button) {
+        setTtsPlaying(button, false);
+        activeTtsButton = null;
+      }
+    };
+    try {
+      window.speechSynthesis.cancel();
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+      window.speechSynthesis.speak(utterance);
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+    } catch {
+      setTtsPlaying(button, false);
+      activeTtsButton = null;
+    }
+  });
+</script>

@@ -23,7 +23,12 @@ export const buttonRecipe = (
     className?: string | undefined;
   } = {},
 ): RecipeResult => ({
-  className: cx('krds-button', options.className),
+  className: cx(
+    'krds-btn',
+    options.variant,
+    options.size === 'medium' ? undefined : options.size,
+    options.className,
+  ),
   data: {
     variant: options.variant ?? 'primary',
     size: options.size ?? 'medium',
@@ -38,10 +43,9 @@ export const inputRecipe = (
     className?: string | undefined;
   } = {},
 ): RecipeResult => ({
-  className: cx('krds-input', options.className),
+  className: cx('krds-input', options.size, options.className),
   data: { state: options.state ?? 'default', size: options.size ?? 'medium' },
 });
-
 export const fieldRecipe = (className?: string): RecipeResult => ({
   className: cx('krds-field', className),
   data: {},
@@ -53,21 +57,25 @@ export const choiceRecipe = (
     className?: string | undefined;
   } = {},
 ): RecipeResult => ({
-  className: cx('krds-form-check', options.className),
+  className: cx('krds-form-check', options.size, options.className),
   data: { size: options.size ?? 'medium' },
 });
 
 export const switchRecipe = (
   options: { size?: ChoiceSize | undefined; className?: string | undefined } = {},
 ): RecipeResult => ({
-  className: cx('krds-form-toggle-switch', options.className),
+  className: cx('krds-form-toggle-switch', options.size, options.className),
   data: { size: options.size ?? 'medium' },
 });
 
 export const accordionRecipe = (
   options: { type?: 'default' | 'line' | undefined; className?: string | undefined } = {},
 ): RecipeResult => ({
-  className: cx('krds-accordion', options.className),
+  className: cx(
+    'krds-accordion',
+    options.type === 'line' ? 'type-line' : undefined,
+    options.className,
+  ),
   data: { type: options.type ?? 'default' },
 });
 

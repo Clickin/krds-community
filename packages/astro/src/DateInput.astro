@@ -1,0 +1,153 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cx, inputRecipe } from '@krds-community/recipes';
+import Calendar from './Calendar.astro';
+import type { Props as CalendarProps } from './Calendar.astro';
+
+export interface Props extends Omit<
+  CalendarProps,
+  | 'class'
+  | 'id'
+  | 'inputAttributes'
+  | 'inputId'
+  | 'inputName'
+  | 'inputPlaceholder'
+  | 'inputType'
+  | 'inputValue'
+  | 'selectionMode'
+  | 'surfaceOnly'
+> {
+  id?: string;
+  name?: string;
+  value?: string | number;
+  placeholder?: string;
+  type?: HTMLAttributes<'input'>['type'];
+  disabled?: boolean;
+  readonly?: boolean;
+  required?: boolean;
+  inputAttributes?: Omit<HTMLAttributes<'input'>, 'class:list' | 'id' | 'name' | 'placeholder' | 'type' | 'value'>;
+  rootClass?: string;
+  class?: string;
+}
+
+const {
+  id: providedId,
+  name,
+  value,
+  placeholder,
+  type = 'number',
+  disabled,
+  readonly,
+  required,
+  inputAttributes = {},
+  rootClass,
+  class: inputClass,
+  label,
+  hint,
+  year,
+  month,
+  years,
+  disabledYears = [],
+  disabledMonths = [],
+  leadingDays,
+  previousMonthDayCount,
+  dayCount,
+  weekdays,
+  rangeStartDay,
+  rangeEndDay,
+  todayDay,
+  eventDays = [],
+  disabledDays = [],
+  calendarLabel,
+  previousMonthLabel,
+  nextMonthLabel,
+  yearSelectLabel,
+  monthSelectLabel,
+  todayLabel,
+  cancelLabel,
+  confirmLabel,
+  eventLabel,
+  openCalendarLabel,
+  open = false,
+  calendarId: providedCalendarId,
+  calendarClass,
+  calendarAttributes,
+  ...rest
+} = Astro.props;
+const instanceId = `krds-date-input-${crypto.randomUUID()}`;
+const inputId = providedId ?? `${instanceId}-input`;
+const calendarId = providedCalendarId ?? `${instanceId}-calendar`;
+const hintId = hint !== undefined || Astro.slots.has('hint') ? `${inputId}-hint` : undefined;
+const describedBy = [inputAttributes['aria-describedby'], hintId].filter(Boolean).join(' ') || undefined;
+const recipe = inputRecipe({ className: cx('datepicker', 'cal', inputAttributes.class, inputClass) });
+const calendarSurface = {
+  year,
+  month,
+  years,
+  disabledYears,
+  disabledMonths,
+  leadingDays,
+  previousMonthDayCount,
+  dayCount,
+  weekdays,
+  rangeStartDay,
+  rangeEndDay,
+  todayDay,
+  eventDays,
+  disabledDays,
+  calendarLabel,
+  previousMonthLabel,
+  nextMonthLabel,
+  yearSelectLabel,
+  monthSelectLabel,
+  todayLabel,
+  cancelLabel,
+  confirmLabel,
+  eventLabel,
+  open,
+  calendarId,
+  calendarClass,
+  calendarAttributes,
+} satisfies CalendarProps;
+---
+
+<div {...rest} class={cx('form-group', rootClass)} data-krds-calendar-component="">
+  {(label !== undefined || Astro.slots.has('label')) && (
+    <div class="form-tit">
+      <label for={inputId}><slot name="label">{label}</slot></label>
+    </div>
+  )}
+  <div class="form-conts">
+    <div class="form-conts calendar-conts">
+      <div class="calendar-input">
+        <input
+          {...inputAttributes}
+          type={type}
+          class={recipe.className}
+          placeholder={placeholder}
+          id={inputId}
+          name={name}
+          value={value}
+          disabled={disabled}
+          readonly={readonly}
+          required={required}
+          aria-describedby={describedBy}
+          data-calendar-input=""
+        />
+        <button
+          type="button"
+          class="krds-btn medium icon form-btn-datepicker"
+          aria-controls={calendarId}
+          aria-expanded={open ? 'true' : 'false'}
+          data-calendar-action="toggle"
+          disabled={disabled}
+        >
+          <span class="sr-only">{openCalendarLabel ?? calendarLabel}</span>
+          <i class="svg-icon ico-calendar"></i>
+        </button>
+      </div>
+      <Calendar {...calendarSurface} surfaceOnly={true} selectionMode="range" />
+    </div>
+  </div>
+  {hintId && <p id={hintId} class="form-hint"><slot name="hint">{hint}</slot></p>}
+</div>

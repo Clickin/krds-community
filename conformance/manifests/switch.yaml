@@ -8,20 +8,22 @@ upstream:
 fixtures:
   - id: switch.default.medium
     sourceSelector: ".krds-form-toggle-switch input"
+    sourceAncestorSelector: ".krds-form-toggle-switch"
+    sourceFile: upstream/krds-html/html/code/toggle_switch.html
     mandatory: true
     viewport: desktop
-    props:
-      size: medium
     states: [default, checked, disabled, focus-visible]
   - id: switch.default.large
     sourceSelector: ".krds-form-toggle-switch.large input"
+    sourceAncestorSelector: ".krds-form-toggle-switch"
+    sourceFile: upstream/krds-html/html/code/toggle_switch_size.html
     mandatory: true
     viewport: desktop
     props:
       size: large
     states: [default, checked, disabled, focus-visible]
 contract:
-  semanticElement: input[type=checkbox]
+  semanticElement: label-and-checkbox
   accessibleRole: checkbox
   requiredAttributes: {}
   accessibility:

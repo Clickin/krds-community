@@ -1,0 +1,192 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface SideNavigationItem {
+  id: string;
+  label: string;
+  href?: string;
+  description?: string;
+  current?: boolean;
+  active?: boolean;
+  disabled?: boolean;
+  controlsId?: string;
+  target?: HTMLAttributes<'a'>['target'];
+  rel?: string;
+  title?: string;
+  children?: SideNavigationItem[];
+}
+
+export interface Props extends Omit<HTMLAttributes<'nav'>, 'class' | 'class:list' | 'title'> {
+  title?: string;
+  items?: SideNavigationItem[];
+  navigationLabel?: string;
+  class?: string;
+}
+
+const {
+  title,
+  items = [],
+  navigationLabel,
+  class: className,
+  'aria-label': ariaLabel,
+  ...rest
+} = Astro.props;
+const containsCurrent = (item: SideNavigationItem): boolean =>
+  Boolean(item.current || item.active || item.children?.some(containsCurrent));
+const topMenuId = (item: SideNavigationItem) => item.controlsId ?? `lnbmenu-${item.id}`;
+const popupMenuId = (item: SideNavigationItem) => item.controlsId ?? `lnbmenu-${item.id}`;
+---
+
+<nav
+  {...rest}
+  class={cx('krds-side-navigation', className)}
+  aria-label={ariaLabel ?? navigationLabel}
+  data-krds-side-navigation
+>
+  <h2 class="lnb-tit">{title}</h2>
+  <ul class="lnb-list" role="menubar">
+    {items.map((item) => {
+      const active = containsCurrent(item);
+      const menuId = topMenuId(item);
+      return (
+        <li class={cx('lnb-item', active && 'active')} role="none">
+          <button
+            type="button"
+            class={cx('lnb-btn', 'lnb-toggle', active && 'active')}
+            role="menuitem"
+            aria-controls={menuId}
+            aria-expanded={active ? 'true' : 'false'}
+            disabled={item.disabled}
+          >
+            {item.label}
+          </button>
+          <div class="lnb-submenu">
+            <ul id={menuId} role="menu">
+              {item.children?.map((child) => {
+                const childActive = containsCurrent(child);
+                if (child.children?.length) {
+                  const popupId = popupMenuId(child);
+                  return (
+                    <li class={cx('lnb-subitem', childActive && 'active')} role="none">
+                      <button
+                        type="button"
+                        class="lnb-btn lnb-toggle-popup"
+                        role="menuitem"
+                        aria-controls={popupId}
+                        aria-expanded={child.active ? 'true' : 'false'}
+                        aria-haspopup="true"
+                        disabled={child.disabled}
+                      >
+                        {child.label}
+                      </button>
+                      <div
+                        class={cx('lnb-submenu-lv2', child.active && 'active')}
+                        id={popupId}
+                        role="menu"
+                      >
+                        <button type="button" class="lnb-btn-tit">{child.description ?? child.label}</button>
+                        <ul>
+                          {child.children.map((leaf) => (
+                            <li class={leaf.current ? 'active' : undefined} role="none">
+                              {leaf.href ? (
+                                <a
+                                  href={leaf.href}
+                                  class="lnb-btn"
+                                  role="menuitem"
+                                  target={leaf.target}
+                                  rel={leaf.rel}
+                                  title={leaf.title}
+                                  aria-current={leaf.current ? 'page' : undefined}
+                                  aria-disabled={leaf.disabled ? 'true' : undefined}
+                                  tabindex={leaf.disabled ? -1 : undefined}
+                                >
+                                  {leaf.label}
+                                </a>
+                              ) : (
+                                <button type="button" class="lnb-btn" role="menuitem" disabled={leaf.disabled}>
+                                  {leaf.label}
+                                </button>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  );
+                }
+                return (
+                  <li class={cx('lnb-subitem', child.current && 'active')} role="none">
+                    {child.href ? (
+                      <a
+                        href={child.href}
+                        class="lnb-btn lnb-link"
+                        role="menuitem"
+                        target={child.target}
+                        rel={child.rel}
+                        title={child.title}
+                        aria-current={child.current ? 'page' : undefined}
+                        aria-disabled={child.disabled ? 'true' : undefined}
+                        tabindex={child.disabled ? -1 : undefined}
+                      >
+                        {child.label}
+                      </a>
+                    ) : (
+                      <button type="button" class="lnb-btn lnb-link" role="menuitem" disabled={child.disabled}>
+                        {child.label}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-krds-side-navigation]').forEach((root) => {
+    root
+      .querySelectorAll<HTMLButtonElement>(':scope > .lnb-list > .lnb-item > .lnb-toggle')
+      .forEach((button) => {
+        button.addEventListener('click', () => {
+          const expanded = button.getAttribute('aria-expanded') !== 'true';
+          button.setAttribute('aria-expanded', String(expanded));
+          button.classList.toggle('active', expanded);
+          button.closest('.lnb-item')?.classList.toggle('active', expanded);
+        });
+      });
+
+    root.querySelectorAll<HTMLButtonElement>('.lnb-toggle-popup').forEach((button) => {
+      const popupId = button.getAttribute('aria-controls');
+      const popup = popupId ? root.querySelector<HTMLElement>(`#${CSS.escape(popupId)}`) : null;
+      if (!popup) return;
+      const titleButton = popup.querySelector<HTMLButtonElement>('.lnb-btn-tit');
+      const closePopup = (restoreFocus = false) => {
+        popup.classList.remove('active');
+        button.setAttribute('aria-expanded', 'false');
+        if (restoreFocus) button.focus();
+      };
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') !== 'true';
+        popup.classList.toggle('active', expanded);
+        button.setAttribute('aria-expanded', String(expanded));
+        if (expanded) titleButton?.focus();
+      });
+      titleButton?.addEventListener('click', () => closePopup(true));
+      popup.addEventListener('focusout', (event) => {
+        if (event.relatedTarget instanceof Node && popup.contains(event.relatedTarget)) return;
+        if (event.relatedTarget === button) return;
+        closePopup();
+      });
+      popup.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        closePopup(true);
+      });
+    });
+  });
+</script>

@@ -1,0 +1,95 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list' | 'title'> {
+  title?: string;
+  step?: string;
+  stepTitle?: string;
+  description?: string;
+  contentTitle?: string;
+  children?: string;
+  label?: string;
+  currentStep?: string | number;
+  totalSteps?: string | number;
+  currentStepLabel?: string;
+  totalStepsLabel?: string;
+  stopLabel?: string;
+  nextLabel?: string;
+  open?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  step,
+  stepTitle,
+  description,
+  contentTitle,
+  children,
+  label,
+  currentStep,
+  totalSteps,
+  currentStepLabel,
+  totalStepsLabel,
+  stopLabel,
+  nextLabel,
+  open = true,
+  class: className,
+  ...rest
+} = Astro.props;
+const [parsedCurrentStep, parsedTotalSteps] = step?.split('/').map((part) => part.trim()) ?? [];
+const renderedCurrentStep = currentStep ?? parsedCurrentStep;
+const renderedTotalSteps = totalSteps ?? parsedTotalSteps;
+const instanceId = `krds-coach-mark-${crypto.randomUUID()}`;
+---
+
+<div
+  {...rest}
+  class={cx('txt-box', 'bg-white', 'bg-white', 'krds-coach-mark', className)}
+  data-krds-coach-mark={instanceId}
+  hidden={!open}
+>
+  <div class="coach-balloon">
+    <h5 class="sr-only"><slot name="title">{title}</slot></h5>
+    <h6 class="coach-tit"><slot name="step-title">{stepTitle}</slot></h6>
+    <p class="desc"><slot name="description">{description}</slot></p>
+    <div class="coach-controls">
+      <div class="num">
+        <span class="sr-only">{currentStepLabel}</span>
+        <strong>{renderedCurrentStep}</strong>
+        <span class="sr-only">{totalStepsLabel}</span>
+        <span>{renderedTotalSteps}</span>
+      </div>
+      <div class="btn-wrap">
+        <button type="button" class="krds-btn small text" data-krds-coach-action="close">
+          {stopLabel}
+        </button>
+        <button type="button" class="krds-btn small tertiary" data-krds-coach-action="next">
+          {nextLabel}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h3><slot>{contentTitle ?? children ?? label}</slot></h3>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const button = event.target.closest<HTMLButtonElement>('[data-krds-coach-action]');
+    const root = button?.closest<HTMLElement>('[data-krds-coach-mark]');
+    if (!button || !root) return;
+
+    const action = button.dataset.krdsCoachAction;
+    const coachEvent = new CustomEvent(`krds:coach-${action}`, {
+      bubbles: true,
+      cancelable: action === 'close',
+      detail: { id: root.dataset.krdsCoachMark },
+    });
+    const accepted = root.dispatchEvent(coachEvent);
+    if (action === 'close' && accepted) root.hidden = true;
+  });
+</script>

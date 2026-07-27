@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { cp, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -180,17 +180,34 @@ const extract = async () => {
   const files = (await walk(join(snapshotRoot, 'html/code'))).filter((path) =>
     path.endsWith('.html'),
   );
-  const inventory = files.sort().map((path) => ({
-    id: relative(join(snapshotRoot, 'html/code'), path)
-      .replace(/\.html$/, '')
-      .replaceAll('_', '-'),
-    source: relative(root, path),
-    fixtureCount: 1,
-    status: 'unmapped',
-  }));
-  await mkdir(join(root, 'conformance/generated'), { recursive: true });
   const manifestDir = join(root, 'conformance/manifests');
   await mkdir(manifestDir, { recursive: true });
+  const manifestBySource = new Map();
+  for (const entry of (await readdir(manifestDir)).filter((name) => name.endsWith('.yaml'))) {
+    const text = await readFile(join(manifestDir, entry), 'utf8');
+    const status = text.match(/^status:\s*([^\s]+)/m)?.[1] ?? 'unmapped';
+    const fixtureCount = [...text.matchAll(/^\s+- id:\s*([^\s]+)\s*$/gm)].length;
+    for (const match of text.matchAll(/^\s+- (upstream\/[^\n]+)\s*$/gm)) {
+      const source = match[1].trim();
+      const current = manifestBySource.get(source) ?? { fixtureCount: 0, status: 'unmapped' };
+      current.fixtureCount += fixtureCount;
+      if (status !== 'unmapped') current.status = 'mapped';
+      manifestBySource.set(source, current);
+    }
+  }
+  const inventory = files.sort().map((path) => {
+    const source = relative(root, path);
+    const mapping = manifestBySource.get(source);
+    return {
+      id: relative(join(snapshotRoot, 'html/code'), path)
+        .replace(/\.html$/, '')
+        .replaceAll('_', '-'),
+      source,
+      fixtureCount: mapping?.fixtureCount ?? 1,
+      status: mapping?.status ?? 'unmapped',
+    };
+  });
+  await mkdir(join(root, 'conformance/generated'), { recursive: true });
   for (const component of inventory) {
     const manifestPath = join(manifestDir, `${component.id}.yaml`);
     try {

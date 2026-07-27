@@ -1,0 +1,66 @@
+---
+title: Astro 전체 export 예제
+description: "'@krds-community/astro'의 공개 export 76개를 실제 import와 상태 props로 확인하고 공식 fixture 연결을 점검합니다."
+slug: components/astro-examples
+---
+
+import AstroComponentExamples from '../../../components/AstroComponentExamples.astro';
+import { astroComponentCoverage, astroCoverageGaps, astroCoverageSummary } from '../../../data/astro-component-coverage';
+
+이 페이지는 생성된 public export inventory와 고정 KRDS HTML fixture를 기준으로, Astro에서 바로 사용할 수 있는 native 예제를 한 곳에 모읍니다. 예제는 가짜 HTML 조각을 복사하지 않고 `@krds-community/astro`의 실제 package export를 import합니다.
+
+## 정량 coverage
+
+| 항목 | 결과 |
+| --- | ---: |
+| Astro public export | {astroCoverageSummary.exportsExpected} |
+| 실제 import·usage 예제 | {astroCoverageSummary.usageExamples} |
+| 상태 props/상태 의미 설명 | {astroCoverageSummary.stateExamples} |
+| 공식 fixture가 연결된 export | {astroCoverageSummary.fixtureLinkedExports} |
+| 공식 fixture 수 | {astroCoverageSummary.fixtureCount} |
+| Astro framework 예제 | {astroCoverageSummary.nativeFrameworkExamples} |
+
+현재 native 예제 gap은 **{astroCoverageGaps.missingNativeExamples}개**, 상태 설명 gap은 **{astroCoverageGaps.missingStateExamples}개**입니다. fixture가 연결되지 않은 export는 {astroCoverageGaps.missingFixtureLinks.length}개입니다. 이 수치는 `apps/docs/src/data/public-exports.json`과 `component-manifests.json`을 페이지에서 직접 읽어 계산하며, 생성된 파일을 수동으로 고치지 않습니다.
+
+- 고정 source snapshot: [{astroCoverageSummary.snapshot}]({astroCoverageSummary.sourceUrl})
+- 공식 live component summary: [{astroCoverageSummary.liveComponentSummary}]({astroCoverageSummary.liveComponentSummary})
+- 예제 import 경로: `import { ComponentName } from '@krds-community/astro';`
+
+## Capability matrix
+
+각 행은 usage 문맥, 실제 props로 확인하는 상태, 공식 source 파일과 fixture ID, 그리고 이 페이지가 제공하는 framework 예제를 함께 보여줍니다. fixture 상태·접근성·행동 setup의 원문 계약은 [전체 컴포넌트 인벤토리](./)의 generated catalog에서 확인합니다.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Export</th>
+      <th scope="col">공식 category</th>
+      <th scope="col">Usage</th>
+      <th scope="col">예제 상태</th>
+      <th scope="col">Official source / fixture</th>
+      <th scope="col">Framework example</th>
+    </tr>
+  </thead>
+  <tbody>
+    {astroComponentCoverage.map((entry) => (
+      <tr>
+        <th scope="row"><code>{entry.exportName}</code></th>
+        <td>{entry.category}</td>
+        <td>{entry.usage}</td>
+        <td><code>{entry.state}</code></td>
+        <td>
+          {entry.officialFiles.map((file) => <code>{file}</code>)}
+          <br />
+          {entry.fixtureIds.map((fixtureId) => <code>{fixtureId}</code>)}
+        </td>
+        <td>{entry.frameworkExamples.join(', ')}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+## 실행 예제
+
+예제 props는 각 컴포넌트의 실제 타입 계약에 맞춰 작성했습니다. 입력·선택 컴포넌트는 기본값만 나열하지 않고 checked/required/error/open/current 같은 상태를 명시해, SSR에서 생성되는 semantics와 브라우저 상호작용을 함께 확인할 수 있습니다.
+
+<AstroComponentExamples />

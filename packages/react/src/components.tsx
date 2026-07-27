@@ -11,8 +11,7 @@ import {
   accordionRecipe,
   buttonRecipe,
   choiceRecipe,
-  fieldRecipe,
-  inputRecipe,
+  cx,
   switchRecipe,
 } from '@krds-community/recipes';
 import type {
@@ -23,6 +22,12 @@ import type {
   RadioContractProps,
   TextInputContractProps,
 } from '@krds-community/recipes';
+function joinAriaIds(...ids: Array<string | undefined>) {
+  const unique = new Set(
+    ids.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []),
+  );
+  return unique.size ? Array.from(unique).join(' ') : undefined;
+}
 
 export interface ButtonProps
   extends ButtonContractProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {}
@@ -38,8 +43,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type={type}
       disabled={disabled}
       className={recipe.className}
-      data-variant={recipe.data.variant}
-      data-size={recipe.data.size}
     />
   );
 });
@@ -52,32 +55,50 @@ export interface TextInputProps
   hint?: ReactNode;
 }
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
-  { label, hint, state = 'default', size = 'medium', id: providedId, className, ...props },
+  {
+    label,
+    hint,
+    state = 'default',
+    size,
+    id: providedId,
+    className,
+    readonly,
+    readOnly,
+    ...props
+  },
   ref,
 ) {
   const generatedId = useId();
   const id = providedId ?? `krds-input-${generatedId}`;
   const hintId = hint ? `${id}-hint` : undefined;
-  const recipe = inputRecipe({ state, size, className });
+  const hintClassName =
+    state === 'default'
+      ? 'form-hint'
+      : state === 'error'
+        ? 'form-hint-invalid'
+        : `form-hint-${state}`;
   return (
-    <label className={fieldRecipe().className}>
-      {label ? <span className="krds-field-label">{label}</span> : null}
-      <input
-        {...props}
-        id={id}
-        ref={ref}
-        className={recipe.className}
-        data-state={recipe.data.state}
-        data-size={recipe.data.size}
-        aria-invalid={state === 'error' ? 'true' : props['aria-invalid']}
-        aria-describedby={props['aria-describedby'] ?? hintId}
-      />
+    <div className="form-group">
+      <div className="form-tit">
+        <label htmlFor={id}>{label}</label>
+      </div>
+      <div className={cx('form-conts', state === 'default' ? undefined : `is-${state}`)}>
+        <input
+          {...props}
+          id={id}
+          ref={ref}
+          readOnly={readonly ?? readOnly}
+          className={cx('krds-input', size, className)}
+          aria-invalid={state === 'error' ? 'true' : props['aria-invalid']}
+          aria-describedby={joinAriaIds(props['aria-describedby'], hintId)}
+        />
+      </div>
       {hint ? (
-        <span id={hintId} className="krds-field-message" data-state={state}>
+        <p id={hintId} className={hintClassName}>
           {hint}
-        </span>
+        </p>
       ) : null}
-    </label>
+    </div>
   );
 });
 
@@ -94,11 +115,25 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 ) {
   const generatedId = useId();
   const id = providedId ?? `krds-checkbox-${generatedId}`;
+  const descriptionId = description ? `${id}-description` : undefined;
+  const recipe = choiceRecipe({ size, className });
   return (
-    <div className={choiceRecipe({ size, className }).className} data-size={size ?? 'medium'}>
-      <input {...props} ref={ref} id={id} type="checkbox" />
+    <div className={recipe.className}>
+      <input
+        {...props}
+        ref={ref}
+        id={id}
+        type="checkbox"
+        aria-describedby={joinAriaIds(props['aria-describedby'], descriptionId)}
+      />
       <label htmlFor={id}>{label}</label>
-      {description ? <span className="krds-field-message">{description}</span> : null}
+      {description ? (
+        <div className="krds-form-check-cnt">
+          <p id={descriptionId} className="krds-form-check-p">
+            {description}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 });
@@ -108,7 +143,7 @@ export interface RadioProps
     Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled' | 'value'>,
     Omit<RadioContractProps, 'label' | 'description' | 'value'> {
   label: ReactNode;
-  value: string;
+  value?: string;
   description?: ReactNode;
 }
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
@@ -117,11 +152,26 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
 ) {
   const generatedId = useId();
   const id = providedId ?? `krds-radio-${generatedId}`;
+  const descriptionId = description ? `${id}-description` : undefined;
+  const recipe = choiceRecipe({ size, className });
   return (
-    <div className={choiceRecipe({ size, className }).className} data-size={size ?? 'medium'}>
-      <input {...props} ref={ref} id={id} type="radio" value={value} />
+    <div className={recipe.className}>
+      <input
+        {...props}
+        ref={ref}
+        id={id}
+        type="radio"
+        value={value}
+        aria-describedby={joinAriaIds(props['aria-describedby'], descriptionId)}
+      />
       <label htmlFor={id}>{label}</label>
-      {description ? <span className="krds-field-message">{description}</span> : null}
+      {description ? (
+        <div className="krds-form-check-cnt">
+          <p id={descriptionId} className="krds-form-check-p">
+            {description}
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 });
@@ -131,22 +181,36 @@ export interface SwitchProps
     Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled'>,
     Omit<ChoiceContractProps, 'label' | 'description'> {
   label: ReactNode;
+  description?: ReactNode;
 }
 export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
-  { label, size, id: providedId, className, ...props },
+  { label, description, size, id: providedId, className, ...props },
   ref,
 ) {
   const generatedId = useId();
   const id = providedId ?? `krds-switch-${generatedId}`;
+  const descriptionId = description ? `${id}-description` : undefined;
+  const recipe = switchRecipe({ size, className });
   return (
-    <div className={switchRecipe({ size, className }).className} data-size={size ?? 'medium'}>
-      <input {...props} ref={ref} id={id} type="checkbox" />
+    <div className={recipe.className}>
+      <input
+        {...props}
+        ref={ref}
+        id={id}
+        type="checkbox"
+        aria-describedby={joinAriaIds(props['aria-describedby'], descriptionId)}
+      />
       <label htmlFor={id}>
-        <span className="switch-toggle" aria-hidden="true">
+        <span className="switch-toggle">
           <i />
         </span>
         {label}
       </label>
+      {description ? (
+        <span id={descriptionId} className="krds-field-message">
+          {description}
+        </span>
+      ) : null}
     </div>
   );
 });
@@ -158,6 +222,8 @@ export interface AccordionItemData extends Omit<AccordionItemContract, 'title' |
 export interface AccordionProps extends Omit<AccordionContractProps, 'items'> {
   items: AccordionItemData[];
   defaultOpen?: string[];
+  open?: string[];
+  onOpenChange?: (open: string[]) => void;
   className?: string;
 }
 export function Accordion({
@@ -165,30 +231,38 @@ export function Accordion({
   type = 'default',
   multiple = false,
   defaultOpen = [],
+  open: controlledOpen,
+  onOpenChange,
   className,
 }: AccordionProps) {
-  const [openItems, setOpenItems] = useState<string[]>(defaultOpen);
-  const toggle = (id: string) =>
-    setOpenItems((current) =>
-      current.includes(id)
-        ? current.filter((item) => item !== id)
-        : multiple
-          ? [...current, id]
-          : [id],
-    );
+  const generatedId = useId();
+  const accordionId = `krds-accordion-${generatedId}`;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState<string[]>(defaultOpen);
+  const openItems = controlledOpen ?? uncontrolledOpen;
+  const toggle = (id: string) => {
+    const next = openItems.includes(id)
+      ? openItems.filter((item) => item !== id)
+      : multiple
+        ? [...openItems, id]
+        : [id];
+    if (controlledOpen === undefined) {
+      setUncontrolledOpen(next);
+    }
+    onOpenChange?.(next);
+  };
   const recipe = accordionRecipe({ type, className });
   return (
-    <div className={recipe.className} data-type={type}>
-      {items.map((item) => {
+    <div className={recipe.className}>
+      {items.map((item, index) => {
         const open = openItems.includes(item.id);
-        const headerId = `krds-accordion-header-${item.id}`;
-        const panelId = `krds-accordion-panel-${item.id}`;
+        const headerId = `${accordionId}-header-${index}-${item.id}`;
+        const panelId = `${accordionId}-panel-${index}-${item.id}`;
         return (
-          <div className={`krds-accordion-item${open ? ' is-open' : ''}`} key={item.id}>
-            <h5 className="krds-accordion-heading">
+          <div className="accordion-item" key={headerId}>
+            <h5 className="accordion-header">
               <button
                 type="button"
-                className="krds-accordion-trigger"
+                className="btn-accordion"
                 id={headerId}
                 aria-expanded={open}
                 aria-controls={panelId}
@@ -200,12 +274,12 @@ export function Accordion({
             </h5>
             <div
               id={panelId}
-              className="krds-accordion-panel"
+              className={cx('accordion-collapse', 'collapse', open && 'show')}
               role="region"
               aria-labelledby={headerId}
               hidden={!open}
             >
-              {item.content}
+              <div className="accordion-body">{item.content}</div>
             </div>
           </div>
         );
@@ -214,7 +288,9 @@ export function Accordion({
   );
 }
 
-export const AccordionLine = Accordion;
+export function AccordionLine(props: Omit<AccordionProps, 'type'>) {
+  return <Accordion {...props} type="line" />;
+}
 export const RadioButton = Radio;
 export const TextInputSize = TextInput;
 export const TextInputState = TextInput;

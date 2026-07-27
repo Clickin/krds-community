@@ -1,7 +1,7 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { loadManifests } from '@krds-community/conformance';
+import { loadFixtureManifests, loadManifests } from '@krds-community/conformance';
 
 const root = resolve(import.meta.dirname, '..');
 const inventoryNames = [
@@ -92,6 +92,72 @@ describe('KRDS component inventory', () => {
     expect(manifests.every((manifest) => manifest.mandatoryFixtureCount > 0)).toBe(true);
     expect(manifests.every((manifest) => manifest.accessibilityRequirements.length > 0)).toBe(true);
   });
+  it('loads executable fixture states with deterministic viewport and comparisons', async () => {
+    const manifests = await loadFixtureManifests(resolve(root, 'conformance/manifests'));
+    const fixtures = manifests.flatMap((manifest) => manifest.fixtures);
+    expect(fixtures).toHaveLength(85);
+    expect(new Set(fixtures.map((fixture) => fixture.id)).size).toBe(fixtures.length);
+    expect(
+      fixtures.every(
+        (fixture) =>
+          fixture.states.length > 0 &&
+          fixture.viewport.width > 0 &&
+          fixture.viewport.height > 0 &&
+          fixture.comparisons.dom === 'strict' &&
+          fixture.comparisons.visual === 'exact' &&
+          fixture.comparisons.accessibility === 'strict',
+      ),
+    ).toBe(true);
+
+    const primaryButton = fixtures.find(
+      (fixture) => fixture.id === 'button.primary.medium.default',
+    );
+    expect(primaryButton).toMatchObject({
+      sourceSelector: '.krds-btn.primary',
+      sourceIndex: 0,
+      viewport: { name: 'desktop', width: 1280, height: 800 },
+      props: { variant: 'primary', size: 'medium' },
+    });
+    expect(primaryButton?.states.map((state) => state.id)).toEqual([
+      'default',
+      'hover',
+      'focus-visible',
+      'active',
+      'disabled',
+    ]);
+  });
+  it('keeps zero-box popup roots paired with an explicit visual selector', async () => {
+    const fixtures = (await loadFixtureManifests(resolve(root, 'conformance/manifests'))).flatMap(
+      (manifest) => manifest.fixtures,
+    );
+    for (const fixtureId of [
+      'calendar.default',
+      'calendar-range.default',
+      'date-input.default',
+    ]) {
+      expect(fixtures.find((fixture) => fixture.id === fixtureId)).toMatchObject({
+        sourceSelector: '.krds-calendar-area',
+        visualSelector: '.calendar-wrap',
+      });
+    }
+    expect(fixtures.find((fixture) => fixture.id === 'modal.default')).toMatchObject({
+      sourceSelector: '.krds-modal[role="dialog"]',
+      visualSelector: '.modal-dialog',
+    });
+  });
+  it('treats every official HTML fixture as mapped before runtime evidence', async () => {
+    const inventory = JSON.parse(
+      await readFile(resolve(root, 'conformance/generated/source-inventory.json'), 'utf8'),
+    ) as { components?: Array<{ source?: string; status?: string }> };
+    const officialFiles = (await readdir(resolve(root, 'upstream/krds-html/html/code'))).filter((entry) =>
+      entry.endsWith('.html'),
+    );
+    expect(inventory.components).toHaveLength(officialFiles.length);
+    expect(inventory.components?.every((component) => component.status === 'mapped')).toBe(true);
+    expect(
+      new Set(inventory.components?.map((component) => component.source)).size,
+    ).toBe(officialFiles.length);
+  });
 
   it('publishes the common props contract from recipes', async () => {
     const source = await readFile(resolve(root, 'packages/recipes/src/components.ts'), 'utf8');
@@ -116,13 +182,49 @@ describe('KRDS component inventory', () => {
       readFile(resolve(root, 'packages/svelte/src/index.js'), 'utf8'),
       readFile(resolve(root, 'packages/solid/src/index.tsx'), 'utf8'),
       readFile(resolve(root, 'packages/angular/src/index.ts'), 'utf8'),
+      readFile(resolve(root, 'packages/astro/src/index.js'), 'utf8'),
     ]);
     for (const name of inventoryNames) {
       expect(sources[0]).toContain(name);
       expect(sources[1]).toContain(name);
-      expect(sources[2]).toContain(`as ${name}`);
+      expect(sources[2]).toContain(name);
       expect(sources[3]).toContain(name);
       expect(sources[4]).toContain(`Krds${name}Component`);
     }
+    const astroExports = [...sources[5]!.matchAll(/^export \{ default as (\w+) \}/gm)].map(
+      (match) => match[1],
+    );
+    expect(astroExports).toHaveLength(inventoryNames.length);
+    expect(new Set(astroExports)).toEqual(new Set(inventoryNames));
+  });
+
+  it('keeps manifest accessibility errata references traceable', async () => {
+    const [manifestEntries, errataEntries] = await Promise.all([
+      readdir(resolve(root, 'conformance/manifests')),
+      readdir(resolve(root, 'conformance/errata')),
+    ]);
+    const [manifestTexts, errataTexts] = await Promise.all([
+      Promise.all(
+        manifestEntries
+          .filter((entry) => entry.endsWith('.yaml'))
+          .map((entry) => readFile(resolve(root, 'conformance/manifests', entry), 'utf8')),
+      ),
+      Promise.all(
+        errataEntries
+          .filter((entry) => entry.endsWith('.yaml'))
+          .map((entry) => readFile(resolve(root, 'conformance/errata', entry), 'utf8')),
+      ),
+    ]);
+    const references = manifestTexts.flatMap((text) => {
+      const section = text.match(/^errata:\n((?:  - [^\n]+\n?)+)/m)?.[1] ?? '';
+      return [...section.matchAll(/^  - ([^\s]+)$/gm)].map((match) => match[1]!);
+    });
+    const errataIds = new Set(
+      errataTexts
+        .map((text) => text.match(/^id:\s*(\S+)$/m)?.[1])
+        .filter((id): id is string => Boolean(id)),
+    );
+    expect(references.length).toBeGreaterThan(0);
+    expect(references.every((reference) => errataIds.has(reference))).toBe(true);
   });
 });

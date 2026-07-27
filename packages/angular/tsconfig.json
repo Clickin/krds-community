@@ -8,5 +8,12 @@
     "emitDecoratorMetadata": true
   },
   "include": ["src/**/*.ts"],
-  "references": [{ "path": "../recipes/tsconfig.json" }]
+  "references": [{ "path": "../recipes/tsconfig.json" }],
+  "angularCompilerOptions": {
+    "compilationMode": "partial",
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
 }

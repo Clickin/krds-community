@@ -1,0 +1,70 @@
+id: errata.accordion.state-and-panel-relationship
+component: accordion
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/accordion.html
+    - upstream/krds-html/html/code/accordion_line.html
+defect:
+  type: missing-expanded-state-and-panel-semantics
+  literalSource:
+    selectors:
+      - ".accordion-header > button.btn-accordion"
+      - ".accordion-collapse"
+    behavior: >-
+      The literal buttons expose aria-controls but not aria-expanded, and the
+      panels expose aria-labelledby but not role=region. The collapse class
+      alone does not expose the current expanded state or a labelled region to
+      assistive technology.
+correction:
+  behavior: >-
+    Use a native button, give it a stable id, bind aria-expanded to the open
+    state, and expose the controlled panel as role=region with aria-labelledby
+    pointing back to that button. Synchronize hidden/visibility with the state
+    and restore focus to the trigger after keyboard toggles.
+  attributes:
+    - selector: ".accordion-header > button.btn-accordion"
+      attribute: aria-expanded
+      rule: "exact-value:current-open-state"
+    - selector: ".accordion-header > button.btn-accordion"
+      attribute: aria-controls
+      rule: "references: .accordion-collapse[id]"
+    - selector: ".accordion-collapse"
+      attribute: role
+      rule: "exact-value:region"
+    - selector: ".accordion-collapse"
+      attribute: aria-labelledby
+      rule: "references: .accordion-header > button.btn-accordion[id]"
+    - selector: ".accordion-collapse"
+      attribute: hidden
+      rule: "true-when-collapsed; false-when-expanded"
+fixtures:
+  - accordion.default.single
+  - accordion.line.single
+normalization:
+  whitelist:
+    - selector: ".accordion-header > button.btn-accordion"
+      attribute: id
+      rule: stable-generated-id
+    - selector: ".accordion-header > button.btn-accordion"
+      attribute: aria-expanded
+      rule: "exact-value:current-open-state"
+    - selector: ".accordion-header > button.btn-accordion"
+      attribute: aria-controls
+      rule: "must-reference: .accordion-collapse[id]"
+    - selector: ".accordion-collapse"
+      attribute: role
+      rule: "exact-value:region"
+    - selector: ".accordion-collapse"
+      attribute: aria-labelledby
+      rule: "must-reference: .accordion-header > button.btn-accordion[id]"
+    - selector: ".accordion-collapse"
+      attribute: hidden
+      rule: "true-when-collapsed; false-when-expanded"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/apg/patterns/accordion/
+  rationale: >-
+    The WAI-ARIA Authoring Practices accordion pattern requires aria-expanded
+    on each accordion button and a labelled controlled panel; the panel state
+    must follow the trigger state.

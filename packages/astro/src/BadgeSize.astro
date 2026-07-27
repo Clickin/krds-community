@@ -1,0 +1,32 @@
+---
+import { cx } from '@krds-community/recipes';
+import type { KrdsTone } from '@krds-community/recipes';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props extends Omit<HTMLAttributes<'span'>, 'class' | 'class:list'> {
+  label?: string;
+  tone?: KrdsTone;
+  appearance?: 'outline' | 'solid' | 'light';
+  size?: 'small' | 'medium' | 'large';
+  class?: string;
+}
+
+const {
+  label,
+  tone = 'primary',
+  appearance = 'outline',
+  size = 'large',
+  class: className,
+  ...rest
+} = Astro.props;
+const appearanceClass =
+  appearance === 'outline'
+    ? `outline-${tone}`
+    : appearance === 'light'
+      ? `bg-light-${tone}`
+      : `bg-${tone}`;
+---
+
+<span {...rest} class={cx('krds-badge', size, appearanceClass, className)}>
+  <slot>{label}</slot>
+</span>

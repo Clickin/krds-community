@@ -1,0 +1,51 @@
+---
+import Tts from './Tts.astro';
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props
+  extends Omit<HTMLAttributes<'button'>, 'class' | 'class:list' | 'disabled' | 'onclick' | 'type'> {
+  label?: string;
+  children?: string;
+  text?: string;
+  size?: 'xsmall' | 'small' | 'medium' | 'large';
+  variant?: 'default' | 'play';
+  playing?: boolean;
+  iconClass?: string;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  onclick?: never;
+}
+
+const {
+  label,
+  children,
+  text,
+  size = 'medium',
+  variant,
+  playing,
+  iconClass,
+  disabled,
+  type,
+  class: className,
+  onclick: ignoredOnclick,
+  ...rest
+} = Astro.props;
+void ignoredOnclick;
+---
+
+<Tts
+  {...rest}
+  label={label ?? children}
+  text={text}
+  size={size}
+  variant={variant}
+  playing={playing}
+  iconOnly
+  iconClass={iconClass}
+  disabled={disabled}
+  type={type}
+  class={className}
+>
+  <slot>{label ?? children}</slot>
+</Tts>

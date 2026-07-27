@@ -1,12 +1,14 @@
-import { For, Show, createEffect, createSignal, mergeProps, splitProps, type JSX } from 'solid-js';
 import {
-  accordionRecipe,
-  buttonRecipe,
-  choiceRecipe,
-  fieldRecipe,
-  inputRecipe,
-  switchRecipe,
-} from '@krds-community/recipes';
+  For,
+  Show,
+  createEffect,
+  createSignal,
+  createUniqueId,
+  mergeProps,
+  splitProps,
+  type JSX,
+} from 'solid-js';
+import { accordionRecipe, buttonRecipe } from '@krds-community/recipes';
 import type {
   AccordionContractProps,
   AccordionItemContract,
@@ -20,7 +22,7 @@ export interface ButtonProps
   extends ButtonContractProps, JSX.ButtonHTMLAttributes<HTMLButtonElement> {}
 export function Button(rawProps: ButtonProps) {
   const merged = mergeProps(
-    { variant: 'primary' as const, size: 'medium' as const, type: 'button' as const },
+    { size: 'medium' as const, type: 'button' as const },
     rawProps,
   );
   const [props, nativeProps] = splitProps(merged, [
@@ -44,8 +46,6 @@ export function Button(rawProps: ButtonProps) {
       type={props.type}
       disabled={props.disabled}
       class={recipe().className}
-      data-variant={recipe().data.variant}
-      data-size={recipe().data.size}
     >
       {props.children}
     </button>
@@ -58,10 +58,15 @@ export interface TextInputProps
     Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'disabled'> {
   label?: string;
   hint?: string;
+  error?: string;
 }
 export function TextInput(rawProps: TextInputProps) {
   const merged = mergeProps(
-    { state: 'default' as const, size: 'medium' as const, id: 'krds-input' },
+    {
+      state: 'default' as const,
+      type: 'text' as const,
+      id: `krds-input-${createUniqueId()}`,
+    },
     rawProps,
   );
   const [props, nativeProps] = splitProps(merged, [
@@ -70,43 +75,72 @@ export function TextInput(rawProps: TextInputProps) {
     'id',
     'label',
     'hint',
+    'error',
     'class',
     'value',
+    'onInput',
+    'ref',
   ]);
-  const [value, setValue] = createSignal(String(props.value ?? ''));
-  createEffect(() => setValue(String(props.value ?? '')));
-  const hintId = () => {
-    if (props.hint) return `${props.id}-hint`;
-    return undefined;
+  const [localValue, setLocalValue] = createSignal('');
+  const hintClass = () => {
+    if (props.state === 'error') return 'form-hint-invalid';
+    if (props.state === 'success') return 'form-hint-success';
+    if (props.state === 'information') return 'form-hint-information';
+    return 'form-hint';
   };
   const ariaInvalid = () => {
     if (props.state === 'error') return 'true';
     return nativeProps['aria-invalid'];
   };
-  const recipe = () =>
-    inputRecipe({ state: props.state, size: props.size, className: props.class });
+  const updateValue = (
+    event: InputEvent & { currentTarget: HTMLInputElement; target: HTMLInputElement },
+  ) => {
+    if (props.value === undefined) setLocalValue(event.currentTarget.value);
+    const handler = props.onInput;
+    if (typeof handler === 'function') handler(event);
+    else if (Array.isArray(handler) && typeof handler[0] === 'function')
+      handler[0](handler[1], event);
+  };
   return (
-    <label class={fieldRecipe().className}>
-      <Show when={props.label}>
-        <span class="krds-field-label">{props.label}</span>
-      </Show>
-      <input
-        {...nativeProps}
-        id={props.id}
-        value={value()}
-        class={recipe().className}
-        data-state={recipe().data.state}
-        data-size={recipe().data.size}
-        aria-invalid={ariaInvalid()}
-        aria-describedby={nativeProps['aria-describedby'] ?? hintId()}
-        onInput={(event) => setValue(event.currentTarget.value)}
-      />
+    <div class="form-group">
+      <div class="form-tit">
+        <label for={props.id}>{props.label}</label>
+      </div>
+      <div
+        class={
+          props.state === 'default' ? 'form-conts' : `form-conts is-${props.state}`
+        }
+      >
+        <input
+          {...nativeProps}
+          id={props.id}
+          ref={(element) => {
+            const callerRef = props.ref;
+            if (typeof callerRef === 'function') callerRef(element);
+            createEffect(() => {
+              const controlledValue = props.value;
+              if (controlledValue !== undefined)
+                element.value = String(controlledValue);
+            });
+          }}
+          value={
+            props.value === undefined ? localValue() : String(props.value ?? '')
+          }
+          class={`krds-input${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
+          aria-invalid={ariaInvalid()}
+          aria-describedby={
+            nativeProps['aria-describedby'] ??
+            (props.hint ? `${props.id}-hint` : undefined)
+          }
+          onInput={updateValue}
+        />
+      </div>
       <Show when={props.hint}>
-        <span id={hintId()} class="krds-field-message" data-state={props.state}>
+        <p id={`${props.id}-hint`} class={hintClass()}>
           {props.hint}
-        </span>
+        </p>
       </Show>
-    </label>
+    </div>
   );
 }
 
@@ -118,17 +152,24 @@ export interface CheckboxProps
   description?: string;
 }
 export function Checkbox(rawProps: CheckboxProps) {
-  const merged = mergeProps({ size: 'medium' as const, id: 'krds-checkbox' }, rawProps);
-  const [props, nativeProps] = splitProps(merged, ['size', 'id', 'label', 'description', 'class']);
+  const merged = mergeProps({ id: `krds-checkbox-${createUniqueId()}` }, rawProps);
+  const [props, nativeProps] = splitProps(merged, [
+    'size',
+    'id',
+    'label',
+    'description',
+    'class',
+  ]);
   return (
     <div
-      class={choiceRecipe({ size: props.size, className: props.class }).className}
-      data-size={props.size}
+      class={`krds-form-check${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
     >
       <input {...nativeProps} id={props.id} type="checkbox" />
       <label for={props.id}>{props.label}</label>
       <Show when={props.description}>
-        <span class="krds-field-message">{props.description}</span>
+        <div class="krds-form-check-cnt">
+          <p class="krds-form-check-p">{props.description}</p>
+        </div>
       </Show>
     </div>
   );
@@ -139,11 +180,11 @@ export interface RadioProps
     Omit<RadioContractProps, 'label' | 'description' | 'value'>,
     Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled' | 'value'> {
   label: string;
-  value: string;
+  value?: string;
   description?: string;
 }
 export function Radio(rawProps: RadioProps) {
-  const merged = mergeProps({ size: 'medium' as const, id: 'krds-radio' }, rawProps);
+  const merged = mergeProps({ id: `krds-radio-${createUniqueId()}` }, rawProps);
   const [props, nativeProps] = splitProps(merged, [
     'size',
     'id',
@@ -154,13 +195,14 @@ export function Radio(rawProps: RadioProps) {
   ]);
   return (
     <div
-      class={choiceRecipe({ size: props.size, className: props.class }).className}
-      data-size={props.size}
+      class={`krds-form-check${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
     >
       <input {...nativeProps} id={props.id} type="radio" value={props.value} />
       <label for={props.id}>{props.label}</label>
       <Show when={props.description}>
-        <span class="krds-field-message">{props.description}</span>
+        <div class="krds-form-check-cnt">
+          <p class="krds-form-check-p">{props.description}</p>
+        </div>
       </Show>
     </div>
   );
@@ -173,16 +215,15 @@ export interface SwitchProps
   label: string;
 }
 export function Switch(rawProps: SwitchProps) {
-  const merged = mergeProps({ size: 'medium' as const, id: 'krds-switch' }, rawProps);
+  const merged = mergeProps({ id: `krds-switch-${createUniqueId()}` }, rawProps);
   const [props, nativeProps] = splitProps(merged, ['size', 'id', 'label', 'class']);
   return (
     <div
-      class={switchRecipe({ size: props.size, className: props.class }).className}
-      data-size={props.size}
+      class={`krds-form-toggle-switch${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
     >
       <input {...nativeProps} id={props.id} type="checkbox" />
       <label for={props.id}>
-        <span class="switch-toggle" aria-hidden="true">
+        <span class="switch-toggle">
           <i />
         </span>
         {props.label}
@@ -202,6 +243,7 @@ export function Accordion(rawProps: AccordionProps) {
     { type: 'default' as const, multiple: false, defaultOpen: [] as string[] },
     rawProps,
   );
+  const instanceId = createUniqueId();
   const [props, nativeProps] = splitProps(merged, [
     'type',
     'multiple',
@@ -217,23 +259,23 @@ export function Accordion(rawProps: AccordionProps) {
     else if (props.multiple) setOpenItems([...current, id]);
     else setOpenItems([id]);
   };
-  const recipe = () => accordionRecipe({ type: props.type, className: props.class });
   return (
-    <div {...nativeProps} class={recipe().className} data-type={props.type}>
+    <div
+      {...nativeProps}
+      class={accordionRecipe({ type: props.type, className: props.class }).className}
+    >
       <For each={props.items}>
         {(item) => {
           const open = () => openItems().includes(item.id);
-          const headerId = `krds-accordion-header-${item.id}`;
-          const panelId = `krds-accordion-panel-${item.id}`;
           return (
-            <div class="krds-accordion-item" classList={{ 'is-open': open() }}>
-              <h5 class="krds-accordion-heading">
+            <div class="accordion-item">
+              <h5 class="accordion-header">
                 <button
                   type="button"
-                  class="krds-accordion-trigger"
-                  id={headerId}
+                  class="btn-accordion"
+                  id={`krds-accordion-${instanceId}-header-${item.id}`}
                   aria-expanded={open()}
-                  aria-controls={panelId}
+                  aria-controls={`krds-accordion-${instanceId}-panel-${item.id}`}
                   disabled={item.disabled}
                   onClick={() => toggle(item.id)}
                 >
@@ -241,13 +283,14 @@ export function Accordion(rawProps: AccordionProps) {
                 </button>
               </h5>
               <div
-                id={panelId}
-                class="krds-accordion-panel"
+                id={`krds-accordion-${instanceId}-panel-${item.id}`}
+                class="accordion-collapse collapse"
+                classList={{ show: open() }}
                 role="region"
-                aria-labelledby={headerId}
+                aria-labelledby={`krds-accordion-${instanceId}-header-${item.id}`}
                 hidden={!open()}
               >
-                {item.content}
+                <div class="accordion-body">{item.content}</div>
               </div>
             </div>
           );
@@ -257,7 +300,9 @@ export function Accordion(rawProps: AccordionProps) {
   );
 }
 
-export const AccordionLine = Accordion;
+export function AccordionLine(props: Omit<AccordionProps, 'type'>) {
+  return <Accordion {...props} type="line" />;
+}
 export const TextInputSize = TextInput;
 export const TextInputState = TextInput;
 
@@ -330,4 +375,11 @@ export {
   TtsSize,
   TutorialPanel,
 } from './additional.js';
-export type { AdditionalProps } from './additional.js';
+export type {
+  AdditionalProps,
+  HeaderMobileMenu,
+  HeaderMyMenu,
+  MenuBanner,
+  MenuDescriptionItem,
+  MenuItem,
+} from './additional.js';

@@ -7,10 +7,10 @@ description: 디지털 정부서비스의 핵심 과업에 대한 사용자 여�
 
 | 패턴           | 상세                                        |
 | -------------- | ------------------------------------------- |
-| 방문           | [방문](/service-patterns/visit/)            |
-| 검색           | [검색](/service-patterns/search/)           |
-| 로그인         | [로그인](/service-patterns/login/)          |
-| 신청           | [신청](/service-patterns/application/)      |
-| 정책 정보 확인 | [정책 정보 확인](/service-patterns/policy/) |
+| 방문           | [방문](./visit/)            |
+| 검색           | [검색](./search/)           |
+| 로그인         | [로그인](./login/)          |
+| 신청           | [신청](./application/)      |
+| 정책 정보 확인 | [정책 정보 확인](./policy/) |
 
 출처: [공식 서비스 패턴 개요](https://www.krds.go.kr/html/site/service/service_summary.html)

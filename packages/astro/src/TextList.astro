@@ -1,0 +1,43 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface TextListItemObject {
+  id?: string;
+  label?: string | number;
+  title?: string | number;
+  marker?: string | number;
+  children?: TextListItem[];
+}
+
+export type TextListItem = string | number | TextListItemObject;
+
+export interface Props extends Omit<HTMLAttributes<'ul'>, 'class' | 'class:list'> {
+  items: TextListItem[];
+  ordered?: boolean;
+  depth?: number;
+  class?: string;
+}
+
+const {
+  items,
+  ordered: _ordered,
+  depth = 0,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const listClass = depth === 0 ? 'decimal' : depth === 1 ? 'dash' : 'hollow';
+const normalizedItems: TextListItemObject[] = items.map((item) =>
+  typeof item === 'object' ? item : { label: item },
+);
+---
+
+<ul {...rest} class:list={['krds-info-list', listClass, className]}>
+  {normalizedItems.map((item) => (
+    <li>
+      {item.marker !== undefined && <span class="num">{item.marker}</span>}
+      {item.label ?? item.title}
+      {item.children?.length && <Astro.self items={item.children} depth={depth + 1} />}
+    </li>
+  ))}
+</ul>

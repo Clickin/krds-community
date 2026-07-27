@@ -281,23 +281,22 @@ export default function ReactPatternExample({ patternId }: PatternExampleProps) 
       );
     case 'confirm':
       return (
-        <section
-          role="alertdialog"
-          aria-labelledby={`${id}-title`}
-          aria-describedby={`${id}-description`}
-        >
-          <h3 id={`${id}-title`}>신청을 제출할까요?</h3>
-          <p id={`${id}-description`}>제출한 뒤에는 내용을 수정할 수 없습니다.</p>
-          <div className="pattern-inline">
-            <button type="button" onClick={() => setMessage('제출을 취소했습니다.')}>
-              취소
-            </button>
-            <button type="button" onClick={() => setMessage('신청을 제출했습니다.')}>
-              제출
-            </button>
-          </div>
-          {message && <output role="status">{message}</output>}
-        </section>
+        <details>
+          <summary>제출 전 확인 열기</summary>
+          <section aria-labelledby={`${id}-title`} aria-describedby={`${id}-description`}>
+            <h3 id={`${id}-title`}>신청을 제출할까요?</h3>
+            <p id={`${id}-description`}>제출한 뒤에는 내용을 수정할 수 없습니다.</p>
+            <div className="pattern-inline">
+              <button type="button" onClick={() => setMessage('제출을 취소했습니다.')}>
+                취소
+              </button>
+              <button type="button" onClick={() => setMessage('신청을 제출했습니다.')}>
+                제출
+              </button>
+            </div>
+            {message && <output role="status">{message}</output>}
+          </section>
+        </details>
       );
     case 'mobile-notification':
       return (
