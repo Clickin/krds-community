@@ -511,9 +511,13 @@ const contractChecks = (fixture, semantics) => {
     const targets = Array.isArray(groups[rawName]) ? groups[rawName] : [root];
     const requirements = Array.isArray(expected)
       ? expected
-      : typeof expected === 'string' && !expected.includes('=')
-        ? [`${rawName}=${expected}`]
-        : [expected];
+      : typeof expected === 'boolean'
+        ? expected
+          ? [rawName]
+          : []
+        : typeof expected === 'string' && !expected.includes('=')
+          ? [`${rawName}=${expected}`]
+          : [expected];
     if (targets.length === 0) {
       errors.push(`${rawName}: required element group is missing`);
       continue;
@@ -706,6 +710,8 @@ try {
             'errata.critical-alerts.alert-semantics',
             'errata.disclosure.region-semantics',
             'errata.navigation.missing-landmark-semantics',
+            'errata.text-input.error-description',
+            'errata.text-input.hint-description',
           ]);
           const correctedByErrata = appliedErrataIds.some((id) => correctionErrataIds.has(id));
           if (framework === 'astro') {
