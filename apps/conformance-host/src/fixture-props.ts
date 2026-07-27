@@ -187,6 +187,10 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
         ...common,
         label: '레이블',
         hint: '도움말',
+        displayYear: 2002,
+        displayMonth: 12,
+        selectedYear: 2002,
+        selectedMonth: 12,
         year: 2002,
         month: 12,
         disabledMonths: [2],
@@ -201,6 +205,10 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
         ...common,
         label: '레이블',
         hint: '도움말',
+        displayYear: 2002,
+        displayMonth: 12,
+        selectedYear: 2002,
+        selectedMonth: 12,
         year: 2002,
         month: 12,
         disabledMonths: [1],
@@ -213,6 +221,10 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       defaults = {
         ...common,
         label: '기간 선택',
+        displayYear: 2011,
+        displayMonth: 2,
+        selectedYear: 2011,
+        selectedMonth: 2,
         year: 2011,
         month: 2,
         disabledMonths: [1],
@@ -939,7 +951,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       '대화 상자는 사용자에게 작업에 대해 알리고 중요한 정보를 포함하거나 결정이 필요하거나 여러 작업을 포함할 수 있습니다.';
     const items = ['시작', ...Array.from({ length: 21 }, () => sentence), '끝'];
     defaults = {
-      open: true,
+      title: '모달 제목',
       description: items.join(' '),
       children: items.join(' '),
       items,

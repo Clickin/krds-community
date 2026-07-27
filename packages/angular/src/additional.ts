@@ -343,6 +343,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <ng-template #projectedButtonContent><ng-content></ng-content></ng-template>
     @switch (renderKind) {
       @case ('badge') {
         <span
@@ -381,8 +382,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                   class="btn-accordion"
                   [id]="accordionHeaderId($index)"
                   [attr.aria-controls]="accordionPanelId($index)"
-                  [attr.aria-expanded]="accordionFocused ? null : 'false'"
-                  (focus)="accordionFocused = true"
+                  [attr.aria-expanded]="'false'"
                 >
                   {{ navLabel(item) }}
                 </button>
@@ -391,7 +391,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                 class="accordion-collapse collapse"
                 [id]="accordionPanelId($index)"
                 [attr.aria-labelledby]="accordionHeaderId($index)"
-                [attr.role]="accordionFocused ? null : 'region'"
+                role="region"
               >
                 <div class="accordion-body">{{ itemDescription(item) }}</div>
               </div>
@@ -411,7 +411,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
           [class]="'krds-btn text ' + (className || 'small')"
           [disabled]="disabled"
         >
-          {{ label }}
+          <ng-container *ngTemplateOutlet="projectedButtonContent"></ng-container>
         </button>
       }
       @case ('button-with-icon') {
@@ -420,7 +420,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
           [class]="'krds-btn ' + (className || size)"
           [disabled]="disabled"
         >
-          {{ label }}
+          <ng-container *ngTemplateOutlet="projectedButtonContent"></ng-container>
           <i class="svg-icon ico-sch"></i>
         </button>
       }
@@ -433,14 +433,15 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
           "
           [disabled]="disabled"
         >
-          {{ label }}
+          <ng-container *ngTemplateOutlet="projectedButtonContent"></ng-container>
         </button>
       }
       @case ('calendar') {
-        <div
-          [class]="additionalRootClass('krds-calendar-area')"
-          [ngStyle]="style"
-        >
+        <ng-template #calendarSurface>
+          <div
+            [class]="additionalRootClass('krds-calendar-area')"
+            [ngStyle]="style"
+          >
           <div
             class="calendar-wrap bottom"
             [class.single]="isSingleCalendar"
@@ -483,9 +484,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                           <button
                             type="button"
                             role="option"
-                            [class.active]="optionYear === calendarYear"
-                            [attr.aria-selected]="optionYear === calendarYear"
-                            [disabled]="disabledYears.includes(optionYear)"
+                            [class.active]="optionYear === calendarSelectedYear"
+                            [attr.aria-selected]="optionYear === calendarSelectedYear"
+                            [attr.disabled]="disabledYears.includes(optionYear) ? 'true' : null"
                             (click)="selectCalendarYear(optionYear)"
                           >
                             {{ optionYear }}년
@@ -521,10 +522,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                         <li role="none">
                           <button
                             type="button"
-                            role="option"
-                            [class.active]="optionMonth === calendarMonth"
-                            [attr.aria-selected]="optionMonth === calendarMonth"
-                            [disabled]="disabledMonths.includes(optionMonth)"
+                            [class.active]="optionMonth === calendarSelectedMonth"
+                            [attr.aria-selected]="optionMonth === calendarSelectedMonth"
+                            [attr.disabled]="disabledMonths.includes(optionMonth) ? 'true' : null"
                             (click)="selectCalendarMonth(optionMonth)"
                           >
                             {{ padCalendarPart(optionMonth) }}월
@@ -564,7 +564,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                             <button
                               type="button"
                               class="btn-set-date"
-                              [disabled]="cell.disabled"
+                              [attr.disabled]="cell.disabled ? 'true' : null"
                               [attr.aria-pressed]="cell.pressed ? true : null"
                               [attr.aria-label]="cell.ariaLabel"
                               (click)="selectCalendarDate(cell)"
@@ -598,7 +598,40 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        </ng-template>
+        @if (isDateInput) {
+          <div class="form-group" [ngStyle]="style">
+            <div class="form-tit">
+              <label [for]="id">{{ label }}</label>
+            </div>
+            <div class="form-conts">
+              <div class="form-conts calendar-conts">
+                <div class="calendar-input">
+                  <input
+                    [id]="id"
+                    type="number"
+                    class="krds-input datepicker cal"
+                    placeholder="YYYY.MM.DD"
+                    [value]="value"
+                    [disabled]="disabled"
+                    [readonly]="readonly"
+                    [required]="required"
+                    (input)="setValue(inputValue($event))"
+                    (blur)="touch()"
+                  />
+                  <button type="button" class="krds-btn medium icon form-btn-datepicker">
+                    <span class="sr-only">달력 열기</span>
+                    <i class="svg-icon ico-calendar"></i>
+                  </button>
+                </div>
+                <ng-container [ngTemplateOutlet]="calendarSurface"></ng-container>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <ng-container [ngTemplateOutlet]="calendarSurface"></ng-container>
+        }
       }
       @case ('carousel') {
         @if (kind === 'carousel-banner') {
@@ -731,18 +764,20 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         }
       }
       @case ('radio-chip') {
-        <input
-          class="radio"
-          [id]="id"
-          type="radio"
-          [attr.name]="name || null"
-          [attr.value]="value || null"
-          [checked]="checked || (value !== '' && selected === value)"
-          [disabled]="disabled"
-          (change)="setSelected(value || 'on')"
-          (blur)="touch()"
-        />
-        <label [for]="id">{{ label }}</label>
+        <div class="krds-form-chip">
+          <input
+            class="radio"
+            [id]="id"
+            type="radio"
+            [attr.name]="name || null"
+            [attr.value]="value || null"
+            [checked]="checked || (value !== '' && selected === value)"
+            [disabled]="disabled"
+            (change)="setSelected(value || 'on')"
+            (blur)="touch()"
+          />
+          <label class="krds-form-chip-outline" [for]="id">{{ label }}</label>
+        </div>
       }
       @case ('coach-mark') {
         <div class="txt-box bg-white bg-white krds-coach-mark">
@@ -818,11 +853,11 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
       @case ('disclosure') {
         <div class="krds-disclosure conts-expand-area">
           <button
+            [id]="id + '-trigger'"
             type="button"
             class="btn-conts-expand"
-            [attr.aria-controls]="disclosureFocused ? null : id + '-contents'"
-            [attr.aria-expanded]="disclosureFocused ? null : open"
-            (focus)="disclosureFocused = true"
+            [attr.aria-controls]="id + '-contents'"
+            [attr.aria-expanded]="open"
             (click)="open = !open"
           >
             {{ title }}
@@ -830,13 +865,15 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
           <div
             class="expand-wrap"
             [class.show]="open"
-            [id]="disclosureFocused ? null : id + '-contents'"
-            [attr.inert]="!open && !disclosureFocused ? '' : null"
+            [id]="id + '-contents'"
+            [attr.aria-labelledby]="id + '-trigger'"
+            role="region"
+            [attr.inert]="!open ? '' : null"
           >
             <div class="expand-in">
-              <ul class="krds-info-list dash" [attr.role]="disclosureFocused ? null : 'list'">
+              <ul class="krds-info-list dash" role="list">
                 @for (item of items; track $index) {
-                  <li [attr.role]="disclosureFocused ? null : 'listitem'">
+                  <li role="listitem">
                     {{ navLabel(item) }}
                   </li>
                 }
@@ -997,7 +1034,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
       }
       @case ('header') {
         <header
-          [id]="id"
+          [id]="id.startsWith('krds-additional') ? 'krds-header' : id"
           [class]="additionalRootClass('krds-header')"
           [ngStyle]="style"
         >
@@ -1473,13 +1510,17 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         <div
           [class]="'krds-help-panel' + (open && !helpPanelFocused ? ' expand' : '')"
         >
-          <div class="help-panel-wrap" [attr.tabindex]="helpPanelFocused ? null : '0'">
+          <div
+            class="help-panel-wrap"
+            [attr.tabindex]="helpPanelFocused ? null : '0'"
+            (focus)="helpPanelFocused = true"
+          >
             <div class="help-conts-area">
               <div class="krds-tab-area layer">
                 <div class="tab line">
                   <ul role="tablist">
                     @for (tab of tabs; track tab.id) {
-                      <li [class.active]="helpTabValue(tab) === activeTab" role="presentation">
+                      <li [class.active]="helpTabValue(tab) === activeTab">
                         <button
                           [id]="tab.id"
                           type="button"
@@ -1716,6 +1757,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         <div
           id="mobile-nav"
           [class]="additionalRootClass('krds-main-menu-mobile')"
+          role="navigation"
           [ngStyle]="style"
         >
           <div class="gnb-wrap">
@@ -1853,7 +1895,6 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
       @case ('main-menu-pc') {
         <nav
           [class]="additionalRootClass('krds-main-menu')"
-          [attr.aria-label]="menuLabel || null"
         >
           <div class="inner">
             <ul class="gnb-menu">
@@ -2023,7 +2064,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </nav>
       }
       @case ('masthead') {
-        <div [id]="id">
+        <div [id]="id.startsWith('krds-additional') ? 'krds-masthead' : id">
           <div class="toggle-wrap">
             <div class="toggle-head">
               <div class="inner">
@@ -2268,7 +2309,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </nav>
       }
       @case ('skip-link') {
-        <a [href]="href">{{ label }}</a>
+        <div [id]="id.startsWith('krds-additional') ? 'krds-skip-link' : id">
+          <a [href]="href">{{ label }}</a>
+        </div>
       }
       @case ('spinner') {
         <div class="krds-spinner" role="status">
@@ -2468,7 +2511,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       (change)="sortValue = inputValue($event)"
                     >
                       @for (option of sortOptions; track option) {
-                        <option [value]="option">{{ option }}</option>
+                        <option>{{ option }}</option>
                       }
                     </select>
                   </div>
@@ -2479,7 +2522,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
             @if (pagination) {
               <div class="krds-pagination">
                 @if (pagination.previousDisabled) {
-                  <span class="page-navi prev disabled">{{ pagination.previousLabel }}</span>
+                  <span class="page-navi prev disabled" href="#">{{ pagination.previousLabel }}</span>
                 } @else {
                   <a class="page-navi prev" href="#">{{ pagination.previousLabel }}</a>
                 }
@@ -2515,28 +2558,32 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         }
       }
       @case ('tab') {
-        <ul role="tablist">
-          @for (tab of tabs; track tab.id) {
-            <li [class.active]="(selected || tabs[0]?.id) === tab.id" role="presentation">
-              <button
-                [id]="'tab_' + tab.id"
-                type="button"
-                class="btn-tab"
-                role="tab"
-                [attr.aria-selected]="(selected || tabs[0]?.id) === tab.id"
-                [attr.aria-controls]="'panel_' + tab.id"
-                [attr.data-listener-attached]="tabFocused ? null : 'true'"
-                (focus)="tabFocused = true"
-                (click)="setSelected(tab.id)"
-              >
-                {{ tab.label }}
-                @if ((selected || tabs[0]?.id) === tab.id) {
-                  <i class="sr-only created"> {{ selectedLabel }}</i>
-                }
-              </button>
-            </li>
-          }
-        </ul>
+        <div class="krds-tab-area layer">
+          <div class="tab line full">
+            <ul role="tablist">
+              @for (tab of tabs; track tab.id) {
+                <li [class.active]="(selected || tabs[0]?.id) === tab.id">
+                  <button
+                    [id]="'tab_' + tab.id"
+                    type="button"
+                    class="btn-tab"
+                    role="tab"
+                    [attr.aria-selected]="(selected || tabs[0]?.id) === tab.id"
+                    [attr.aria-controls]="'panel_' + tab.id"
+                    [attr.data-listener-attached]="tabFocused ? null : 'true'"
+                    (focus)="tabFocused = true"
+                    (click)="setSelected(tab.id)"
+                  >
+                    {{ tab.label }}
+                    @if ((selected || tabs[0]?.id) === tab.id) {
+                      <i class="sr-only created"> {{ selectedLabel }}</i>
+                    }
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
       }
       @case ('tag') {
         <span class="krds-btn-tag">
@@ -2791,6 +2838,10 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   @Input() pagination: AngularTablePagination | null = null;
   @Input() year: number | null = null;
   @Input() month: number | null = null;
+  @Input() displayYear: number | null = null;
+  @Input() displayMonth: number | null = null;
+  @Input() selectedYear: number | null = null;
+  @Input() selectedMonth: number | null = null;
   @Input() years: number[] = [];
   @Input() disabledYears: number[] = [];
   @Input() disabledMonths: number[] = [];
@@ -2912,10 +2963,8 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   @Output() checkedChange = new EventEmitter<boolean>();
   @Output() yearChange = new EventEmitter<number>();
   @Output() monthChange = new EventEmitter<number>();
-  accordionFocused = false;
   helpPanelFocused = false;
   contextualHelpFocused = false;
-  disclosureFocused = false;
   languageFocused = false;
   resizeFocused = false;
   tabFocused = false;
@@ -2988,11 +3037,20 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   get isSingleCalendar(): boolean {
     return (this.hostAliasKind ?? this.kind) === 'calendar';
   }
+  get isDateInput(): boolean {
+    return (this.hostAliasKind ?? this.kind) === 'date-input';
+  }
   get calendarYear(): number {
-    return this.year ?? this.years[0] ?? 0;
+    return this.displayYear ?? this.year ?? this.years[0] ?? 0;
   }
   get calendarMonth(): number {
-    return this.month ?? 1;
+    return this.displayMonth ?? this.month ?? 1;
+  }
+  get calendarSelectedYear(): number {
+    return this.selectedYear ?? this.year ?? this.calendarYear;
+  }
+  get calendarSelectedMonth(): number {
+    return this.selectedMonth ?? this.month ?? this.calendarMonth;
   }
   get calendarYears(): number[] {
     return this.years.length > 0
@@ -3048,7 +3106,7 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
         const end = period && day === this.rangeEndDay;
         const today = currentMonth && day === this.todayDay;
         const event = currentMonth && this.eventDays.includes(day);
-        const disabled = currentMonth && this.disabledDays.includes(day);
+        const disabled = !currentMonth || this.disabledDays.includes(day);
         const date = `${year}.${this.padCalendarPart(month)}.${this.padCalendarPart(day)}`;
         const selected = this.value === date;
         const classes = [
@@ -3094,12 +3152,16 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   selectCalendarYear(year: number): void {
     if (this.disabledYears.includes(year)) return;
     this.year = year;
+    this.displayYear = year;
+    this.selectedYear = year;
     this.calendarYearOpen = false;
     this.yearChange.emit(year);
   }
   selectCalendarMonth(month: number): void {
     if (this.disabledMonths.includes(month)) return;
     this.month = month;
+    this.displayMonth = month;
+    this.selectedMonth = month;
     this.calendarMonthOpen = false;
     this.monthChange.emit(month);
   }
@@ -3115,6 +3177,10 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
     }
     this.year = year;
     this.month = month;
+    this.displayYear = year;
+    this.displayMonth = month;
+    this.selectedYear = year;
+    this.selectedMonth = month;
     this.calendarYearOpen = false;
     this.calendarMonthOpen = false;
     this.yearChange.emit(year);

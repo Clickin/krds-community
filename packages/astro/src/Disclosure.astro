@@ -31,15 +31,15 @@ const {
 const expanded = open ?? defaultOpen;
 const instanceId = `krds-disclosure-${crypto.randomUUID()}`;
 const resolvedPanelId = panelId || `${instanceId}-panel`;
+const resolvedButtonId = buttonId || `${instanceId}-button`;
 ---
 
 <div
   {...rest}
   class={cx('krds-disclosure', 'conts-expand-area', expanded && 'active', className)}
-  data-krds-disclosure={instanceId}
 >
   <button
-    id={buttonId}
+    id={resolvedButtonId}
     type="button"
     class="btn-conts-expand"
     aria-expanded={expanded ? 'true' : 'false'}
@@ -48,7 +48,13 @@ const resolvedPanelId = panelId || `${instanceId}-panel`;
   >
     <slot name="title">{title}</slot>
   </button>
-  <div id={resolvedPanelId} class="expand-wrap" inert={!expanded}>
+  <div
+    id={resolvedPanelId}
+    class="expand-wrap"
+    role="region"
+    aria-labelledby={resolvedButtonId}
+    inert={!expanded}
+  >
     <div class="expand-in">
       {items.length > 0 ? (
         <ul class="krds-info-list dash">
@@ -65,10 +71,10 @@ const resolvedPanelId = panelId || `${instanceId}-panel`;
   document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
     const button = event.target.closest<HTMLButtonElement>(
-      '[data-krds-disclosure] > .btn-conts-expand',
+      '.krds-disclosure > .btn-conts-expand',
     );
     if (!button || button.disabled) return;
-    const root = button.closest<HTMLElement>('[data-krds-disclosure]');
+    const root = button.closest<HTMLElement>('.krds-disclosure');
     const panelId = button.getAttribute('aria-controls');
     const panel = panelId ? document.getElementById(panelId) : null;
     if (!root || !(panel instanceof HTMLElement) || !root.contains(panel)) return;

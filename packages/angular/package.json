@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "description": "KRDS용 standalone Angular 네이티브 컴포넌트.",
   "license": "Apache-2.0",
-  "type": "module",
-  "sideEffects": false,
-  "module": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
+  "type": "module",
+  "sideEffects": false,
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -19,25 +19,25 @@
       "default": "./dist/index.js"
     }
   },
-  "peerDependencies": {
-    "@angular/common": ">=20.0.0",
-    "@angular/core": ">=20.0.0",
-    "@angular/forms": ">=20.0.0"
+  "scripts": {
+    "build": "ngc -p tsconfig.json",
+    "lint": "ngc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@krds-community/recipes": "workspace:*",
     "@krds-community/styles": "workspace:*"
   },
   "devDependencies": {
-    "@angular/common": "catalog:",
-    "@angular/compiler": "catalog:",
-    "@angular/compiler-cli": "catalog:",
-    "@angular/core": "catalog:",
-    "@angular/forms": "catalog:",
-    "@angular/platform-browser": "catalog:"
+    "@angular/common": "22.0.8",
+    "@angular/compiler": "22.0.8",
+    "@angular/compiler-cli": "22.0.8",
+    "@angular/core": "22.0.8",
+    "@angular/forms": "22.0.8",
+    "@angular/platform-browser": "22.0.8"
   },
-  "scripts": {
-    "build": "ngc -p tsconfig.json",
-    "lint": "ngc -p tsconfig.json --noEmit"
+  "peerDependencies": {
+    "@angular/common": ">=20.0.0",
+    "@angular/core": ">=20.0.0",
+    "@angular/forms": ">=20.0.0"
   }
 }

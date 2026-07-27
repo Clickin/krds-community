@@ -1,4 +1,5 @@
 import './host.css';
+import '@krds-community/styles';
 import { baseProps } from './fixture-props';
 import type {
   ConformanceRuntime,

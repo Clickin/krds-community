@@ -129,6 +129,10 @@ export const TextInput = defineComponent<TextInputProps>({
       props.state === 'error' ? (props.error ?? props.hint) : props.hint,
     );
     const hintId = computed(() => (message.value ? `${id.value}-hint` : undefined));
+    const hasInitialValue =
+      props.defaultValue !== undefined ||
+      props.value !== undefined ||
+      props.modelValue !== undefined;
     const localValue = ref<string | number>(props.defaultValue ?? props.value ?? '');
     const value = computed<string | number>({
       get: () => props.modelValue ?? props.value ?? localValue.value,
@@ -172,7 +176,7 @@ export const TextInput = defineComponent<TextInputProps>({
             id: id.value,
             type: props.type,
             name: props.name,
-            value: value.value,
+            value: hasInitialValue || value.value ? value.value : undefined,
             placeholder: props.placeholder,
             disabled: props.disabled,
             readonly: props.readonly,

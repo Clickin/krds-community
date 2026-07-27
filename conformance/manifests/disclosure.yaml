@@ -11,6 +11,12 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.disclosure.region-semantics
 contract:
-  semanticElement: details-summary
+  semanticElement: button-and-region
+  accessibleRole: button
+  requiredAttributes:
+    button: [type=button, aria-expanded, aria-controls]
+    panel: [aria-labelledby, role=region]
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

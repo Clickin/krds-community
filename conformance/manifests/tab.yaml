@@ -6,7 +6,7 @@ upstream:
     - upstream/krds-html/html/code/tab.html
 fixtures:
   - id: tab.default
-    sourceSelector: '[role="tablist"]'
+    sourceSelector: ".krds-tab-area"
     mandatory: true
     viewport: desktop
     props: {}

@@ -46,6 +46,7 @@ export interface Props extends Omit<HTMLAttributes<'nav'>, 'class' | 'class:list
   menuLabel?: string;
   navigationLabel?: string;
   class?: string;
+  className?: string;
 }
 
 const {
@@ -53,10 +54,12 @@ const {
   sample = false,
   menuLabel,
   navigationLabel,
-  class: className,
+  className: classNameProp,
+  class: classAttribute,
   'aria-label': ariaLabel,
   ...rest
 } = Astro.props;
+const className = classNameProp ?? classAttribute;
 const mainPanelId = (item: MainMenuItem, index: number) =>
   `gnb-main-menu-${item.id ?? index + 1}`;
 const subPanelId = (item: MainMenuItem, fallback: string) =>
@@ -65,7 +68,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
 
 <nav
   {...rest}
-  class={cx('krds-main-menu', sample && 'sample', className)}
+  class={cx('krds-main-menu', sample && !className ? 'sample' : undefined, className)}
   aria-label={ariaLabel ?? navigationLabel}
   data-krds-main-menu-pc
 >

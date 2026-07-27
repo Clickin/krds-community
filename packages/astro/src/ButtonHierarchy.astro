@@ -4,17 +4,22 @@ import type { ButtonProps } from './types';
 
 export interface Props extends ButtonProps {
   label?: string;
+  children?: string;
+  className?: string;
 }
 
 const {
   label,
+  children,
   variant,
   size,
   disabled,
   type = 'button',
-  class: className,
+  className: classNameProp,
+  class: classAttribute,
   ...rest
 } = Astro.props;
+const className = classNameProp ?? classAttribute;
 ---
 
 <button
@@ -23,5 +28,5 @@ const {
   disabled={disabled}
   class={cx('krds-btn', variant, size, className)}
 >
-  <slot>{label}</slot>
+  <slot>{children ?? label}</slot>
 </button>

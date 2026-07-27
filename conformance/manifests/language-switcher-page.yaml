@@ -12,5 +12,9 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 contract:
-  semanticElement: label-and-select
+  semanticElement: button-and-list
+  accessibleRole: button
+  requiredAttributes:
+    button: [type=button]
+    list: []
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

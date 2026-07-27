@@ -4,17 +4,22 @@ import type { ButtonProps } from './types';
 
 export interface Props extends ButtonProps {
   label?: string;
+  children?: string;
+  className?: string;
 }
 
 const {
   label,
+  children,
   variant,
   size,
   disabled,
   type = 'button',
-  class: className,
+  className: classNameProp,
+  class: classAttribute,
   ...rest
 } = Astro.props;
+const className = classNameProp ?? classAttribute;
 const recipe = buttonRecipe({ variant, size, disabled, className });
 ---
 
@@ -24,5 +29,5 @@ const recipe = buttonRecipe({ variant, size, disabled, className });
   disabled={disabled}
   class={recipe.className}
 >
-  <slot>{label}</slot>
+  <slot>{children ?? label}</slot>
 </button>

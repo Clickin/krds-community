@@ -1,0 +1,69 @@
+id: errata.disclosure.region-semantics
+component: disclosure
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/disclosure.html
+defect:
+  type: missing-disclosure-region-semantics
+  literalSource:
+    selectors:
+      - ".krds-disclosure > .btn-conts-expand"
+      - ".krds-disclosure > .expand-wrap"
+    behavior: >-
+      The literal disclosure trigger and expansion wrapper do not expose an explicit
+      expanded state or a labelled region relationship.
+correction:
+  behavior: >-
+    The trigger exposes aria-expanded and aria-controls, and the expansion wrapper
+    exposes role=region and aria-labelledby pointing back to the trigger.
+  attributes:
+    - selector: ".krds-disclosure > .btn-conts-expand"
+      attribute: aria-expanded
+      rule: "exact-value:current-open-state"
+    - selector: ".krds-disclosure > .btn-conts-expand"
+      attribute: aria-controls
+      rule: "references: .krds-disclosure > .expand-wrap[id]"
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: role
+      rule: "exact-value:region"
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: aria-labelledby
+      rule: "references: .krds-disclosure > .btn-conts-expand[id]"
+fixtures:
+  - disclosure.default
+normalization:
+  whitelist:
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: id
+      rule: stable-generated-id
+    - selector: ".krds-disclosure > .btn-conts-expand"
+      attribute: id
+      rule: stable-generated-id
+    - selector: ".krds-disclosure > .btn-conts-expand"
+      attribute: aria-expanded
+      rule: "exact-value:current-open-state"
+    - selector: ".krds-disclosure > .btn-conts-expand"
+      attribute: aria-controls
+      rule: "must-reference: .krds-disclosure > .expand-wrap[id]"
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: role
+      rule: "exact-value:region"
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: inert
+      rule: upstream-state-only
+    - selector: ".krds-disclosure .krds-info-list"
+      attribute: role
+      rule: upstream-state-only
+    - selector: ".krds-disclosure .krds-info-list > li"
+      attribute: role
+      rule: upstream-state-only
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: aria-labelledby
+      rule: "must-reference: .krds-disclosure > .btn-conts-expand[id]"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/
+  rationale: >-
+    The WAI-ARIA disclosure pattern requires the trigger's expanded state and a
+    controlled region relationship that remains understandable to assistive technology.

@@ -31,6 +31,9 @@ normalization:
     - selector: ".krds-main-menu-mobile, .krds-pagination"
       attribute: role
       rule: "exact-value:navigation"
+    - selector: ".krds-pagination"
+      attribute: aria-label
+      rule: "accessible-landmark-name"
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html

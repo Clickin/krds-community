@@ -33,6 +33,8 @@ export interface CalendarDay {
   value?: string;
   className?: string;
   disabled?: boolean;
+  pressed?: boolean;
+  ariaLabel?: string;
 }
 export interface CalendarAction {
   label: string;
@@ -40,6 +42,19 @@ export interface CalendarAction {
   id?: string;
   icon?: string;
 }
+type CalendarChoiceInput = CalendarChoice | number;
+
+const numberValue = (value: unknown, fallback: number): number => {
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const choiceNumber = (choice: CalendarChoiceInput, fallback: number): number => {
+  if (typeof choice === 'number') return choice;
+  return numberValue(choice.value ?? choice.label.replace(/[^\d-]/g, ''), fallback);
+};
+
+const padCalendarPart = (value: number) => String(value).padStart(2, '0');
 export interface TableColumn extends KrdsTableColumn {
   width?: string;
   visuallyHidden?: boolean;
@@ -197,12 +212,34 @@ export type AdditionalProps = Omit<KrdsAdditionalProps, 'className' | 'items' | 
     selectedLabel?: string;
     resetLabel?: string;
     calendarLabel?: string;
+    todayLabel?: string;
     yearLabel?: string;
     monthLabel?: string;
-    year?: string;
-    month?: string;
-    years?: CalendarChoice[];
-    months?: CalendarChoice[];
+    year?: string | number;
+    month?: string | number;
+    displayYear?: string | number;
+    displayMonth?: string | number;
+    selectedYear?: string | number;
+    selectedMonth?: string | number;
+    previousMonthLabel?: string;
+    previousmonthlabel?: string;
+    nextmonthlabel?: string;
+    nextMonthLabel?: string;
+    years?: CalendarChoiceInput[];
+    months?: CalendarChoiceInput[];
+    disabledYears?: number[];
+    disabledMonths?: number[];
+    leadingDays?: number;
+    previousMonthDayCount?: number;
+    dayCount?: number;
+    rangeStartDay?: number;
+    rangeEndDay?: number;
+    todayDay?: number;
+    eventDays?: number[];
+    disabledDays?: number[];
+    yearSelectLabel?: string;
+    monthSelectLabel?: string;
+    eventLabel?: string;
     weekdays?: string[];
     weeks?: CalendarDay[][];
     actions?: CalendarAction[];
@@ -231,6 +268,7 @@ export type AdditionalProps = Omit<KrdsAdditionalProps, 'className' | 'items' | 
     helpDescription?: string;
     externalTitle?: string;
     backTitle?: string;
+    tutorialBackTitle?: string;
     downloadLinks?: HelpLink[];
     relatedGroups?: HelpRelatedGroup[];
     tutorialTitle?: string;
@@ -331,8 +369,8 @@ export function createAdditional(defaultKind: string) {
         id:
           defaultKind === 'header' || defaultKind === 'footer'
             ? `krds-${defaultKind}`
-            : defaultKind === 'masthead'
-              ? 'krds-masthead'
+            : defaultKind === 'masthead' || defaultKind === 'skip-link'
+              ? `krds-${defaultKind}`
               : `krds-${defaultKind}-${instanceId}`,
         options: [] as KrdsOption[],
         items: [] as (KrdsNavItem | KrdsListItem | string)[],
@@ -416,10 +454,32 @@ export function createAdditional(defaultKind: string) {
       'selectedLabel',
       'resetLabel',
       'calendarLabel',
+      'todayLabel',
       'yearLabel',
       'monthLabel',
       'year',
+      'previousMonthLabel',
+      'previousmonthlabel',
+      'nextmonthlabel',
+      'nextMonthLabel',
       'month',
+      'displayYear',
+      'displayMonth',
+      'selectedYear',
+      'selectedMonth',
+      'disabledYears',
+      'disabledMonths',
+      'leadingDays',
+      'previousMonthDayCount',
+      'dayCount',
+      'rangeStartDay',
+      'rangeEndDay',
+      'todayDay',
+      'eventDays',
+      'disabledDays',
+      'yearSelectLabel',
+      'monthSelectLabel',
+      'eventLabel',
       'years',
       'months',
       'weekdays',
@@ -452,6 +512,7 @@ export function createAdditional(defaultKind: string) {
       'tutorialTitle',
       'tasks',
       'collapseLabel',
+      'tutorialBackTitle',
       'externalTitle',
       'backTitle',
       'utilityItems',
@@ -676,11 +737,14 @@ export function createAdditional(defaultKind: string) {
     const content = () => props.children ?? props.label;
     const optionItems = () => props.languages ?? props.options;
     const navigation = () =>
-      (props.nav ??
-        props.links ??
-        props.items.filter(
-          (item): item is KrdsNavItem => typeof item !== 'string' && typeof item !== 'number',
-        )) as KrdsNavItem[];
+      (props.nav?.length
+        ? props.nav
+        : props.links?.length
+          ? props.links
+          : props.items.filter(
+              (item): item is KrdsNavItem =>
+                typeof item !== 'string' && typeof item !== 'number',
+            )) as KrdsNavItem[];
     const mainMenuIsActive = (item: MenuItem) => {
       const local = localMainMenu();
       return local === undefined ? Boolean(item.active) : local === item.id;
@@ -711,6 +775,369 @@ export function createAdditional(defaultKind: string) {
       return Number.isFinite(page) && page > 0 ? page : 1;
     };
     const stepCurrent = () => Number(props.current ?? props.modelValue ?? 0);
+    const calendarDisplayYear = () =>
+      numberValue(
+        props.displayYear ?? props.year ?? props.selectedYear,
+        2000,
+      );
+    const calendarDisplayMonth = () =>
+      Math.min(
+        12,
+        Math.max(
+          1,
+          numberValue(
+            props.displayMonth ?? props.month ?? props.selectedMonth,
+            1,
+          ),
+        ),
+      );
+    const calendarSelectedYear = () =>
+      numberValue(
+        props.selectedYear ?? props.year ?? props.displayYear,
+        calendarDisplayYear(),
+      );
+    const calendarSelectedMonth = () =>
+      Math.min(
+        12,
+        Math.max(
+          1,
+          numberValue(
+            props.selectedMonth ?? props.month ?? props.displayMonth,
+            calendarDisplayMonth(),
+          ),
+        ),
+      );
+    const calendarYears = () => {
+      const source =
+        props.years && props.years.length > 0
+          ? props.years
+          : Array.from({ length: 24 }, (_, offset) => calendarDisplayYear() - 1 + offset);
+      return source.map((choice) => {
+        const year = choiceNumber(choice, calendarDisplayYear());
+        const original = typeof choice === 'number' ? undefined : choice;
+        return {
+          label: original?.label ?? `${year}년`,
+          value: String(year),
+          active: year === calendarSelectedYear(),
+          disabled:
+            original?.disabled === true ||
+            (props.disabledYears?.includes(year) ?? false),
+        };
+      });
+    };
+    const calendarMonths = () => {
+      const source =
+        props.months && props.months.length > 0
+          ? props.months
+          : Array.from({ length: 12 }, (_, offset) => offset + 1);
+      return source.map((choice) => {
+        const month = choiceNumber(choice, calendarDisplayMonth());
+        const original = typeof choice === 'number' ? undefined : choice;
+        return {
+          label: original?.label ?? `${padCalendarPart(month)}월`,
+          value: String(month),
+          active: month === calendarSelectedMonth(),
+          disabled:
+            original?.disabled === true ||
+            (props.disabledMonths?.includes(month) ?? false),
+        };
+      });
+    };
+    const calendarSelectedDate = () => {
+      const raw = value();
+      const match =
+        typeof raw === 'string' &&
+        /^(\d{4})[.-](\d{2})[.-](\d{2})$/.exec(raw);
+      return match ? `${match[1]}.${match[2]}.${match[3]}` : undefined;
+    };
+    const calendarWeeks = () => {
+      if (props.weeks && props.weeks.length > 0) return props.weeks;
+      const displayYear = calendarDisplayYear();
+      const displayMonth = calendarDisplayMonth();
+      const leadingDays = Math.min(
+        6,
+        Math.max(
+          0,
+          numberValue(
+            props.leadingDays,
+            new Date(displayYear, displayMonth - 1, 1).getDay(),
+          ),
+        ),
+      );
+      const previousMonthDayCount = Math.max(
+        0,
+        numberValue(
+          props.previousMonthDayCount,
+          new Date(displayYear, displayMonth - 1, 0).getDate(),
+        ),
+      );
+      const dayCount = Math.max(
+        0,
+        numberValue(
+          props.dayCount,
+          new Date(displayYear, displayMonth, 0).getDate(),
+        ),
+      );
+      const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
+      const selectedDate = calendarSelectedDate();
+      return Array.from({ length: totalCells / 7 }, (_, row) =>
+        Array.from({ length: 7 }, (_, column) => {
+          const index = row * 7 + column;
+          const offset = index - leadingDays + 1;
+          const old = offset < 1;
+          const next = offset > dayCount;
+          const day = old
+            ? previousMonthDayCount + offset
+            : next
+              ? offset - dayCount
+              : offset;
+          const month = old
+            ? displayMonth === 1
+              ? 12
+              : displayMonth - 1
+            : next
+              ? displayMonth === 12
+                ? 1
+                : displayMonth + 1
+              : displayMonth;
+          const year = old && displayMonth === 1
+            ? displayYear - 1
+            : next && displayMonth === 12
+              ? displayYear + 1
+              : displayYear;
+          const currentMonth = !old && !next;
+          const period =
+            currentMonth &&
+            props.rangeStartDay !== undefined &&
+            props.rangeEndDay !== undefined &&
+            day >= props.rangeStartDay &&
+            day <= props.rangeEndDay;
+          const start = period && day === props.rangeStartDay;
+          const end = period && day === props.rangeEndDay;
+          const today = currentMonth && day === props.todayDay;
+          const event = currentMonth && (props.eventDays?.includes(day) ?? false);
+          const disabled =
+            currentMonth && (props.disabledDays?.includes(day) ?? false);
+          const date = `${year}.${padCalendarPart(month)}.${padCalendarPart(day)}`;
+          const selected = currentMonth && selectedDate === date;
+          const classes = [
+            old ? 'old' : next ? 'new' : undefined,
+            column === 0 ? 'day-off' : undefined,
+            period ? 'period' : undefined,
+            start ? 'start' : undefined,
+            end ? 'end' : undefined,
+            today ? 'today' : undefined,
+            event ? 'day-event' : undefined,
+            disabled ? 'disabled' : undefined,
+          ]
+            .filter(Boolean)
+            .join(' ');
+          return {
+            label: String(day),
+            value: date,
+            className: classes,
+            disabled: !currentMonth || disabled,
+            pressed: period || selected,
+            ariaLabel: today
+              ? `${day} ${props.todayLabel ?? ''}`.trim()
+              : event
+                ? `${day} ${props.eventLabel ?? ''}`.trim()
+                : undefined,
+          };
+        }),
+      );
+    };
+    const calendarActions = (): CalendarAction[] =>
+      props.actions && props.actions.length > 0
+        ? props.actions
+        : [
+            { id: 'get-today', label: String(props.todayLabel ?? ''), variant: 'text' },
+            { label: String(props.cancelLabel ?? ''), variant: 'tertiary' },
+            { label: String(props.confirmLabel ?? ''), variant: 'primary' },
+          ];
+    const [calendarYearOpen, setCalendarYearOpen] = createSignal(false);
+    const [calendarMonthOpen, setCalendarMonthOpen] = createSignal(false);
+    const renderCalendarSurface = (single: boolean, includeNative: boolean) => (
+      <div
+        {...(includeNative ? (native as Record<string, unknown>) : {})}
+        class={`krds-calendar-area${className() ? ` ${className()}` : ''}`}
+      >
+        <div
+          class={[
+            'calendar-wrap',
+            'bottom',
+            single && 'single',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          aria-label={props.calendarLabel ?? '달력'}
+          tabIndex={0}
+        >
+          <div class="calendar-head">
+            <button type="button" class="btn-cal-move prev">
+              <span class="sr-only">
+                {props.previousMonthLabel ??
+                  props.previousmonthlabel ??
+                  props.previousLabel}
+              </span>
+            </button>
+            <div class="calendar-switch-wrap">
+              <div class="calendar-drop-down">
+                <button
+                  type="button"
+                  class="btn-cal-switch year"
+                  role="combobox"
+                  aria-label={props.yearSelectLabel ?? props.yearLabel}
+                  aria-haspopup="listbox"
+                  aria-expanded={calendarYearOpen()}
+                  aria-controls={`${props.id}-calendar-year`}
+                  onClick={() => setCalendarYearOpen((open) => !open)}
+                >
+                  {`${calendarDisplayYear()}년`}
+                </button>
+                <div class="calendar-select calendar-year-wrap">
+                  <ul
+                    class="sel year"
+                    id={`${props.id}-calendar-year`}
+                    role="listbox"
+                  >
+                    <For each={calendarYears()}>
+                      {(choice) => (
+                        <li role="none">
+                          <button
+                            type="button"
+                            role="option"
+                            classList={{ active: choice.active }}
+                            aria-selected={choice.active}
+                            disabled={choice.disabled}
+                          >
+                            {choice.label}
+                          </button>
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+                </div>
+              </div>
+              <div class="calendar-drop-down">
+                <button
+                  type="button"
+                  class="btn-cal-switch month"
+                  role="combobox"
+                  aria-label={props.monthSelectLabel ?? props.monthLabel}
+                  aria-haspopup="listbox"
+                  aria-expanded={calendarMonthOpen()}
+                  aria-controls={`${props.id}-calendar-month`}
+                  onClick={() => setCalendarMonthOpen((open) => !open)}
+                >
+                  {`${padCalendarPart(calendarDisplayMonth())}월`}
+                </button>
+                <div class="calendar-select calendar-mon-wrap">
+                  <ul
+                    class="sel month"
+                    id={`${props.id}-calendar-month`}
+                    role="listbox"
+                  >
+                    <For each={calendarMonths()}>
+                      {(choice) => (
+                        <li role="none">
+                          <button
+                            type="button"
+                            role="option"
+                            classList={{ active: choice.active }}
+                            aria-selected={choice.active}
+                            disabled={choice.disabled}
+                          >
+                            {choice.label}
+                          </button>
+                        </li>
+                      )}
+                    </For>
+                  </ul>
+            </div>
+                </div>
+            </div>
+            <button type="button" class="btn-cal-move next">
+              <span class="sr-only">
+                {props.nextMonthLabel ??
+                  props.nextmonthlabel ??
+                  props.nextLabel}
+              </span>
+            </button>
+          </div>
+          <div class="calendar-body">
+            <div class="calendar-table-wrap">
+              <table class="calendar-tbl">
+                <caption>{`${calendarDisplayYear()}년 ${padCalendarPart(calendarDisplayMonth())}월`}</caption>
+                <thead>
+                  <tr>
+                    <For each={props.weekdays ?? ['일', '월', '화', '수', '목', '금', '토']}>
+                      {(weekday) => <th>{weekday}</th>}
+                    </For>
+                  </tr>
+                </thead>
+                <tbody>
+                  <For each={calendarWeeks()}>
+                    {(week) => (
+                      <tr>
+                        <For each={week}>
+                          {(day) => {
+                            const pressed = 'pressed' in day && day.pressed;
+                            const ariaLabel = 'ariaLabel' in day ? day.ariaLabel : undefined;
+                            return (
+                              <td class={day.className || undefined} data-date={day.value}>
+                                <button
+                                  type="button"
+                                  class="btn-set-date"
+                                  ref={(element) => {
+                                    if (day.disabled)
+                                      queueMicrotask(() =>
+                                        element.setAttribute('disabled', 'true'),
+                                      );
+                                  }}
+                                  disabled={day.disabled}
+                                  aria-pressed={pressed ? 'true' : undefined}
+                                  aria-label={ariaLabel}
+                                  onClick={(event) => {
+                                    setSelected(day.value ?? day.label);
+                                    invokeHandler(native.onChange, event);
+                                  }}
+                                >
+                                  <span>{day.label}</span>
+                                </button>
+                              </td>
+                            );
+                          }}
+                        </For>
+                      </tr>
+                    )}
+                  </For>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="calendar-footer">
+            <div class="calendar-btn-wrap">
+              <For each={calendarActions()}>
+                {(action) => (
+                  <button
+                    type="button"
+                    id={action.id}
+                    class={['krds-btn', 'small', action.variant].filter(Boolean).join(' ')}
+                    onClick={(event) => invokeHandler(native.onClick, event)}
+                  >
+                    {action.label}
+                    <Show when={action.icon}>
+                      <i class={`svg-icon ico-${action.icon}`} />
+                    </Show>
+                  </button>
+                )}
+              </For>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
     createEffect(() => {
       const currentKind = kind();
       if (
@@ -840,129 +1267,40 @@ export function createAdditional(defaultKind: string) {
         {content()}
       </button>
     )
-    : kind() === 'calendar' || kind() === 'calendar-range' || kind() === 'date-input' ? (
+    : kind() === 'date-input' ? (
       <div
         {...(native as Record<string, unknown>)}
-        class={`krds-calendar-area${className() ? ` ${className()}` : ''}`}
+        class="form-group"
       >
-        <div
-          class={[
-            'calendar-wrap',
-            'bottom',
-            kind() === 'calendar' && 'single',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-          aria-label={props.calendarLabel}
-        >
-          <div class="calendar-head">
-            <button type="button" class="btn-cal-move prev">
-              <span class="sr-only">{props.previousLabel}</span>
-            </button>
-            <div class="calendar-switch-wrap">
-              <div class="calendar-drop-down">
-                <button type="button" class="btn-cal-switch year" aria-label={props.yearLabel}>
-                  {props.year}
-                </button>
-                <div class="calendar-select calendar-year-wrap">
-                  <ul class="sel year">
-                    <For each={props.years}>
-                      {(choice) => (
-                        <li>
-                          <button
-                            type="button"
-                            classList={{ active: choice.active }}
-                            disabled={choice.disabled}
-                          >
-                            {choice.label}
-                          </button>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </div>
-              <div class="calendar-drop-down">
-                <button type="button" class="btn-cal-switch month" aria-label={props.monthLabel}>
-                  {props.month}
-                </button>
-                <div class="calendar-select calendar-mon-wrap">
-                  <ul class="sel month">
-                    <For each={props.months}>
-                      {(choice) => (
-                        <li>
-                          <button
-                            type="button"
-                            classList={{ active: choice.active }}
-                            disabled={choice.disabled}
-                          >
-                            {choice.label}
-                          </button>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-              </div>
+        <div class="form-tit">
+          <label for={props.id}>{props.label}</label>
+        </div>
+        <div class="form-conts">
+          <div class="form-conts calendar-conts">
+            <div class="calendar-input">
+              <input
+                id={props.id}
+                name={props.name}
+                type="number"
+                class="krds-input datepicker cal"
+                placeholder="YYYY.MM.DD"
+                value={value()}
+                onInput={updateInput}
+              />
+              <button type="button" class="krds-btn medium icon form-btn-datepicker">
+                <span class="sr-only">{`${props.calendarLabel ?? '달력'} 열기`}</span>
+                <i class="svg-icon ico-calendar" />
+              </button>
             </div>
-            <button type="button" class="btn-cal-move next">
-              <span class="sr-only">{props.nextLabel}</span>
-            </button>
-          </div>
-          <div class="calendar-body">
-            <div class="calendar-table-wrap">
-              <table class="calendar-tbl">
-                <caption>{props.year} {props.month}</caption>
-                <thead>
-                  <tr>
-                    <For each={props.weekdays}>{(weekday) => <th>{weekday}</th>}</For>
-                  </tr>
-                </thead>
-                <tbody>
-                  <For each={props.weeks}>
-                    {(week) => (
-                      <tr>
-                        <For each={week}>
-                          {(day) => (
-                            <td class={day.className}>
-                              <button
-                                type="button"
-                                class="btn-set-date"
-                                disabled={day.disabled}
-                                onClick={(event) => {
-                                  setSelected(day.value ?? day.label);
-                                  invokeHandler(native.onChange, event);
-                                }}
-                              >
-                                <span>{day.label}</span>
-                              </button>
-                            </td>
-                          )}
-                        </For>
-                      </tr>
-                    )}
-                  </For>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="calendar-footer">
-            <div class="calendar-btn-wrap">
-              <For each={props.actions}>
-                {(action) => (
-                  <button
-                    type="button"
-                    id={action.id}
-                    class={['krds-btn', 'small', action.variant].filter(Boolean).join(' ')}
-                  >
-                    {action.label}
-                  </button>
-                )}
-              </For>
-            </div>
+            {renderCalendarSurface(false, false)}
           </div>
         </div>
+        <Show when={props.hint}>
+          <p class="form-hint">{props.hint}</p>
+        </Show>
       </div>
+    ) : kind() === 'calendar' || kind() === 'calendar-range' ? (
+      renderCalendarSurface(kind() === 'calendar', true)
     ) : kind() === 'carousel' ? (
       <div
         {...(native as Record<string, unknown>)}
@@ -1141,14 +1479,26 @@ export function createAdditional(defaultKind: string) {
         </label>
       </div>
     ) : kind() === 'radio-chip' ? (
-      <input
-        {...(native as Record<string, unknown>)}
-        id={props.id}
-        class={`radio${className() ? ` ${className()}` : ''}`}
-        type="radio"
-        name={props.name}
-        disabled={props.disabled}
-      />
+      <div class={`krds-form-chip${className() ? ` ${className()}` : ''}`}>
+        <input
+          {...(native as Record<string, unknown>)}
+          id={props.id}
+          class="radio"
+          type="radio"
+          name={props.name}
+          value={
+            typeof props.value === 'string' || typeof props.value === 'number'
+              ? String(props.value)
+              : undefined
+          }
+          checked={checked()}
+          disabled={props.disabled}
+          onChange={updateChecked}
+        />
+        <label class="krds-form-chip-outline" for={props.id}>
+          {content()}
+        </label>
+      </div>
     ) : kind() === 'checkbox-size' || kind() === 'radio-size' ? (
       <div
         class={[
@@ -1295,6 +1645,7 @@ export function createAdditional(defaultKind: string) {
         <button
           type="button"
           class="btn-conts-expand"
+          id={`${props.id}-trigger`}
           aria-expanded={open()}
           aria-controls={`${props.id}-content`}
           onClick={(event) => {
@@ -1304,7 +1655,13 @@ export function createAdditional(defaultKind: string) {
         >
           {props.title}
         </button>
-        <div id={`${props.id}-content`} class="expand-wrap" inert={!open()}>
+        <div
+          id={`${props.id}-content`}
+          class="expand-wrap"
+          role="region"
+          aria-labelledby={`${props.id}-trigger`}
+          inert={!open()}
+        >
           <div class="expand-in">
             <Show
               when={props.items.length > 0}
@@ -2314,7 +2671,7 @@ export function createAdditional(defaultKind: string) {
           .join(' ')}
         hidden={props.open === false}
       >
-        <div class="help-panel-wrap">
+        <div class="help-panel-wrap" tabIndex={0}>
           <div class="help-conts-area">
             <div class="krds-tab-area layer">
               <div class="tab line">
@@ -2382,7 +2739,12 @@ export function createAdditional(defaultKind: string) {
                               <>
                                 <div class="conts-area">
                                   <h4 class="help-title">
-                                    <a href="#;" title={props.backTitle}>{props.tutorialTitle}</a>
+                                    <a
+                                      href="#;"
+                                      title={props.tutorialBackTitle ?? props.backTitle}
+                                    >
+                                      {props.tutorialTitle}
+                                    </a>
                                   </h4>
                                   <ul class="coach-help-process">
                                     <For each={props.tasks}>
@@ -2925,13 +3287,11 @@ export function createAdditional(defaultKind: string) {
         </ul>
       </nav>
     ) : kind() === 'skip-link' ? (
-      <a
-        {...(native as Record<string, unknown>)}
-        href={props.href}
-        class={className() || undefined}
-      >
-        {content()}
-      </a>
+      <div id={props.id ?? 'krds-skip-link'} class={className() || undefined}>
+        <a {...(native as Record<string, unknown>)} href={props.href}>
+          {content()}
+        </a>
+      </div>
     ) : kind() === 'spinner' ? (
       <div
         {...(native as Record<string, unknown>)}
@@ -3169,7 +3529,14 @@ export function createAdditional(defaultKind: string) {
         <div class="krds-pagination">
           <Show
             when={!props.pagination?.previousDisabled}
-            fallback={<span class="page-navi prev disabled">{props.pagination?.previousLabel}</span>}
+            fallback={
+              <span
+                {...({ href: '#' } as Record<string, string>)}
+                class="page-navi prev disabled"
+              >
+                {props.pagination?.previousLabel}
+              </span>
+            }
           >
             <a class="page-navi prev" href="#">{props.pagination?.previousLabel}</a>
           </Show>
@@ -3247,7 +3614,7 @@ export function createAdditional(defaultKind: string) {
         {...(native as Record<string, unknown>)}
         class={['krds-tab-area', 'layer', className()].filter(Boolean).join(' ')}
       >
-        <div class="tab line">
+        <div class="tab line full">
           <ul role="tablist">
             <For each={props.tabs}>
               {(tab) => {
@@ -3327,14 +3694,26 @@ export function createAdditional(defaultKind: string) {
         </span>
       )
     ) : kind() === 'textarea' ? (
-      <textarea
-        {...(native as Record<string, unknown>)}
-        id={props.id}
-        class={['krds-input', className()].filter(Boolean).join(' ')}
-        maxlength={props.maxLength}
-        value={value()}
-        onInput={updateInput}
-      />
+      <div class="form-group">
+        <div class="form-tit">
+          <label for={props.id}>{props.label}</label>
+        </div>
+        <div class="form-conts">
+          <div class="textarea-wrap">
+            <textarea
+              {...(native as Record<string, unknown>)}
+              id={props.id}
+              class={['krds-input', className()].filter(Boolean).join(' ')}
+              maxlength={props.maxLength}
+              value={value()}
+              onInput={updateInput}
+            />
+          </div>
+        </div>
+        <Show when={props.hint}>
+          <p class="form-hint">{props.hint}</p>
+        </Show>
+      </div>
     ) : kind() === 'text-input-icon' ? (
       <input
         {...(native as Record<string, unknown>)}

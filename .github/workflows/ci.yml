@@ -22,6 +22,8 @@ jobs:
           cache: pnpm
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
+      - name: Check dependency catalog policy
+        run: pnpm catalog:check
       - name: Install browser runtimes
         run: pnpm exec playwright install --with-deps chromium firefox webkit
       - name: Check formatting

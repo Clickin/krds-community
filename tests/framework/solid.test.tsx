@@ -3,10 +3,15 @@ import { createSignal, type JSX } from 'solid-js';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   Accordion,
+  Calendar,
+  CalendarRange,
   Checkbox,
   ContextualHelp,
+  DateInput,
   CriticalAlerts,
+  Disclosure,
   Header,
+  HelpPanel,
   LanguageSwitcher,
   MainMenuMobile,
   Resize,
@@ -15,6 +20,7 @@ import {
   Tab,
   TextInput,
   TextList,
+  TutorialPanel,
 } from '@krds-community/solid';
 
 let dispose: (() => void) | undefined;
@@ -409,5 +415,93 @@ describe('Solid core component contracts', () => {
     expect(host.querySelector('label[for="table-row-1"]')?.textContent).toContain(
       '게시물 목록 1 선택',
     );
+  });
+  it('derives calendar vectors while preserving display and selected values', () => {
+    mount(() => (
+      <div>
+        <Calendar
+          id="calendar"
+          displayYear={2024}
+          displayMonth={12}
+          selectedYear={2002}
+          selectedMonth={2}
+          years={[2001, 2002]}
+          disabledYears={[2001]}
+          disabledMonths={[2]}
+          leadingDays={5}
+          previousMonthDayCount={30}
+          dayCount={31}
+          rangeStartDay={7}
+          rangeEndDay={7}
+          todayDay={30}
+          eventDays={[8]}
+          disabledDays={[13]}
+          calendarLabel="달력"
+          previousLabel="이전 달"
+          nextLabel="다음 달"
+          yearSelectLabel="연도 선택"
+          monthSelectLabel="월 선택"
+          todayLabel="오늘"
+          eventLabel="일정있음"
+          weekdays={['일', '월', '화', '수', '목', '금', '토']}
+        />
+        <CalendarRange id="range" displayYear={2024} displayMonth={12} />
+        <DateInput id="date" label="날짜" hint="도움말" calendarLabel="달력" />
+      </div>
+    ));
+
+    const calendar = host.querySelector<HTMLElement>('.krds-calendar-area')!;
+    expect(calendar.hasAttribute('displayyear')).toBe(false);
+    expect(calendar.querySelector<HTMLButtonElement>('.btn-cal-switch.year')?.textContent).toBe(
+      '2024년',
+    );
+    expect(
+      calendar.querySelector<HTMLButtonElement>('.calendar-year-wrap button.active')?.textContent,
+    ).toBe('2002년');
+    expect(
+      calendar.querySelector<HTMLButtonElement>('.calendar-mon-wrap button.active')?.textContent,
+    ).toBe('02월');
+    expect(calendar.querySelector('[data-date="2024.12.07"]')?.className).toContain('period');
+    expect(
+      calendar.querySelector<HTMLButtonElement>('[data-date="2024.12.08"] button')?.getAttribute(
+        'aria-label',
+      ),
+    ).toBe('8 일정있음');
+    expect(host.querySelectorAll('.calendar-wrap:not(.single)')).toHaveLength(2);
+    expect(host.querySelector<HTMLLabelElement>('label[for="date"]')?.textContent).toBe('날짜');
+    expect(host.querySelector<HTMLInputElement>('#date')?.type).toBe('number');
+    expect(host.querySelector('.form-group .form-hint')?.textContent).toBe('도움말');
+  });
+
+  it('keeps disclosure and help surfaces linked to native controls', () => {
+    mount(() => (
+      <div>
+        <Disclosure id="disclosure" title="상세 보기" description="상세 내용" />
+        <HelpPanel
+          id="help-panel"
+          tabs={[{ id: 'help-tab', label: '도움', panelId: 'help-panel-content' }]}
+          activeTab="help"
+          helpTitle="도움말"
+          helpDescription="도움말 내용"
+          tutorialBackTitle="이전으로"
+        />
+        <TutorialPanel
+          id="tutorial-panel"
+          tabs={[{ id: 'tutorial-tab', label: '따라하기', panelId: 'tutorial-content' }]}
+          activeTab="tutorial"
+          tutorialTitle="따라하기"
+          tutorialBackTitle="이전으로"
+          tasks={[]}
+        />
+      </div>
+    ));
+
+    const trigger = host.querySelector<HTMLButtonElement>('#disclosure-trigger')!;
+    const panel = host.querySelector<HTMLElement>('#disclosure-content')!;
+    expect(trigger.getAttribute('aria-controls')).toBe('disclosure-content');
+    expect(panel.getAttribute('role')).toBe('region');
+    expect(panel.getAttribute('aria-labelledby')).toBe('disclosure-trigger');
+    expect(host.querySelector('.help-panel-wrap')?.getAttribute('tabindex')).toBe('0');
+    expect(host.querySelector('.krds-help-panel')?.hasAttribute('tutorialbacktitle')).toBe(false);
   });
 });

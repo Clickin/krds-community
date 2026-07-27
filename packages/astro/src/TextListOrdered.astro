@@ -42,9 +42,9 @@ const normalizedItems = items.map((item, index) => {
 });
 ---
 
-<ol {...rest} class:list={['krds-info-list', 'ordered', className]}>
+<ol {...rest} role="list" class:list={['krds-info-list', 'ordered', className]}>
   {normalizedItems.map((item) => (
-    <li>
+    <li role="listitem">
       <span class="num">{item.resolvedMarker}</span>{item.label ?? item.title}
       {item.children?.length && <Astro.self items={item.children} depth={depth + 1} />}
     </li>

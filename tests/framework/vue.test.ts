@@ -1,6 +1,6 @@
 import { createApp, defineComponent, h, nextTick, reactive, ref, type App, type Component } from 'vue';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Accordion, Checkbox, Tab, TextInput } from '../../packages/vue/src/index.ts';
+import { Accordion, Checkbox, DateInput, Disclosure, Tab, TextInput } from '../../packages/vue/src/index.ts';
 
 let app: App<Element> | undefined;
 let host: HTMLDivElement;
@@ -231,5 +231,65 @@ describe('Vue core component contracts', () => {
     expect(selected.value).toBe('first');
     expect(renderedTabs()[0].getAttribute('aria-selected')).toBe('true');
     expect(renderedTabs()[1].getAttribute('aria-selected')).toBe('false');
+  });
+  it('preserves composite date-input controls and absent-value semantics', async () => {
+    await mount(() =>
+      h(DateInput, {
+        label: '레이블',
+        hint: '도움말',
+        calendarLabel: '달력',
+        years: [2024],
+        weekdays: ['일', '월', '화', '수', '목', '금', '토'],
+        dayCount: 31,
+        leadingDays: 0,
+        previousMonthDayCount: 30,
+        displayYear: 2024,
+        displayMonth: 12,
+        selectedYear: 2024,
+        selectedMonth: 12,
+      }),
+    );
+    const input = host.querySelector<HTMLInputElement>('.calendar-input input')!;
+    expect(input).not.toHaveAttribute('readonly');
+    expect(input).not.toHaveAttribute('value');
+    expect(host.querySelector('.calendar-input .form-btn-datepicker')).not.toBeNull();
+    expect(host.querySelector('.form-btn-datepicker .sr-only')?.textContent).toBe('달력 열기');
+
+    await mount(() => h(TextInput, { label: '텍스트' }));
+    expect(host.querySelector('input')).not.toHaveAttribute('value');
+  });
+
+  it('keeps disclosure semantics and tab panel headings native', async () => {
+    await mount(() =>
+      h(Disclosure, {
+        id: 'details',
+        title: '신청 서비스안내',
+        items: [{ label: '안내' }],
+      }),
+    );
+    const disclosureButton = host.querySelector<HTMLButtonElement>('.btn-conts-expand')!;
+    const disclosurePanel = host.querySelector<HTMLElement>('.expand-wrap')!;
+    expect(disclosureButton.id).toBe('details-trigger');
+    expect(disclosureButton.getAttribute('aria-controls')).toBe('details');
+    expect(disclosurePanel.getAttribute('role')).toBe('region');
+    expect(disclosurePanel.getAttribute('aria-labelledby')).toBe(disclosureButton.id);
+    disclosureButton.click();
+    await nextTick();
+    expect(disclosureButton.getAttribute('aria-expanded')).toBe('true');
+
+    await mount(() =>
+      h(Tab, {
+        tabs: [
+          { id: 'first', label: 'First' },
+          { id: 'second', label: 'Second' },
+        ],
+        panels: { first: 'First panel', second: 'Second panel' },
+        panelTitle: '탭 영역 타이틀',
+      }),
+    );
+    expect(host.querySelector('.krds-tab-area')?.classList.contains('layer')).toBe(true);
+    expect(host.querySelector('.tab.line.full')).not.toBeNull();
+    expect(host.querySelectorAll('button[role="tab"]')).toHaveLength(2);
+    expect(host.querySelectorAll('.tab-conts h3.sr-only')[0]?.textContent).toBe('탭 영역 타이틀');
   });
 });

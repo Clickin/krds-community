@@ -73,15 +73,14 @@ const {
   ...rest
 } = Astro.props;
 
-const rootId = providedId ?? `krds-structured-table-${crypto.randomUUID()}`;
-const selectAllId = `${rootId}-select-all`;
-const countId = `${rootId}-count`;
-const sortId = `${rootId}-sort`;
+const rootId = providedId;
+const idPrefix = rootId ? `${rootId}-` : 'list_chk_';
+const selectAllId = rootId ? `${rootId}-select-all` : 'list_chk_all';
+const countId = rootId ? `${rootId}-count` : 'search_result_count';
+const sortId = rootId ? `${rootId}-sort` : 'sort';
 const selectableRows = rows.filter((row) => !row.disabled);
 const selectedRows = selectableRows.filter((row) => row.selected);
 const allSelected = selectableRows.length > 0 && selectedRows.length === selectableRows.length;
-const partiallySelected = selectedRows.length > 0 && !allSelected;
-const titleColumn = columns.find((column) => column.key === 'title');
 const pageHref = (key: string | number) => pagination.hrefs?.[String(key)] ?? '#';
 const displayCell = (value: StructuredListTableRow[string]) =>
   value === null || value === undefined ? '' : String(value);
@@ -91,7 +90,6 @@ const displayCell = (value: StructuredListTableRow[string]) =>
   {...rest}
   id={rootId}
   class:list={['krds-structured-list-table', className, classProp]}
-  data-krds-structured-list-table
 >
   <div class="search-list-top">
     <div class="sch-left">
@@ -102,8 +100,6 @@ const displayCell = (value: StructuredListTableRow[string]) =>
             class="chk"
             id={selectAllId}
             checked={allSelected}
-            aria-checked={partiallySelected ? 'mixed' : allSelected ? 'true' : 'false'}
-            data-select-all
           />
           <label for={selectAllId}>{selectAllLabel}</label>
         </div>
@@ -115,7 +111,6 @@ const displayCell = (value: StructuredListTableRow[string]) =>
               type="button"
               class="krds-btn medium text"
               disabled={action.disabled}
-              data-table-action={action.id}
             >
               {action.icon && <i class:list={['svg-icon', `ico-${action.icon}`]}></i>}
               {action.label}
@@ -128,9 +123,9 @@ const displayCell = (value: StructuredListTableRow[string]) =>
     <ul class="sch-sort">
       <li>
         <strong class="sort-label"><label for={countId}>{countLabel}</label></strong>
-        <select class="krds-form-select-sort" id={countId} data-count-select>
+        <select class="krds-form-select-sort" id={countId}>
           {countOptions.map((option, index) => (
-            <option value={option} selected={countValue ? option === countValue : index === 0}>
+            <option selected={countValue ? option === countValue && index !== 0 : false}>
               {option}
             </option>
           ))}
@@ -143,17 +138,15 @@ const displayCell = (value: StructuredListTableRow[string]) =>
             <button
               type="button"
               class:list={[option === sortValue && 'active']}
-              aria-pressed={option === sortValue ? 'true' : 'false'}
-              data-sort-value={option}
             >
               {option}
             </button>
           ))}
         </div>
         <div class="m-sort-btn">
-          <select class="krds-form-select-sort" id={sortId} data-sort-select>
+          <select class="krds-form-select-sort" id={sortId}>
             {sortOptions.map((option) => (
-              <option value={option} selected={option === sortValue}>{option}</option>
+              <option selected={option === sortValue && option !== sortOptions[0]}>{option}</option>
             ))}
           </select>
         </div>
@@ -185,11 +178,9 @@ const displayCell = (value: StructuredListTableRow[string]) =>
       </thead>
       <tbody>
         {rows.map((row) => {
-          const rowInputId = `${rootId}-row-${row.id}`;
-          const rowSelectionLabel =
-            row.selectionLabel ?? displayCell(titleColumn ? row[titleColumn.key] : row.id);
+          const rowInputId = `${idPrefix}${rootId ? `row-${row.id}` : row.id}`;
           return (
-            <tr data-row-id={row.id}>
+            <tr>
               {columns.map((column, columnIndex) => {
                 if (column.key === 'selected') {
                   return (
@@ -200,14 +191,10 @@ const displayCell = (value: StructuredListTableRow[string]) =>
                           class="chk"
                           id={rowInputId}
                           name={selectionName}
-                          value={row.id}
                           checked={row.selected}
                           disabled={row.disabled}
-                          data-row-select
                         />
-                        <label for={rowInputId}>
-                          <span class="sr-only">{rowSelectionLabel}</span>
-                        </label>
+                        <label for={rowInputId}></label>
                       </div>
                     </th>
                   );
@@ -215,7 +202,7 @@ const displayCell = (value: StructuredListTableRow[string]) =>
                 if (column.key === 'download') {
                   return (
                     <td>
-                      <button type="button" class="krds-btn medium text" data-download-row={row.id}>
+                      <button type="button" class="krds-btn medium text">
                         <i class="svg-icon ico-down"></i>
                         {displayCell(row[column.key])}
                       </button>
@@ -235,15 +222,13 @@ const displayCell = (value: StructuredListTableRow[string]) =>
     </table>
   </div>
 
-  <div class="krds-pagination" aria-label={caption}>
+  <div class="krds-pagination">
     {pagination.previousDisabled ? (
-      <span class="page-navi prev disabled" aria-disabled="true">{pagination.previousLabel}</span>
+      <span class="page-navi prev disabled">{pagination.previousLabel}</span>
     ) : (
       <a
         class="page-navi prev"
         href={pageHref('previous')}
-        rel="prev"
-        data-page={pagination.current - 1}
       >
         {pagination.previousLabel}
       </a>
@@ -251,13 +236,11 @@ const displayCell = (value: StructuredListTableRow[string]) =>
     <div class="page-links">
       {pagination.items.map((item) =>
         item === 'ellipsis' ? (
-          <span class="page-link link-dot" aria-hidden="true"></span>
+          <span class="page-link link-dot"></span>
         ) : (
           <a
             class:list={['page-link', item === pagination.current && 'active']}
             href={pageHref(item)}
-            aria-current={item === pagination.current ? 'page' : undefined}
-            data-page={item}
           >
             {item === pagination.current && (
               <span class="sr-only">{pagination.currentLabel} </span>
@@ -268,13 +251,11 @@ const displayCell = (value: StructuredListTableRow[string]) =>
       )}
     </div>
     {pagination.nextDisabled ? (
-      <span class="page-navi next disabled" aria-disabled="true">{pagination.nextLabel}</span>
+      <span class="page-navi next disabled">{pagination.nextLabel}</span>
     ) : (
       <a
         class="page-navi next"
         href={pageHref('next')}
-        rel="next"
-        data-page={pagination.current + 1}
       >
         {pagination.nextLabel}
       </a>
@@ -286,28 +267,31 @@ const displayCell = (value: StructuredListTableRow[string]) =>
   const enhancedStructuredTables = new WeakSet<HTMLElement>();
 
   function enhanceStructuredTables() {
-    document.querySelectorAll<HTMLElement>('[data-krds-structured-list-table]').forEach((root) => {
+    document.querySelectorAll<HTMLElement>('.krds-structured-list-table').forEach((root) => {
       if (enhancedStructuredTables.has(root)) return;
       enhancedStructuredTables.add(root);
 
-      const selectAll = root.querySelector<HTMLInputElement>('[data-select-all]');
-      const rowChecks = Array.from(root.querySelectorAll<HTMLInputElement>('[data-row-select]'));
+      const selectAll = root.querySelector<HTMLInputElement>('.krds-check-area input[type="checkbox"]');
+      const rowChecks = Array.from(
+        root.querySelectorAll<HTMLInputElement>('.krds-table-wrap tbody input[type="checkbox"]'),
+      );
       const enabledRowChecks = rowChecks.filter((checkbox) => !checkbox.disabled);
-      const sortSelect = root.querySelector<HTMLSelectElement>('[data-sort-select]');
-      const sortButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-sort-value]'));
-      const countSelect = root.querySelector<HTMLSelectElement>('[data-count-select]');
+      const sortSelect = root.querySelector<HTMLSelectElement>('.m-sort-btn select');
+      const sortButtons = Array.from(
+        root.querySelectorAll<HTMLButtonElement>('.w-sort-btn > button'),
+      );
+      const countSelect = root.querySelector<HTMLSelectElement>('.sch-sort > li:first-child select');
 
-      const selectedIds = () => rowChecks.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
+      const selectedIds = () =>
+        rowChecks
+          .filter((checkbox) => checkbox.checked)
+          .map((checkbox) => checkbox.id.replace(/^.*(?:-row-|list_chk_)/, ''));
 
       const syncSelection = (emit: boolean) => {
         if (selectAll) {
           const selectedCount = enabledRowChecks.filter((checkbox) => checkbox.checked).length;
           selectAll.checked = enabledRowChecks.length > 0 && selectedCount === enabledRowChecks.length;
           selectAll.indeterminate = selectedCount > 0 && selectedCount < enabledRowChecks.length;
-          selectAll.setAttribute(
-            'aria-checked',
-            selectAll.indeterminate ? 'mixed' : selectAll.checked ? 'true' : 'false',
-          );
         }
         if (emit) {
           root.dispatchEvent(
@@ -330,7 +314,7 @@ const displayCell = (value: StructuredListTableRow[string]) =>
       const setSort = (value: string, emit: boolean) => {
         if (sortSelect) sortSelect.value = value;
         sortButtons.forEach((button) => {
-          const active = button.dataset.sortValue === value;
+          const active = button.textContent?.trim() === value;
           button.classList.toggle('active', active);
           button.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
@@ -342,7 +326,7 @@ const displayCell = (value: StructuredListTableRow[string]) =>
       };
 
       sortButtons.forEach((button) => {
-        button.addEventListener('click', () => setSort(button.dataset.sortValue ?? '', true));
+        button.addEventListener('click', () => setSort(button.textContent?.trim() ?? '', true));
       });
       sortSelect?.addEventListener('change', () => setSort(sortSelect.value, true));
       countSelect?.addEventListener('change', () => {
@@ -353,40 +337,40 @@ const displayCell = (value: StructuredListTableRow[string]) =>
           }),
         );
       });
-      root.querySelectorAll<HTMLButtonElement>('[data-table-action]').forEach((button) => {
+      root.querySelectorAll<HTMLButtonElement>('.side-line-ul button').forEach((button) => {
         button.addEventListener('click', () => {
           root.dispatchEvent(
             new CustomEvent('krds:tableaction', {
               bubbles: true,
-              detail: { id: button.dataset.tableAction, selectedIds: selectedIds() },
+              detail: { id: button.textContent?.trim(), selectedIds: selectedIds() },
             }),
           );
         });
       });
-      root.querySelectorAll<HTMLButtonElement>('[data-download-row]').forEach((button) => {
+      root.querySelectorAll<HTMLButtonElement>('.krds-table-wrap tbody td button').forEach((button) => {
         button.addEventListener('click', () => {
           root.dispatchEvent(
             new CustomEvent('krds:download', {
               bubbles: true,
-              detail: { id: button.dataset.downloadRow },
+              detail: { id: button.textContent?.trim() },
             }),
           );
         });
       });
-      root.querySelectorAll<HTMLAnchorElement>('[data-page]').forEach((link) => {
+      root.querySelectorAll<HTMLAnchorElement>('.page-links a').forEach((link) => {
         link.addEventListener('click', (event) => {
           if (link.getAttribute('href') === '#') event.preventDefault();
+          const page = Number(link.textContent?.replace(/\D/g, ''));
           root.dispatchEvent(
             new CustomEvent('krds:pagechange', {
               bubbles: true,
-              detail: { page: Number(link.dataset.page) },
+              detail: { page },
             }),
           );
         });
       });
 
       syncSelection(false);
-      if (sortSelect) setSort(sortSelect.value, false);
     });
   }
 

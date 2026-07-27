@@ -16,17 +16,24 @@ import {
   TextInput,
 } from '../../packages/react/src/components.tsx';
 import {
+  Calendar,
   ContextualHelp,
   CriticalAlerts,
+  DateInput,
   Header,
   LanguageSwitcher,
+  Link,
   MainMenuMobile,
   MainMenuPc,
+  Pagination,
   Resize,
+  SkipLink,
   StructuredListTable,
   Tab,
+  TextList,
+  Tooltip,
+  Tts,
   HelpPanel,
-  Pagination,
 } from '../../packages/react/src/additional.tsx';
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -398,15 +405,76 @@ describe('React core component contracts', () => {
     );
 
     const alert = host.querySelector<HTMLElement>('.krds-critical-alerts')!;
-    expect(alert.tagName).toBe('DIV');
+    expect(alert.tagName).toBe('UL');
     expect(alert.getAttribute('role')).toBe('alert');
-    expect(alert.querySelector('ul > li')).not.toBeNull();
-    const checkbox = host.querySelector<HTMLInputElement>('input[type="checkbox"]')!;
-    expect(checkbox.getAttribute('aria-label')).toBe('서비스 선택');
+    expect(alert.querySelector(':scope > li')).not.toBeNull();
+    const masterCheckbox = host.querySelector<HTMLInputElement>('.krds-check-area input')!;
+    expect(masterCheckbox.labels?.[0]?.textContent).toBe('전체선택');
+    const checkbox = host.querySelector<HTMLInputElement>(
+      '.krds-table-wrap input[type="checkbox"]',
+    )!;
+    expect(checkbox.getAttribute('aria-label')).toBeNull();
     const rowLabel = Array.from(host.querySelectorAll('label')).find(
       (label) => label.htmlFor === checkbox.id,
     );
-    expect(rowLabel?.textContent).toBe('서비스');
-    expect(host.querySelector('th[scope="row"]')?.textContent).toContain('서비스');
+    expect(rowLabel).not.toBeUndefined();
+    expect(rowLabel?.textContent).toBe('');
+    expect(host.querySelector('td')?.textContent).toContain('서비스');
+  });
+  it('keeps calendar display values separate from selected options', async () => {
+    await render(
+      h(Calendar, {
+        displayYear: 2024,
+        selectedYear: 2002,
+        displayMonth: 12,
+        selectedMonth: 2,
+        years: [2001, 2002, 2024],
+        weekdays: ['일', '월', '화', '수', '목', '금', '토'],
+      }),
+    );
+
+    expect(host.querySelector('.btn-cal-switch.year')?.textContent).toBe('2024년');
+    expect(host.querySelector('.sel.year button.active')?.textContent).toBe('2002년');
+    expect(host.querySelector('.sel.month button.active')?.textContent).toBe('02월');
+    expect(host.querySelector('td[class=""]')).toBeNull();
+  });
+
+  it('renders date input controls and hint in the complete form root', async () => {
+    await render(
+      h(DateInput, {
+        label: '레이블',
+        hint: '도움말',
+        displayYear: 2002,
+        selectedYear: 2002,
+        displayMonth: 12,
+        selectedMonth: 12,
+        years: [2001, 2002],
+        weekdays: ['일', '월', '화', '수', '목', '금', '토'],
+      }),
+    );
+
+    expect(host.querySelector('input[placeholder="YYYY.MM.DD"]')).not.toBeNull();
+    expect(host.querySelector('.form-btn-datepicker .ico-calendar')).not.toBeNull();
+    expect(host.querySelector('.form-hint')?.textContent).toBe('도움말');
+  });
+
+  it('does not leak label props and preserves explicit text-list roles', async () => {
+    await render(
+      h(
+        'div',
+        null,
+        h(Tooltip, { label: '툴팁', message: '설명', children: '도움말' }),
+        h(Link, { label: '링크', href: '#' }, '링크'),
+        h(SkipLink, { label: '건너뛰기', href: '#main' }, '본문 바로가기'),
+        h(Tts, { label: '읽기', text: '읽기' }),
+        h(TextList, {
+          items: [{ id: 'one', label: '하나', children: [{ id: 'two', label: '둘' }] }],
+        }),
+      ),
+    );
+
+    expect(host.querySelectorAll('[label]')).toHaveLength(0);
+    expect(host.querySelector('ul.krds-info-list')?.getAttribute('role')).toBe('list');
+    expect(host.querySelectorAll('li[role="listitem"]')).toHaveLength(2);
   });
 });

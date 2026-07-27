@@ -3,30 +3,30 @@
   "version": "0.1.0",
   "description": "KRDS용 Vue 3 네이티브 컴포넌트.",
   "license": "Apache-2.0",
-  "type": "module",
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
   },
-  "peerDependencies": {
-    "vue": ">=3.5.0"
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@krds-community/recipes": "workspace:*",
     "@krds-community/styles": "workspace:*"
   },
   "devDependencies": {
-    "vue": "catalog:"
+    "vue": "3.5.40"
   },
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "lint": "tsc -p tsconfig.json --noEmit"
+  "peerDependencies": {
+    "vue": ">=3.5.0"
   }
 }

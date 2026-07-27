@@ -39,7 +39,7 @@ const resolvePanelTitle = (tab: TabItem) =>
   typeof panelTitle === 'string' ? panelTitle : panelTitle?.[tab.id];
 ---
 
-<div {...rest} class={cx('krds-tab-area', 'layer', className)} data-krds-tab>
+<div {...rest} class={cx('krds-tab-area', 'layer', className)}>
   <div class="tab line full">
     <ul role="tablist">
       {tabs.map((tab) => {
@@ -82,7 +82,7 @@ const resolvePanelTitle = (tab: TabItem) =>
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-krds-tab]').forEach((area) => {
+  document.querySelectorAll<HTMLElement>('.krds-tab-area').forEach((area) => {
     const tabElements = Array.from(area.querySelectorAll<HTMLElement>('[role="tab"]'));
     const panels = Array.from(area.querySelectorAll<HTMLElement>(':scope > .tab-conts-wrap > .tab-conts'));
     const selectionMessage =

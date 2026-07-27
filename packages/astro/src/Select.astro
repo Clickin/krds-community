@@ -39,7 +39,10 @@ const {
   ...rest
 } = Astro.props;
 const id = providedId ?? `krds-select-${crypto.randomUUID()}`;
-const hintId = hint !== undefined || Astro.slots.has('hint') ? `${id}-hint` : undefined;
+const hintId =
+  !surfaceOnly && ((hint !== undefined && hint !== '') || Astro.slots.has('hint'))
+    ? `${id}-hint`
+    : undefined;
 const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;
 const valueIndex = value === undefined
   ? -1

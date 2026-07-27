@@ -32,9 +32,9 @@ const normalizedItems: TextListItemObject[] = items.map((item) =>
 );
 ---
 
-<ul {...rest} class:list={['krds-info-list', listClass, className]}>
+<ul {...rest} role="list" class:list={['krds-info-list', listClass, className]}>
   {normalizedItems.map((item) => (
-    <li>
+    <li role="listitem">
       {item.marker !== undefined && <span class="num">{item.marker}</span>}
       {item.label ?? item.title}
       {item.children?.length && <Astro.self items={item.children} depth={depth + 1} />}

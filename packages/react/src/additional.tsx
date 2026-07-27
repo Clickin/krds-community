@@ -241,8 +241,12 @@ export interface CalendarProps
   label?: ReactNode;
   hint?: ReactNode;
   year?: number;
+  displayYear?: number;
+  selectedYear?: number;
   defaultYear?: number;
   month?: number;
+  displayMonth?: number;
+  selectedMonth?: number;
   defaultMonth?: number;
   years?: number[];
   disabledYears?: number[];
@@ -285,8 +289,12 @@ const CalendarSurface = forwardRef<
     label: _label,
     hint: _hint,
     year: controlledYear,
+    displayYear: controlledDisplayYear,
+    selectedYear: controlledSelectedYear,
     defaultYear = new Date().getFullYear(),
     month: controlledMonth,
+    displayMonth: controlledDisplayMonth,
+    selectedMonth: controlledSelectedMonth,
     defaultMonth = new Date().getMonth() + 1,
     years,
     disabledYears = [],
@@ -327,29 +335,47 @@ const CalendarSurface = forwardRef<
   const generatedId = useId();
   const yearListId = `krds-calendar-year-${generatedId}`;
   const monthListId = `krds-calendar-month-${generatedId}`;
-  const [uncontrolledYear, setUncontrolledYear] = useState(defaultYear);
-  const [uncontrolledMonth, setUncontrolledMonth] = useState(defaultMonth);
+  const [uncontrolledDisplayYear, setUncontrolledDisplayYear] = useState(
+    controlledDisplayYear ?? controlledYear ?? defaultYear,
+  );
+  const [uncontrolledDisplayMonth, setUncontrolledDisplayMonth] = useState(
+    controlledDisplayMonth ?? controlledMonth ?? defaultMonth,
+  );
+  const [uncontrolledSelectedYear, setUncontrolledSelectedYear] = useState(
+    controlledSelectedYear ?? controlledYear ?? defaultYear,
+  );
+  const [uncontrolledSelectedMonth, setUncontrolledSelectedMonth] = useState(
+    controlledSelectedMonth ?? controlledMonth ?? defaultMonth,
+  );
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
   const [yearOpen, setYearOpen] = useState(false);
   const [monthOpen, setMonthOpen] = useState(false);
-  const activeYear = controlledYear ?? uncontrolledYear;
-  const activeMonth = controlledMonth ?? uncontrolledMonth;
+  const displayYear = controlledDisplayYear ?? uncontrolledDisplayYear;
+  const displayMonth = controlledDisplayMonth ?? uncontrolledDisplayMonth;
+  const selectedYear = controlledSelectedYear ?? controlledYear ?? uncontrolledSelectedYear;
+  const selectedMonth = controlledSelectedMonth ?? controlledMonth ?? uncontrolledSelectedMonth;
   const value = controlledValue ?? uncontrolledValue;
-  const availableYears = years ?? [activeYear];
+  const availableYears = years ?? [selectedYear];
   const leadingDays =
-    providedLeadingDays ?? new Date(activeYear, activeMonth - 1, 1).getDay();
+    providedLeadingDays ?? new Date(displayYear, displayMonth - 1, 1).getDay();
   const previousMonthDayCount =
-    providedPreviousMonthDayCount ?? new Date(activeYear, activeMonth - 1, 0).getDate();
-  const dayCount = providedDayCount ?? new Date(activeYear, activeMonth, 0).getDate();
+    providedPreviousMonthDayCount ?? new Date(displayYear, displayMonth - 1, 0).getDate();
+  const dayCount = providedDayCount ?? new Date(displayYear, displayMonth, 0).getDate();
   const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
   const pad = (part: number) => String(part).padStart(2, '0');
   const chooseYear = (next: number) => {
-    if (controlledYear === undefined) setUncontrolledYear(next);
+    if (controlledDisplayYear === undefined) setUncontrolledDisplayYear(next);
+    if (controlledSelectedYear === undefined && controlledYear === undefined) {
+      setUncontrolledSelectedYear(next);
+    }
     setYearOpen(false);
     onYearChange?.(next);
   };
   const chooseMonth = (next: number) => {
-    if (controlledMonth === undefined) setUncontrolledMonth(next);
+    if (controlledDisplayMonth === undefined) setUncontrolledDisplayMonth(next);
+    if (controlledSelectedMonth === undefined && controlledMonth === undefined) {
+      setUncontrolledSelectedMonth(next);
+    }
     setMonthOpen(false);
     onMonthChange?.(next);
   };
@@ -357,17 +383,17 @@ const CalendarSurface = forwardRef<
     const offset = index - leadingDays + 1;
     if (offset < 1) {
       const day = previousMonthDayCount + offset;
-      const month = activeMonth === 1 ? 12 : activeMonth - 1;
-      const year = activeMonth === 1 ? activeYear - 1 : activeYear;
+      const month = displayMonth === 1 ? 12 : displayMonth - 1;
+      const year = displayMonth === 1 ? displayYear - 1 : displayYear;
       return { day, month, year, offMonth: 'old' as const };
     }
     if (offset > dayCount) {
       const day = offset - dayCount;
-      const month = activeMonth === 12 ? 1 : activeMonth + 1;
-      const year = activeMonth === 12 ? activeYear + 1 : activeYear;
+      const month = displayMonth === 12 ? 1 : displayMonth + 1;
+      const year = displayMonth === 12 ? displayYear + 1 : displayYear;
       return { day, month, year, offMonth: 'new' as const };
     }
-    return { day: offset, month: activeMonth, year: activeYear, offMonth: undefined };
+    return { day: offset, month: displayMonth, year: displayYear, offMonth: undefined };
   });
   return (
     <div {...props} ref={ref} className={cx('krds-calendar-area', className)}>
@@ -392,7 +418,7 @@ const CalendarSurface = forwardRef<
                 role="combobox"
                 onClick={() => setYearOpen((open) => !open)}
               >
-                {activeYear}년
+                {`${displayYear}년`}
               </button>
               <div className="calendar-select calendar-year-wrap">
                 <ul className="sel year" id={yearListId} role="listbox">
@@ -401,12 +427,12 @@ const CalendarSurface = forwardRef<
                       <button
                         type="button"
                         role="option"
-                        className={year === activeYear ? 'active' : undefined}
-                        aria-selected={year === activeYear}
+                        className={year === selectedYear ? 'active' : undefined}
+                        aria-selected={year === selectedYear}
                         disabled={disabledYears.includes(year)}
                         onClick={() => chooseYear(year)}
                       >
-                        {year}년
+                        {`${year}년`}
                       </button>
                     </li>
                   ))}
@@ -424,7 +450,7 @@ const CalendarSurface = forwardRef<
                 role="combobox"
                 onClick={() => setMonthOpen((open) => !open)}
               >
-                {pad(activeMonth)}월
+                {`${pad(displayMonth)}월`}
               </button>
               <div className="calendar-select calendar-mon-wrap">
                 <ul className="sel month" id={monthListId} role="listbox">
@@ -433,12 +459,12 @@ const CalendarSurface = forwardRef<
                       <button
                         type="button"
                         role="option"
-                        className={month === activeMonth ? 'active' : undefined}
-                        aria-selected={month === activeMonth}
+                        className={month === selectedMonth ? 'active' : undefined}
+                        aria-selected={month === selectedMonth}
                         disabled={disabledMonths.includes(month)}
                         onClick={() => chooseMonth(month)}
                       >
-                        {pad(month)}월
+                        {`${pad(month)}월`}
                       </button>
                     </li>
                   ))}
@@ -453,9 +479,7 @@ const CalendarSurface = forwardRef<
         <div className="calendar-body">
           <div className="calendar-table-wrap">
             <table className="calendar-tbl">
-              <caption>
-                {activeYear}년 {pad(activeMonth)}월
-              </caption>
+              <caption>{`${displayYear}년 ${pad(displayMonth)}월`}</caption>
               <thead>
                 <tr>
                   {weekdays.map((weekday, index) => (
@@ -484,17 +508,19 @@ const CalendarSurface = forwardRef<
                       const offMonth = cell.offMonth !== undefined;
                       return (
                         <td
-                          className={cx(
-                            cell.offMonth,
-                            columnIndex === 0 && 'day-off',
-                            period && 'period',
-                            start && 'start',
-                            end && 'end',
-                            today && 'today',
-                            event && 'day-event',
-                            disabled && 'disabled',
-                            selected && !period && 'period start end',
-                          )}
+                          className={
+                            cx(
+                              cell.offMonth,
+                              columnIndex === 0 && 'day-off',
+                              period && 'period',
+                              start && 'start',
+                              end && 'end',
+                              today && 'today',
+                              event && 'day-event',
+                              disabled && 'disabled',
+                              selected && !period && 'period start end',
+                            ) || undefined
+                          }
                           data-date={date}
                           key={date}
                         >
@@ -603,7 +629,40 @@ export const CalendarRange = forwardRef<HTMLDivElement, CalendarRangeProps>(
   },
 );
 export const DateInput = forwardRef<HTMLDivElement, CalendarProps>(function DateInput(props, ref) {
-  return <CalendarSurface {...props} ref={ref} single={false} />;
+  const inputId = `krds-date-${useId()}`;
+  const {
+    label,
+    hint,
+    value,
+    className,
+    ...calendarProps
+  } = props;
+  return (
+    <div ref={ref} className={cx('form-group', className)}>
+      <div className="form-tit">
+        <label htmlFor={inputId}>{label}</label>
+      </div>
+      <div className="form-conts">
+        <div className="form-conts calendar-conts">
+          <div className="calendar-input">
+            <input
+              id={inputId}
+              type="number"
+              className="krds-input datepicker cal"
+              placeholder="YYYY.MM.DD"
+              value={value || undefined}
+            />
+            <button type="button" className="krds-btn medium icon form-btn-datepicker">
+              <span className="sr-only">달력 열기</span>
+              <SvgIcon name="ico-calendar" />
+            </button>
+          </div>
+          <CalendarSurface {...calendarProps} value={value ?? ''} single={false} />
+        </div>
+      </div>
+      {hint ? <p className="form-hint">{hint}</p> : null}
+    </div>
+  );
 });
 
 function CarouselImage({ label }: { label?: string }) {
@@ -825,12 +884,12 @@ export const RadioChip = forwardRef<HTMLInputElement, ChoiceChipProps>(function 
   const generatedId = useId();
   const id = providedId ?? `krds-radio-chip-${generatedId}`;
   return (
-    <>
-      <input {...props} ref={ref} id={id} type="radio" className={cx('radio', className)} />
-      <label className={cx('krds-form-chip-outline', size)} htmlFor={id}>
+    <div className={cx('krds-form-chip', size, className)}>
+      <input {...props} ref={ref} id={id} type="radio" className="radio" />
+      <label className="krds-form-chip-outline" htmlFor={id}>
         {label}
       </label>
-    </>
+    </div>
   );
 });
 export function CheckboxSize(props: ComponentProps<typeof Checkbox>) {
@@ -989,38 +1048,36 @@ export interface CriticalAlertsProps extends Omit<BoxProps, 'items'> {
 }
 export function CriticalAlerts({ items = [], className }: CriticalAlertsProps) {
   return (
-    <div className={cx('krds-critical-alerts', className)} role="alert">
-      <ul className="critical-alerts-list">
-        {items.map((rawItem, index) => {
-          const item: CriticalAlertItem =
-            typeof rawItem === 'string' ? { message: rawItem } : rawItem;
-          const badgeTone =
-            item.tone ??
-            (item.badge === 'danger' || item.badge === 'ok' || item.badge === 'info'
-              ? item.badge
-              : undefined);
-          const badgeLabel =
-            item.badgeLabel ?? (item.badge === badgeTone ? undefined : item.badge);
-          const message = item.message ?? item.text ?? item.title;
-          return (
-            <li key={item.id ?? index}>
-              <div className="critical-ban">
-                {badgeLabel ? (
-                  <span className={cx('critical-badge', badgeTone)}>{badgeLabel}</span>
-                ) : null}
-                <p className="critical-txt">{message}</p>
-                {item.linkLabel ? (
-                  <a href={item.href ?? '#'} className="krds-btn medium link basic">
-                    <span className="m-hide">{item.linkLabel}</span>
-                    <SvgIcon name="ico-angle right" />
-                  </a>
-                ) : null}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+    <ul className={cx('krds-critical-alerts', className)} role="alert">
+      {items.map((rawItem, index) => {
+        const item: CriticalAlertItem =
+          typeof rawItem === 'string' ? { message: rawItem } : rawItem;
+        const badgeTone =
+          item.tone ??
+          (item.badge === 'danger' || item.badge === 'ok' || item.badge === 'info'
+            ? item.badge
+            : undefined);
+        const badgeLabel =
+          item.badgeLabel ?? (item.badge === badgeTone ? undefined : item.badge);
+        const message = item.message ?? item.text ?? item.title;
+        return (
+          <li key={item.id ?? index}>
+            <div className="critical-ban">
+              {badgeLabel ? (
+                <span className={cx('critical-badge', badgeTone)}>{badgeLabel}</span>
+              ) : null}
+              <p className="critical-txt">{message}</p>
+              {item.linkLabel ? (
+                <a href={item.href ?? '#'} className="krds-btn medium link basic">
+                  <span className="m-hide">{item.linkLabel}</span>
+                  <SvgIcon name="ico-angle right" />
+                </a>
+              ) : null}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -1054,6 +1111,7 @@ export function Disclosure({
   return (
     <div {...props} className={cx('krds-disclosure', 'conts-expand-area', className)}>
       <button
+        id={`${panelId}-trigger`}
         type="button"
         className="btn-conts-expand"
         aria-controls={panelId}
@@ -1068,7 +1126,13 @@ export function Disclosure({
       >
         {title}
       </button>
-      <div id={panelId} className="expand-wrap" inert={!open}>
+      <div
+        id={panelId}
+        className="expand-wrap"
+        role="region"
+        aria-labelledby={`${panelId}-trigger`}
+        inert={!open}
+      >
         <div className="expand-in">
           {items ? (
             <ul className="krds-info-list dash" role="list">
@@ -1170,6 +1234,12 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
   const inputId = providedInputId ?? id ?? `krds-file-upload-${generatedId}`;
   const [selectedFiles, setSelectedFiles] = useState<FileUploadItem[]>([]);
   const files = controlledFiles ?? selectedFiles;
+  const countSuffixText =
+    typeof countSuffix === 'string' || typeof countSuffix === 'number'
+      ? String(countSuffix)
+      : '';
+  const currentCountText = `${currentCount ?? files.length}${countSuffixText} `;
+  const maxCountText = `/ ${maxCount ?? ''}${countSuffixText}`;
   const change = (event: ChangeEvent<HTMLInputElement>) => {
     const next = Array.from(event.currentTarget.files ?? []);
     setSelectedFiles(next.map((file, index) => ({ id: `${index}`, name: file.name })));
@@ -1198,13 +1268,8 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
       </div>
       <div className="file-list">
         <div className="total">
-          <span className="current">
-            {currentCount ?? files.length}
-            {countSuffix}
-          </span>
-          {'/ '}
-          {maxCount}
-          {countSuffix}
+          <span className="current">{currentCountText}</span>
+          {maxCountText}
         </div>
         <ul className="upload-list">
           {files.map((file) => (
@@ -2335,9 +2400,10 @@ export const LanguageSwitcherPage = forwardRef<HTMLDivElement, LanguageSwitcherP
 
 export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   external?: boolean;
+  label?: ReactNode;
 }
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  { external = false, children, className, href = '#', target, rel, title, ...props },
+  { external = false, label: _label, children, className, href = '#', target, rel, title, ...props },
   ref,
 ) {
   return (
@@ -3517,12 +3583,17 @@ export const SideNavigation = forwardRef<HTMLElement, SideNavigationProps>(
 );
 export const SkipLink = forwardRef<
   HTMLAnchorElement,
-  AnchorHTMLAttributes<HTMLAnchorElement>
->(function SkipLink({ href = '#main', children = '본문 바로가기', className, ...props }, ref) {
+  AnchorHTMLAttributes<HTMLAnchorElement> & { label?: ReactNode }
+>(function SkipLink(
+  { href = '#main', label: _label, children = '본문 바로가기', className, id, ...props },
+  ref,
+) {
   return (
-    <a {...props} ref={ref} href={href} className={className}>
-      {children}
-    </a>
+    <div id={id ?? 'krds-skip-link'} className={className}>
+      <a {...props} ref={ref} href={href}>
+        {children}
+      </a>
+    </div>
   );
 });
 export const Spinner = forwardRef<
@@ -3704,27 +3775,29 @@ export interface StructuredListTableProps {
   onSelectionChange?: (ids: string[]) => void;
   onDownload?: (row: StructuredListTableRow) => void;
 }
-export const StructuredListTable = forwardRef<HTMLTableElement, StructuredListTableProps>(
+export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTableProps>(
   function StructuredListTable(
     {
       columns,
       rows,
       caption,
       className: _className,
-      selectAllLabel: _selectAllLabel,
-      actions: _actions,
-      countLabel: _countLabel,
-      countOptions: _countOptions,
-      sortLabel: _sortLabel,
-      sortOptions: _sortOptions,
-      sortValue: _sortValue,
-      pagination: _pagination,
+      selectAllLabel = '전체선택',
+      actions = [],
+      countLabel,
+      countOptions = [],
+      sortLabel,
+      sortOptions = [],
+      sortValue,
+      pagination,
       onSelectionChange,
       onDownload,
     },
     ref,
   ) {
     const generatedId = useId();
+    const countId = `krds-table-count-${useId()}`;
+    const sortId = `krds-table-sort-${useId()}`;
     const controlled = rows.some((row) => row.selected !== undefined);
     const [selectedIds, setSelectedIds] = useState(
       () => new Set(rows.filter((row) => row.selected).map((row) => row.id)),
@@ -3732,6 +3805,7 @@ export const StructuredListTable = forwardRef<HTMLTableElement, StructuredListTa
     const selected = controlled
       ? new Set(rows.filter((row) => row.selected).map((row) => row.id))
       : selectedIds;
+    const allSelected = rows.length > 0 && rows.every((row) => selected.has(row.id));
     const toggle = (row: StructuredListTableRow) => {
       const next = new Set(selected);
       if (next.has(row.id)) next.delete(row.id);
@@ -3739,83 +3813,201 @@ export const StructuredListTable = forwardRef<HTMLTableElement, StructuredListTa
       if (!controlled) setSelectedIds(next);
       onSelectionChange?.([...next]);
     };
+    const toggleAll = (checked: boolean) => {
+      const next = checked ? new Set(rows.map((row) => row.id)) : new Set<string>();
+      if (!controlled) setSelectedIds(next);
+      onSelectionChange?.([...next]);
+    };
+    const pageItems = pagination?.items ?? [];
+    const pageMax = Math.max(
+      1,
+      ...pageItems.filter((item): item is number => item !== 'ellipsis'),
+    );
+    const pageLink = (page: number) => (
+      <a
+        className={cx('page-link', page === pagination?.current && 'active')}
+        href="#"
+        onClick={(event) => event.preventDefault()}
+        key={page}
+      >
+        {page === pagination?.current ? (
+          <span className="sr-only">{pagination.currentLabel}</span>
+        ) : null}
+        {page}
+      </a>
+    );
     return (
-      <table ref={ref} className="tbl col data">
-        <caption>{caption}</caption>
-        <colgroup>
-          {columns.map((column) => (
-            <col style={column.width ? { width: column.width } : undefined} key={column.key} />
-          ))}
-          <col />
-        </colgroup>
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th scope="col" key={column.key}>
-                {column.visuallyHidden ? (
-                  <span className="sr-only">{column.label}</span>
+      <div ref={ref} className={cx('krds-structured-list-table', _className || 'sample')}>
+        <div className="search-list-top">
+          <div className="sch-left">
+            <div className="krds-check-area">
+              <div className="krds-form-check">
+                <input
+                  type="checkbox"
+                  className="chk"
+                  id={generatedId}
+                  checked={allSelected}
+                  onChange={(event) => toggleAll(event.currentTarget.checked)}
+                />
+                <label htmlFor={generatedId}>{selectAllLabel}</label>
+              </div>
+            </div>
+            <ul className="side-line-ul">
+              {actions.map((action, index) => (
+                <li key={action.id ?? index}>
+                  <button type="button" className="krds-btn medium text">
+                    <SvgIcon name={`ico-${action.icon ?? 'down'}`} />
+                    {action.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <ul className="sch-sort">
+            <li>
+              <strong className="sort-label">
+                <label htmlFor={countId}>{countLabel}</label>
+              </strong>
+              <select
+                className="krds-form-select-sort"
+                id={countId}
+              >
+                {countOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
+              </select>
+            </li>
+            <li>
+              <strong className="sort-label">
+                <label htmlFor={sortId}>{sortLabel}</label>
+              </strong>
+              <div className="w-sort-btn">
+                {sortOptions.map((option) => (
+                  <button
+                    type="button"
+                    className={option === sortValue ? 'active' : undefined}
+                    key={option}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              <div className="m-sort-btn">
+                <select
+                  className="krds-form-select-sort"
+                  id={sortId}
+                >
+                  {sortOptions.map((option) => (
+                    <option key={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div className="krds-table-wrap">
+          <table className="tbl col data">
+            <caption>{caption}</caption>
+            <colgroup>
+              {columns.map((column) => (
+                <col style={column.width ? { width: column.width } : undefined} key={column.key} />
+              ))}
+              <col />
+            </colgroup>
+            <thead>
+              <tr>
+                {columns.map((column) => (
+                  <th scope="col" key={column.key}>
+                    {column.visuallyHidden ? (
+                      <span className="sr-only">{column.label}</span>
+                    ) : (
+                      column.label
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  {columns.map((column, columnIndex) => {
+                    if (column.key === 'selected') {
+                      const inputId = `krds-table-${generatedId}-${row.id}`;
+                      return (
+                        <th scope="row" key={column.key}>
+                          <div className="krds-form-check">
+                            <input
+                              type="checkbox"
+                              className="chk"
+                              id={inputId}
+                              checked={selected.has(row.id)}
+                              onChange={() => toggle(row)}
+                            />
+                            <label htmlFor={inputId} />
+                          </div>
+                        </th>
+                      );
+                    }
+                    if (column.key === 'download') {
+                      return (
+                        <td key={column.key}>
+                          <button
+                            type="button"
+                            className="krds-btn medium text"
+                            onClick={() => onDownload?.(row)}
+                          >
+                            <SvgIcon name="ico-down" />
+                            {String(row[column.key] ?? '')}
+                          </button>
+                        </td>
+                      );
+                    }
+                    if (columnIndex === 0) {
+                      return (
+                        <th scope="row" key={column.key}>
+                          {String(row[column.key] ?? '')}
+                        </th>
+                      );
+                    }
+                    return <td key={column.key}>{String(row[column.key] ?? '')}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {pagination ? (
+          <div className="krds-pagination">
+            {pagination.previousDisabled ? (
+              <span {...{ href: '#' }} className="page-navi prev disabled">
+                {pagination.previousLabel}
+              </span>
+            ) : (
+              <a href="#" className="page-navi prev" onClick={(event) => event.preventDefault()}>
+                {pagination.previousLabel}
+              </a>
+            )}
+            <div className="page-links">
+              {pageItems.map((item, index) =>
+                item === 'ellipsis' ? (
+                  <span className="page-link link-dot" key={`ellipsis-${index}`} />
                 ) : (
-                  column.label
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id}>
-              {columns.map((column, columnIndex) => {
-                if (column.key === 'selected') {
-                  const inputId = `krds-table-${generatedId}-${row.id}`;
-                  const labelColumn = columns.find((candidate) => candidate.key !== 'selected');
-                  const rowLabel = String(
-                    row[labelColumn?.key ?? 'id'] ?? row.id,
-                  );
-                  return (
-                    <th scope="row" key={column.key}>
-                      <div className="krds-form-check">
-                        <input
-                          type="checkbox"
-                          className="chk"
-                          id={inputId}
-                          checked={selected.has(row.id)}
-                          aria-label={`${rowLabel} 선택`}
-                          onChange={() => toggle(row)}
-                        />
-                        <label htmlFor={inputId} className="sr-only">
-                          {rowLabel}
-                        </label>
-                      </div>
-                    </th>
-                  );
-                }
-                if (column.key === 'download') {
-                  return (
-                    <td key={column.key}>
-                      <button
-                        type="button"
-                        className="krds-btn medium text"
-                        onClick={() => onDownload?.(row)}
-                      >
-                        <SvgIcon name="ico-down" />
-                        {String(row[column.key] ?? '')}
-                      </button>
-                    </td>
-                  );
-                }
-                if (columnIndex === 0) {
-                  return (
-                    <th scope="row" key={column.key}>
-                      {String(row[column.key] ?? '')}
-                    </th>
-                  );
-                }
-                return <td key={column.key}>{String(row[column.key] ?? '')}</td>;
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  pageLink(item)
+                ),
+              )}
+            </div>
+            {pagination.current >= pageMax ? (
+              <span {...{ href: '#' }} className="page-navi next disabled">
+                {pagination.nextLabel}
+              </span>
+            ) : (
+              <a href="#" className="page-navi next" onClick={(event) => event.preventDefault()}>
+                {pagination.nextLabel}
+              </a>
+            )}
+          </div>
+        ) : null}
+      </div>
     );
   },
 );
@@ -3972,6 +4164,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
   ref,
 ) {
   return (
+    <div className="krds-table-wrap">
     <table {...props} ref={ref} className={cx('tbl', 'col', 'data', className)}>
       <caption>{caption}</caption>
       <colgroup>
@@ -4008,6 +4201,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
         ))}
       </tbody>
     </table>
+    </div>
   );
 });
 
@@ -4210,7 +4404,7 @@ function TextListItems({
   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
   return items.map((item, index) => {
     if (isTextListReactNode(item)) {
-      return <li key={index}>{item}</li>;
+      return <li role="listitem" key={index}>{item}</li>;
     }
     const content = item.label ?? item.title;
     const marker = ordered
@@ -4224,11 +4418,11 @@ function TextListItems({
     const NestedList = ordered ? 'ol' : 'ul';
     const nestedClass = ordered ? 'ordered' : depth === 0 ? 'dash' : 'hollow';
     return (
-      <li key={item.id ?? index}>
+      <li role="listitem" key={item.id ?? index}>
         {marker !== null ? <span className="num">{marker}</span> : null}
         {content}
         {item.children?.length ? (
-          <NestedList className={cx('krds-info-list', nestedClass)}>
+          <NestedList role="list" className={cx('krds-info-list', nestedClass)}>
             <TextListItems items={item.children} ordered={ordered} depth={depth + 1} />
           </NestedList>
         ) : null}
@@ -4247,7 +4441,7 @@ export function TextList({
 }) {
   const List = ordered ? 'ol' : 'ul';
   return (
-    <List className={cx('krds-info-list', ordered ? 'ordered' : 'decimal', className)}>
+    <List role="list" className={cx('krds-info-list', ordered ? 'ordered' : 'decimal', className)}>
       <TextListItems items={items} ordered={ordered} depth={0} />
     </List>
   );
@@ -4257,11 +4451,13 @@ export const TextListOrdered = (props: Omit<ComponentProps<typeof TextList>, 'or
 );
 
 export interface TooltipProps extends NativeCommonProps, ButtonHTMLAttributes<HTMLButtonElement> {
+  label?: ReactNode;
   message?: ReactNode;
   placement?: 'horizontal' | 'vertical' | 'box';
 }
 export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tooltip(
   {
+    label: _label,
     message,
     placement = 'horizontal',
     children,
@@ -4328,6 +4524,7 @@ export function TooltipVertical(props: TooltipProps) {
 }
 
 export interface TtsProps extends NativeCommonProps, ButtonHTMLAttributes<HTMLButtonElement> {
+  label?: ReactNode;
   text?: string;
   iconOnly?: boolean;
   size?: 'xsmall' | 'small' | 'medium' | 'large';
@@ -4337,6 +4534,7 @@ export interface TtsProps extends NativeCommonProps, ButtonHTMLAttributes<HTMLBu
 }
 export const Tts = forwardRef<HTMLButtonElement, TtsProps>(function Tts(
   {
+    label: _label,
     text,
     iconOnly = false,
     size = 'medium',

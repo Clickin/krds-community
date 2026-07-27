@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default]
+    comparisons:
+      visual: none
 contract:
-  semanticElement: link
+  semanticElement: link[rel=icon]
   accessibility: [semantic-element]

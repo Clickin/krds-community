@@ -1,10 +1,11 @@
 import type { Component, ComponentProps } from 'svelte';
 import type Additional from './Additional.svelte';
+import type Accordion from './Accordion.svelte';
 
 type AdditionalPreset = Component<Omit<ComponentProps<typeof Additional>, 'kind'>>;
 
 export { default as Accordion } from './Accordion.svelte';
-export { default as AccordionLine } from './Accordion.svelte';
+export declare const AccordionLine: typeof Accordion;
 export { default as Button } from './Button.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as Radio } from './Radio.svelte';

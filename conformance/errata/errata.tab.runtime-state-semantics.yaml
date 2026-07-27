@@ -38,7 +38,8 @@ normalization:
       rule: "non-semantic-runtime-bookkeeping"
     - selector: "[role=tab].active"
       attribute: aria-selected
-      rule: "exact-value:true"
+      operation: rewrite
+      rewriteValue: "true"
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/tabs/

@@ -3,32 +3,32 @@
   "version": "0.1.0",
   "description": "KRDS용 SolidJS 네이티브 컴포넌트.",
   "license": "Apache-2.0",
-  "type": "module",
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
   },
-  "peerDependencies": {
-    "solid-js": ">=1.8.0"
+  "scripts": {
+    "build": "node scripts/clean.mjs && vite build --config scripts/vite.config.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
+    "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@krds-community/recipes": "workspace:*",
     "@krds-community/styles": "workspace:*"
   },
   "devDependencies": {
-    "solid-js": "catalog:",
+    "solid-js": "1.9.14",
     "vite": "catalog:",
-    "vite-plugin-solid": "catalog:"
+    "vite-plugin-solid": "2.11.13"
   },
-  "scripts": {
-    "build": "node scripts/clean.mjs && vite build --config scripts/vite.config.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
-    "lint": "tsc -p tsconfig.json --noEmit"
+  "peerDependencies": {
+    "solid-js": ">=1.8.0"
   }
 }

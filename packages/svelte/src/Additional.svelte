@@ -61,6 +61,13 @@
       relatedGroups?: Record<string, unknown>[];
       tutorialTitle?: string;
       tasks?: Record<string, unknown>[];
+      backTitle?: string;
+      tutorialBackTitle?: string;
+      externalTitle?: string;
+      displayYear?: number;
+      displayMonth?: number;
+      selectedYear?: number;
+      selectedMonth?: number;
       collapseLabel?: string;
       utilityItems?: KrdsNavItem[];
       serviceItems?: KrdsNavItem[];
@@ -130,7 +137,16 @@
   const generatedId = $props.id();
   let {
     kind = 'surface',
-    id = generatedId,
+    id =
+      kind === 'footer'
+        ? 'krds-footer'
+        : kind === 'header'
+          ? 'krds-header'
+          : kind === 'masthead'
+            ? 'krds-masthead'
+            : kind === 'skip-link'
+              ? 'krds-skip-link'
+              : generatedId,
     label = '레이블',
     title = '제목',
     description = '',
@@ -261,6 +277,13 @@
     weekdays = [],
     todayLabel = '',
     eventLabel = '',
+    displayYear,
+    displayMonth,
+    selectedYear,
+    selectedMonth,
+    backTitle = '',
+    tutorialBackTitle = '',
+    externalTitle = '새 창 열림',
     year,
     month,
     disabledMonths = [],
@@ -372,8 +395,10 @@
         : checkedValue,
   );
   const dateParts = $derived(/^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(inputValue));
-  const calendarYear = $derived(year ?? Number(dateParts?.[1] ?? '2000'));
-  const calendarMonth = $derived(month ?? Number(dateParts?.[2] ?? '1'));
+  const calendarYear = $derived(displayYear ?? year ?? Number(dateParts?.[1] ?? '2000'));
+  const calendarMonth = $derived(displayMonth ?? month ?? Number(dateParts?.[2] ?? '1'));
+  const selectedCalendarYear = $derived(selectedYear ?? year ?? Number(dateParts?.[1] ?? calendarYear));
+  const selectedCalendarMonth = $derived(selectedMonth ?? month ?? Number(dateParts?.[2] ?? calendarMonth));
   const selectedDay = $derived(Number(dateParts?.[3] ?? rangeStartDay));
   const calendarYears = Array.from({ length: 24 }, (_, index) => calendarYear - 1 + index);
   const calendarMonths = Array.from({ length: 12 }, (_, index) => index + 1);
@@ -565,11 +590,45 @@
     {#if children}{@render children()}{:else}{label}{/if}
   </button>
 {:else if kind === 'calendar' || kind === 'calendar-range' || kind === 'date-input'}
-  <div {...rest} class={`krds-calendar-area ${rootClass}`}>
-    <div
-      class={`bottom calendar-wrap ${kind === 'calendar' ? 'single' : ''}`}
-      aria-label={calendarLabel}
-    >
+  <div {...rest} class={kind === 'date-input' ? `form-group ${rootClass}` : 'calendar-host'}>
+    {#if kind === 'date-input'}
+      <div class="form-tit"><label for={id}>{label}</label></div>
+    {/if}
+    <div class={kind === 'date-input' ? 'form-conts' : undefined}>
+    <div class={kind === 'date-input' ? 'form-conts calendar-conts' : 'calendar-surface-host'}>
+      {#if kind === 'date-input'}
+        <div class="calendar-input">
+          <input
+            id={id}
+            name={name || undefined}
+            class="krds-input datepicker cal"
+            type="number"
+            placeholder={placeholder || 'YYYY.MM.DD'}
+            value={inputValue}
+            disabled={disabled}
+            required={required}
+            readonly={readonly}
+            form={form}
+            oninput={setValue}
+            onfocus={(event) =>
+              (event.currentTarget as HTMLInputElement)
+                .closest('.form-conts')
+                ?.querySelector('.calendar-wrap')
+                ?.removeAttribute('tabindex')}
+          />
+          <button class="krds-btn medium icon form-btn-datepicker" type="button">
+            <span class="sr-only">달력 열기</span>
+            <i class="svg-icon ico-calendar"></i>
+          </button>
+        </div>
+      {/if}
+      <div class="krds-calendar-area">
+        <div
+          class={`bottom calendar-wrap ${kind === 'calendar' ? 'single' : ''}`}
+          aria-label={calendarLabel}
+          tabindex="0"
+          onfocus={(event) => event.currentTarget.removeAttribute('tabindex')}
+        >
       <div class="calendar-head">
         <button class="btn-cal-move prev" type="button">
           <span class="sr-only">{previousMonthLabel}</span>
@@ -668,13 +727,14 @@
                         : calendarYear}
                     {@const inCurrentMonth = !isLeading && !isTrailing}
                     {@const inRange = inCurrentMonth && rangeStartDay > 0 && day >= rangeStartDay && day <= rangeEndDay}
-                    {@const isSelected = inCurrentMonth && (selectedDay === day || day === rangeStartDay || day === rangeEndDay)}
+                    {@const isSelected = inCurrentMonth && cellYear === selectedCalendarYear && cellMonth === selectedCalendarMonth && (selectedDay === day || day === rangeStartDay || day === rangeEndDay)}
                     <td
                       class:day-off={dayIndex === 0}
-                      class:old={!inCurrentMonth}
+                      class:old={isLeading}
+                      class:new={isTrailing}
                       class:start={inCurrentMonth && day === rangeStartDay}
                       class:end={inCurrentMonth && day === rangeEndDay}
-                      class:period={inRange}
+                        disabled={!inCurrentMonth || disabledDays.includes(day) ? 'true' : undefined}
                       class:today={inCurrentMonth && day === todayDay}
                       class:day-event={inCurrentMonth && eventDays.includes(day)}
                       class:disabled={inCurrentMonth && disabledDays.includes(day)}
@@ -685,11 +745,16 @@
                         type="button"
                         disabled={!inCurrentMonth || disabledDays.includes(day)}
                         aria-pressed={isSelected ? 'true' : undefined}
-                        aria-label={inCurrentMonth && eventDays.includes(day) ? `${day} ${eventLabel}` : undefined}
+                        aria-label={
+                          inCurrentMonth && eventDays.includes(day)
+                            ? `${day} ${eventLabel}`
+                            : inCurrentMonth && day === todayDay
+                              ? `${day} ${todayLabel}`
+                              : undefined
+                        }
                         onclick={(event) => selectCalendarDay(day, event)}
                       >
                         <span>{day}</span>
-                        {#if inCurrentMonth && day === todayDay}<span class="sr-only">{todayLabel}</span>{/if}
                       </button>
                     </td>
                   {/each}
@@ -700,10 +765,19 @@
         </div>
       </div>
       <div class="calendar-footer">
-        <button class="krds-btn medium tertiary" type="button">{cancelLabel}</button>
-        <button class="krds-btn medium primary" type="button">{confirmLabel}</button>
+        <div class="calendar-btn-wrap">
+          <button class="krds-btn small text" id={`${id}-today`} type="button">{todayLabel}</button>
+          <button class="krds-btn small tertiary" type="button">{cancelLabel}</button>
+          <button class="krds-btn small primary" type="button">{confirmLabel}</button>
+        </div>
       </div>
     </div>
+  </div>
+    </div>
+    </div>
+    {#if kind === 'date-input'}
+      {#if hint}<p class="form-hint">{hint}</p>{/if}
+    {/if}
   </div>
 {:else if kind === 'carousel' || kind === 'carousel-banner'}
   {#if kind === 'carousel-banner'}
@@ -796,6 +870,7 @@
     <label for={id}>{label}</label>
   </div>
 {:else if kind === 'radio-chip'}
+  <div class={`krds-form-chip ${rootClass}`}>
   <input
     {...rest}
     class={`radio ${rootClass}`}
@@ -810,6 +885,7 @@
     onchange={setRadio}
   />
   <label class="krds-form-chip-outline" for={id}>{label}</label>
+  </div>
 {:else if kind === 'radio-size'}
   <div class={`krds-form-check ${size} ${rootClass}`}>
     <input
@@ -894,17 +970,24 @@
 {:else if kind === 'disclosure'}
   <div {...rest} class={`conts-expand-area krds-disclosure ${rootClass}`}>
     <button
+      id={`${id}-trigger`}
       class="btn-conts-expand"
       type="button"
       aria-controls={`${id}-content`}
       aria-expanded={isOpen}
       onclick={toggleOpen}
     >{title}</button>
-    <div class="expand-wrap" id={`${id}-content`} inert={!isOpen}>
+    <div
+      class="expand-wrap"
+      id={`${id}-content`}
+      role="region"
+      aria-labelledby={`${id}-trigger`}
+      inert={!isOpen}
+    >
       <div class="expand-in">
         {#if items.length}
-          <ul class="dash krds-info-list" role="list">
-            {#each items as item}<li role="listitem">{labelOf(item)}</li>{/each}
+          <ul class="dash krds-info-list">
+            {#each items as item}<li>{labelOf(item)}</li>{/each}
           </ul>
         {:else if children}
           {@render children()}
@@ -1366,8 +1449,8 @@
   </nav>
 {:else if kind === 'help-panel' || kind === 'tutorial-panel'}
   {@const activeTabItem = tabs[activeTab === 'tutorial' ? 1 : 0]}
-  <div {...rest} class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`} hidden={!isOpen}>
-    <div class="help-panel-wrap">
+  <div {...rest} class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`} hidden={!isOpen} onfocus={() => (open = false)}>
+    <div class="help-panel-wrap" tabindex={isOpen ? '0' : undefined}>
       <div class="help-conts-area">
         <ul role="tablist">
           {#each tabs as tab, index}
@@ -1384,7 +1467,6 @@
                 aria-controls={fieldOf(tab, 'panelId')}
               >
                 {tab.label}
-                {#if activeTab === tabName}<span class="sr-only">{message}</span>{/if}
               </button>
             </li>
           {/each}
@@ -1395,7 +1477,7 @@
           aria-labelledby={activeTabItem?.id}
         >
           {#if activeTab === 'help'}
-            <h3>{activeTabItem?.label}</h3>
+            <h3 class="sr-only">{activeTabItem?.label}</h3>
             <h4>{helpTitle}</h4>
             <p>{helpDescription}</p>
             {#if downloadLinks.length}
@@ -1412,7 +1494,7 @@
               </ul>
             {/each}
           {:else}
-            <h3>{activeTabItem?.label}</h3>
+            <h3 class="sr-only">{activeTabItem?.label}</h3>
             <h4><a href={href}>{tutorialTitle}</a></h4>
             <ol>
               {#each tasks as task}
@@ -1523,6 +1605,7 @@
   </div>
 {:else if kind === 'modal' || kind === 'modal-sample'}
   <dialog
+    role="dialog"
     {...rest}
     bind:this={modalRoot}
     open={isOpen}
@@ -1723,9 +1806,11 @@
     </ul>
   </nav>
 {:else if kind === 'skip-link'}
-  <a {...rest} class={rootClass} href={href} onclick={(event) => invoke(onclick, event)}>
-    {#if children}{@render children()}{:else}{label}{/if}
-  </a>
+  <div id={id} class={rootClass}>
+    <a {...rest} href={href} onclick={(event) => invoke(onclick, event)}>
+      {#if children}{@render children()}{:else}{label}{/if}
+    </a>
+  </div>
 {:else if kind === 'spinner'}
   <div {...rest} class={`krds-spinner ${rootClass}`} role="status">
     <span class="sr-only">{label}</span>
@@ -1781,102 +1866,148 @@
     {/each}
   </ul>
 {:else if kind === 'structured-list-table' || kind === 'table'}
-  <table {...rest} class="col data tbl">
-    <caption>{caption || title}</caption>
-    <colgroup>
-      {#each columns as column}
-        <col style={fieldOf(column, 'width') ? `width: ${fieldOf(column, 'width')};` : undefined} />
-      {/each}
-    </colgroup>
-    <thead>
-      <tr>
-        {#each columns as column}
-          <th class:sr-only={flagOf(column, 'visuallyHidden')} scope="col">
-            {#if column.key === 'selected'}
-              <input id={`${id}-all`} type="checkbox" aria-label={selectAllLabel} />
-            {:else}
-              {column.label}
-            {/if}
-          </th>
-        {/each}
-      </tr>
-    </thead>
-    <tbody>
-      {#each rows as row, rowIndex}
-        <tr>
-          {#each columns as column, columnIndex}
-            {#if column.key === 'selected'}
-              <th scope="row">
-                <input
-                  class="chk"
-                  id={`${id}-row-${rowIndex}`}
-                  type="checkbox"
-                  checked={flagOf(row, 'selected')}
-                  aria-label={`${rowIndex + 1}`}
-                />
-              </th>
-            {:else if kind === 'table' && columnIndex === 0}
-              <th scope="row">{row[column.key]}</th>
-            {:else if column.key === 'download'}
-              <td><a href={fieldOf(row, 'downloadHref') || '#'}>{row[column.key]}</a></td>
-            {:else}
-              <td>{row[column.key]}</td>
-            {/if}
-          {/each}
-        </tr>
-      {/each}
-    </tbody>
-  </table>
   {#if kind === 'structured-list-table'}
-    <div class={`krds-table-wrap ${rootClass}`}>
-      <div class="table-actions">
-        {#each actions as action}
-          <button class="krds-btn" type="button">
-            {fieldOf(action, 'label')}<i class={`ico-${fieldOf(action, 'icon')} svg-icon`}></i>
-          </button>
-        {/each}
+    <div class={`krds-structured-list-table ${rootClass}`}>
+      <div class="search-list-top">
+        <div class="sch-left">
+          <div class="krds-check-area">
+            <div class="krds-form-check">
+              <input class="chk" id={`${id}-all`} type="checkbox" />
+              <label for={`${id}-all`}>{selectAllLabel}</label>
+            </div>
+          </div>
+          <ul class="side-line-ul">
+            {#each actions as action}
+              <li>
+                <button class="krds-btn medium text" type="button">
+                  <i class={`svg-icon ico-${fieldOf(action, 'icon')}`}></i>{fieldOf(action, 'label')}
+                </button>
+              </li>
+            {/each}
+          </ul>
+        </div>
+        <ul class="sch-sort">
+          <li>
+            <strong class="sort-label"><label for={`${id}-result-count`}>{countLabel}</label></strong>
+            <select class="krds-form-select-sort" id={`${id}-result-count`}>
+              {#each countOptions as option}<option>{option}</option>{/each}
+            </select>
+          </li>
+          <li>
+            <strong class="sort-label"><label for={`${id}-sort`}>{sortLabel}</label></strong>
+            <div class="w-sort-btn">
+              {#each sortOptions as option}
+                <button class:active={option === sortValue} type="button">{option}</button>
+              {/each}
+            </div>
+            <div class="m-sort-btn">
+              <select class="krds-form-select-sort" id={`${id}-sort`} value={sortValue}>
+                {#each sortOptions as option}<option>{option}</option>{/each}
+              </select>
+            </div>
+          </li>
+        </ul>
       </div>
-      <label>{countLabel}<select>{#each countOptions as option}<option>{option}</option>{/each}</select></label>
-      <label>
-        {sortLabel}
-        <select value={sortValue}>
-          {#each sortOptions as option}<option value={option}>{option}</option>{/each}
-        </select>
-      </label>
+      <div class="krds-table-wrap">
+        <table class="tbl col data">
+          <caption>{caption || title}</caption>
+          <colgroup>
+            {#each columns as column}
+              <col style={fieldOf(column, 'width') ? `width: ${fieldOf(column, 'width')};` : undefined} />
+            {/each}
+          </colgroup>
+          <thead>
+            <tr>
+              {#each columns as column}
+                <th class:sr-only={flagOf(column, 'visuallyHidden')} scope="col">
+                  {#if column.key === 'download'}<span class="sr-only">{column.label}</span>{:else}{column.label}{/if}
+                </th>
+              {/each}
+            </tr>
+          </thead>
+          <tbody>
+            {#each rows as row, rowIndex}
+              <tr>
+                {#each columns as column, columnIndex}
+                  {#if column.key === 'selected'}
+                    <th scope="row">
+                      <div class="krds-form-check">
+                        <input class="chk" id={`${id}-row-${rowIndex + 1}`} type="checkbox" checked={flagOf(row, 'selected')} />
+                        <label for={`${id}-row-${rowIndex + 1}`}></label>
+                      </div>
+                    </th>
+                  {:else if column.key === 'download'}
+                    <td>
+                      <button class="krds-btn medium text" type="button">
+                        <i class="svg-icon ico-down"></i>{row[column.key]}
+                      </button>
+                    </td>
+                  {:else}
+                    <td>{row[column.key]}</td>
+                  {/if}
+                {/each}
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
       {#if pagination}
-        <div class="krds-pagination" role="navigation">
+        <div class="krds-pagination">
           {#if flagOf(pagination, 'previousDisabled')}
-            <span class="disabled page-navi prev">{fieldOf(pagination, 'previousLabel')}</span>
+            <span class="page-navi prev disabled" href="#">{fieldOf(pagination, 'previousLabel')}</span>
           {:else}
-            <button class="page-navi prev" type="button">{fieldOf(pagination, 'previousLabel')}</button>
+            <a class="page-navi prev" href={href}>{fieldOf(pagination, 'previousLabel')}</a>
           {/if}
           <div class="page-links">
             {#each listOf(pagination, 'items') as item}
               {#if labelOf(item) === 'ellipsis'}
-                <span class="link-dot page-link"></span>
+                <span class="page-link link-dot"></span>
               {:else}
                 {@const page = Number(labelOf(item))}
-                <button
-                  class:active={page === Number(fieldOf(pagination, 'current'))}
-                  class="page-link"
-                  type="button"
-                >
-                  {#if page === Number(fieldOf(pagination, 'current'))}
-                    <span class="sr-only">{fieldOf(pagination, 'currentLabel')}</span>
-                  {/if}
+                <a class:active={page === Number(fieldOf(pagination, 'current'))} class="page-link" href={href}>
+                  {#if page === Number(fieldOf(pagination, 'current'))}<span class="sr-only">{fieldOf(pagination, 'currentLabel')} </span>{/if}
                   {page}
-                </button>
+                </a>
               {/if}
             {/each}
           </div>
-          <button class="next page-navi" type="button">{fieldOf(pagination, 'nextLabel')}</button>
+          <a class="page-navi next" href={href}>{fieldOf(pagination, 'nextLabel')}</a>
         </div>
       {/if}
+    </div>
+  {:else}
+    <div class="krds-table-wrap">
+    <table {...rest} class="tbl col data">
+      <caption>{caption || title}</caption>
+      <colgroup>
+        {#each columns as column}
+          <col style={fieldOf(column, 'width') ? `width: ${fieldOf(column, 'width')};` : undefined} />
+        {/each}
+      </colgroup>
+      <thead>
+        <tr>
+          {#each columns as column}
+            <th scope="col">{column.label}</th>
+          {/each}
+        </tr>
+      </thead>
+      <tbody>
+        {#each rows as row}
+          <tr>
+            {#each columns as column, columnIndex}
+              {#if columnIndex === 0}<th scope="row">{row[column.key]}</th>{:else}<td>{row[column.key]}</td>{/if}
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
+    </table>
     </div>
   {/if}
 {:else if kind === 'tab'}
   {@const active = selection || tabs[0]?.id}
-  <ul {...rest} role="tablist" class={rootClass}>
+  <div {...rest} class={`krds-tab-area layer ${rootClass}`}>
+    <div class="tab line full">
+      <ul role="tablist">
     {#each tabs as tab, index}
       <li
         role="none"
@@ -1900,15 +2031,20 @@
       </li>
     {/each}
   </ul>
+    </div>
+    <div class="tab-conts-wrap">
   {#each tabs as tab}
-    <div
-      role="tabpanel"
-      tabindex="0"
-      id={`${id}-panel-${tab.id}`}
-      aria-labelledby={`${id}-tab-${tab.id}`}
-      hidden={active !== tab.id}
-    >{panels[tab.id] ?? (tab.id === active ? description : '')}</div>
+      <section
+        role="tabpanel"
+        tabindex="0"
+        id={`${id}-panel-${tab.id}`}
+        aria-labelledby={`${id}-tab-${tab.id}`}
+        class={`tab-conts ${active === tab.id ? 'active' : ''}`}
+        hidden={active !== tab.id}
+      ><h3 class="sr-only">{panelTitle || '탭 영역 타이틀'}</h3>{panels[tab.id] ?? (tab.id === active ? description : '')}</section>
   {/each}
+    </div>
+  </div>
 {:else if kind === 'tag-link'}
   <a
     {...rest}
@@ -2059,6 +2195,7 @@
     <label for={id}><span class="switch-toggle"><i></i></span>{label}</label>
   </div>
 {:else if kind === 'radio-button'}
+  <div class={`krds-form-check ${size} ${rootClass}`}>
   <input
     {...rest}
     type="radio"
@@ -2072,6 +2209,7 @@
     onchange={setRadio}
   />
   <label for={id}>{label}</label>
+  </div>
 {:else if children}
   {@render children()}
 {:else}

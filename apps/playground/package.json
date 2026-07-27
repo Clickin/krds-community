@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@krds-community/react": "workspace:*",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
     "vite": "catalog:"
   }
 }

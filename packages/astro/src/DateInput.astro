@@ -34,7 +34,7 @@ const {
   id: providedId,
   name,
   value,
-  placeholder,
+  placeholder = 'YYYY.MM.DD',
   type = 'number',
   disabled,
   readonly,
@@ -46,6 +46,10 @@ const {
   hint,
   year,
   month,
+  displayYear,
+  displayMonth,
+  selectedYear,
+  selectedMonth,
   years,
   disabledYears = [],
   disabledMonths = [],
@@ -67,7 +71,7 @@ const {
   cancelLabel,
   confirmLabel,
   eventLabel,
-  openCalendarLabel,
+  openCalendarLabel = '달력 열기',
   open = false,
   calendarId: providedCalendarId,
   calendarClass,
@@ -78,11 +82,14 @@ const instanceId = `krds-date-input-${crypto.randomUUID()}`;
 const inputId = providedId ?? `${instanceId}-input`;
 const calendarId = providedCalendarId ?? `${instanceId}-calendar`;
 const hintId = hint !== undefined || Astro.slots.has('hint') ? `${inputId}-hint` : undefined;
-const describedBy = [inputAttributes['aria-describedby'], hintId].filter(Boolean).join(' ') || undefined;
 const recipe = inputRecipe({ className: cx('datepicker', 'cal', inputAttributes.class, inputClass) });
 const calendarSurface = {
-  year,
-  month,
+  year: displayYear ?? year,
+  month: displayMonth ?? month,
+  displayYear,
+  displayMonth,
+  selectedYear,
+  selectedMonth,
   years,
   disabledYears,
   disabledMonths,
@@ -111,7 +118,7 @@ const calendarSurface = {
 } satisfies CalendarProps;
 ---
 
-<div {...rest} class={cx('form-group', rootClass)} data-krds-calendar-component="">
+<div {...rest} class={cx('form-group', rootClass)}>
   {(label !== undefined || Astro.slots.has('label')) && (
     <div class="form-tit">
       <label for={inputId}><slot name="label">{label}</slot></label>
@@ -131,18 +138,13 @@ const calendarSurface = {
           disabled={disabled}
           readonly={readonly}
           required={required}
-          aria-describedby={describedBy}
-          data-calendar-input=""
         />
         <button
           type="button"
           class="krds-btn medium icon form-btn-datepicker"
-          aria-controls={calendarId}
-          aria-expanded={open ? 'true' : 'false'}
-          data-calendar-action="toggle"
           disabled={disabled}
         >
-          <span class="sr-only">{openCalendarLabel ?? calendarLabel}</span>
+          <span class="sr-only">{openCalendarLabel}</span>
           <i class="svg-icon ico-calendar"></i>
         </button>
       </div>

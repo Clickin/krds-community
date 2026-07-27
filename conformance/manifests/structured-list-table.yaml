@@ -6,7 +6,7 @@ upstream:
     - upstream/krds-html/html/code/structured_list_table.html
 fixtures:
   - id: structured-list-table.default
-    sourceSelector: ".krds-table-wrap table"
+    sourceSelector: ".krds-structured-list-table.sample"
     mandatory: true
     viewport: desktop
     props: {}

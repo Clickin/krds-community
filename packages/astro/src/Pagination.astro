@@ -81,7 +81,6 @@ const resolveHref = (page: number, explicit?: string) =>
           target={typeof item === 'number' ? undefined : item.target}
           rel={typeof item === 'number' ? undefined : item.rel}
           title={typeof item === 'number' ? undefined : item.title}
-          aria-current={page === current ? 'page' : undefined}
         >
           {page === current && message && <span class="sr-only">{message} </span>}
           {pageLabel}

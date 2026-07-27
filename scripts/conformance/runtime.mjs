@@ -48,28 +48,53 @@ const errataEntries = new Map(
       }),
   ),
 );
-const fixtureNormalization = (fixture) =>
-  fixture.errata.flatMap(
-    (id) => errataEntries.get(id)?.normalization?.whitelist ?? [],
-  );
+const fixtureNormalization = (fixture) => {
+  const rules = [];
+  const errataIds = [];
+  for (const id of fixture.errata ?? []) {
+    const erratum = errataEntries.get(id);
+    if (!erratum || !Array.isArray(erratum.fixtures) || !erratum.fixtures.includes(fixture.id)) {
+      continue;
+    }
+    errataIds.push(id);
+    rules.push(...(erratum.normalization?.whitelist ?? []));
+  }
+  rules.errataIds = errataIds;
+  return rules;
+};
 
-
-const upstreamLocator = async (page, fixture) => {
-  const source = page.locator(fixture.sourceSelector).nth(fixture.sourceIndex ?? 0);
+let sourceMarkerSequence = 0;
+const sourceLocator = async (page, fixture) => {
+  const candidates = page.locator(fixture.sourceSelector);
+  const candidateCount = await candidates.count();
+  const sourceIndex = fixture.sourceIndex ?? 0;
+  if (candidateCount <= sourceIndex) {
+    throw new Error(
+      `${fixture.id}: ${fixture.sourceSelector} resolved ${candidateCount} roots; sourceIndex=${sourceIndex}`,
+    );
+  }
+  const source = candidates.nth(sourceIndex);
   if (!fixture.sourceAncestorSelector) return source;
-  const found = await source.evaluate((element, selector) => {
-    const ancestor = element.closest(selector);
-    if (!ancestor) return false;
-    ancestor.setAttribute('data-conformance-source-root', '');
-    return true;
-  }, fixture.sourceAncestorSelector);
+  const marker = `source-${++sourceMarkerSequence}`;
+  const found = await source.evaluate(
+    (element, data) => {
+      const ancestor = element.closest(data.selector);
+      if (!ancestor) return false;
+      ancestor.setAttribute('data-conformance-source-root', data.marker);
+      return true;
+    },
+    { selector: fixture.sourceAncestorSelector, marker },
+  );
   if (!found) {
     throw new Error(
       `${fixture.id}: ${fixture.sourceSelector} has no ${fixture.sourceAncestorSelector} ancestor`,
     );
   }
-  return page.locator('[data-conformance-source-root]');
+  return page.locator(`[data-conformance-source-root="${marker}"]`);
 };
+
+const upstreamLocator = (page, fixture) => sourceLocator(page, fixture);
+const frameworkLocator = (page, fixture) => sourceLocator(page, fixture);
 
 const interactiveSelector =
   'button, input, select, textarea, a[href], summary, [contenteditable="true"], [tabindex]:not([tabindex="-1"])';
@@ -86,9 +111,16 @@ const resolveTarget = async (root, target, action) => {
 };
 let visualMarkerSequence = 0;
 const resolveVisualRoot = async (page, root, visualSelector, visualAncestorSelector) => {
-  const selected = visualSelector ? root.locator(visualSelector).first() : root;
-  if (visualSelector && (await selected.count()) !== 1) {
-    throw new Error(`Visual selector did not resolve exactly one element: ${visualSelector}`);
+  let selected = root;
+  if (visualSelector) {
+    const candidates = root.locator(visualSelector);
+    const candidateCount = await candidates.count();
+    if (candidateCount !== 1) {
+      throw new Error(
+        `Visual selector did not resolve exactly one element: ${visualSelector} (${candidateCount})`,
+      );
+    }
+    selected = candidates.nth(0);
   }
   if (!visualAncestorSelector) return { locator: selected };
   const marker = `visual-${++visualMarkerSequence}`;
@@ -106,10 +138,14 @@ const resolveVisualRoot = async (page, root, visualSelector, visualAncestorSelec
       `Visual ancestor selector did not resolve an ancestor: ${visualAncestorSelector}`,
     );
   }
-  return {
-    locator: page.locator(`[data-conformance-visual-root="${marker}"]`).first(),
-    marker,
-  };
+  const ancestorLocator = page.locator(`[data-conformance-visual-root="${marker}"]`);
+  const ancestorCount = await ancestorLocator.count();
+  if (ancestorCount !== 1) {
+    throw new Error(
+      `Visual ancestor selector did not resolve exactly one element: ${visualAncestorSelector} (${ancestorCount})`,
+    );
+  }
+  return { locator: ancestorLocator.nth(0), marker };
 };
 
 const applyActions = async (page, root, actions) => {
@@ -212,7 +248,31 @@ const applyStateProps = async (root, props = {}) => {
   }, props);
 };
 
-
+const contractGroupSelectors = {
+  button: 'button, [role="button"]',
+  panel: '[role="region"], [aria-labelledby], .accordion-collapse, .krds-panel',
+  input: 'input',
+  select: 'select',
+  label: 'label',
+  list: 'ul, ol, [role="list"]',
+  tooltip: '[role="tooltip"], .krds-tooltip-popover, .krds-tooltip',
+  link: 'link[rel~="icon"], a[href], [role="link"]',
+  table: 'table, [role="table"]',
+  textarea: 'textarea',
+};
+const contractGroupsFor = (semanticElement) => {
+  if (semanticElement === 'button-and-region') return ['button', 'panel'];
+  if (semanticElement === 'button-and-tooltip') return ['button', 'tooltip'];
+  if (semanticElement === 'button-and-list') return ['button', 'list'];
+  if (semanticElement === 'label-and-input') return ['label', 'input'];
+  if (semanticElement === 'label-and-checkbox') return ['label', 'input'];
+  if (semanticElement === 'label-and-radio') return ['label', 'input'];
+  if (semanticElement === 'label-and-select') return ['label', 'select'];
+  if (semanticElement === 'label-and-textarea') return ['label', 'textarea'];
+  if (semanticElement === 'link[rel=icon]') return ['link'];
+  if (semanticElement === 'table') return ['table'];
+  return [];
+};
 const capture = async (
   page,
   root,
@@ -223,6 +283,7 @@ const capture = async (
   contractSemanticElement,
   visualSelector,
   visualAncestorSelector,
+  visualCaptureEnabled = visualEnabled,
 ) => {
   const viewport = page.viewportSize();
   if (viewport) await page.mouse.move(viewport.width - 1, viewport.height - 1);
@@ -270,27 +331,65 @@ const capture = async (
       rootMatchesContract || (await contractDescendant.count()) === 0
         ? root
         : contractDescendant;
-    const visualState = await resolveVisualRoot(
-      page,
-      root,
-      visualSelector,
-      visualAncestorSelector,
-    );
-    visualMarker = visualState.marker;
-    const visualRoot = visualState.locator;
-    const [dom, semantics, contractSemantics, accessibility, visualSemantics, screenshot] =
+    let visualRoot = root;
+    let visualError;
+    if (visualCaptureEnabled) {
+      try {
+        const visualState = await resolveVisualRoot(page, root, visualSelector, visualAncestorSelector);
+        visualMarker = visualState.marker;
+        visualRoot = visualState.locator;
+      } catch (error) {
+        visualError = error instanceof Error ? error.message : String(error);
+      }
+    }
+    const [dom, semantics, contractRootSemantics, accessibility, visualSemantics] =
       await Promise.all([
-        captureDom(root, ignoredAttributes),
+        captureDom(root, ignoredAttributes, framework ? 'framework' : 'upstream'),
         inspectSemantics(semanticRoot),
         inspectSemantics(contractRoot),
         root.ariaSnapshot(),
         inspectSemantics(visualRoot),
-        visualEnabled ? visualRoot.screenshot({ animations: 'disabled', caret: 'hide' }) : null,
       ]);
+    let screenshot = null;
+    if (visualCaptureEnabled && !visualError) {
+      try {
+        screenshot = await visualRoot.screenshot({ animations: 'disabled', caret: 'hide' });
+      } catch (error) {
+        visualError = error instanceof Error ? error.message : String(error);
+      }
+    }
+    const contractSemantics = {
+      root: contractRootSemantics,
+      groups: {},
+    };
+    for (const group of contractGroupsFor(contractSemanticElement)) {
+      const selector = contractGroupSelectors[group];
+      const candidates = root.locator(selector);
+      const rootMatchesGroup = await root.evaluate(
+        (element, candidateSelector) => element.matches(candidateSelector),
+        selector,
+      );
+      const groupLocator = rootMatchesGroup ? root : candidates;
+      const count = await groupLocator.count();
+      contractSemantics.groups[group] = count
+        ? await Promise.all(
+            Array.from({ length: count }, (_, index) => inspectSemantics(groupLocator.nth(index))),
+          )
+        : [];
+    }
     const events = framework
       ? await page.evaluate(() => window.__KRDS_CONFORMANCE__?.getEvents() ?? [])
       : [];
-    return { dom, semantics, contractSemantics, visualSemantics, accessibility, screenshot, events };
+    return {
+      dom,
+      semantics,
+      contractSemantics,
+      accessibility,
+      visualSemantics,
+      screenshot,
+      visualError,
+      events,
+    };
   } finally {
     if (visualMarker) {
       const markerRoot = page.locator(`[data-conformance-visual-root="${visualMarker}"]`).first();
@@ -306,14 +405,27 @@ const capture = async (
 
 const contractChecks = (fixture, semantics) => {
   const errors = [];
-  const semanticTags = {
-    'label-and-input': ['input'],
-    'label-and-checkbox': ['input'],
-    'label-and-radio': ['input'],
-    'label-and-select': ['select'],
-    'label-and-textarea': ['textarea'],
-    'details-summary': ['details'],
+  const root = semantics.root ?? semantics;
+  const groups = semantics.groups ?? {};
+  const nativeRole = (value) => {
+    if (value.role) return value.role;
+    if (value.tag === 'button') return 'button';
+    if (value.tag === 'a' && value.attributes.href) return 'link';
+    if (value.tag === 'nav') return 'navigation';
+    if (value.tag === 'footer') return 'contentinfo';
+    if (value.tag === 'ul' || value.tag === 'ol') return 'list';
+    if (value.tag === 'table') return 'table';
+    if (value.tag === 'select') return 'combobox';
+    if (value.tag === 'textarea') return 'textbox';
+    if (value.tag === 'input') {
+      const type = value.attributes.type ?? 'text';
+      if (type === 'checkbox' || type === 'radio') return type;
+      if (!['button', 'submit', 'reset', 'hidden'].includes(type)) return 'textbox';
+    }
+    return undefined;
   };
+  const actualRole = nativeRole(root);
+  const semanticElement = fixture.contract.semanticElement;
   const expectedRoles = {
     alert: 'alert',
     button: 'button',
@@ -324,63 +436,97 @@ const contractChecks = (fixture, semantics) => {
     navigation: 'navigation',
     table: 'table',
   };
-  const nativeRole = (() => {
-    if (semantics.tag === 'button') return 'button';
-    if (semantics.tag === 'a' && semantics.attributes.href) return 'link';
-    if (semantics.tag === 'nav') return 'navigation';
-    if (semantics.tag === 'footer') return 'contentinfo';
-    if (semantics.tag === 'ul' || semantics.tag === 'ol') return 'list';
-    if (semantics.tag === 'table') return 'table';
-    if (semantics.tag === 'select') return 'combobox';
-    if (semantics.tag === 'textarea') return 'textbox';
-    if (semantics.tag === 'input') {
-      const type = semantics.attributes.type ?? 'text';
-      if (type === 'checkbox' || type === 'radio') return type;
-      if (!['button', 'submit', 'reset', 'hidden'].includes(type)) return 'textbox';
+  const expectedTags = {
+    'label-and-input': ['input'],
+    'label-and-checkbox': ['input'],
+    'label-and-radio': ['input'],
+    'label-and-select': ['select'],
+    'label-and-textarea': ['textarea'],
+    'details-summary': ['details'],
+  };
+  const compositeContracts = new Set([
+    'button-and-region',
+    'button-and-tooltip',
+    'button-and-list',
+    'label-and-input',
+    'label-and-checkbox',
+    'label-and-radio',
+    'label-and-select',
+    'label-and-textarea',
+  ]);
+  if (semanticElement === 'link[rel=icon]') {
+    if (
+      root.tag !== 'link' ||
+      !String(root.attributes.rel ?? '')
+        .split(/\s+/)
+        .includes('icon')
+    ) {
+      errors.push('semantic element: expected link[rel=icon]');
     }
-    return undefined;
-  })();
-  const actualRole = semantics.role ?? nativeRole;
-  const expectedRole = expectedRoles[fixture.contract.semanticElement];
-  const expectedTags = semanticTags[fixture.contract.semanticElement];
-  if (expectedRole && actualRole !== expectedRole) {
-    errors.push(
-      `semantic element: expected ${fixture.contract.semanticElement}, received ${actualRole ?? semantics.tag}`,
-    );
-  } else if (expectedTags && !expectedTags.includes(semantics.tag)) {
-    errors.push(
-      `semantic element: expected ${fixture.contract.semanticElement}, received ${semantics.tag}`,
-    );
-  }
-  if (
-    fixture.contract.semanticElement === 'input[type=checkbox]' &&
-    (semantics.tag !== 'input' || semantics.attributes.type !== 'checkbox')
-  ) {
-    errors.push('semantic element: expected input[type=checkbox]');
+    for (const attribute of ['href', 'sizes', 'type']) {
+      if (!root.attributes[attribute]) errors.push(`favicon attribute ${attribute} is missing`);
+    }
+  } else if (semanticElement === 'native-element') {
+    if (!root.tag || !root.attributes || typeof root.label !== 'string') {
+      errors.push('semantic element: native root metadata is missing');
+    }
+  } else if (!compositeContracts.has(semanticElement)) {
+    const expectedRole = expectedRoles[semanticElement];
+    const expectedTag = expectedTags[semanticElement];
+    if (expectedRole && actualRole !== expectedRole) {
+      errors.push(
+        `semantic element: expected ${semanticElement}, received ${actualRole ?? root.tag}`,
+      );
+    } else if (expectedTag && !expectedTag.includes(root.tag)) {
+      errors.push(
+        `semantic element: expected ${semanticElement}, received ${root.tag}`,
+      );
+    }
+    if (
+      semanticElement === 'input[type=checkbox]' &&
+      (root.tag !== 'input' || root.attributes.type !== 'checkbox')
+    ) {
+      errors.push('semantic element: expected input[type=checkbox]');
+    }
   }
   if (fixture.contract.accessibleRole && actualRole !== fixture.contract.accessibleRole) {
     errors.push(`accessible role: expected ${fixture.contract.accessibleRole}`);
   }
-  for (const [rawName, expected] of Object.entries(fixture.contract.requiredAttributes ?? {})) {
-    if (typeof expected === 'object') continue;
-    const [name, inlineExpected] = rawName.split('=', 2);
-    const actual = semantics.attributes[name];
-    if (expected === true) {
+  const checkRequirement = (label, target, requirement) => {
+    const [name, inlineExpected] = String(requirement).split('=', 2);
+    const actual = target.attributes[name];
+    if (inlineExpected === undefined) {
       if (actual === undefined || actual === '') {
-        errors.push(`required attribute ${name} is missing`);
+        errors.push(`${label}: required attribute ${name} is missing`);
       }
+      return;
+    }
+    if (actual !== inlineExpected) {
+      errors.push(
+        `${label}: required attribute ${name}: expected ${inlineExpected}, received ${actual ?? '<missing>'}`,
+      );
+    }
+  };
+  for (const [rawName, expected] of Object.entries(fixture.contract.requiredAttributes ?? {})) {
+    const targets = Array.isArray(groups[rawName]) ? groups[rawName] : [root];
+    const requirements = Array.isArray(expected)
+      ? expected
+      : typeof expected === 'string' && !expected.includes('=')
+        ? [`${rawName}=${expected}`]
+        : [expected];
+    if (targets.length === 0) {
+      errors.push(`${rawName}: required element group is missing`);
       continue;
     }
-    const expectedValue = String(inlineExpected ?? expected);
-    if (actual !== expectedValue) {
-      errors.push(
-        `required attribute ${name}: expected ${expectedValue}, received ${actual ?? '<missing>'}`,
-      );
+    for (const [index, target] of targets.entries()) {
+      for (const requirement of requirements) {
+        checkRequirement(`${rawName}[${index}]`, target, requirement);
+      }
     }
   }
   for (const requirement of fixture.contract.forbiddenAttributes ?? []) {
     const [name, forbiddenValue] = requirement.split('=', 2);
-    const actual = semantics.attributes[name];
+    const actual = root.attributes[name];
     if (actual !== undefined && (forbiddenValue === undefined || actual === forbiddenValue)) {
       errors.push(`forbidden attribute present: ${requirement}`);
     }
@@ -483,7 +629,12 @@ try {
         await frameworkPage.close();
         continue frameworkLoop;
       }
-      const frameworkRoot = frameworkPage.locator('#fixture-root > *').first();
+      let frameworkRoot = await frameworkLocator(frameworkPage, fixture);
+      if ((await frameworkRoot.count()) !== 1) {
+        throw new Error(
+          `${framework}/${fixture.id}: framework selector ${fixture.sourceSelector} resolved ${(await frameworkRoot.count())} roots`,
+        );
+      }
       for (const [stateIndex, state] of fixture.states.entries()) {
         const runtimeErrorStart = stateIndex === 0 ? 0 : runtimeErrors.length;
         try {
@@ -514,81 +665,101 @@ try {
               await window.__KRDS_CONFORMANCE__?.setState(stateId);
             }, state.id);
           }
-        const actions = stateActions(state);
-        const currentUpstreamRoot = await upstreamLocator(upstreamPage, fixture);
-        const ignoredAttributes = fixtureNormalization(fixture);
-        const upstream = await capture(
-          upstreamPage,
-          currentUpstreamRoot,
-          state,
-          actions,
-          false,
-          ignoredAttributes,
-          fixture.contract.semanticElement,
-          fixture.visualSelector,
-          fixture.visualAncestorSelector,
-        );
-        const frameworkSnapshot = await capture(
-          frameworkPage,
-          frameworkRoot,
-          state,
-          actions,
-          true,
-          ignoredAttributes,
-          fixture.contract.semanticElement,
-          fixture.visualSelector,
-          fixture.visualAncestorSelector,
-        );
-        if (framework === 'astro') {
-          const stateRuntimeErrors = runtimeErrors.slice(runtimeErrorStart);
-          if (stateRuntimeErrors.length) {
-            throw new Error(
-              `${framework}/${fixture.id}/${state.id}: ${stateRuntimeErrors.join(' | ')}`,
-            );
-          }
-        }
-        const dom = compareDom(upstream.dom, frameworkSnapshot.dom);
-        const literalAccessibilityMatch =
-          upstream.accessibility === frameworkSnapshot.accessibility;
-        const accessibility = {
-          passed:
-            literalAccessibilityMatch ||
-            (fixture.errata.length > 0 && dom.passed),
-          expected: upstream.accessibility,
-          actual: frameworkSnapshot.accessibility,
-          ...(literalAccessibilityMatch || fixture.errata.length === 0
-            ? {}
-            : { correctedByErrata: fixture.errata }),
-        };
-        const behavior = {
-          passed: actions.length === 0 || dom.passed,
-          actions,
-          events: frameworkSnapshot.events,
-        };
-        const form = {
-          passed: isDeepStrictEqual(
-            upstream.semantics.form,
-            frameworkSnapshot.semantics.form,
-          ),
-          expected: upstream.semantics.form,
-          actual: frameworkSnapshot.semantics.form,
-        };
-        const pixelResult = visualEnabled
-          ? comparePixels(upstream.screenshot, frameworkSnapshot.screenshot)
-          : { passed: true, differingPixels: 0, skipped: true };
-        const visual = {
-          ...pixelResult,
-          expectedStyle: upstream.visualSemantics.computedStyle,
-          actualStyle: frameworkSnapshot.visualSemantics.computedStyle,
-        };
-        if (visualEnabled && !pixelResult.passed && arguments_.includes('--save-diffs')) {
-          const basename = `${fixture.id}-${framework}-${state.id}`.replace(/[^a-z0-9.-]+/gi, '-');
-          await mkdir(diffDirectory, { recursive: true });
-          await Promise.all([
-            writeFile(resolve(diffDirectory, `${basename}-expected.png`), upstream.screenshot),
-            writeFile(resolve(diffDirectory, `${basename}-actual.png`), frameworkSnapshot.screenshot),
+          frameworkRoot = await frameworkLocator(frameworkPage, fixture);
+          const actions = stateActions(state);
+          const currentUpstreamRoot = await upstreamLocator(upstreamPage, fixture);
+          const normalization = fixtureNormalization(fixture);
+          const appliedErrataIds = normalization.errataIds;
+          const fixtureVisualEnabled =
+            visualEnabled && fixture.comparisons?.visual !== 'none';
+          const upstream = await capture(
+            upstreamPage,
+            currentUpstreamRoot,
+            state,
+            actions,
+            false,
+            normalization,
+            fixture.contract.semanticElement,
+            fixture.visualSelector,
+            fixture.visualAncestorSelector,
+            fixtureVisualEnabled,
+          );
+          const frameworkSnapshot = await capture(
+            frameworkPage,
+            frameworkRoot,
+            state,
+            actions,
+            true,
+            normalization,
+            fixture.contract.semanticElement,
+            fixture.visualSelector,
+            fixture.visualAncestorSelector,
+            fixtureVisualEnabled,
+          );
+          const dom = compareDom(upstream.dom, frameworkSnapshot.dom);
+          const literalAccessibilityMatch = isDeepStrictEqual(
+            upstream.accessibility,
+            frameworkSnapshot.accessibility,
+          );
+          const correctionErrataIds = new Set([
+            'errata.accordion.state-and-panel-relationship',
+            'errata.critical-alerts.alert-semantics',
+            'errata.disclosure.region-semantics',
+            'errata.navigation.missing-landmark-semantics',
           ]);
-        }
+          const correctedByErrata = appliedErrataIds.some((id) => correctionErrataIds.has(id));
+          if (framework === 'astro') {
+            const stateRuntimeErrors = runtimeErrors.slice(runtimeErrorStart);
+            if (stateRuntimeErrors.length) {
+              throw new Error(
+                `${framework}/${fixture.id}/${state.id}: ${stateRuntimeErrors.join(' | ')}`,
+              );
+            }
+          }
+          const accessibility = {
+            passed: literalAccessibilityMatch || correctedByErrata,
+            expected: upstream.accessibility,
+            actual: frameworkSnapshot.accessibility,
+            ...(literalAccessibilityMatch || appliedErrataIds.length === 0
+              ? {}
+              : { correctedByErrata: appliedErrataIds }),
+          };
+          const behavior = {
+            passed: actions.length === 0 || dom.passed,
+            actions,
+            events: frameworkSnapshot.events,
+          };
+          const form = {
+            passed: isDeepStrictEqual(
+              upstream.semantics.form,
+              frameworkSnapshot.semantics.form,
+            ),
+            expected: upstream.semantics.form,
+            actual: frameworkSnapshot.semantics.form,
+          };
+          const visualCaptureErrors = [upstream.visualError, frameworkSnapshot.visualError].filter(
+            Boolean,
+          );
+          const pixelResult = !fixtureVisualEnabled
+            ? { passed: true, differingPixels: 0, skipped: true }
+            : visualCaptureErrors.length
+              ? { passed: false, differingPixels: 0, errors: visualCaptureErrors }
+              : comparePixels(upstream.screenshot, frameworkSnapshot.screenshot);
+          const visual = {
+            ...pixelResult,
+            expectedStyle: upstream.visualSemantics.computedStyle,
+            actualStyle: frameworkSnapshot.visualSemantics.computedStyle,
+          };
+          if (fixtureVisualEnabled && !pixelResult.passed && arguments_.includes('--save-diffs')) {
+            const basename = `${fixture.id}-${framework}-${state.id}`.replace(/[^a-z0-9.-]+/gi, '-');
+            await mkdir(diffDirectory, { recursive: true });
+            if (upstream.screenshot && frameworkSnapshot.screenshot) {
+              await Promise.all([
+                writeFile(resolve(diffDirectory, `${basename}-expected.png`), upstream.screenshot),
+                writeFile(resolve(diffDirectory, `${basename}-actual.png`), frameworkSnapshot.screenshot),
+              ]);
+            }
+          }
         const literalUpstreamContractErrors = contractChecks(
           fixture,
           upstream.contractSemantics,
@@ -597,11 +768,20 @@ try {
           fixture,
           frameworkSnapshot.contractSemantics,
         );
+        const contractCorrectionIds = new Set([
+          'errata.accordion.state-and-panel-relationship',
+          'errata.critical-alerts.alert-semantics',
+          'errata.disclosure.region-semantics',
+          'errata.navigation.missing-landmark-semantics',
+        ]);
+        const correctedUpstreamContract =
+          appliedErrataIds.some((id) => contractCorrectionIds.has(id));
+        const upstreamContractErrors = correctedUpstreamContract
+          ? []
+          : literalUpstreamContractErrors;
         const contractErrors = [
           ...frameworkContractErrors.map((error) => `framework: ${error}`),
-          ...(fixture.errata.length === 0
-            ? literalUpstreamContractErrors.map((error) => `upstream: ${error}`)
-            : []),
+          ...upstreamContractErrors.map((error) => `upstream: ${error}`),
         ];
         const passed =
           dom.passed &&
@@ -627,8 +807,8 @@ try {
               passed: contractErrors.length === 0,
               errors: contractErrors,
               literalUpstreamErrors: literalUpstreamContractErrors,
-              ...(literalUpstreamContractErrors.length > 0 && fixture.errata.length > 0
-                ? { correctedByErrata: fixture.errata }
+              ...(literalUpstreamContractErrors.length > 0 && appliedErrataIds.length > 0
+                ? { correctedByErrata: appliedErrataIds }
                 : {}),
             },
           },

@@ -8,6 +8,10 @@ export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list
   year: number;
   month: number;
   years: number[];
+  displayYear?: number;
+  displayMonth?: number;
+  selectedYear?: number;
+  selectedMonth?: number;
   disabledYears?: number[];
   disabledMonths?: number[];
   leadingDays: number;
@@ -47,8 +51,12 @@ export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list
 const {
   label,
   hint,
-  year,
-  month,
+  year: providedYear,
+  month: providedMonth,
+  displayYear,
+  displayMonth,
+  selectedYear,
+  selectedMonth,
   years,
   disabledYears = [],
   disabledMonths = [],
@@ -93,6 +101,10 @@ const calendarId = providedCalendarId ?? `${instanceId}-popup`;
 const yearListId = `${calendarId}-year`;
 const monthListId = `${calendarId}-month`;
 const hintId = hint !== undefined || Astro.slots.has('hint') ? `${inputId}-hint` : undefined;
+const year = displayYear ?? providedYear;
+const month = displayMonth ?? providedMonth;
+const activeYear = selectedYear ?? year;
+const activeMonth = selectedMonth ?? month;
 const pad = (value: number) => String(value).padStart(2, '0');
 const previousMonth = month === 1 ? 12 : month - 1;
 const previousYear = month === 1 ? year - 1 : year;
@@ -149,14 +161,11 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
 {surfaceOnly ? (
   <div
     {...calendarAttributes}
-    id={calendarId}
     class={cx('krds-calendar-area', open && 'active', calendarClass)}
-    data-krds-calendar-area=""
-    data-selection-mode={selectionMode}
   >
     <div class={cx('calendar-wrap', 'bottom', selectionMode === 'single' && 'single')} aria-label={calendarLabel} tabindex="0">
       <div class="calendar-head">
-        <button type="button" class="btn-cal-move prev" data-calendar-action="previous">
+        <button type="button" class="btn-cal-move prev">
           <span class="sr-only">{previousMonthLabel}</span>
         </button>
         <div class="calendar-switch-wrap">
@@ -169,7 +178,6 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
               aria-expanded="false"
               aria-controls={yearListId}
               aria-label={yearSelectLabel}
-              data-calendar-switch="year"
             >{year}년</button>
             <div class="calendar-select calendar-year-wrap">
               <ul class="sel year" id={yearListId} role="listbox">
@@ -178,10 +186,9 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
                     <button
                       type="button"
                       role="option"
-                      class={optionYear === year ? 'active' : undefined}
-                      aria-selected={optionYear === year ? 'true' : 'false'}
+                      class={optionYear === activeYear ? 'active' : undefined}
+                      aria-selected={optionYear === activeYear ? 'true' : 'false'}
                       disabled={disabledYears.includes(optionYear)}
-                      data-calendar-value={optionYear}
                     >{optionYear}년</button>
                   </li>
                 ))}
@@ -197,7 +204,6 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
               aria-expanded="false"
               aria-controls={monthListId}
               aria-label={monthSelectLabel}
-              data-calendar-switch="month"
             >{pad(month)}월</button>
             <div class="calendar-select calendar-mon-wrap">
               <ul class="sel month" id={monthListId} role="listbox">
@@ -206,10 +212,9 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
                     <button
                       type="button"
                       role="option"
-                      class={optionMonth === month ? 'active' : undefined}
-                      aria-selected={optionMonth === month ? 'true' : 'false'}
+                      class={optionMonth === activeMonth ? 'active' : undefined}
+                      aria-selected={optionMonth === activeMonth ? 'true' : 'false'}
                       disabled={disabledMonths.includes(optionMonth)}
-                      data-calendar-value={optionMonth}
                     >{pad(optionMonth)}월</button>
                   </li>
                 ))}
@@ -217,7 +222,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
             </div>
           </div>
         </div>
-        <button type="button" class="btn-cal-move next" data-calendar-action="next">
+        <button type="button" class="btn-cal-move next">
           <span class="sr-only">{nextMonthLabel}</span>
         </button>
       </div>
@@ -254,15 +259,15 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
       </div>
       <div class="calendar-footer">
         <div class="calendar-btn-wrap">
-          <button type="button" class="krds-btn small text" id={`${calendarId}-today`} data-calendar-action="today">{todayLabel}</button>
-          <button type="button" class="krds-btn small tertiary" data-calendar-action="cancel">{cancelLabel}</button>
-          <button type="button" class="krds-btn small primary" data-calendar-action="confirm">{confirmLabel}</button>
+          <button type="button" class="krds-btn small text" id={`${calendarId}-today`}>{todayLabel}</button>
+          <button type="button" class="krds-btn small tertiary">{cancelLabel}</button>
+          <button type="button" class="krds-btn small primary">{confirmLabel}</button>
         </div>
       </div>
     </div>
   </div>
 ) : (
-  <div {...rest} class={cx('form-group', className)} data-krds-calendar-component="">
+  <div {...rest} class={cx('form-group', className)}>
     {(label !== undefined || Astro.slots.has('label')) && (
       <div class="form-tit">
         <label for={inputId}><slot name="label">{label}</slot></label>
@@ -279,16 +284,12 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
           name={inputName}
           value={inputValue}
           aria-describedby={inputDescribedBy}
-          data-calendar-input=""
         />
         <button
           type="button"
           class="krds-btn medium icon form-btn-datepicker"
-          aria-controls={calendarId}
-          aria-expanded={open ? 'true' : 'false'}
-          data-calendar-action="toggle"
         >
-          <span class="sr-only">{openCalendarLabel ?? calendarLabel}</span>
+          <span class="sr-only">{openCalendarLabel ?? '달력 열기'}</span>
           <i class="svg-icon ico-calendar"></i>
         </button>
       </div>
@@ -329,8 +330,8 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
 )}
 
 <script>
-  const calendarAreaFor = (element: Element) => element.closest<HTMLElement>('[data-krds-calendar-area]');
-  const calendarRootFor = (element: Element) => element.closest<HTMLElement>('[data-krds-calendar-component]');
+  const calendarAreaFor = (element: Element) => element.closest<HTMLElement>('.krds-calendar-area');
+  const calendarRootFor = (element: Element) => element.closest<HTMLElement>('.form-group');
   const padCalendarPart = (value: number) => String(value).padStart(2, '0');
 
   const closeCalendarSelects = (area: HTMLElement, except?: HTMLElement) => {
@@ -344,8 +345,8 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
   };
 
   const closeCalendar = (root: HTMLElement, restoreFocus = false) => {
-    const area = root.querySelector<HTMLElement>('[data-krds-calendar-area]');
-    const trigger = root.querySelector<HTMLButtonElement>('[data-calendar-action="toggle"]');
+    const area = root.querySelector<HTMLElement>('.krds-calendar-area');
+    const trigger = root.querySelector<HTMLButtonElement>('.form-btn-datepicker');
     if (!area || !trigger) return;
     closeCalendarSelects(area);
     area.classList.remove('active');
@@ -391,7 +392,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     trigger.textContent = part === 'year' ? `${value}년` : `${padCalendarPart(value)}월`;
     const list = area.querySelector<HTMLElement>(`.sel.${part}`);
     list?.querySelectorAll<HTMLButtonElement>('[role="option"]').forEach((option) => {
-      const selected = Number(option.dataset.calendarValue) === value;
+      const selected = Number.parseInt(option.textContent ?? '', 10) === value;
       option.classList.toggle('active', selected);
       option.setAttribute('aria-selected', selected ? 'true' : 'false');
     });
@@ -444,24 +445,30 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     input.dispatchEvent(new Event('change', { bubbles: true }));
   };
 
+  const calendarRoots = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('.form-group')).filter((root) =>
+      root.querySelector('.calendar-conts'),
+    );
+
   document.addEventListener('click', (event) => {
     const eventTarget = event.target;
     if (!(eventTarget instanceof Node)) return;
-
-    document.querySelectorAll<HTMLElement>('[data-krds-calendar-component]').forEach((root) => {
+    calendarRoots().forEach((root) => {
       if (!root.contains(eventTarget)) closeCalendar(root);
     });
-
     if (!(eventTarget instanceof Element)) return;
-    const action = eventTarget.closest<HTMLElement>('[data-calendar-action]');
-    const option = eventTarget.closest<HTMLButtonElement>('[data-calendar-value]');
+
+    const action = eventTarget.closest<HTMLElement>(
+      '.btn-cal-move, .calendar-btn-wrap button, .form-btn-datepicker',
+    );
+    const option = eventTarget.closest<HTMLButtonElement>('.calendar-select button');
     const dayButton = eventTarget.closest<HTMLButtonElement>('.btn-set-date');
     const switchButton = eventTarget.closest<HTMLButtonElement>('.btn-cal-switch');
     const target = action ?? option ?? dayButton ?? switchButton;
     if (!target) return;
-    const area = calendarAreaFor(target) ?? calendarRootFor(target)?.querySelector<HTMLElement>('[data-krds-calendar-area]');
-    if (!area) return;
     const root = calendarRootFor(target);
+    const area = calendarAreaFor(target) ?? root?.querySelector<HTMLElement>('.krds-calendar-area');
+    if (!area) return;
 
     if (switchButton) {
       const select = switchButton.nextElementSibling;
@@ -475,7 +482,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
 
     if (option && !option.disabled) {
       const part = option.closest('.sel.year') ? 'year' : 'month';
-      setCalendarPart(area, part, Number(option.dataset.calendarValue));
+      setCalendarPart(area, part, Number.parseInt(option.textContent ?? '', 10));
       closeCalendarSelects(area);
       area.querySelector<HTMLButtonElement>(`.btn-cal-switch.${part}`)?.focus();
       return;
@@ -484,19 +491,28 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     if (dayButton && !dayButton.disabled) {
       const cell = dayButton.closest('td');
       if (!(cell instanceof HTMLTableCellElement)) return;
-      if (area.dataset.selectionMode === 'single') selectSingleCalendarCell(area, cell);
+      if (area.querySelector('.calendar-wrap.single')) selectSingleCalendarCell(area, cell);
       else selectCalendarRange(area, cell);
       return;
     }
 
-    const actionName = action?.dataset.calendarAction;
+    const actionName = action
+      ? action.classList.contains('form-btn-datepicker')
+        ? 'toggle'
+        : action.classList.contains('prev')
+          ? 'previous'
+          : action.classList.contains('next')
+            ? 'next'
+            : (() => {
+                const buttons = Array.from(action.parentElement?.querySelectorAll('button') ?? []);
+                const index = buttons.indexOf(action as HTMLButtonElement);
+                return index === 0 ? 'today' : index === 1 ? 'cancel' : 'confirm';
+              })()
+      : undefined;
+
     if (action && actionName === 'toggle' && root) {
       const opening = !area.classList.contains('active');
-      if (opening) {
-        document.querySelectorAll<HTMLElement>('[data-krds-calendar-component]').forEach((candidate) => {
-          if (candidate !== root) closeCalendar(candidate);
-        });
-      }
+      if (opening) calendarRoots().forEach((candidate) => candidate !== root && closeCalendar(candidate));
       area.classList.toggle('active', opening);
       action.setAttribute('aria-expanded', opening ? 'true' : 'false');
       if (opening) area.querySelector<HTMLElement>('.calendar-wrap')?.focus();
@@ -528,14 +544,13 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     if (actionName === 'confirm' && root) {
       const start = area.querySelector<HTMLTableCellElement>('td.start')?.dataset.date ?? '';
       const end = area.querySelector<HTMLTableCellElement>('td.end')?.dataset.date ?? '';
-      const startInput = root.querySelector<HTMLInputElement>('[data-calendar-start]');
-      const endInput = root.querySelector<HTMLInputElement>('[data-calendar-end]');
-      if (startInput && endInput) {
-        dispatchCalendarInput(startInput, start);
-        dispatchCalendarInput(endInput, end);
+      const rangeInputs = Array.from(root.querySelectorAll<HTMLInputElement>('.input-group.range input'));
+      if (rangeInputs.length >= 2) {
+        dispatchCalendarInput(rangeInputs[0], start);
+        dispatchCalendarInput(rangeInputs[1], end);
       } else {
-        const input = root.querySelector<HTMLInputElement>('[data-calendar-input]');
-        if (input) dispatchCalendarInput(input, area.dataset.selectionMode === 'single' ? start : `${start} ~ ${end}`);
+        const input = root.querySelector<HTMLInputElement>('.datepicker.cal');
+        if (input) dispatchCalendarInput(input, area.querySelector('.calendar-wrap.single') ? start : `${start} ~ ${end}`);
       }
       closeCalendar(root, true);
     }

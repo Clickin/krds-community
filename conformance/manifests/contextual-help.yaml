@@ -12,5 +12,9 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 contract:
-  semanticElement: details-summary
+  semanticElement: button-and-tooltip
+  accessibleRole: button
+  requiredAttributes:
+    button: [type=button]
+    tooltip: [role=tooltip]
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

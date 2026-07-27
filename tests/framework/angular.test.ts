@@ -225,7 +225,8 @@ describe('Angular core component contracts', () => {
       AdditionalHarnessComponent,
     );
     fixture.detectChanges();
-    const tabs = () => Array.from(fixture.nativeElement.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    expect(fixture.nativeElement.querySelector('.krds-tab-area .tab.line.full')).not.toBeNull();
+    const tabs = () => Array.from(fixture.nativeElement.querySelectorAll<HTMLButtonElement>('button[role="tab"]'));
     const parentUpdate = Array.from(fixture.nativeElement.querySelectorAll<HTMLButtonElement>('button')).find(
       (button) => button.textContent?.trim() === 'Parent additional update',
     )!;
@@ -233,7 +234,7 @@ describe('Angular core component contracts', () => {
 
     expect(tabs()[0].textContent).toContain('First');
     expect(tabs()[1].textContent).toContain('Second');
-    expect(fixture.nativeElement.querySelectorAll('[role="tab"] button')).toHaveLength(0);
+    expect(fixture.nativeElement.querySelectorAll('li[role="tab"]')).toHaveLength(0);
     expect(ttsButton.getAttribute('aria-label')).toBe('Icon speech');
 
     parentUpdate.click();
@@ -247,5 +248,57 @@ describe('Angular core component contracts', () => {
     expect(fixture.componentInstance.changes).toEqual(['second']);
     expect(fixture.componentInstance.selected).toBe('second');
     expect(fixture.nativeElement.querySelector('[data-testid="selected-tab"]')?.textContent?.trim()).toBe('second');
+  });
+  it('projects button content and preserves disclosure and navigation semantics', () => {
+    const harness = Component({
+      standalone: true,
+      imports: [KrdsAdditionalComponent],
+      template: `
+        <krds-button-hierarchy variant="primary">Projected hierarchy</krds-button-hierarchy>
+        <krds-button-size size="xsmall">Projected size</krds-button-size>
+        <krds-button-with-icon size="xsmall">Projected icon</krds-button-with-icon>
+        <krds-disclosure id="disclosure" title="Details" [items]="['First']" />
+        <krds-accordion-line [items]="items" />
+        <krds-tab [tabs]="tabs" />
+        <krds-main-menu-mobile menuLabel="Menu" />
+      `,
+    })(
+      class {
+        items = ['First'];
+        tabs = [
+          { id: 'first', label: 'First' },
+          { id: 'second', label: 'Second' },
+        ];
+      },
+    );
+    const fixture = TestBed.configureTestingModule({ imports: [harness] }).createComponent(harness);
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector<HTMLButtonElement>('button.krds-btn.primary')?.textContent?.trim(),
+    ).toBe('Projected hierarchy');
+    expect(fixture.nativeElement.querySelector('krds-button-size button')?.textContent?.trim()).toBe(
+      'Projected size',
+    );
+    expect(
+      fixture.nativeElement.querySelector('krds-button-with-icon button')?.textContent?.trim(),
+    ).toBe('Projected icon');
+    const disclosureTrigger = fixture.nativeElement.querySelector<HTMLButtonElement>(
+      '#disclosure-trigger',
+    )!;
+    const disclosurePanel = fixture.nativeElement.querySelector<HTMLElement>('#disclosure-contents')!;
+    expect(disclosureTrigger.getAttribute('aria-controls')).toBe('disclosure-contents');
+    expect(disclosureTrigger.getAttribute('aria-expanded')).toBe('false');
+    expect(disclosurePanel.getAttribute('role')).toBe('region');
+    expect(disclosurePanel.getAttribute('aria-labelledby')).toBe('disclosure-trigger');
+    expect(fixture.nativeElement.querySelector('.krds-main-menu-mobile[role="navigation"]')).not.toBeNull();
+    const accordion = fixture.nativeElement.querySelector('krds-accordion-line')!;
+    expect(accordion.querySelector('button.btn-accordion')?.getAttribute('aria-expanded')).toBe('false');
+    expect(accordion.querySelector('[role="region"]')?.getAttribute('aria-labelledby')).toBe(
+      accordion.querySelector('button.btn-accordion')?.id,
+    );
+    const tabRoot = fixture.nativeElement.querySelector('.krds-tab-area')!;
+    expect(tabRoot.classList.contains('layer')).toBe(true);
+    expect(tabRoot.querySelector('button[role="tab"]')).not.toBeNull();
   });
 });

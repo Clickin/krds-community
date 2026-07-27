@@ -78,6 +78,7 @@ export interface ConformanceFixture {
   mandatory: boolean;
   viewport: FixtureViewport;
   props: Record<string, unknown>;
+  errata: string[];
   states: FixtureState[];
   expectations: Record<string, unknown>;
   comparisons: FixtureComparisons;
@@ -443,6 +444,7 @@ const parseManifest = async (
         mandatory,
         viewport: parseViewport(fixture.viewport, fixtureId, validationErrors),
         props: recordValue(fixture.props),
+        errata,
         states: parseStates(fixture.states, fixtureId, validationErrors),
         expectations: recordValue(fixture.expectations),
         comparisons: parseComparisons(fixture.comparisons),

@@ -6,6 +6,7 @@ export interface Props extends ButtonProps {
   label: string;
   iconClass?: string;
   size?: 'small' | 'medium' | 'large';
+  className?: string;
 }
 
 const {
@@ -15,9 +16,11 @@ const {
   size,
   disabled,
   type = 'button',
-  class: className,
+  className: classNameProp,
+  class: classAttribute,
   ...rest
 } = Astro.props;
+const className = classNameProp ?? classAttribute;
 ---
 
 <button
@@ -27,5 +30,5 @@ const {
   class={cx('krds-btn', 'icon', size, variant, className)}
 >
   <span class="sr-only">{label}</span>
-  <slot name="icon"><i class={cx('svg-icon', iconClass)} aria-hidden="true"></i></slot>
+  <slot name="icon"><i class={cx('svg-icon', iconClass)}></i></slot>
 </button>

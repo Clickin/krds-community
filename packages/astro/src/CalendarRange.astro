@@ -64,6 +64,10 @@ const {
   hint,
   year,
   month,
+  displayYear,
+  displayMonth,
+  selectedYear,
+  selectedMonth,
   years,
   disabledYears = [],
   disabledMonths = [],
@@ -102,8 +106,12 @@ const endDescribedBy = [endInputAttributes['aria-describedby'], hintId].filter(B
 const startRecipe = inputRecipe({ className: cx('datepicker', startInputAttributes.class, startClass) });
 const endRecipe = inputRecipe({ className: cx('datepicker', endInputAttributes.class, endClass) });
 const calendarSurface = {
-  year,
-  month,
+  year: displayYear ?? year,
+  month: displayMonth ?? month,
+  displayYear,
+  displayMonth,
+  selectedYear,
+  selectedMonth,
   years,
   disabledYears,
   disabledMonths,
@@ -132,7 +140,7 @@ const calendarSurface = {
 } satisfies CalendarProps;
 ---
 
-<div {...rest} id={rootId} class={cx('form-group', className)} data-krds-calendar-component="">
+<div {...rest} id={rootId} class={cx('form-group', className)}>
   {(label !== undefined || Astro.slots.has('label')) && (
     <div class="form-tit"><slot name="label">{label}</slot></div>
   )}
@@ -178,12 +186,9 @@ const calendarSurface = {
       <button
         type="button"
         class="krds-btn medium icon form-btn-datepicker"
-        aria-controls={calendarId}
-        aria-expanded={open ? 'true' : 'false'}
-        data-calendar-action="toggle"
         disabled={disabled}
       >
-        <span class="sr-only">{openCalendarLabel ?? calendarLabel}</span>
+        <span class="sr-only">{openCalendarLabel ?? '달력 열기'}</span>
         <i class="svg-icon ico-calendar"></i>
       </button>
     </div>

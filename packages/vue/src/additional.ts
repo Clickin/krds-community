@@ -254,6 +254,10 @@ type AdditionalPropsExtension = {
   sortOptions?: string[];
   sortValue?: string;
   pagination?: AdditionalPagination;
+  displayYear?: number;
+  displayMonth?: number;
+  selectedYear?: number;
+  selectedMonth?: number;
   years?: number[];
   disabledYears?: number[];
   leadingDays?: number;
@@ -452,6 +456,10 @@ const commonProps = {
   sortOptions: { type: Array as PropType<string[]>, default: () => [] },
   sortValue: { type: String, default: undefined },
   pagination: { type: Object as PropType<AdditionalPagination | undefined>, default: undefined },
+  displayYear: { type: Number, default: undefined },
+  displayMonth: { type: Number, default: undefined },
+  selectedYear: { type: Number, default: undefined },
+  selectedMonth: { type: Number, default: undefined },
   years: { type: Array as PropType<number[]>, default: () => [] },
   disabledYears: { type: Array as PropType<number[]>, default: () => [] },
   leadingDays: { type: Number, default: 0 },
@@ -492,6 +500,9 @@ function itemLabel(item: AnyItem): string {
   const candidate = item as { label?: string; title?: string; id?: string };
   return candidate.label ?? candidate.title ?? candidate.id ?? '';
 }
+const hasCurrentNavigationItem = (item: KrdsNavItem): boolean =>
+  Boolean(item.current || item.children?.some(hasCurrentNavigationItem));
+
 function sideNavigationList(
   items: KrdsNavItem[],
   idPrefix: string,
@@ -507,12 +518,12 @@ function sideNavigationList(
     items.map((item, itemIndex) => {
       const itemId = `${idPrefix}-${item.id ?? itemIndex}`;
       const hasChildren = Boolean(item.children?.length);
+      const current = hasCurrentNavigationItem(item);
       return create(
         'li',
         {
           key: item.id ?? item.label,
-          class: [depth === 1 ? 'lnb-item' : 'lnb-subitem', item.current ? 'active' : undefined],
-          role: 'none',
+          class: [depth === 1 ? 'lnb-item' : 'lnb-subitem', current ? 'active' : undefined],
         },
         [
           hasChildren
@@ -522,8 +533,7 @@ function sideNavigationList(
                   type: 'button',
                   class: ['lnb-btn', depth === 1 ? 'lnb-toggle' : 'lnb-toggle-popup'],
                   role: 'menuitem',
-                  'aria-expanded': item.current ?? false,
-                  'aria-controls': `${itemId}-menu`,
+                  'aria-expanded': current,
                 },
                 item.label,
               )
@@ -1214,6 +1224,10 @@ interface CalendarRenderData {
   cancelLabel?: string | undefined;
   confirmLabel?: string | undefined;
   eventLabel?: string | undefined;
+  displayYear?: number | undefined;
+  displayMonth?: number | undefined;
+  selectedYear?: number | undefined;
+  selectedMonth?: number | undefined;
   year?: number | undefined;
   month?: number | undefined;
   disabledMonths: number[];
@@ -1230,8 +1244,10 @@ function calendarMarkup(
   attrs: Record<string, unknown>,
   className: string | undefined,
 ): VNode {
-  const year = data.year ?? data.years[0] ?? 0;
-  const month = data.month ?? 1;
+  const year = data.displayYear ?? data.year ?? data.years[0] ?? 0;
+  const month = data.displayMonth ?? data.month ?? 1;
+  const selectedYear = data.selectedYear ?? data.year ?? year;
+  const selectedMonth = data.selectedMonth ?? data.month ?? month;
   const yearListId = `${rootId}-year`;
   const monthListId = `${rootId}-month`;
   const pad = (value: number) => String(value).padStart(2, '0');
@@ -1253,6 +1269,8 @@ function calendarMarkup(
     const current = !old && !next;
     const period =
       current &&
+      cellYear === selectedYear &&
+      cellMonth === selectedMonth &&
       data.rangeStartDay !== undefined &&
       data.rangeEndDay !== undefined &&
       day >= data.rangeStartDay &&
@@ -1270,13 +1288,13 @@ function calendarMarkup(
       event ? 'day-event' : undefined,
       today ? 'today' : undefined,
       unavailable ? 'disabled' : undefined,
-    ];
+    ].filter(Boolean);
     const outside = old || next;
     return create(
       'td',
       {
         key: cellIndex,
-        class: classNames,
+        class: classNames.length ? classNames : undefined,
         'data-date': `${cellYear}.${pad(cellMonth)}.${pad(day)}`,
       },
       [
@@ -1539,6 +1557,11 @@ export function createAdditional(name: string, kind: string) {
         (typeof props.modelValue === 'string' || typeof props.modelValue === 'number'
           ? props.modelValue
           : '');
+      const hasInitialValue =
+        props.defaultValue !== undefined ||
+        props.value !== undefined ||
+        typeof props.modelValue === 'string' ||
+        typeof props.modelValue === 'number';
       const localValue = ref(String(initialValue));
       const value = computed(() => {
         if (props.value !== undefined) return String(props.value);
@@ -1668,8 +1691,45 @@ export function createAdditional(name: string, kind: string) {
             },
             slotChildren.length ? slotChildren : (props.label ?? props.text),
           );
-        if (kind === 'calendar' || kind === 'date-input' || kind === 'calendar-range')
-          return calendarMarkup(props, kind, id.value, attrs, className);
+        if (kind === 'calendar' || kind === 'date-input' || kind === 'calendar-range') {
+          const calendar = calendarMarkup(props, kind, id.value, attrs, className);
+          if (kind !== 'date-input') return calendar;
+          const inputId = `${id.value}-input`;
+          const inputHasValue =
+            props.value !== undefined ||
+            props.defaultValue !== undefined ||
+            props.modelValue !== undefined;
+          return create('div', { class: ['form-group', className] }, [
+            create('div', { class: 'form-tit' }, create('label', { for: inputId }, props.label)),
+            create('div', { class: 'form-conts' }, [
+              create('div', { class: ['form-conts', 'calendar-conts'] }, [
+                create('div', { class: 'calendar-input' }, [
+                  create('input', {
+                    ...withoutClass(attrs),
+                    id: inputId,
+                    type: 'number',
+                    class: ['krds-input', 'datepicker', 'cal'],
+                    name: props.name,
+                    placeholder: attrs.placeholder ?? 'YYYY.MM.DD',
+                    value: inputHasValue || value.value ? value.value : undefined,
+                    disabled: props.disabled,
+                    required: props.required,
+                  }),
+                  create(
+                    'button',
+                    { type: 'button', class: ['form-btn-datepicker', 'icon', 'krds-btn', 'medium'] },
+                    [
+                      create('span', { class: 'sr-only' }, '달력 열기'),
+                      create('i', { class: ['ico-calendar', 'svg-icon'] }),
+                    ],
+                  ),
+                ]),
+                calendar,
+              ]),
+              props.hint ? create('p', { class: 'form-hint' }, props.hint) : null,
+            ]),
+          ]);
+        }
         if (kind === 'carousel' || kind === 'carousel-banner') {
           const slides = props.slides;
           const placeholderSvgProps = {
@@ -1878,7 +1938,6 @@ export function createAdditional(name: string, kind: string) {
               }
             },
           });
-          if (kind === 'radio-chip') return input;
           return create(
             'div',
             {
@@ -2045,7 +2104,8 @@ export function createAdditional(name: string, kind: string) {
               }),
             ),
           );
-        if (kind === 'disclosure')
+        if (kind === 'disclosure') {
+          const triggerId = `${id.value}-trigger`;
           return create(
             'div',
             {
@@ -2057,6 +2117,7 @@ export function createAdditional(name: string, kind: string) {
                 'button',
                 {
                   ...withoutClass(attrs),
+                  id: triggerId,
                   type: 'button',
                   class: 'btn-conts-expand',
                   'aria-controls': id.value,
@@ -2070,6 +2131,8 @@ export function createAdditional(name: string, kind: string) {
                 {
                   id: id.value,
                   class: 'expand-wrap',
+                  role: 'region',
+                  'aria-labelledby': triggerId,
                   inert: open.value ? undefined : '',
                 },
                 create(
@@ -2092,6 +2155,7 @@ export function createAdditional(name: string, kind: string) {
               ),
             ],
           );
+        }
         if (kind === 'favicon')
           return create('link', {
             ...attrs,
@@ -2247,7 +2311,7 @@ export function createAdditional(name: string, kind: string) {
           );
         }
         if (kind === 'footer')
-          return create('footer', { ...attrs, id: id.value, class: className }, [
+          return create('footer', { ...attrs, id: props.id ?? 'krds-footer', class: className }, [
             create('div', { class: 'foot-quick' }, [
               create(
                 'div',
@@ -2363,7 +2427,7 @@ export function createAdditional(name: string, kind: string) {
             const headerItems = props.desktopItems.length
               ? props.desktopItems
               : (props.nav as AdditionalMenuItem[]);
-            return create('header', { ...attrs, id: id.value, class: className }, [
+            return create('header', { ...attrs, id: props.id ?? 'krds-header', class: className }, [
               create('div', { class: 'header-in' }, [
                 create('div', { class: 'header-container' }, [
                   create('div', { class: 'inner' }, [
@@ -2927,7 +2991,7 @@ export function createAdditional(name: string, kind: string) {
             ],
           );
         if (kind === 'masthead')
-          return create('div', { ...attrs, id: id.value, class: className }, [
+          return create('div', { ...attrs, id: props.id ?? 'krds-masthead', class: className }, [
             create('div', { class: 'toggle-wrap' }, [
               create('div', { class: 'toggle-head' }, [
                 create('div', { class: 'inner' }, [
@@ -3164,46 +3228,49 @@ export function createAdditional(name: string, kind: string) {
           kind === 'select-state' ||
           kind === 'select-sorting'
         )
-          return create(
-            'select',
-            {
-              ...attrs,
-              id: id.value,
-              name: props.name,
-              value: selected.value,
-              disabled: props.disabled,
-              required: props.required,
-              title: attrs.title ?? props.title ?? props.label,
-              class:
-                kind === 'select-sorting'
-                  ? ['krds-form-select-sort', className]
-                  : [
-                      'krds-form-select',
-                      kind === 'select-state' && props.state === 'error'
-                        ? 'is-error'
-                        : undefined,
-                      kind === 'select-size' ? props.size : undefined,
-                      className,
-                    ],
-              onChange: (event: Event) => {
-                invokeNativeEvent(attrs.onChange, event);
-                setSelected((event.target as HTMLSelectElement).value);
-                emit('change', event);
-              },
-            },
-            props.options.map((option, optionIndex) =>
-              create(
-                'option',
-                {
-                  key: optionIndex,
-                  value: option.value,
-                  disabled: option.disabled,
-                  selected: kind === 'select-size' && optionIndex === 0 ? '' : undefined,
+          return create(Fragment, null, [
+            create('label', { for: id.value, class: 'sr-only' }, props.label),
+            create(
+              'select',
+              {
+                ...attrs,
+                id: id.value,
+                name: props.name,
+                value: selected.value || undefined,
+                disabled: props.disabled,
+                required: props.required,
+                title: attrs.title ?? props.title ?? props.label,
+                class:
+                  kind === 'select-sorting'
+                    ? ['krds-form-select-sort', className]
+                    : [
+                        'krds-form-select',
+                        kind === 'select-state' && props.state === 'error'
+                          ? 'is-error'
+                          : undefined,
+                        kind === 'select-size' ? props.size : undefined,
+                        className,
+                      ],
+                onChange: (event: Event) => {
+                  invokeNativeEvent(attrs.onChange, event);
+                  setSelected((event.target as HTMLSelectElement).value);
+                  emit('change', event);
                 },
-                option.label,
+              },
+              props.options.map((option, optionIndex) =>
+                create(
+                  'option',
+                  {
+                    key: optionIndex,
+                    value: option.value,
+                    disabled: option.disabled,
+                    selected: kind === 'select-size' && optionIndex === 0 ? '' : undefined,
+                  },
+                  option.label,
+                ),
               ),
             ),
-          );
+          ]);
         if (kind === 'side-navigation') {
           const navigationItems = (props.items.length ? props.items : props.links) as KrdsNavItem[];
           return create(
@@ -3220,9 +3287,13 @@ export function createAdditional(name: string, kind: string) {
         }
         if (kind === 'skip-link')
           return create(
-            'a',
-            { ...attrs, href: props.href, class: className },
-            slotChildren.length ? slotChildren : props.label,
+            'div',
+            { ...attrs, id: props.id ?? 'krds-skip-link', class: className },
+            create(
+              'a',
+              { href: props.href },
+              slotChildren.length ? slotChildren : props.label,
+            ),
           );
         if (kind === 'spinner')
           return create(
@@ -3322,87 +3393,207 @@ export function createAdditional(name: string, kind: string) {
               ]);
             }),
           );
-        if (kind === 'structured-list-table' || kind === 'table')
+        if (kind === 'structured-list-table' || kind === 'table') {
+          const selectionId = `${id.value}-all`;
+          const countId = `${id.value}-count`;
+          const sortId = `${id.value}-sort`;
+          const pagination = props.pagination;
           return create(
-            'table',
-            { ...attrs, class: ['tbl', 'data', 'col'] },
+            'div',
+            { ...withoutNativeEvents(attrs), class: ['krds-structured-list-table', className] },
             [
-              create('caption', props.caption ?? props.title),
-              create('colgroup', [
-                ...props.columns.map((column, columnIndex) =>
-                  create('col', {
-                    key: column.key ?? columnIndex,
-                    style: column.width ? `width: ${column.width};` : undefined,
-                  }),
-                ),
-                kind === 'structured-list-table' ? create('col') : null,
-              ]),
-              create(
-                'thead',
-                create(
-                  'tr',
-                  props.columns.length
-                    ? props.columns.map((column) =>
-                        create('th', { key: column.key, scope: 'col' }, [
-                          column.visuallyHidden
-                            ? create('span', { class: 'sr-only' }, column.label)
-                            : column.label,
+              kind === 'structured-list-table'
+                ? create('div', { class: 'search-list-top' }, [
+                    create('div', { class: 'sch-left' }, [
+                      create('div', { class: 'krds-check-area' }, [
+                        create('div', { class: 'krds-form-check' }, [
+                          create('input', {
+                            id: selectionId,
+                            class: 'chk',
+                            type: 'checkbox',
+                          }),
+                          create('label', { for: selectionId }, props.selectAllLabel),
                         ]),
-                      )
-                    : create(
-                        'th',
-                        { scope: 'col' },
-                        create(
-                          'span',
-                          { class: 'sr-only' },
-                          props.caption ?? props.title ?? '표',
+                      ]),
+                      create(
+                        'ul',
+                        { class: 'side-line-ul' },
+                        props.actions.map((action) =>
+                          create('li', { key: action.id ?? action.label }, [
+                            create(
+                              'button',
+                              { type: 'button', class: ['krds-btn', 'medium', 'text'] },
+                              [
+                                create('i', { class: ['svg-icon', `ico-${action.icon ?? 'down'}`] }),
+                                action.label,
+                              ],
+                            ),
+                          ]),
                         ),
                       ),
-                ),
-              ),
-              create(
-                'tbody',
-                props.rows.map((row, rowIndex) =>
-                  create(
-                    'tr',
-                    { key: String(row.id ?? rowIndex) },
-                    props.columns.map((column, columnIndex) => {
-                      if (kind === 'structured-list-table' && columnIndex === 0) {
-                        const checkboxId = `${id.value}-${row.id ?? rowIndex}`;
-                        const rowLabel = String(row[column.key] ?? row.id ?? `행 ${rowIndex + 1}`);
-                        return create('th', { scope: 'row' }, [
-                          create('div', { class: 'krds-form-check' }, [
-                            create('input', {
-                              id: checkboxId,
-                              class: 'chk',
-                              type: 'checkbox',
-                              checked: Boolean(row[column.key]),
-                              'aria-label': `${rowLabel} 선택`,
-                            }),
-                            create('label', { for: checkboxId, class: 'sr-only' }, rowLabel),
-                          ]),
-                        ]);
-                      }
-                      if (kind === 'structured-list-table' && column.key === 'download')
-                        return create('td', [
-                          create(
-                            'button',
-                            { type: 'button', class: ['krds-btn', 'medium', 'text'] },
-                            [
-                              create('i', { class: ['svg-icon', 'ico-down'] }),
-                              String(row[column.key] ?? ''),
-                            ],
+                    ]),
+                    create('ul', { class: 'sch-sort' }, [
+                      create('li', [
+                        create('strong', { class: 'sort-label' }, [
+                          create('label', { for: countId }, props.countLabel),
+                        ]),
+                        create(
+                          'select',
+                          { id: countId, class: 'krds-form-select-sort' },
+                          props.countOptions.map((option) =>
+                            create('option', {}, option),
                           ),
-                        ]);
-                      return columnIndex === 0
-                        ? create('th', { scope: 'row' }, String(row[column.key] ?? ''))
-                        : create('td', String(row[column.key] ?? ''));
-                    }),
-                  ),
+                        ),
+                      ]),
+                      create('li', [
+                        create('strong', { class: 'sort-label' }, [
+                          create('label', { for: sortId }, props.sortLabel),
+                        ]),
+                        create(
+                          'div',
+                          { class: 'w-sort-btn' },
+                          props.sortOptions.map((option) =>
+                            create(
+                              'button',
+                              {
+                                type: 'button',
+                                class: option === props.sortValue ? 'active' : undefined,
+                              },
+                              option,
+                            ),
+                          ),
+                        ),
+                        create(
+                          'div',
+                          { class: 'm-sort-btn' },
+                          create(
+                            'select',
+                            { id: sortId, class: 'krds-form-select-sort' },
+                            props.sortOptions.map((option) =>
+                              create('option', {}, option),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ]),
+                  ])
+                : null,
+              create(
+                'div',
+                { class: 'krds-table-wrap' },
+                create(
+                  'table',
+                  { class: ['tbl', 'col', 'data'] },
+                  [
+                    create('caption', props.caption ?? props.title),
+                    create('colgroup', [
+                      ...props.columns.map((column, columnIndex) =>
+                        create('col', {
+                          key: column.key ?? columnIndex,
+                          style: column.width ? `width: ${column.width};` : undefined,
+                        }),
+                      ),
+                      kind === 'structured-list-table' ? create('col') : null,
+                    ]),
+                    create(
+                      'thead',
+                      create(
+                        'tr',
+                        props.columns.length
+                          ? props.columns.map((column) =>
+                              create('th', { key: column.key, scope: 'col' }, [
+                                column.visuallyHidden
+                                  ? create('span', { class: 'sr-only' }, column.label)
+                                  : column.label,
+                              ]),
+                            )
+                          : create(
+                              'th',
+                              { scope: 'col' },
+                              create(
+                                'span',
+                                { class: 'sr-only' },
+                                props.caption ?? props.title ?? '표',
+                              ),
+                            ),
+                      ),
+                    ),
+                    create(
+                      'tbody',
+                      props.rows.map((row, rowIndex) =>
+                        create(
+                          'tr',
+                          { key: String(row.id ?? rowIndex) },
+                          props.columns.map((column, columnIndex) => {
+                            if (kind === 'structured-list-table' && column.key === 'selected') {
+                              const checkboxId = `${id.value}-${row.id ?? rowIndex}`;
+                              return create('th', { scope: 'row' }, [
+                                create('div', { class: 'krds-form-check' }, [
+                                  create('input', {
+                                    id: checkboxId,
+                                    class: 'chk',
+                                    type: 'checkbox',
+                                    checked: Boolean(row[column.key]),
+                                  }),
+                                  create('label', { for: checkboxId }, ''),
+                                ]),
+                              ]);
+                            }
+                            if (kind === 'structured-list-table' && column.key === 'download')
+                              return create('td', [
+                                create(
+                                  'button',
+                                  { type: 'button', class: ['krds-btn', 'medium', 'text'] },
+                                  [
+                                    create('i', { class: ['svg-icon', 'ico-down'] }),
+                                    String(row[column.key] ?? ''),
+                                  ],
+                                ),
+                              ]);
+                            return columnIndex === 0
+                              ? create('th', { scope: 'row' }, String(row[column.key] ?? ''))
+                              : create('td', String(row[column.key] ?? ''));
+                          }),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              kind === 'structured-list-table' && pagination
+                ? create('div', { class: 'krds-pagination' }, [
+                    create(
+                      'span',
+                      {
+                        class: ['page-navi', 'prev', pagination.previousDisabled ? 'disabled' : undefined],
+                        href: '#',
+                      },
+                      pagination.previousLabel,
+                    ),
+                    create(
+                      'div',
+                      { class: 'page-links' },
+                      pagination.items.map((item) =>
+                        item === 'ellipsis'
+                          ? create('span', { class: ['page-link', 'link-dot'] })
+                          : create(
+                              'a',
+                              { class: ['page-link', item === pagination.current ? 'active' : undefined], href: '#' },
+                              item === pagination.current
+                                ? [
+                                    create('span', { class: 'sr-only' }, `${pagination.currentLabel ?? '현재페이지'} `),
+                                    item,
+                                  ]
+                                : item,
+                            ),
+                      ),
+                    ),
+                    create('a', { class: ['page-navi', 'next'], href: '#' }, pagination.nextLabel),
+                  ])
+                : null,
             ],
           );
+        }
         if (kind === 'tab') {
           const active = selected.value;
           const enabledTabs = props.tabs.filter((tab) => !tab.disabled);
@@ -3427,48 +3618,53 @@ export function createAdditional(name: string, kind: string) {
           };
           return create(
             'div',
-            { ...withoutNativeEvents(attrs), class: ['krds-tab-area', className] },
+            { ...withoutNativeEvents(attrs), class: ['krds-tab-area', 'layer', className] },
             [
               create(
-                'ul',
-                { role: 'tablist', 'aria-label': props.label ?? '탭' },
+                'div',
+                { class: ['tab', 'line', 'full'] },
+                create(
+                  'ul',
+                  { role: 'tablist' },
+                  props.tabs.map((tab) => {
+                    const tabId = `${id.value}-tab-${tab.id}`;
+                    const panelId = `${id.value}-panel-${tab.id}`;
+                    const isActive = active === tab.id;
+                    return create(
+                      'li',
+                      { key: tab.id, role: 'none', class: isActive ? 'active' : undefined },
+                      create(
+                        'button',
+                        {
+                          id: tabId,
+                          type: 'button',
+                          role: 'tab',
+                          class: 'btn-tab',
+                          'aria-selected': isActive,
+                          'aria-controls': panelId,
+                          tabIndex: isActive ? 0 : -1,
+                          disabled: tab.disabled,
+                          onClick: () => setSelected(tab.id),
+                          onKeydown: (event: KeyboardEvent) => moveTab(event, tab.id),
+                        },
+                        [
+                          tab.label,
+                          isActive
+                            ? create('i', { class: ['sr-only', 'created'] }, ` ${props.message ?? '선택됨'}`)
+                            : null,
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              create(
+                'div',
+                { class: 'tab-conts-wrap' },
                 props.tabs.map((tab) => {
                   const tabId = `${id.value}-tab-${tab.id}`;
                   const panelId = `${id.value}-panel-${tab.id}`;
                   const isActive = active === tab.id;
-                  return create(
-                    'li',
-                    { key: tab.id, role: 'none' },
-                    create(
-                      'button',
-                      {
-                        id: tabId,
-                        type: 'button',
-                        role: 'tab',
-                        class: ['btn-tab', isActive ? 'active' : undefined],
-                        'aria-selected': isActive,
-                        'aria-controls': panelId,
-                        tabIndex: isActive ? 0 : -1,
-                        disabled: tab.disabled,
-                        onClick: () => setSelected(tab.id),
-                        onKeydown: (event: KeyboardEvent) => moveTab(event, tab.id),
-                      },
-                      [
-                        tab.label,
-                        isActive
-                          ? create('i', { class: ['sr-only', 'created'] }, '선택됨')
-                          : null,
-                      ],
-                    ),
-                  );
-                }),
-              ),
-              create(
-                'div',
-                { class: 'tab-panels' },
-                props.tabs.map((tab) => {
-                  const tabId = `${id.value}-tab-${tab.id}`;
-                  const panelId = `${id.value}-panel-${tab.id}`;
                   return create(
                     'section',
                     {
@@ -3476,10 +3672,14 @@ export function createAdditional(name: string, kind: string) {
                       id: panelId,
                       role: 'tabpanel',
                       'aria-labelledby': tabId,
-                      hidden: active !== tab.id,
-                      tabIndex: 0,
+                      class: ['tab-conts', isActive ? 'active' : undefined],
+                      'data-quick-nav': 'false',
+                      hidden: !isActive,
                     },
-                    props.panels[tab.id] ?? (tab.id === active ? slotChildren : ''),
+                    [
+                      create('h3', { class: 'sr-only' }, props.panelTitle),
+                      props.panels[tab.id] ?? (isActive ? slotChildren : ''),
+                    ],
                   );
                 }),
               ),
@@ -3512,47 +3712,53 @@ export function createAdditional(name: string, kind: string) {
                 ],
               );
         if (kind === 'textarea')
-          return create('textarea', {
-            ...attrs,
-            id: id.value,
-            name: props.name,
-            value: value.value,
-            maxlength: attrs.maxlength ?? attrs.maxLength,
-            placeholder: props.placeholder,
-            disabled: props.disabled,
-            readonly: props.readonly,
-            required: props.required,
-            onInput: (event: Event) => {
-              invokeNativeEvent(attrs.onInput, event);
-              setValue((event.target as HTMLTextAreaElement).value);
-            },
-            onChange: (event: Event) => {
-              invokeNativeEvent(attrs.onChange, event);
-              emit('change', event);
-            },
-            class: ['krds-input', className],
-          });
+          return create(Fragment, null, [
+            props.label ? create('label', { for: id.value, class: 'sr-only' }, props.label) : null,
+            create('textarea', {
+              ...attrs,
+              id: id.value,
+              name: props.name,
+              value: hasInitialValue || value.value ? value.value : undefined,
+              maxlength: attrs.maxlength ?? attrs.maxLength,
+              placeholder: props.placeholder,
+              disabled: props.disabled,
+              readonly: props.readonly,
+              required: props.required,
+              onInput: (event: Event) => {
+                invokeNativeEvent(attrs.onInput, event);
+                setValue((event.target as HTMLTextAreaElement).value);
+              },
+              onChange: (event: Event) => {
+                invokeNativeEvent(attrs.onChange, event);
+                emit('change', event);
+              },
+              class: ['krds-input', className],
+            }),
+          ]);
         if (kind === 'text-input-icon')
-          return create('input', {
-            ...attrs,
-            id: id.value,
-            name: props.name,
-            type: props.type ?? 'text',
-            value: value.value,
-            placeholder: props.placeholder,
-            disabled: props.disabled,
-            readonly: props.readonly,
-            required: props.required,
-            class: ['krds-input', className],
-            onInput: (event: Event) => {
-              invokeNativeEvent(attrs.onInput, event);
-              setValue((event.target as HTMLInputElement).value);
-            },
-            onChange: (event: Event) => {
-              invokeNativeEvent(attrs.onChange, event);
-              emit('change', event);
-            },
-          });
+          return create(Fragment, null, [
+            props.label ? create('label', { for: id.value, class: 'sr-only' }, props.label) : null,
+            create('input', {
+              ...attrs,
+              id: id.value,
+              name: props.name,
+              type: props.type ?? 'text',
+              value: hasInitialValue || value.value ? value.value : undefined,
+              placeholder: props.placeholder,
+              disabled: props.disabled,
+              readonly: props.readonly,
+              required: props.required,
+              class: ['krds-input', className],
+              onInput: (event: Event) => {
+                invokeNativeEvent(attrs.onInput, event);
+                setValue((event.target as HTMLInputElement).value);
+              },
+              onChange: (event: Event) => {
+                invokeNativeEvent(attrs.onChange, event);
+                emit('change', event);
+              },
+            }),
+          ]);
         if (kind === 'text-list' || kind === 'text-list-ordered')
           return textList(props.items, kind === 'text-list-ordered', 1, {
             ...attrs,

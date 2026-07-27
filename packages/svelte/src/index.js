@@ -1,5 +1,5 @@
 import Additional from './Additional.svelte';
-
+import Accordion from './Accordion.svelte';
 const createAdditional = (kind) => {
   return (anchor, props = {}) => {
     const presetProps = Object.create(Object.getPrototypeOf(props));
@@ -14,8 +14,18 @@ const createAdditional = (kind) => {
   };
 };
 
-export { default as Accordion } from './Accordion.svelte';
-export { default as AccordionLine } from './Accordion.svelte';
+export { Accordion };
+export const AccordionLine = (anchor, props = {}) => {
+  const presetProps = Object.create(Object.getPrototypeOf(props));
+  Object.defineProperties(presetProps, Object.getOwnPropertyDescriptors(props));
+  Object.defineProperty(presetProps, 'kind', {
+    configurable: true,
+    enumerable: true,
+    value: 'accordion-line',
+    writable: true,
+  });
+  return Accordion(anchor, presetProps);
+};
 export { default as Button } from './Button.svelte';
 export { default as Checkbox } from './Checkbox.svelte';
 export { default as Radio } from './Radio.svelte';

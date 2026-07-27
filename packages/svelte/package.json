@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "description": "KRDS용 Svelte 5 네이티브 컴포넌트.",
   "license": "Apache-2.0",
-  "type": "module",
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
+  "type": "module",
   "svelte": "./dist/index.js",
   "exports": {
     ".": {
@@ -17,18 +17,18 @@
       "import": "./dist/index.js"
     }
   },
-  "peerDependencies": {
-    "svelte": ">=5.20.0"
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "lint": "node scripts/check.mjs && node scripts/build.mjs --check"
   },
   "dependencies": {
     "@krds-community/recipes": "workspace:*",
     "@krds-community/styles": "workspace:*"
   },
   "devDependencies": {
-    "svelte": "catalog:"
+    "svelte": "5.56.7"
   },
-  "scripts": {
-    "build": "node scripts/build.mjs",
-    "lint": "node scripts/check.mjs && node scripts/build.mjs --check"
+  "peerDependencies": {
+    "svelte": ">=5.20.0"
   }
 }

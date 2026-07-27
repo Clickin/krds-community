@@ -39,6 +39,7 @@ export interface Props
   standalone?: boolean;
   navigationLabel?: string;
   class?: string;
+  className?: string;
 }
 
 const {
@@ -63,11 +64,14 @@ const {
   open = false,
   standalone: _standalone = true,
   navigationLabel,
-  class: className,
+  className: classNameProp,
+  class: classAttribute,
   style,
   'aria-label': ariaLabel,
   ...rest
 } = Astro.props;
+const className = classNameProp ?? classAttribute;
+
 const selectedTopExists = items.some((item) => item.active);
 const bottomSize = providedBottomSize ?? (sample ? 'small' : 'medium');
 const itemKey = (item: MobileMenuItem) =>
@@ -82,7 +86,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
   {...rest}
   id={id}
   role="navigation"
-  class={cx('krds-main-menu-mobile', sample && 'sample', open && 'is-open', className)}
+  class={cx('krds-main-menu-mobile', sample && !className ? 'sample' : undefined, open && 'is-open', className)}
   style={style}
   aria-label={ariaLabel ?? navigationLabel}
   data-krds-main-menu-mobile
@@ -90,7 +94,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
   <div class="gnb-wrap">
     <div class="gnb-header">
       <div class="gnb-utils">
-        <ul class="utility-list">
+        <ul class="gnb-utils-list">
           {utilityItems.map((item) => (
             <li>
               {item.href ? (
@@ -241,7 +245,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
                                           <i class="svg-icon ico-popup-close" aria-hidden="true"></i>
                                         </button>
                                       </div>
-                                      <ul class="depth4-body">
+                                      <div class="depth4-body">
                                         <h4 class="sub-title">{third.title}</h4>
                                         <ul class="depth4-ul">
                                           {third.children?.map((fourth) => (
@@ -262,7 +266,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
                                             </li>
                                           ))}
                                         </ul>
-                                      </ul>
+                                      </div>
                                     </div>
                                   )}
                                 </li>

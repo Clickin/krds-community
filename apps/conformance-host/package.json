@@ -13,9 +13,9 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@angular/compiler": "catalog:",
-    "@angular/core": "catalog:",
-    "@angular/platform-browser": "catalog:",
+    "@angular/compiler": "22.0.8",
+    "@angular/core": "22.0.8",
+    "@angular/platform-browser": "22.0.8",
     "@krds-community/angular": "workspace:*",
     "@krds-community/conformance": "workspace:*",
     "@krds-community/react": "workspace:*",
@@ -23,17 +23,17 @@
     "@krds-community/styles": "workspace:*",
     "@krds-community/svelte": "workspace:*",
     "@krds-community/vue": "workspace:*",
-    "react": "catalog:",
-    "react-dom": "catalog:",
-    "solid-js": "catalog:",
-    "svelte": "catalog:",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "solid-js": "1.9.14",
+    "svelte": "5.56.7",
     "vite": "catalog:",
-    "vue": "catalog:"
+    "vue": "3.5.40"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "catalog:",
-    "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
+    "@sveltejs/vite-plugin-svelte": "7.2.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
     "typescript": "catalog:"
   }
 }

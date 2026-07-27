@@ -41,6 +41,7 @@ correction:
 fixtures:
   - accordion.default.single
   - accordion.line.single
+  - accordion-line.default
 normalization:
   whitelist:
     - selector: ".accordion-header > button.btn-accordion"

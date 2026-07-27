@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "description": "KRDS 시맨틱 conformance 매니페스트·CLI·리포트 생성기.",
   "license": "Apache-2.0",
-  "type": "module",
+  "bin": {
+    "krds-conformance": "./dist/cli.js"
+  },
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
-  "bin": {
-    "krds-conformance": "./dist/cli.js"
-  },
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -23,6 +23,6 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "yaml": "catalog:"
+    "yaml": "2.9.0"
   }
 }

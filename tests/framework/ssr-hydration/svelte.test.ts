@@ -59,9 +59,9 @@ describe('Svelte server rendering and hydration', () => {
       await tick();
       expect(accordionTrigger.getAttribute('aria-expanded')).toBe('false');
       expect(secondTab.getAttribute('aria-selected')).toBe('true');
-      expect(host.querySelector('[role="tabpanel"]:not([hidden])')?.textContent).toBe(
-        'Second panel',
-      );
+      expect(
+        host.querySelector('[role="tabpanel"]:not([hidden])')?.lastChild?.textContent,
+      ).toBe('Second panel');
 
       host.querySelector<HTMLButtonElement>('button[type="submit"]')!.click();
       await tick();
