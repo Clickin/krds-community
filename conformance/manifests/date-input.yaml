@@ -26,8 +26,5 @@ fixtures:
           - action: keyboard-focus
             target: fixture
 contract:
-  semanticElement: label-and-input
-  requiredAttributes:
-    label: [for]
-    input: [id]
+  semanticElement: native-element
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]
