@@ -951,7 +951,7 @@ export function CoachMark({
           </div>
         </div>
       </div>
-      <div className="coach-point">
+      <div>
         <h3>{children ?? contentTitle}</h3>
       </div>
     </div>
@@ -985,8 +985,7 @@ export function ContextualHelp({
   className,
 }: ContextualHelpProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const generatedId = useId();
-  const popoverId = `krds-contextual-help-${generatedId}`;
+
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = (next: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(next);
@@ -1000,13 +999,12 @@ export function ContextualHelp({
           type="button"
           className="krds-btn medium icon tooltip-btn"
           aria-expanded={open}
-          aria-controls={popoverId}
           onClick={() => setOpen(!open)}
         >
           <span className="sr-only">{label}</span>
           <SvgIcon name="ico-tooltip" />
         </button>
-        <div id={popoverId} className="tooltip-popover" role="tooltip">
+        <div className="tooltip-popover" role="tooltip">
           <h4 className="tooltip-title">{title}</h4>
           <div className="tooltip-contents">
             <p>{children}</p>
@@ -4081,18 +4079,16 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
             const active = activeTab === tab.id;
             return (
               <li
-                role="none"
+                id={tabId}
+                role="tab"
+                aria-selected={active}
+                aria-controls={panelId}
                 className={active ? 'active' : undefined}
                 key={tab.id}
               >
                 <button
-                  id={tabId}
                   type="button"
                   className="btn-tab"
-                  role="tab"
-                  aria-selected={active}
-                  aria-controls={panelId}
-                  tabIndex={active ? 0 : -1}
                   disabled={tab.disabled}
                   onClick={() => selectTab(tab.id)}
                   onKeyDown={(event) => {
@@ -4137,11 +4133,10 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
           return (
             <section
               id={panelId}
-              role="tabpanel"
               aria-labelledby={tabId}
+              role="tabpanel"
               className={cx('tab-conts', activeTab === tab.id && 'active')}
               data-quick-nav={tab.quickNav ?? false}
-              hidden={activeTab !== tab.id}
               key={tab.id}
             >
               <h3 className="sr-only">{panelTitle}</h3>

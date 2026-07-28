@@ -35,12 +35,10 @@ const {
   ...rest
 } = Astro.props;
 void ignoredOnclick;
-const spokenText = text ?? label ?? children;
-const accessibleLabel = ariaLabel ?? label ?? children;
+void text;
 const variantClass = variant === 'play' ? (playing ? 'pause' : 'play') : undefined;
 const resolvedIconClass =
   iconClass ?? (variant === 'play' ? (playing ? 'ico-stop' : 'ico-play') : 'ico-volume');
-const instanceId = `krds-tts-${crypto.randomUUID()}`;
 ---
 
 <button
@@ -48,11 +46,7 @@ const instanceId = `krds-tts-${crypto.randomUUID()}`;
   type={type}
   disabled={disabled}
   class={cx('krds-tts', size, variantClass, playing && 'is-playing', className)}
-  aria-pressed={playing ? 'true' : 'false'}
-  aria-label={iconOnly ? accessibleLabel : ariaLabel}
-  data-krds-tts={instanceId}
-  data-krds-tts-variant={variant}
-  data-tts-text={spokenText}
+  aria-label={ariaLabel || undefined}
 >
   <span class="krds-tts-icon" aria-hidden="true">
     <slot name="icon"><i class={cx('svg-icon', resolvedIconClass)}></i></slot>
@@ -65,13 +59,15 @@ const instanceId = `krds-tts-${crypto.randomUUID()}`;
 <script>
   let activeTtsButton: HTMLButtonElement | null = null;
 
+  const isPlayVariant = (button: HTMLButtonElement) =>
+    button.classList.contains('play') || button.classList.contains('pause');
+
   const setTtsPlaying = (button: HTMLButtonElement, playing: boolean) => {
-    const variant = button.dataset.krdsTtsVariant;
     const icon = button.querySelector<HTMLElement>('.krds-tts-icon .svg-icon');
     button.classList.toggle('is-playing', playing);
     button.setAttribute('aria-pressed', playing ? 'true' : 'false');
 
-    if (variant === 'play') {
+    if (isPlayVariant(button)) {
       button.classList.toggle('play', !playing);
       button.classList.toggle('pause', playing);
       icon?.classList.toggle('ico-play', !playing);
@@ -87,9 +83,9 @@ const instanceId = `krds-tts-${crypto.randomUUID()}`;
 
   document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
-    const button = event.target.closest<HTMLButtonElement>('button[data-krds-tts]');
+    const button = event.target.closest<HTMLButtonElement>('.krds-tts');
     if (!button || button.disabled) return;
-    const text = button.dataset.ttsText?.trim();
+    const text = button.querySelector('.krds-tts-text')?.textContent?.trim();
     if (!text || !('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
       return;
     }

@@ -130,6 +130,21 @@
       desktopItems?: KrdsNavItem[];
       mobileMenu?: Record<string, unknown>;
       menuLabel?: string;
+      badgeLabel?: string;
+      countSuffix?: string;
+      currentLabel?: string;
+      currentStepLabel?: string;
+      deleteLabel?: string;
+      downloadLabel?: string;
+      extendLabel?: string;
+      logoutLabel?: string;
+      ordered?: boolean;
+      previewLabel?: string;
+      sample?: boolean;
+      statusLabel?: string;
+      timeLabel?: string;
+      titleLinkLabel?: string;
+      totalStepsLabel?: string;
     };
   type AdditionalValue = NonNullable<Props['value']>;
   type AdditionalModelValue = NonNullable<Props['modelValue']>;
@@ -300,6 +315,21 @@
     desktopItems = [],
     mobileMenu,
     menuLabel = '',
+    badgeLabel = '',
+    countSuffix = '',
+    currentLabel = '',
+    currentStepLabel = '',
+    deleteLabel = '',
+    downloadLabel = '',
+    extendLabel = '',
+    logoutLabel = '',
+    ordered = false,
+    previewLabel = '',
+    sample = false,
+    statusLabel = '',
+    timeLabel = '',
+    titleLinkLabel = '',
+    totalStepsLabel = '',
     class: classProp = '',
     className = '',
     children,
@@ -903,7 +933,7 @@
     <label for={id}>{label}</label>
   </div>
 {:else if kind === 'coach-mark'}
-  <div {...rest} class={`bg-white krds-coach-mark txt-box ${rootClass}`} hidden={!isOpen}>
+  <div {...rest} class={`bg-white bg-white krds-coach-mark txt-box ${rootClass}`} hidden={!isOpen}>
     <div class="coach-balloon">
       <h5 class="sr-only">{title}</h5>
       <h6 class="coach-tit">{stepTitle}</h6>
@@ -949,24 +979,24 @@
     </div>
   </div>
 {:else if kind === 'critical-alerts'}
-  <div {...rest} class={`krds-critical-alerts ${rootClass}`} role="alert">
-    <ul>
-      {#each items as item}
-        <li>
-          <div class="critical-ban">
-            <span class={`critical-badge ${fieldOf(item, 'tone') || 'info'}`}
-              >{fieldOf(item, 'badgeLabel') || fieldOf(item, 'badge') || labelOf(item)}</span
-            >
-            <p class="critical-txt">{fieldOf(item, 'message') || fieldOf(item, 'text') || fieldOf(item, 'description') || labelOf(item)}</p>
-            <a class="basic krds-btn link medium" href={hrefOf(item)}>
-              <span class="m-hide">{fieldOf(item, 'linkLabel') || fieldOf(item, 'actionLabel') || linkLabel}</span>
-              <i class="ico-angle right svg-icon"></i>
-            </a>
-          </div>
-        </li>
-      {/each}
-    </ul>
-  </div>
+  <ul {...rest} class={`krds-critical-alerts ${rootClass}`}>
+    {#each items as item}
+      <li>
+        <div class="critical-ban">
+          <span class={`critical-badge ${fieldOf(item, 'tone') || 'info'}`}
+            >{fieldOf(item, 'badgeLabel') || fieldOf(item, 'badge') || labelOf(item)}</span
+          >
+          <p class="critical-txt"
+            >{fieldOf(item, 'message') || fieldOf(item, 'text') || fieldOf(item, 'description') || labelOf(item)}</p
+          >
+          <a class="basic krds-btn link medium" href={hrefOf(item)}>
+            <span class="m-hide">{fieldOf(item, 'linkLabel') || fieldOf(item, 'actionLabel') || linkLabel}</span>
+            <i class="ico-angle right svg-icon"></i>
+          </a>
+        </div>
+      </li>
+    {/each}
+  </ul>
 {:else if kind === 'disclosure'}
   <div {...rest} class={`conts-expand-area krds-disclosure ${rootClass}`}>
     <button
@@ -2169,8 +2199,6 @@
     {...rest}
     type="button"
     class={`krds-tts ${size || 'medium'} ${rootClass}`}
-    aria-pressed={playing || checkedValue}
-    data-text={text || undefined}
     onclick={(event) => setChecked(!checkedValue, event, 'click')}
   >
     <span class="krds-tts-icon" aria-hidden="true"><i class="ico-volume svg-icon"></i></span>

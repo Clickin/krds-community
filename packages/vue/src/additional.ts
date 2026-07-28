@@ -3676,7 +3676,6 @@ export function createAdditional(name: string, kind: string) {
                       'aria-labelledby': tabId,
                       class: ['tab-conts', isActive ? 'active' : undefined],
                       'data-quick-nav': 'false',
-                      hidden: !isActive,
                     },
                     [
                       create('h3', { class: 'sr-only' }, props.panelTitle),
