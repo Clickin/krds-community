@@ -42,7 +42,6 @@ const popupMenuId = (item: SideNavigationItem) => item.controlsId ?? `lnbmenu-${
   {...rest}
   class={cx('krds-side-navigation', className)}
   aria-label={ariaLabel ?? navigationLabel}
-  data-krds-side-navigation
 >
   <h2 class="lnb-tit">{title}</h2>
   <ul class="lnb-list" role="menubar">
@@ -148,7 +147,7 @@ const popupMenuId = (item: SideNavigationItem) => item.controlsId ?? `lnbmenu-${
 </nav>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-krds-side-navigation]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('.krds-side-navigation').forEach((root) => {
     root
       .querySelectorAll<HTMLButtonElement>(':scope > .lnb-list > .lnb-item > .lnb-toggle')
       .forEach((button) => {

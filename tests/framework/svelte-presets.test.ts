@@ -49,6 +49,7 @@ describe('Svelte additional presets', () => {
     await tick();
 
     const select = host.querySelector<HTMLSelectElement>('select')!;
+    expect(select.closest('.form-group')?.querySelector('label')?.htmlFor).toBe(select.id);
     expect(select.value).toBe('second');
     select.value = 'first';
     select.dispatchEvent(new Event('change', { bubbles: true }));
@@ -78,9 +79,13 @@ describe('Svelte additional presets', () => {
   it('keeps alerts, file picker controls, and search inputs semantically native', async () => {
     const alerts = mountInHost(CriticalAlerts, {
       items: [{ message: 'Service notice', linkLabel: 'Read more', href: '/notice' }],
+      'aria-label': 'Urgent notices',
     });
     await tick();
-    expect(alerts.querySelector('[role="alert"]')?.tagName).toBe('DIV');
+    const alertRegion = alerts.querySelector<HTMLElement>('[role="alert"]');
+    expect(alertRegion?.tagName).toBe('DIV');
+    expect(alertRegion?.getAttribute('aria-label')).toBe('Urgent notices');
+    expect(alertRegion?.querySelector(':scope > ul.krds-critical-alerts')).not.toBeNull();
     expect(alerts.querySelector('ul[role="alert"]')).toBeNull();
 
     const upload = mountInHost(FileUpload, {
@@ -89,32 +94,87 @@ describe('Svelte additional presets', () => {
       selectLabel: 'Choose files',
     });
     await tick();
-    const uploadLabel = upload.querySelector<HTMLLabelElement>('label[for="files"]')!;
-    expect(uploadLabel.querySelector('button')).toBeNull();
-    expect(upload.querySelector('input[type="file"]')).toBe(uploadLabel.control);
+    const uploadInput = upload.querySelector<HTMLInputElement>('input[type="file"]')!;
+    const uploadButton = upload.querySelector<HTMLButtonElement>('.file-upload-btn-wrap > button')!;
+    expect(uploadButton.previousElementSibling).toBe(uploadInput);
+    let uploadInputClicks = 0;
+    uploadInput.addEventListener('click', () => uploadInputClicks++);
+    uploadButton.click();
+    expect(uploadInputClicks).toBe(1);
 
     const mobileMenu = mountInHost(MainMenuMobile, {
       searchTitle: 'Search',
       searchLabel: 'Search',
     });
     await tick();
-    expect(mobileMenu.querySelector('form[role="search"] input')?.getAttribute('aria-label')).toBe('Search');
+    expect(mobileMenu.querySelector('.sch-input')?.hasAttribute('role')).toBe(false);
+    const mobileSearch = mobileMenu.querySelector<HTMLInputElement>('.sch-input input')!;
+    expect(mobileSearch.getAttribute('title')).toBe('Search');
+    expect(mobileSearch.hasAttribute('aria-label')).toBe(false);
 
     const header = mountInHost(Header, {
       mobileMenu: { searchTitle: 'Header search', searchLabel: 'Find' },
     });
     await tick();
-    expect(header.querySelector('.sch-input input')?.getAttribute('aria-label')).toBe('Find');
+    const headerSearch = header.querySelector<HTMLInputElement>('.sch-input input')!;
+    expect(headerSearch.getAttribute('title')).toBe('Header search');
+    expect(headerSearch.hasAttribute('aria-label')).toBe(false);
   });
 
-  it('closes the modal through its native lifecycle baseline', async () => {
-    const host = mountInHost(Modal, { open: true, title: 'Preset modal' });
+  it('closes the modal through its KRDS section state and emits close', async () => {
+    let closeCount = 0;
+    const host = mountInHost(Modal, {
+      open: true,
+      title: 'Preset modal',
+      onclose: () => {
+        closeCount += 1;
+      },
+    });
     await tick();
 
-    const dialog = host.querySelector<HTMLDialogElement>('dialog')!;
-    expect(dialog.open).toBe(true);
-    dialog.querySelector('button')!.click();
+    const dialog = host.querySelector<HTMLElement>('section[role="dialog"]')!;
+    expect(dialog.classList.contains('shown')).toBe(true);
+    dialog.querySelector<HTMLButtonElement>('button')!.click();
     await tick();
-    expect(dialog.open).toBe(false);
+    expect(dialog.classList.contains('shown')).toBe(false);
+    expect(closeCount).toBe(1);
+  });
+
+  it('keeps the exact upload count and every upstream status/action row', async () => {
+    const host = mountInHost(FileUpload, {
+      currentCount: 3,
+      maxCount: 10,
+      countSuffix: '개',
+      files: [
+        { name: '업로드 파일', status: 'uploading', statusLabel: '업로드 중' },
+        { name: '완료 파일', status: 'complete', statusLabel: '업로드 완료' },
+        { name: '삭제 파일', status: 'deletable', deleteLabel: '삭제' },
+        {
+          name: '오류 파일',
+          status: 'error',
+          deleteLabel: '삭제',
+          errors: ['용량을 초과하였습니다.', '작은 파일을 선택해주세요.'],
+        },
+        {
+          name: '다운로드 파일',
+          status: 'downloadable',
+          downloadLabel: '다운로드',
+          previewLabel: '바로보기',
+        },
+      ],
+    });
+    await tick();
+
+    expect(host.querySelector('.file-list > .total')?.textContent).toBe('3개 / 10개');
+    const rows = Array.from(host.querySelectorAll<HTMLLIElement>('.upload-list > li'));
+    expect(rows).toHaveLength(5);
+    expect(rows[0].querySelector('.krds-spinner[role="status"]')).not.toBeNull();
+    expect(rows[1].querySelector('.ico-invalid.complete')).not.toBeNull();
+    expect(rows[2].querySelector('button .ico-delete-fill')).not.toBeNull();
+    expect(rows[3].className).toBe('is-error');
+    expect(rows[3].querySelectorAll('.file-hint-invalid br')).toHaveLength(1);
+    expect(rows[4].querySelector('.file-info.m-column')).not.toBeNull();
+    expect(rows[4].querySelector('button .ico-down')).not.toBeNull();
+    expect(rows[4].querySelector('button .ico-angle.right')).not.toBeNull();
   });
 });

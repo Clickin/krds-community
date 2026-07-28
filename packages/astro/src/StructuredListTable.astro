@@ -112,7 +112,11 @@ const displayCell = (value: StructuredListTableRow[string]) =>
               class="krds-btn medium text"
               disabled={action.disabled}
             >
-              {action.icon && <i class:list={['svg-icon', `ico-${action.icon}`]}></i>}
+              {action.icon && (
+                <Fragment>
+                  <i class:list={['svg-icon', `ico-${action.icon}`]}></i>{' '}
+                </Fragment>
+              )}
               {action.label}
             </button>
           </li>
@@ -123,6 +127,7 @@ const displayCell = (value: StructuredListTableRow[string]) =>
     <ul class="sch-sort">
       <li>
         <strong class="sort-label"><label for={countId}>{countLabel}</label></strong>
+        {' '}
         <select class="krds-form-select-sort" id={countId}>
           {countOptions.map((option, index) => (
             <option selected={countValue ? option === countValue && index !== 0 : false}>
@@ -135,12 +140,14 @@ const displayCell = (value: StructuredListTableRow[string]) =>
         <strong class="sort-label"><label for={sortId}>{sortLabel}</label></strong>
         <div class="w-sort-btn">
           {sortOptions.map((option) => (
-            <button
-              type="button"
-              class:list={[option === sortValue && 'active']}
-            >
-              {option}
-            </button>
+            <Fragment>
+              <button
+                type="button"
+                class:list={[option === sortValue && 'active']}
+              >
+                {option}
+              </button>{' '}
+            </Fragment>
           ))}
         </div>
         <div class="m-sort-btn">
@@ -191,6 +198,7 @@ const displayCell = (value: StructuredListTableRow[string]) =>
                           class="chk"
                           id={rowInputId}
                           name={selectionName}
+                          aria-label={row.selectionLabel}
                           checked={row.selected}
                           disabled={row.disabled}
                         />
@@ -203,7 +211,7 @@ const displayCell = (value: StructuredListTableRow[string]) =>
                   return (
                     <td>
                       <button type="button" class="krds-btn medium text">
-                        <i class="svg-icon ico-down"></i>
+                        <i class="svg-icon ico-down"></i>{' '}
                         {displayCell(row[column.key])}
                       </button>
                     </td>

@@ -5,14 +5,15 @@ import {
   h,
   nextTick,
   onBeforeUnmount,
-  onMounted,
   ref,
   useId,
   watch,
   type PropType,
   type VNode,
 } from 'vue';
+import { selectRecipe, tabRecipe } from '@krds-community/recipes';
 import type {
+  InputState,
   KrdsAdditionalProps,
   KrdsCarouselSlide,
   KrdsListItem,
@@ -22,6 +23,7 @@ import type {
   KrdsTableColumn,
   KrdsTabItem,
   KrdsTone,
+  SelectRecipeSize,
 } from '@krds-community/recipes';
 
 export type AdditionalValue = string | number | boolean | string[];
@@ -57,6 +59,7 @@ export interface AdditionalAlertItem {
 }
 export interface AdditionalStructuredListItem extends KrdsListItem {
   tone?: string;
+  badgeClass?: string;
   dateLabel?: string;
   date?: string;
   actionLabel?: string;
@@ -143,7 +146,10 @@ export interface AdditionalTableColumn extends KrdsTableColumn {
   width?: string;
   visuallyHidden?: boolean;
 }
-export type AdditionalTableRow = Record<string, string | number | boolean>;
+export interface AdditionalTableRow
+  extends Record<string, string | number | boolean | undefined> {
+  selectionLabel?: string;
+}
 export interface AdditionalAction {
   id?: string;
   label: string;
@@ -183,10 +189,12 @@ type AdditionalPropsExtension = {
   languages?: AdditionalLanguage[];
   nav?: KrdsNavItem[];
   error?: string;
+  state?: InputState;
   step?: string;
   type?: string;
   previousLabel?: string;
   nextLabel?: string;
+  navigationLabel?: string;
   moreLabel?: string;
   imageLabel?: string;
   actionLabel?: string;
@@ -196,6 +204,8 @@ type AdditionalPropsExtension = {
   panelTitle?: string;
   external?: boolean;
   selectedLabel?: string;
+  currentLabel?: string;
+  externalTitle?: string;
   resetLabel?: string;
   pageTitle?: string;
   actionInfo?: string;
@@ -210,6 +220,8 @@ type AdditionalPropsExtension = {
   contentTitle?: string;
   currentStep?: string;
   totalSteps?: string;
+  currentStepLabel?: string;
+  totalStepsLabel?: string;
   caption?: string;
   linkLabel?: string;
   closeLabel?: string;
@@ -222,6 +234,7 @@ type AdditionalPropsExtension = {
   tutorialTitle?: string;
   tutorialBackTitle?: string;
   tasks?: AdditionalTutorialTask[];
+  backTitle?: string;
   collapseLabel?: string;
   cancelLabel?: string;
   confirmLabel?: string;
@@ -238,6 +251,7 @@ type AdditionalPropsExtension = {
   selectLabel?: string;
   currentCount?: number;
   maxCount?: number;
+  countSuffix?: string;
   deleteAllLabel?: string;
   relatedSites?: AdditionalFooterLink[];
   logoLabel?: string;
@@ -288,6 +302,7 @@ type AdditionalPropsExtension = {
   mobileMenu?: AdditionalMobileMenu;
   menuLabel?: string;
   sample?: boolean;
+  ordered?: boolean;
 };
 
 type AnyItem =
@@ -335,6 +350,7 @@ const commonProps = {
   appearance: { type: String, default: 'outline' },
   size: { type: String, default: undefined },
   number: Boolean,
+  ordered: Boolean,
   items: { type: Array as PropType<AnyItem[]>, default: () => [] },
   options: { type: Array as PropType<KrdsOption[]>, default: () => [] },
   links: { type: Array as PropType<KrdsNavItem[]>, default: () => [] },
@@ -373,7 +389,7 @@ const commonProps = {
   },
   error: { type: String, default: undefined },
   step: { type: String, default: undefined },
-  state: { type: String, default: 'default' },
+  state: { type: String as PropType<InputState>, default: 'default' },
   type: { type: String, default: undefined },
   href: { type: String, default: '#' },
   message: { type: String, default: '' },
@@ -389,6 +405,7 @@ const commonProps = {
   playing: { type: Boolean as PropType<boolean | undefined>, default: undefined },
   previousLabel: { type: String, default: undefined },
   nextLabel: { type: String, default: undefined },
+  navigationLabel: { type: String, default: '페이지 이동' },
   moreLabel: { type: String, default: undefined },
   imageLabel: { type: String, default: undefined },
   actionLabel: { type: String, default: undefined },
@@ -398,6 +415,8 @@ const commonProps = {
   panelTitle: { type: String, default: undefined },
   external: Boolean,
   selectedLabel: { type: String, default: undefined },
+  currentLabel: { type: String, default: undefined },
+  externalTitle: { type: String, default: undefined },
   resetLabel: { type: String, default: undefined },
   pageTitle: { type: String, default: undefined },
   actionInfo: { type: String, default: undefined },
@@ -412,6 +431,8 @@ const commonProps = {
   contentTitle: { type: String, default: undefined },
   currentStep: { type: String, default: undefined },
   totalSteps: { type: String, default: undefined },
+  currentStepLabel: { type: String, default: undefined },
+  totalStepsLabel: { type: String, default: undefined },
   caption: { type: String, default: undefined },
   linkLabel: { type: String, default: undefined },
   closeLabel: { type: String, default: undefined },
@@ -423,6 +444,7 @@ const commonProps = {
   relatedGroups: { type: Array as PropType<AdditionalRelatedGroup[]>, default: () => [] },
   tutorialTitle: { type: String, default: undefined },
   tutorialBackTitle: { type: String, default: undefined },
+  backTitle: { type: String, default: undefined },
   tasks: { type: Array as PropType<AdditionalTutorialTask[]>, default: () => [] },
   collapseLabel: { type: String, default: undefined },
   cancelLabel: { type: String, default: undefined },
@@ -440,6 +462,7 @@ const commonProps = {
   selectLabel: { type: String, default: undefined },
   currentCount: { type: Number, default: undefined },
   maxCount: { type: Number, default: undefined },
+  countSuffix: { type: String, default: undefined },
   deleteAllLabel: { type: String, default: undefined },
   relatedSites: { type: Array as PropType<AdditionalFooterLink[]>, default: () => [] },
   logoLabel: { type: String, default: undefined },
@@ -511,19 +534,25 @@ function sideNavigationList(
   return create(
     'ul',
     {
-      id: depth > 1 ? `${idPrefix}-menu` : undefined,
+      id: depth === 2 ? `${idPrefix}-menu` : undefined,
       class: depth === 1 ? 'lnb-list' : undefined,
-      role: depth === 1 ? 'menubar' : 'menu',
+      role: depth === 1 ? 'menubar' : depth === 2 ? 'menu' : undefined,
     },
     items.map((item, itemIndex) => {
       const itemId = `${idPrefix}-${item.id ?? itemIndex}`;
+      const controlId = `${itemId}-menu`;
       const hasChildren = Boolean(item.children?.length);
       const current = hasCurrentNavigationItem(item);
+      const nestedTitle = (item as KrdsNavItem & { description?: string }).description ?? item.label;
       return create(
         'li',
         {
           key: item.id ?? item.label,
-          class: [depth === 1 ? 'lnb-item' : 'lnb-subitem', current ? 'active' : undefined],
+          class: [
+            depth === 1 ? 'lnb-item' : 'lnb-subitem',
+            current ? 'active' : undefined,
+          ],
+          role: 'none',
         },
         [
           hasChildren
@@ -531,9 +560,15 @@ function sideNavigationList(
                 'button',
                 {
                   type: 'button',
-                  class: ['lnb-btn', depth === 1 ? 'lnb-toggle' : 'lnb-toggle-popup'],
+                  class: [
+                    'lnb-btn',
+                    depth === 1 ? 'lnb-toggle' : 'lnb-toggle-popup',
+                    depth === 1 && current ? 'active' : undefined,
+                  ],
                   role: 'menuitem',
-                  'aria-expanded': current,
+                  'aria-controls': depth === 1 ? `${itemId}-menu` : controlId,
+                  'aria-expanded': depth === 1 ? current : false,
+                  'aria-haspopup': depth > 1 ? true : undefined,
                 },
                 item.label,
               )
@@ -548,11 +583,35 @@ function sideNavigationList(
                 item.label,
               ),
           hasChildren
-            ? create(
-                'div',
-                { class: depth === 1 ? 'lnb-submenu' : 'lnb-submenu-lv2' },
-                sideNavigationList(item.children ?? [], itemId, depth + 1),
-              )
+            ? depth === 1
+              ? create(
+                  'div',
+                  { class: 'lnb-submenu' },
+                  sideNavigationList(item.children ?? [], itemId, 2),
+                )
+              : create(
+                  'div',
+                  { id: controlId, class: 'lnb-submenu-lv2', role: 'menu' },
+                  [
+                    create(
+                      'button',
+                      { type: 'button', class: 'lnb-btn-tit' },
+                      nestedTitle,
+                    ),
+                    create(
+                      'ul',
+                      (item.children ?? []).map((child) =>
+                        create('li', { key: child.id ?? child.label, role: 'none' }, [
+                          create(
+                            'a',
+                            { href: child.href, class: 'lnb-btn', role: 'menuitem' },
+                            child.label,
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ],
+                )
             : null,
         ],
       );
@@ -707,7 +766,7 @@ function desktopMainMenu(
 ): VNode {
   return create(
     'ul',
-    { class: 'gnb-menu', 'aria-label': listLabel },
+    { class: 'gnb-menu', 'aria-label': initializeSubmenus ? listLabel : undefined },
     items.map((item, itemIndex) => {
       const panelId = `${rootId}-main-${itemIndex}`;
       return create('li', { key: item.id ?? item.label }, [
@@ -718,9 +777,13 @@ function desktopMainMenu(
                 type: 'button',
                 class: ['gnb-main-trigger', item.active ? 'active' : undefined],
                 'data-trigger': 'gnb',
-                'aria-haspopup': 'true',
-                'aria-expanded': item.active ? 'true' : 'false',
-                'aria-controls': panelId,
+                'aria-haspopup': initializeSubmenus ? 'true' : undefined,
+                'aria-expanded': initializeSubmenus
+                  ? item.active
+                    ? 'true'
+                    : 'false'
+                  : undefined,
+                'aria-controls': initializeSubmenus ? panelId : undefined,
               },
               item.label,
             )
@@ -753,7 +816,7 @@ function desktopMainMenu(
           ? create(
               'div',
               {
-                id: panelId,
+                id: initializeSubmenus ? panelId : undefined,
                 class: ['gnb-toggle-wrap', item.active ? 'is-open' : undefined],
               },
               create(
@@ -800,9 +863,13 @@ function desktopMainMenu(
                                     childActive ? 'active' : undefined,
                                   ],
                                   'data-trigger': 'gnb',
-                                  'aria-haspopup': 'true',
-                                  'aria-expanded': childActive ? 'true' : 'false',
-                                  'aria-controls': childPanelId,
+                                  'aria-haspopup': initializeSubmenus ? 'true' : undefined,
+                                  'aria-expanded': initializeSubmenus
+                                    ? childActive
+                                      ? 'true'
+                                      : 'false'
+                                    : undefined,
+                                  'aria-controls': initializeSubmenus ? childPanelId : undefined,
                                 },
                                 child.label,
                               ),
@@ -811,7 +878,7 @@ function desktopMainMenu(
                             : desktopMenuSubList(
                                 child,
                                 false,
-                                childPanelId,
+                                initializeSubmenus ? childPanelId : undefined,
                                 childActive,
                                 childIndex > 0,
                               ),
@@ -833,7 +900,7 @@ function headerUtilityItem(item: AdditionalMenuItem): VNode {
       target: item.target,
       title: item.title,
     }, [
-      item.label,
+      `${item.label} `,
       create('i', { class: ['svg-icon', 'ico-go'] }),
     ]);
   const resize = item.kind === 'resize';
@@ -843,9 +910,10 @@ function headerUtilityItem(item: AdditionalMenuItem): VNode {
       {
         type: 'button',
         class: ['krds-btn', 'small', 'text', 'drop-btn'],
+        'aria-expanded': false,
       },
       [
-        item.label,
+        `${item.label} `,
         create('i', { class: ['svg-icon', 'ico-toggle'] }),
       ],
     ),
@@ -896,6 +964,7 @@ function headerUtilityItem(item: AdditionalMenuItem): VNode {
                 { type: 'button', class: ['krds-btn', 'medium', 'text'] },
                 [
                   create('i', { class: ['svg-icon', 'ico-reset'] }),
+                  ' ',
                   item.resetLabel,
                 ],
               ),
@@ -912,6 +981,7 @@ function headerMyMenu(menu: AdditionalMyMenu): VNode {
       {
         type: 'button',
         class: ['btn-navi', 'drop-btn', 'my'],
+        'aria-expanded': false,
       },
       menu.label,
     ),
@@ -949,6 +1019,7 @@ function headerMyMenu(menu: AdditionalMyMenu): VNode {
             { type: 'button', class: ['krds-btn', 'medium', 'text'] },
             [
               create('i', { class: ['svg-icon', 'ico-logout'] }),
+              ' ',
               menu.logoutLabel,
             ],
           ),
@@ -1023,13 +1094,18 @@ function mobileMenuMarkup(
   className: string | undefined,
   visible: boolean,
   onClose: () => void,
+  enhanced: boolean,
 ): VNode {
   return create(
     'div',
     {
       ...attrs,
       id: rootId,
-      class: ['krds-main-menu-mobile', className],
+      class: [
+        'krds-main-menu-mobile',
+        !enhanced && visible && !className?.split(/\s+/).includes('sample') ? 'sample' : undefined,
+        className,
+      ],
       role: visible ? 'navigation' : undefined,
       style: visible ? attrs.style : 'display: none;',
     },
@@ -1044,7 +1120,7 @@ function mobileMenuMarkup(
                 create('li', { key: item.id ?? item.label }, [
                   create(
                     'button',
-                    { type: 'button', class: ['krds-btn', 'text', 'xsmall'] },
+                    { type: 'button', class: ['krds-btn', 'xsmall', 'text'] },
                     item.label,
                   ),
                 ]),
@@ -1054,6 +1130,7 @@ function mobileMenuMarkup(
           create('div', { class: 'gnb-login' }, [
             create('button', { type: 'button', class: ['krds-btn', 'large', 'text'] }, [
               create('i', { class: ['svg-icon', 'ico-log'] }),
+              ' ',
               data.loginLabel,
             ]),
           ]),
@@ -1077,7 +1154,7 @@ function mobileMenuMarkup(
             }),
             create(
               'button',
-              { type: 'button', class: ['krds-btn', 'icon', 'medium', 'ico-search'] },
+              { type: 'button', class: ['krds-btn', 'medium', 'icon', 'ico-search'] },
               [
                 create('span', { class: 'sr-only' }, data.searchLabel),
                 create('i', { class: ['svg-icon', 'ico-sch'] }),
@@ -1090,24 +1167,35 @@ function mobileMenuMarkup(
             create('div', { class: 'menu-wrap' }, [
               create(
                 'ul',
-                { role: 'tablist' },
+                { role: enhanced ? 'tablist' : undefined },
                 data.items.map((item, itemIndex) => {
                   const triggerId = `${rootId}-trigger-${itemIndex}`;
                   const panelId = item.id ?? `${rootId}-panel-${itemIndex}`;
-                  return create('li', { key: item.id ?? item.label, role: 'none' }, [
-                    create(
-                      'a',
-                      {
-                        id: triggerId,
-                        class: ['gnb-main-trigger', itemIndex === 0 ? 'active' : undefined],
-                        href: item.href ?? `#${panelId}`,
-                        role: 'tab',
-                        'aria-selected': itemIndex === 0 ? 'true' : 'false',
-                        'aria-controls': panelId,
-                      },
-                      item.label,
-                    ),
-                  ]);
+                  return create(
+                    'li',
+                    { key: item.id ?? item.label, role: enhanced ? 'none' : undefined },
+                    [
+                      create(
+                        'a',
+                        {
+                          id: enhanced ? triggerId : undefined,
+                          class: [
+                            'gnb-main-trigger',
+                            enhanced && itemIndex === 0 ? 'active' : undefined,
+                          ],
+                          href: item.href ?? `#${panelId}`,
+                          role: enhanced ? 'tab' : undefined,
+                          'aria-selected': enhanced
+                            ? itemIndex === 0
+                              ? 'true'
+                              : 'false'
+                            : undefined,
+                          'aria-controls': enhanced ? panelId : undefined,
+                        },
+                        item.label,
+                      ),
+                    ],
+                  );
                 }),
               ),
             ]),
@@ -1123,8 +1211,8 @@ function mobileMenuMarkup(
                     key: item.id ?? item.label,
                     id: panelId,
                     class: 'gnb-sub-list',
-                    role: 'tabpanel',
-                    'aria-labelledby': triggerId,
+                    role: enhanced ? 'tabpanel' : undefined,
+                    'aria-labelledby': enhanced ? triggerId : undefined,
                   },
                   [
                     create('h2', { class: 'sub-title' }, item.label),
@@ -1140,7 +1228,8 @@ function mobileMenuMarkup(
                                 child.children?.length ? 'has-depth3' : undefined,
                               ],
                               href: child.href,
-                              'aria-expanded': child.children?.length ? 'false' : undefined,
+                              'aria-expanded':
+                                enhanced && child.children?.length ? 'false' : undefined,
                             },
                             child.label,
                           ),
@@ -1171,13 +1260,14 @@ function mobileMenuMarkup(
                 'a',
                 {
                   key: item.id ?? item.label,
-                  class: ['krds-btn', 'medium', 'text'],
+                  class: ['krds-btn', enhanced ? 'medium' : 'small', 'text'],
                   href: item.href,
                   target: item.target,
                   title: item.title,
                 },
                 [
                   item.label,
+                  ' ',
                   create('i', {
                     class: [
                       'svg-icon',
@@ -1193,9 +1283,9 @@ function mobileMenuMarkup(
         create(
           'button',
           {
-            id: `${rootId}-close`,
+            id: visible ? 'close-nav' : `${rootId}-close`,
             type: 'button',
-            class: ['krds-btn', 'icon', 'medium'],
+            class: ['krds-btn', 'medium', 'icon'],
             onClick: onClose,
           },
           [
@@ -1476,7 +1566,7 @@ export function createAdditional(name: string, kind: string) {
       valueChange: (_value: string | number | boolean) => true,
       filesChange: (_files: File[]) => true,
     },
-    setup(props, { attrs, emit, slots }) {
+    setup(props, { attrs, emit, expose, slots }) {
       const localOpen = ref(props.defaultOpen);
       const setOpen = (next: boolean) => {
         if (props.open === undefined) localOpen.value = next;
@@ -1505,12 +1595,18 @@ export function createAdditional(name: string, kind: string) {
         watch(open, (nextOpen) => {
           void syncModalFocus(nextOpen);
         });
-        onMounted(() => {
-          if (open.value) void syncModalFocus(true);
-        });
         onBeforeUnmount(() => {
           void syncModalFocus(false);
         });
+      }
+      const selectElement = ref<HTMLSelectElement | null>(null);
+      if (
+        kind === 'select' ||
+        kind === 'select-size' ||
+        kind === 'select-state' ||
+        kind === 'select-sorting'
+      ) {
+        expose({ element: selectElement });
       }
       const initialSelected =
         props.defaultSelected ??
@@ -1535,6 +1631,22 @@ export function createAdditional(name: string, kind: string) {
           localSelected.value,
         set: setSelected,
       });
+      const nativeSelectValue = computed(() => {
+        if (
+          typeof props.modelValue === 'string' ||
+          typeof props.modelValue === 'number' ||
+          typeof props.modelValue === 'boolean'
+        ) {
+          return String(props.modelValue);
+        }
+        return props.value === undefined ? selected.value : String(props.value);
+      });
+      const syncNativeSelectValue = (vnode: VNode) => {
+        const element = vnode.el as HTMLSelectElement;
+        if (element.value !== nativeSelectValue.value) {
+          element.value = nativeSelectValue.value;
+        }
+      };
       const initialIndex = Math.max(0, (props.defaultCurrent ?? props.current ?? 1) - 1);
       const localIndex = ref(initialIndex);
       const index = computed(() =>
@@ -1726,8 +1838,8 @@ export function createAdditional(name: string, kind: string) {
                 ]),
                 calendar,
               ]),
-              props.hint ? create('p', { class: 'form-hint' }, props.hint) : null,
             ]),
+            props.hint ? create('p', { class: 'form-hint' }, props.hint) : null,
           ]);
         }
         if (kind === 'carousel' || kind === 'carousel-banner') {
@@ -1938,6 +2050,36 @@ export function createAdditional(name: string, kind: string) {
               }
             },
           });
+          if (kind === 'radio-size') {
+            const largeId = `${id.value}-large`;
+            return create('div', { class: 'krds-check-area' }, [
+              create(
+                'div',
+                {
+                  ...withoutNativeEvents(attrs),
+                  class: ['krds-form-check', 'medium', className],
+                },
+                [
+                  input,
+                  create(
+                    'label',
+                    { for: id.value },
+                    slotChildren.length ? slotChildren : props.label,
+                  ),
+                ],
+              ),
+              create('div', { class: ['krds-form-check', 'large'] }, [
+                create('input', {
+                  id: largeId,
+                  type: 'radio',
+                  name: props.name,
+                  disabled: props.disabled,
+                  required: props.required,
+                }),
+                create('label', { for: largeId }, '사이즈 : large'),
+              ]),
+            ]);
+          }
           return create(
             'div',
             {
@@ -1976,9 +2118,9 @@ export function createAdditional(name: string, kind: string) {
                   : null,
                 create('div', { class: 'coach-controls' }, [
                   create('div', { class: 'num' }, [
-                    create('span', { class: 'sr-only' }, '현재 단계'),
+                    create('span', { class: 'sr-only' }, props.currentStepLabel),
                     create('strong', currentStep),
-                    create('span', { class: 'sr-only' }, '총 단계'),
+                    create('span', { class: 'sr-only' }, props.totalStepsLabel),
                     create('span', totalSteps),
                   ]),
                   create('div', { class: 'btn-wrap' }, [
@@ -2076,33 +2218,37 @@ export function createAdditional(name: string, kind: string) {
         if (kind === 'critical-alerts')
           return create(
             'div',
-            { ...attrs, class: ['krds-critical-alerts', className], role: 'alert' },
-            create(
-              'ul',
-              props.items.map((item, itemIndex) => {
-                const alert = item as AdditionalAlertItem;
-                return create('li', { key: alert.id ?? itemIndex }, [
-                  create('div', { class: 'critical-ban' }, [
-                    create(
-                      'span',
-                      { class: ['critical-badge', alert.tone] },
-                      alert.badgeLabel ?? alert.badge,
-                    ),
-                    create('p', { class: 'critical-txt' }, alert.text),
-                    alert.href
-                      ? create(
-                          'a',
-                          { class: ['krds-btn', 'medium', 'basic', 'link'], href: alert.href },
-                          [
-                            create('span', { class: 'm-hide' }, alert.linkLabel),
-                            create('i', { class: ['svg-icon', 'ico-angle', 'right'] }),
-                          ],
-                        )
-                      : null,
-                  ]),
-                ]);
-              }),
-            ),
+            { class: 'main-urgent-wrap', role: 'alert' },
+            [
+              create(
+                'ul',
+                { ...attrs, class: ['krds-critical-alerts', className] },
+                props.items.map((item, itemIndex) => {
+                  const alert = item as AdditionalAlertItem;
+                  return create('li', { key: alert.id ?? itemIndex }, [
+                    create('div', { class: 'critical-ban' }, [
+                      create(
+                        'span',
+                        { class: ['critical-badge', alert.tone] },
+                        alert.badgeLabel ?? alert.badge,
+                      ),
+                      create('p', { class: 'critical-txt' }, alert.text),
+                      alert.href
+                        ? create(
+                            'a',
+                            { class: ['krds-btn', 'medium', 'basic', 'link'], href: alert.href },
+                            [
+                              create('span', { class: 'm-hide' }, alert.linkLabel),
+                              ' ',
+                              create('i', { class: ['svg-icon', 'ico-angle', 'right'] }),
+                            ],
+                          )
+                        : null,
+                    ]),
+                  ]);
+                }),
+              ),
+            ],
           );
         if (kind === 'disclosure') {
           const triggerId = `${id.value}-trigger`;
@@ -2199,8 +2345,16 @@ export function createAdditional(name: string, kind: string) {
                     },
                   }),
                   create(
-                    'label',
-                    { for: inputId, class: ['krds-btn', 'medium'] },
+                    'button',
+                    {
+                      type: 'button',
+                      class: ['krds-btn', 'medium'],
+                      disabled: props.disabled,
+                      onClick: () => {
+                        const input = document.getElementById(inputId);
+                        if (input instanceof HTMLInputElement) input.click();
+                      },
+                    },
                     [
                       create('i', { class: ['svg-icon', 'ico-upload'] }),
                       props.selectLabel ?? props.label,
@@ -2210,8 +2364,12 @@ export function createAdditional(name: string, kind: string) {
               ]),
               create('div', { class: 'file-list' }, [
                 create('div', { class: 'total' }, [
-                  create('span', { class: 'current' }, `${props.currentCount ?? 0}개`),
-                  `/ ${props.maxCount ?? 0}개`,
+                  create(
+                    'span',
+                    { class: 'current' },
+                    `${props.currentCount ?? 0}${props.countSuffix ?? ''}`,
+                  ),
+                  ` / ${props.maxCount ?? 0}${props.countSuffix ?? ''}`,
                 ]),
                 create(
                   'ul',
@@ -2252,6 +2410,7 @@ export function createAdditional(name: string, kind: string) {
                                         },
                                         [
                                           file.deleteLabel,
+                                          ' ',
                                           create('i', {
                                             class: ['svg-icon', 'ico-delete-fill'],
                                           }),
@@ -2264,6 +2423,7 @@ export function createAdditional(name: string, kind: string) {
                                     { type: 'button', class: ['krds-btn', 'medium', 'text'] },
                                     [
                                       file.downloadLabel,
+                                      ' ',
                                       create('i', { class: ['svg-icon', 'ico-down'] }),
                                     ],
                                   )
@@ -2274,6 +2434,7 @@ export function createAdditional(name: string, kind: string) {
                                     { type: 'button', class: ['krds-btn', 'medium', 'text'] },
                                     [
                                       file.previewLabel,
+                                      ' ',
                                       create('i', {
                                         class: ['svg-icon', 'ico-angle', 'right'],
                                       }),
@@ -2362,6 +2523,7 @@ export function createAdditional(name: string, kind: string) {
                         },
                         [
                           link.label,
+                          ' ',
                           create('i', { class: ['svg-icon', 'ico-angle', 'right'] }),
                         ],
                       ),
@@ -2500,6 +2662,7 @@ export function createAdditional(name: string, kind: string) {
                     undefined,
                     false,
                     closeMenu,
+                    true,
                   )
                 : null,
             ]);
@@ -2525,6 +2688,7 @@ export function createAdditional(name: string, kind: string) {
               className,
               props.sample,
               closeMenu,
+              false,
             );
           }
           return create(
@@ -2571,14 +2735,18 @@ export function createAdditional(name: string, kind: string) {
                           const isActive = tabValue === activeTab;
                           return create(
                             'li',
-                            { key: tab.id, role: 'none' },
+                            {
+                              key: tab.id,
+                              role: 'presentation',
+                              class: isActive ? 'active' : undefined,
+                            },
                             create(
                               'button',
                               {
                                 id: tab.id,
                                 type: 'button',
                                 role: 'tab',
-                                class: ['btn-tab', isActive ? 'active' : undefined],
+                                class: 'btn-tab',
                                 'aria-selected': isActive,
                                 'aria-controls': panelId,
                                 tabIndex: isActive ? 0 : -1,
@@ -2613,6 +2781,7 @@ export function createAdditional(name: string, kind: string) {
                             role: 'tabpanel',
                             class: ['tab-conts', isActive ? 'active' : undefined],
                             'aria-labelledby': tab.id,
+                            hidden: !isActive,
                           },
                           [
                             create('h3', { class: 'sr-only' }, tab.label),
@@ -2621,7 +2790,7 @@ export function createAdditional(name: string, kind: string) {
                                   create('div', { class: ['conts-area', 'help-conts'] }, [
                                     create('div', { class: 'conts-wrap' }, [
                                       create('h4', { class: 'help-title' }, [
-                                        props.helpTitle,
+                                        props.helpTitle === undefined ? undefined : `${props.helpTitle} `,
                                         create(
                                           'span',
                                           { class: ['krds-btn', 'icon', 'medium'] },
@@ -2648,7 +2817,7 @@ export function createAdditional(name: string, kind: string) {
                                                 title: link.title,
                                               },
                                               [
-                                                link.label,
+                                                `${link.label} `,
                                                 create('i', {
                                                   class: ['svg-icon', 'ico-go'],
                                                 }),
@@ -2685,7 +2854,7 @@ export function createAdditional(name: string, kind: string) {
                                                         ],
                                                       })
                                                     : null,
-                                                  link.label,
+                                                  link.icon ? ` ${link.label}` : `${link.label} `,
                                                   link.icon
                                                     ? null
                                                     : create('i', {
@@ -2801,7 +2970,6 @@ export function createAdditional(name: string, kind: string) {
                       }),
                     ]),
                   ]),
-                ]),
                 create(
                   'button',
                   {
@@ -2814,10 +2982,11 @@ export function createAdditional(name: string, kind: string) {
                   },
                   [
                     create('span', { class: 'sr-only' }, props.label),
-                    props.collapseLabel,
+                    props.collapseLabel === undefined ? undefined : ` ${props.collapseLabel} `,
                     create('i', { class: ['svg-icon', 'ico-angle', 'right'] }),
                   ],
                 ),
+                ]),
               ]),
             ],
           );
@@ -2835,56 +3004,63 @@ export function createAdditional(name: string, kind: string) {
           ]);
         if (kind === 'in-page-navigation') {
           const navigationItems = props.items as KrdsNavItem[];
-          return create(
-            'div',
-            {
-              ...attrs,
-              class: ['krds-in-page-navigation-area', className],
-            },
-            [
-              create('div', { class: 'in-page-navigation-header' }, [
-                create('p', { class: 'quick-caption' }, props.title),
-                props.pageTitle
-                  ? create('p', { class: 'quick-title' }, props.pageTitle)
-                  : null,
-              ]),
-              create('nav', { class: 'in-page-navigation-list' }, [
-                create(
-                  'ul',
-                  navigationItems.map((item) =>
-                    create('li', { key: item.id ?? item.label }, [
-                      create(
-                        'a',
-                        {
-                          href: item.href,
-                          class: item.current ? 'active' : undefined,
-                        },
-                        item.label,
-                      ),
-                    ]),
+          return create('div', { class: 'krds-in-page-navigation-type' }, [
+            create(
+              'div',
+              {
+                ...attrs,
+                class: ['krds-in-page-navigation-area', className],
+              },
+              [
+                create('div', { class: 'in-page-navigation-header' }, [
+                  create('p', { class: 'quick-caption' }, props.title),
+                  props.pageTitle
+                    ? create('p', { class: 'quick-title' }, props.pageTitle)
+                    : null,
+                ]),
+                create('nav', { class: 'in-page-navigation-list' }, [
+                  create(
+                    'ul',
+                    navigationItems.map((item) =>
+                      create('li', { key: item.id ?? item.label }, [
+                        create(
+                          'a',
+                          {
+                            href: item.href,
+                            class: item.current ? 'active' : undefined,
+                          },
+                          item.label,
+                        ),
+                      ]),
+                    ),
                   ),
-                ),
-              ]),
-              create('div', { class: 'in-page-navigation-action' }, [
-                create(
-                  'button',
-                  { type: 'button', class: ['krds-btn', 'medium'] },
-                  props.actionLabel,
-                ),
-                props.actionInfo || props.actionCount
-                  ? create('p', { class: 'quick-info' }, [
-                      props.actionInfo,
-                      props.actionCount ? create('strong', props.actionCount) : null,
-                    ])
-                  : null,
-              ]),
-            ],
-          );
+                ]),
+                create('div', { class: 'in-page-navigation-action' }, [
+                  create(
+                    'button',
+                    { type: 'button', class: ['krds-btn', 'medium'] },
+                    props.actionLabel,
+                  ),
+                  props.actionInfo || props.actionCount
+                    ? create('p', { class: 'quick-info' }, [
+                        props.actionInfo,
+                        props.actionInfo && props.actionCount ? ' ' : null,
+                        props.actionCount ? create('strong', props.actionCount) : null,
+                      ])
+                    : null,
+                ]),
+              ],
+            ),
+          ]);
         }
         if (kind === 'language-switcher' || kind === 'language-switcher-page') {
           const languages: AdditionalLanguage[] = props.languages.length
             ? props.languages
             : props.options;
+          const displayedLanguages =
+            kind === 'language-switcher-page'
+              ? languages.filter((language) => language.value !== selected.value)
+              : languages;
           return create(
             'div',
             {
@@ -2903,7 +3079,9 @@ export function createAdditional(name: string, kind: string) {
                 },
                 [
                   create('i', { class: ['svg-icon', 'ico-global'] }),
+                  ' ',
                   props.label,
+                  ' ',
                   create('i', { class: ['svg-icon', 'ico-toggle'] }),
                 ],
               ),
@@ -2912,7 +3090,7 @@ export function createAdditional(name: string, kind: string) {
                   kind === 'language-switcher-page'
                     ? create('div', { class: 'drop-top' }, [
                         create('p', { class: 'current-laguage' }, [
-                          create('span', props.title),
+                          create('span', props.currentLabel),
                           create(
                             'strong',
                             languages.find((language) => language.value === selected.value)?.label,
@@ -2923,7 +3101,7 @@ export function createAdditional(name: string, kind: string) {
                   create(
                     'ul',
                     { class: 'drop-list' },
-                    languages.map((language) =>
+                    displayedLanguages.map((language) =>
                       create('li', { key: language.value }, [
                         create(
                           'a',
@@ -2942,12 +3120,15 @@ export function createAdditional(name: string, kind: string) {
                                 : undefined,
                             title:
                               kind === 'language-switcher-page' || language.external
-                                ? props.text
+                                ? props.externalTitle
                                 : undefined,
-                            onClick: (event: Event) => {
-                              event.preventDefault();
-                              setSelected(language.value);
-                            },
+                            onClick:
+                              kind === 'language-switcher'
+                                ? (event: Event) => {
+                                    event.preventDefault();
+                                    setSelected(language.value);
+                                  }
+                                : undefined,
                           },
                           [
                             language.label,
@@ -2957,7 +3138,10 @@ export function createAdditional(name: string, kind: string) {
                             create(
                               'span',
                               { class: 'sr-only' },
-                              language.value === selected.value ? '선택됨' : '',
+                              kind === 'language-switcher' &&
+                                language.value === selected.value
+                                ? props.selectedLabel
+                                : '',
                             ),
                           ],
                         ),
@@ -2985,6 +3169,7 @@ export function createAdditional(name: string, kind: string) {
                 { class: 'underline' },
                 slotChildren.length ? slotChildren : props.label,
               ),
+              props.external || attrs.target ? ' ' : null,
               props.external || attrs.target
                 ? create('i', { class: ['svg-icon', 'ico-go'] })
                 : null,
@@ -3034,7 +3219,15 @@ export function createAdditional(name: string, kind: string) {
                     create(
                       'div',
                       { class: 'conts-area' },
-                      slotChildren.length ? slotChildren : props.description,
+                      slotChildren.length
+                        ? slotChildren
+                        : kind === 'modal' && props.items.length
+                          ? props.items.flatMap((item, itemIndex) =>
+                              itemIndex
+                                ? [create('br', { key: `break-${itemIndex}` }), itemLabel(item)]
+                                : [itemLabel(item)],
+                            )
+                          : props.description,
                     ),
                   ]),
                   create('div', { class: ['btn-wrap', 'modal-btn'] }, [
@@ -3048,7 +3241,7 @@ export function createAdditional(name: string, kind: string) {
                           emit('close');
                         },
                       },
-                      '아니요',
+                      props.cancelLabel,
                     ),
                     create(
                       'button',
@@ -3060,7 +3253,7 @@ export function createAdditional(name: string, kind: string) {
                           emit('close');
                         },
                       },
-                      '예',
+                      props.confirmLabel,
                     ),
                   ]),
                   create(
@@ -3074,20 +3267,27 @@ export function createAdditional(name: string, kind: string) {
                       },
                     },
                     [
-                      create('span', { class: 'sr-only' }, '닫기'),
+                      create('span', { class: 'sr-only' }, props.closeLabel),
                       create('i', { class: ['svg-icon', 'ico-popup-close'] }),
                     ],
                   ),
                 ]),
               ]),
-              create('div', { class: 'modal-back' }),
+              create('div', {
+                class: ['modal-back', kind === 'modal-sample' && open.value ? 'in' : undefined],
+              }),
             ],
           );
         if (kind === 'pagination') {
           const pages = props.items.length ? props.items : [];
           return create(
             'div',
-            { ...attrs, class: ['krds-pagination', className], role: 'navigation' },
+            {
+              ...attrs,
+              class: ['krds-pagination', className],
+              role: 'navigation',
+              'aria-label': props.navigationLabel,
+            },
             [
               props.previousDisabled
                 ? create(
@@ -3170,7 +3370,11 @@ export function createAdditional(name: string, kind: string) {
                   'aria-expanded': open.value,
                   onClick: () => setOpen(!open.value),
                 },
-                [props.label, create('i', { class: ['svg-icon', 'ico-toggle'] })],
+                [
+                  props.label,
+                  ' ',
+                  create('i', { class: ['svg-icon', 'ico-toggle'] }),
+                ],
               ),
               create('div', { class: 'drop-menu' }, [
                 create('div', { class: 'drop-in' }, [
@@ -3214,6 +3418,7 @@ export function createAdditional(name: string, kind: string) {
                       },
                       [
                         create('i', { class: ['svg-icon', 'ico-reset'] }),
+                        ' ',
                         props.resetLabel,
                       ],
                     ),
@@ -3227,50 +3432,104 @@ export function createAdditional(name: string, kind: string) {
           kind === 'select-size' ||
           kind === 'select-state' ||
           kind === 'select-sorting'
-        )
-          return create(Fragment, null, [
-            create('label', { for: id.value, class: 'sr-only' }, props.label),
-            create(
-              'select',
-              {
-                ...attrs,
-                id: id.value,
-                name: props.name,
-                value: selected.value || undefined,
-                disabled: props.disabled,
-                required: props.required,
-                title: attrs.title ?? props.title ?? props.label,
-                class:
-                  kind === 'select-sorting'
-                    ? ['krds-form-select-sort', className]
-                    : [
-                        'krds-form-select',
-                        kind === 'select-state' && props.state === 'error'
-                          ? 'is-error'
-                          : undefined,
-                        kind === 'select-size' ? props.size : undefined,
-                        className,
-                      ],
-                onChange: (event: Event) => {
-                  invokeNativeEvent(attrs.onChange, event);
-                  setSelected((event.target as HTMLSelectElement).value);
-                  emit('change', event);
-                },
+        ) {
+          const sorting = kind === 'select-sorting';
+          const message = sorting
+            ? undefined
+            : props.state === 'error'
+              ? (props.error ?? props.hint)
+              : props.hint;
+          const hintId = message ? `${id.value}-hint` : undefined;
+          const describedBy =
+            [
+              typeof attrs['aria-describedby'] === 'string'
+                ? attrs['aria-describedby']
+                : undefined,
+              hintId,
+            ]
+              .filter(Boolean)
+              .join(' ') || undefined;
+          const recipe =
+            sorting
+              ? selectRecipe({
+                  variant: 'sorting',
+                  state: props.state === 'error' ? 'error' : 'default',
+                })
+              : selectRecipe({
+                  variant:
+                    kind === 'select-size'
+                      ? 'size'
+                      : kind === 'select-state'
+                        ? 'state'
+                        : 'default',
+                  size:
+                    kind === 'select-size'
+                      ? (props.size as SelectRecipeSize | undefined)
+                      : undefined,
+                  state: props.state,
+                });
+          const control = create(
+            'select',
+            {
+              ...attrs,
+              ref: selectElement,
+              id: id.value,
+              name: props.name,
+              onVnodeMounted: syncNativeSelectValue,
+              onVnodeUpdated: syncNativeSelectValue,
+              disabled: props.disabled,
+              required: props.required,
+              title: props.title ?? props.label,
+              'aria-describedby': sorting ? attrs['aria-describedby'] : describedBy,
+              'aria-invalid':
+                props.state === 'error' ? 'true' : attrs['aria-invalid'],
+              class: [recipe.control, className],
+              onChange: (event: Event) => {
+                invokeNativeEvent(attrs.onChange, event);
+                setSelected((event.target as HTMLSelectElement).value);
+                emit('change', event);
               },
-              props.options.map((option, optionIndex) =>
-                create(
-                  'option',
-                  {
-                    key: optionIndex,
-                    value: option.value,
-                    disabled: option.disabled,
-                    selected: kind === 'select-size' && optionIndex === 0 ? '' : undefined,
-                  },
-                  option.label,
-                ),
+            },
+            props.options.map((option, optionIndex) =>
+              create(
+                'option',
+                {
+                  key: optionIndex,
+                  value: option.value,
+                  disabled: option.disabled,
+                  selected: kind === 'select-size' && optionIndex === 0 ? '' : undefined,
+                },
+                option.label,
               ),
             ),
+          );
+          if (sorting) return control;
+          return create('div', { class: 'form-group' }, [
+            create(
+              'div',
+              { class: 'form-tit' },
+              create('label', { for: id.value }, props.label),
+            ),
+            create('div', { class: 'form-conts' }, control),
+            message
+              ? create(
+                  'p',
+                  {
+                    id: hintId,
+                    class:
+                      props.state === 'error'
+                        ? 'form-hint-invalid'
+                        : props.state === 'success'
+                          ? 'form-hint-success'
+                          : props.state === 'information'
+                            ? 'form-hint-information'
+                            : 'form-hint',
+                  },
+                  message,
+                )
+              : null,
           ]);
+        }
         if (kind === 'side-navigation') {
           const navigationItems = (props.items.length ? props.items : props.links) as KrdsNavItem[];
           return create(
@@ -3296,11 +3555,23 @@ export function createAdditional(name: string, kind: string) {
             ),
           );
         if (kind === 'spinner')
-          return create(
-            'div',
-            { ...attrs, class: ['krds-spinner', className], role: 'status' },
-            create('span', { class: 'sr-only' }, props.label),
-          );
+          return create('div', { class: 'form-group' }, [
+            create('div', { class: 'form-conts' }, [
+              create('div', { class: 'form-spinner' }, [
+                create('input', {
+                  id: `${id.value}-input`,
+                  type: 'text',
+                  class: 'krds-input',
+                  placeholder: props.placeholder || 'placeholder',
+                }),
+                create(
+                  'div',
+                  { ...attrs, class: ['krds-spinner', className], role: 'status' },
+                  create('span', { class: 'sr-only' }, props.label),
+                ),
+              ]),
+            ]),
+          ]);
         if (kind === 'step-indicator')
           return create(
             'ol',
@@ -3313,10 +3584,12 @@ export function createAdditional(name: string, kind: string) {
                 'li',
                 {
                   key: step.id,
-                  class: [
-                    stepIndex < currentStepIndex ? 'done' : undefined,
-                    isCurrent ? 'active' : undefined,
-                  ],
+                  class:
+                    stepIndex < currentStepIndex
+                      ? 'done'
+                      : isCurrent
+                        ? 'active'
+                        : undefined,
                 },
                 create('span', [
                   isCurrent ? create('em', { class: 'sr-only' }, props.message) : null,
@@ -3338,7 +3611,7 @@ export function createAdditional(name: string, kind: string) {
                     ? create('div', { class: 'card-top' }, [
                         create(
                           'span',
-                          { class: ['krds-badge', listItem.tone] },
+                          { class: ['krds-badge', listItem.badgeClass ?? listItem.tone] },
                           listItem.badge,
                         ),
                       ])
@@ -3362,7 +3635,11 @@ export function createAdditional(name: string, kind: string) {
                       ? create('div', { class: 'c-btn' }, [
                           create(
                             'a',
-                            { class: ['krds-btn', 'secondary'], href: listItem.href },
+                            {
+                              class: ['krds-btn', 'secondary'],
+                              href: listItem.href,
+                              title: listItem.title,
+                            },
                             listItem.actionLabel ?? props.actionLabel,
                           ),
                         ])
@@ -3380,13 +3657,29 @@ export function createAdditional(name: string, kind: string) {
                   create('div', { class: 'card-btn' }, [
                     create(
                       'button',
-                      { type: 'button', class: ['krds-btn', 'medium', 'text'] },
-                      create('i', { class: ['svg-icon', 'ico-share'] }),
+                      {
+                        type: 'button',
+                        class: ['krds-btn', 'medium', 'text'],
+                        title: listItem.title,
+                      },
+                      [
+                        create('i', { class: ['svg-icon', 'ico-share'] }),
+                        ' ',
+                        props.shareLabel,
+                      ],
                     ),
                     create(
                       'button',
-                      { type: 'button', class: ['krds-btn', 'medium', 'text'] },
-                      create('i', { class: ['svg-icon', 'ico-like'] }),
+                      {
+                        type: 'button',
+                        class: ['krds-btn', 'medium', 'text'],
+                        title: listItem.title,
+                      },
+                      [
+                        create('i', { class: ['svg-icon', 'ico-like'] }),
+                        ' ',
+                        props.favoriteLabel,
+                      ],
                     ),
                   ]),
                 ]),
@@ -3425,6 +3718,7 @@ export function createAdditional(name: string, kind: string) {
                               { type: 'button', class: ['krds-btn', 'medium', 'text'] },
                               [
                                 create('i', { class: ['svg-icon', `ico-${action.icon ?? 'down'}`] }),
+                                ' ',
                                 action.label,
                               ],
                             ),
@@ -3437,6 +3731,7 @@ export function createAdditional(name: string, kind: string) {
                         create('strong', { class: 'sort-label' }, [
                           create('label', { for: countId }, props.countLabel),
                         ]),
+                        ' ',
                         create(
                           'select',
                           { id: countId, class: 'krds-form-select-sort' },
@@ -3452,7 +3747,7 @@ export function createAdditional(name: string, kind: string) {
                         create(
                           'div',
                           { class: 'w-sort-btn' },
-                          props.sortOptions.map((option) =>
+                          props.sortOptions.flatMap((option) => [
                             create(
                               'button',
                               {
@@ -3461,7 +3756,8 @@ export function createAdditional(name: string, kind: string) {
                               },
                               option,
                             ),
-                          ),
+                            ' ',
+                          ]),
                         ),
                         create(
                           'div',
@@ -3533,6 +3829,7 @@ export function createAdditional(name: string, kind: string) {
                                     id: checkboxId,
                                     class: 'chk',
                                     type: 'checkbox',
+                                    'aria-label': row.selectionLabel,
                                     checked: Boolean(row[column.key]),
                                   }),
                                   create('label', { for: checkboxId }, ''),
@@ -3546,6 +3843,7 @@ export function createAdditional(name: string, kind: string) {
                                   { type: 'button', class: ['krds-btn', 'medium', 'text'] },
                                   [
                                     create('i', { class: ['svg-icon', 'ico-down'] }),
+                                    ' ',
                                     String(row[column.key] ?? ''),
                                   ],
                                 ),
@@ -3596,6 +3894,7 @@ export function createAdditional(name: string, kind: string) {
         }
         if (kind === 'tab') {
           const active = selected.value;
+          const tabClasses = tabRecipe();
           const enabledTabs = props.tabs.filter((tab) => !tab.disabled);
           const moveTab = (event: KeyboardEvent, tabId: string) => {
             const currentIndex = enabledTabs.findIndex((tab) => tab.id === tabId);
@@ -3614,15 +3913,20 @@ export function createAdditional(name: string, kind: string) {
             }
             event.preventDefault();
             const nextTab = enabledTabs[nextIndex];
-            if (nextTab) setSelected(nextTab.id);
+            if (!nextTab) return;
+            const ownerDocument = (event.currentTarget as HTMLElement).ownerDocument;
+            setSelected(nextTab.id);
+            void nextTick(() => {
+              ownerDocument.getElementById(`${id.value}-tab-${nextTab.id}`)?.focus();
+            });
           };
           return create(
             'div',
-            { ...withoutNativeEvents(attrs), class: ['krds-tab-area', 'layer', className] },
+            { ...withoutNativeEvents(attrs), class: [tabClasses.root, className] },
             [
               create(
                 'div',
-                { class: ['tab', 'line', 'full'] },
+                { class: tabClasses.listContainer },
                 create(
                   'ul',
                   { role: 'tablist' },
@@ -3634,17 +3938,19 @@ export function createAdditional(name: string, kind: string) {
                       'li',
                       {
                         key: tab.id,
-                        id: tabId,
-                        role: 'tab',
-                        class: isActive ? 'active' : undefined,
-                        'aria-selected': isActive,
-                        'aria-controls': panelId,
+                        role: 'presentation',
+                        class: tabRecipe({ active: isActive }).item,
                       },
                       create(
                         'button',
                         {
+                          id: tabId,
                           type: 'button',
-                          class: 'btn-tab',
+                          role: 'tab',
+                          'aria-selected': isActive,
+                          'aria-controls': panelId,
+                          tabindex: isActive ? 0 : -1,
+                          class: tabClasses.trigger,
                           disabled: tab.disabled,
                           onClick: () => setSelected(tab.id),
                           onKeydown: (event: KeyboardEvent) => moveTab(event, tab.id),
@@ -3676,6 +3982,7 @@ export function createAdditional(name: string, kind: string) {
                       'aria-labelledby': tabId,
                       class: ['tab-conts', isActive ? 'active' : undefined],
                       'data-quick-nav': 'false',
+                      hidden: !isActive,
                     },
                     [
                       create('h3', { class: 'sr-only' }, props.panelTitle),
@@ -3687,31 +3994,34 @@ export function createAdditional(name: string, kind: string) {
             ],
           );
         }
-        if (kind === 'tag' || kind === 'tag-link')
-          return kind === 'tag-link'
-            ? create(
-                'a',
-                { ...attrs, href: props.href, class: ['krds-btn-tag', 'link', className] },
-                slotChildren.length ? slotChildren : props.label,
-              )
-            : create(
-                'span',
-                { ...attrs, class: ['krds-btn-tag', className] },
-                [
+        if (kind === 'tag' || kind === 'tag-link') {
+          const tag =
+            kind === 'tag-link'
+              ? create(
+                  'a',
+                  { ...attrs, href: props.href, class: ['krds-btn-tag', 'link', className] },
                   slotChildren.length ? slotChildren : props.label,
-                  props.removable
-                    ? create(
-                        'button',
-                        {
-                          type: 'button',
-                          class: 'btn-delete',
-                          onClick: () => emit('close'),
-                        },
-                        create('span', { class: 'sr-only' }, props.message),
-                      )
-                    : null,
-                ],
-              );
+                )
+              : create(
+                  'span',
+                  { ...attrs, class: ['krds-btn-tag', className] },
+                  [
+                    slotChildren.length ? slotChildren : props.label,
+                    props.removable
+                      ? create(
+                          'button',
+                          {
+                            type: 'button',
+                            class: 'btn-delete',
+                            onClick: () => emit('close'),
+                          },
+                          create('span', { class: 'sr-only' }, props.message),
+                        )
+                      : null,
+                  ],
+                );
+          return create('div', { class: ['krds-tag-wrap', props.size ?? 'large'] }, tag);
+        }
         if (kind === 'textarea')
           return create(Fragment, null, [
             props.label ? create('label', { for: id.value, class: 'sr-only' }, props.label) : null,
@@ -3736,30 +4046,60 @@ export function createAdditional(name: string, kind: string) {
               class: ['krds-input', className],
             }),
           ]);
-        if (kind === 'text-input-icon')
-          return create(Fragment, null, [
-            props.label ? create('label', { for: id.value, class: 'sr-only' }, props.label) : null,
-            create('input', {
-              ...attrs,
-              id: id.value,
-              name: props.name,
-              type: props.type ?? 'text',
-              value: hasInitialValue || value.value ? value.value : undefined,
-              placeholder: props.placeholder,
-              disabled: props.disabled,
-              readonly: props.readonly,
-              required: props.required,
-              class: ['krds-input', className],
-              onInput: (event: Event) => {
-                invokeNativeEvent(attrs.onInput, event);
-                setValue((event.target as HTMLInputElement).value);
-              },
-              onChange: (event: Event) => {
-                invokeNativeEvent(attrs.onChange, event);
-                emit('change', event);
-              },
-            }),
+        if (kind === 'text-input-icon') {
+          const passwordHidden = (props.type ?? 'text') === 'password';
+          return create('div', { class: 'form-group' }, [
+            props.label
+              ? create(
+                  'div',
+                  { class: 'form-tit' },
+                  create('label', { for: id.value }, props.label),
+                )
+              : null,
+            create('div', { class: ['form-conts', 'btn-ico-wrap'] }, [
+              create('input', {
+                ...attrs,
+                id: id.value,
+                name: props.name,
+                type: props.type ?? 'text',
+                value: hasInitialValue || value.value ? value.value : undefined,
+                placeholder: props.placeholder,
+                disabled: props.disabled,
+                readonly: props.readonly,
+                required: props.required,
+                class: ['krds-input', className],
+                onInput: (event: Event) => {
+                  invokeNativeEvent(attrs.onInput, event);
+                  setValue((event.target as HTMLInputElement).value);
+                },
+                onChange: (event: Event) => {
+                  invokeNativeEvent(attrs.onChange, event);
+                  emit('change', event);
+                },
+              }),
+              create(
+                'button',
+                { type: 'button', class: ['krds-btn', 'medium', 'icon'] },
+                [
+                  create(
+                    'span',
+                    { class: 'sr-only' },
+                    props.actionLabel ??
+                      (passwordHidden
+                        ? '입력한 비밀번호 보기'
+                        : '입력한 비밀번호 가리기'),
+                  ),
+                  create('i', {
+                    class: [
+                      'svg-icon',
+                      passwordHidden ? 'ico-pw-visible' : 'ico-pw-visible-on',
+                    ],
+                  }),
+                ],
+              ),
+            ]),
           ]);
+        }
         if (kind === 'text-list' || kind === 'text-list-ordered')
           return textList(props.items, kind === 'text-list-ordered', 1, {
             ...attrs,
@@ -3796,6 +4136,7 @@ export function createAdditional(name: string, kind: string) {
               },
               [
                 slotChildren.length ? slotChildren : props.label,
+                ' ',
                 create('i', { class: ['svg-icon', 'ico-angle', 'right'] }),
               ],
             ),
@@ -3839,6 +4180,7 @@ export function createAdditional(name: string, kind: string) {
                   class: ['svg-icon', isPlaying ? 'ico-stop' : 'ico-volume'],
                 }),
               ),
+              kind === 'tts-icon' || props.iconOnly ? null : ' ',
               kind === 'tts-icon' || props.iconOnly
                 ? null
                 : create(
@@ -3877,7 +4219,7 @@ export function createAdditional(name: string, kind: string) {
               ]),
             ],
           );
-        if (kind === 'radio-button' || kind === 'radio-size') {
+        if (kind === 'radio-button') {
           const radioValue = props.value ?? 'on';
           const input = create('input', {
             ...withoutClass(attrs),
@@ -3902,7 +4244,7 @@ export function createAdditional(name: string, kind: string) {
             'div',
             {
               ...withoutNativeEvents(attrs),
-              class: ['krds-form-check', kind === 'radio-size' ? props.size : undefined, className],
+              class: ['krds-form-check', className],
             },
             [
               input,

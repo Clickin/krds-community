@@ -42,7 +42,6 @@ const {
 <ul
   {...rest}
   class:list={['krds-structured-list', 'type-full', className]}
-  data-krds-structured-list
 >
   {items.map((item) => {
     const itemTags = item.tags ?? tags;
@@ -50,7 +49,7 @@ const {
     const resolvedShareLabel = item.shareLabel ?? shareLabel;
     const resolvedFavoriteLabel = item.favoriteLabel ?? favoriteLabel;
     return (
-      <li class="structured-item" data-item-id={item.id}>
+      <li class="structured-item">
         <div class="in">
           <div class="card-top">
             {item.badge && (
@@ -84,7 +83,6 @@ const {
               type="button"
               class="krds-btn medium text"
               title={item.title}
-              data-structured-action="share"
             >
               <i class="svg-icon ico-share"></i> {resolvedShareLabel}
             </button>
@@ -92,8 +90,7 @@ const {
               type="button"
               class="krds-btn medium text"
               title={item.title}
-              aria-pressed={item.favorite ? 'true' : 'false'}
-              data-structured-action="favorite"
+              aria-pressed={item.favorite === undefined ? undefined : item.favorite ? 'true' : 'false'}
             >
               <i class="svg-icon ico-like"></i> {resolvedFavoriteLabel}
             </button>
@@ -103,19 +100,30 @@ const {
     );
   })}
 </ul>
+<script
+  is:inline
+  type="application/json"
+  class="krds-structured-list-data"
+  set:html={JSON.stringify(items.map((item) => item.id))}
+></script>
 
 <script>
   const enhancedStructuredLists = new WeakSet<HTMLElement>();
 
   function enhanceStructuredLists() {
-    document.querySelectorAll<HTMLElement>('[data-krds-structured-list]').forEach((root) => {
+    document.querySelectorAll<HTMLElement>('.krds-structured-list').forEach((root) => {
       if (enhancedStructuredLists.has(root)) return;
       enhancedStructuredLists.add(root);
+      const data = root.nextElementSibling;
+      const itemIds: string[] =
+        data instanceof HTMLScriptElement && data.classList.contains('krds-structured-list-data')
+          ? JSON.parse(data.textContent ?? '[]')
+          : [];
 
-      root.querySelectorAll<HTMLButtonElement>('[data-structured-action]').forEach((button) => {
+      root.querySelectorAll<HTMLButtonElement>('.card-btn .krds-btn').forEach((button) => {
         button.addEventListener('click', () => {
-          const item = button.closest<HTMLElement>('[data-item-id]');
-          const action = button.dataset.structuredAction;
+          const item = button.closest<HTMLElement>('.structured-item');
+          const action = button.querySelector('.ico-share') ? 'share' : button.querySelector('.ico-like') ? 'favorite' : undefined;
           if (!item || !action) return;
           let pressed: boolean | undefined;
           if (action === 'favorite') {
@@ -125,7 +133,11 @@ const {
           root.dispatchEvent(
             new CustomEvent('krds:structuredlistaction', {
               bubbles: true,
-              detail: { id: item.dataset.itemId, action, pressed },
+              detail: {
+                id: itemIds[Array.from(root.children).indexOf(item)],
+                action,
+                pressed,
+              },
             }),
           );
         });

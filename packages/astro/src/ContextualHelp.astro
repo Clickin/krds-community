@@ -45,12 +45,12 @@ const {
 const expanded = open ?? defaultOpen;
 const [verticalPosition, horizontalPosition] = position.split('-');
 const instanceId = `krds-contextual-help-${crypto.randomUUID()}`;
+const popoverId = `${instanceId}-popover`;
 ---
 
 <div
   {...rest}
   class={cx('krds-contextual-help', verticalPosition, horizontalPosition, className)}
-  data-krds-contextual-help={instanceId}
 >
   <p class="tooltip-txt"><slot name="caption">{caption}</slot></p>
   <div class="tooltip-action">
@@ -58,25 +58,26 @@ const instanceId = `krds-contextual-help-${crypto.randomUUID()}`;
       type="button"
       class="krds-btn medium icon tooltip-btn"
       aria-expanded={expanded ? 'true' : 'false'}
+      aria-controls={popoverId}
     >
       <span class="sr-only">{label}</span>
-      <i class="svg-icon ico-tooltip" aria-hidden="true"></i>
+      <i class="svg-icon ico-tooltip"></i>
     </button>
-    <div class="tooltip-popover" role="tooltip" style={expanded ? 'display: block;' : undefined}>
+    <div id={popoverId} class="tooltip-popover" role="tooltip" style={expanded ? 'display: block;' : undefined}>
       <h4 class="tooltip-title"><slot name="title">{title}</slot></h4>
       <div class="tooltip-contents">
         <p><slot>{description ?? message ?? children}</slot></p>
         {href && linkLabel && (
           <div class="btn-wrap">
             <a href={href} class="krds-btn xsmall link basic">
-              {linkLabel} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+              {linkLabel} <i class="svg-icon ico-angle right"></i>
             </a>
           </div>
         )}
       </div>
       <button type="button" class="krds-btn xsmall icon tooltip-close">
         <span class="sr-only">{closeLabel}</span>
-        <i class="svg-icon ico-modal-close" aria-hidden="true"></i>
+        <i class="svg-icon ico-modal-close"></i>
       </button>
     </div>
   </div>
@@ -108,7 +109,7 @@ const instanceId = `krds-contextual-help-${crypto.randomUUID()}`;
     const target = event.target;
     if (!(target instanceof Element)) return;
     const trigger = target.closest<HTMLButtonElement>('.tooltip-btn');
-    const triggerRoot = trigger?.closest<HTMLElement>('[data-krds-contextual-help]');
+    const triggerRoot = trigger?.closest<HTMLElement>('.krds-contextual-help');
     if (trigger && triggerRoot) {
       const open = trigger.getAttribute('aria-expanded') !== 'true';
       setContextualHelpOpen(triggerRoot, open, open);
@@ -116,14 +117,14 @@ const instanceId = `krds-contextual-help-${crypto.randomUUID()}`;
     }
 
     const close = target.closest<HTMLButtonElement>('.tooltip-close');
-    const closeRoot = close?.closest<HTMLElement>('[data-krds-contextual-help]');
+    const closeRoot = close?.closest<HTMLElement>('.krds-contextual-help');
     if (close && closeRoot) {
       setContextualHelpOpen(closeRoot, false, false, true);
       return;
     }
 
     document
-      .querySelectorAll<HTMLElement>('[data-krds-contextual-help]')
+      .querySelectorAll<HTMLElement>('.krds-contextual-help')
       .forEach((root) => {
         if (!root.contains(target) && root.querySelector('.tooltip-btn')?.getAttribute('aria-expanded') === 'true') {
           setContextualHelpOpen(root, false);
@@ -135,7 +136,7 @@ const instanceId = `krds-contextual-help-${crypto.randomUUID()}`;
     if (event.key !== 'Escape') return;
     const focused = document.activeElement;
     if (!(focused instanceof Element)) return;
-    const root = focused.closest<HTMLElement>('[data-krds-contextual-help]');
+    const root = focused.closest<HTMLElement>('.krds-contextual-help');
     if (root) setContextualHelpOpen(root, false, false, true);
   });
 </script>

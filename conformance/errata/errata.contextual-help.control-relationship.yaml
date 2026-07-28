@@ -1,0 +1,46 @@
+id: errata.contextual-help.control-relationship
+component: contextual-help
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/contextual_help.html
+defect:
+  type: missing-expanded-control-reference
+  literalSource:
+    selectors:
+      - ".krds-contextual-help > .tooltip-action > button.tooltip-btn"
+      - ".krds-contextual-help > .tooltip-action > .tooltip-popover"
+    behavior: >-
+      The pinned markup exposes aria-expanded on the contextual-help trigger after runtime
+      initialization, but the trigger has no aria-controls reference and the popover has no id.
+      Assistive technology therefore cannot resolve the element controlled by the expanded state.
+correction:
+  behavior: >-
+    Give the popover a stable framework-generated id and reference that exact id from the native
+    trigger button with aria-controls. Keep aria-expanded synchronized with React open state.
+  attributes:
+    - selector: ".krds-contextual-help > .tooltip-action > button.tooltip-btn"
+      attribute: aria-controls
+      rule: "must-reference: sibling .tooltip-popover[id]"
+    - selector: ".krds-contextual-help > .tooltip-action > .tooltip-popover"
+      attribute: id
+      rule: stable-generated-id
+fixtures:
+  - contextual-help.default
+normalization:
+  whitelist:
+    - selector: ".krds-contextual-help > .tooltip-action > button.tooltip-btn"
+      attribute: aria-controls
+      operation: rewrite
+      rewriteValue: generated-1
+    - selector: ".krds-contextual-help > .tooltip-action > .tooltip-popover"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-1
+evidence:
+  sourceUrls:
+    - https://www.w3.org/TR/wai-aria-1.2/#aria-controls
+  rationale: >-
+    WAI-ARIA defines aria-controls as identifying the element whose contents or presence are
+    controlled by the current element. The concrete generated id is non-semantic, but the live
+    button-to-popover reference must resolve and remains part of raw contract evidence.

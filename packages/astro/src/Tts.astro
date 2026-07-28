@@ -52,7 +52,10 @@ const resolvedIconClass =
     <slot name="icon"><i class={cx('svg-icon', resolvedIconClass)}></i></slot>
   </span>
   {!iconOnly && (
-    <span class="krds-tts-text"><slot>{label ?? children}</slot></span>
+    <Fragment>
+      {' '}
+      <span class="krds-tts-text"><slot>{label ?? children}</slot></span>
+    </Fragment>
   )}
 </button>
 

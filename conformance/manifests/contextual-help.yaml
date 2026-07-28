@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.contextual-help.control-relationship
 contract:
   semanticElement: button-and-tooltip
   accessibleRole: button

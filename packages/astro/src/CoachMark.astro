@@ -41,13 +41,11 @@ const {
 const [parsedCurrentStep, parsedTotalSteps] = step?.split('/').map((part) => part.trim()) ?? [];
 const renderedCurrentStep = currentStep ?? parsedCurrentStep;
 const renderedTotalSteps = totalSteps ?? parsedTotalSteps;
-const instanceId = `krds-coach-mark-${crypto.randomUUID()}`;
 ---
 
 <div
   {...rest}
   class={cx('txt-box', 'bg-white', 'bg-white', 'krds-coach-mark', className)}
-  data-krds-coach-mark={instanceId}
   hidden={!open}
 >
   <div class="coach-balloon">
@@ -62,10 +60,10 @@ const instanceId = `krds-coach-mark-${crypto.randomUUID()}`;
         <span>{renderedTotalSteps}</span>
       </div>
       <div class="btn-wrap">
-        <button type="button" class="krds-btn small text" data-krds-coach-action="close">
+        <button type="button" class="krds-btn small text">
           {stopLabel}
         </button>
-        <button type="button" class="krds-btn small tertiary" data-krds-coach-action="next">
+        <button type="button" class="krds-btn small tertiary">
           {nextLabel}
         </button>
       </div>
@@ -79,15 +77,15 @@ const instanceId = `krds-coach-mark-${crypto.randomUUID()}`;
 <script>
   document.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
-    const button = event.target.closest<HTMLButtonElement>('[data-krds-coach-action]');
-    const root = button?.closest<HTMLElement>('[data-krds-coach-mark]');
+    const button = event.target.closest<HTMLButtonElement>('.coach-controls .btn-wrap button');
+    const root = button?.closest<HTMLElement>('.krds-coach-mark');
     if (!button || !root) return;
 
-    const action = button.dataset.krdsCoachAction;
+    const action = button.matches('.krds-btn.text') ? 'close' : 'next';
     const coachEvent = new CustomEvent(`krds:coach-${action}`, {
       bubbles: true,
       cancelable: action === 'close',
-      detail: { id: root.dataset.krdsCoachMark },
+      detail: { id: root.id || undefined },
     });
     const accepted = root.dispatchEvent(coachEvent);
     if (action === 'close' && accepted) root.hidden = true;

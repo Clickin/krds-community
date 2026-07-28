@@ -11,6 +11,16 @@ export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list
 const { label, children, class: className, ...rest } = Astro.props;
 ---
 
-<div {...rest} class={cx('krds-spinner', className)} role="status">
-  <span class="sr-only"><slot>{label ?? children}</slot></span>
+<div class="form-group">
+  <div class="form-tit">
+    <label for="consult_name">Label</label>
+  </div>
+  <div class="form-conts">
+    <div class="form-spinner">
+      <slot name="input"><input type="text" id="consult_name" class="krds-input" placeholder="placeholder" /></slot>
+      <div {...rest} class={cx('krds-spinner', className)} role="status">
+        <span class="sr-only"><slot>{label ?? children}</slot></span>
+      </div>
+    </div>
+  </div>
 </div>

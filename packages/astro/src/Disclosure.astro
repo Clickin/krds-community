@@ -57,8 +57,8 @@ const resolvedButtonId = buttonId || `${instanceId}-button`;
   >
     <div class="expand-in">
       {items.length > 0 ? (
-        <ul class="krds-info-list dash">
-          {items.map((item) => <li>{item}</li>)}
+        <ul class="krds-info-list dash" role="list">
+          {items.map((item) => <li role="listitem">{item}</li>)}
         </ul>
       ) : (
         <slot>{description ?? children}</slot>

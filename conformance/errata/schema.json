@@ -96,7 +96,7 @@
                   "selector": { "type": "string", "minLength": 1 },
                   "attribute": {
                     "type": "string",
-                    "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|data-listener-attached|onclick)$"
+                    "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|tabindex|href|data-listener-attached|onclick)$"
                   },
                   "rule": { "type": "string", "minLength": 1 }
                 },
@@ -109,7 +109,7 @@
                   "selector": { "type": "string", "minLength": 1 },
                   "attribute": {
                     "type": "string",
-                    "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|data-listener-attached|onclick)$"
+                    "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|tabindex|href|data-listener-attached|onclick)$"
                   },
                   "operation": { "const": "rewrite" },
                   "value": { "type": ["string", "number", "boolean"] }
@@ -123,7 +123,7 @@
                   "selector": { "type": "string", "minLength": 1 },
                   "attribute": {
                     "type": "string",
-                    "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|data-listener-attached|onclick)$"
+                    "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|tabindex|href|data-listener-attached|onclick)$"
                   },
                   "operation": { "const": "rewrite" },
                   "rewriteValue": { "type": ["string", "number", "boolean"] }

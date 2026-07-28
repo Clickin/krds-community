@@ -1,5 +1,5 @@
 ---
-import { cx } from '@krds-community/recipes';
+import { cx, tabRecipe } from '@krds-community/recipes';
 import type { HTMLAttributes } from 'astro/types';
 
 export interface TabItem {
@@ -37,23 +37,30 @@ const tabId = (tab: TabItem) => tab.tabId ?? `tab_${tab.id}`;
 const panelId = (tab: TabItem) => tab.panelId ?? `panel_${tab.id}`;
 const resolvePanelTitle = (tab: TabItem) =>
   typeof panelTitle === 'string' ? panelTitle : panelTitle?.[tab.id];
+const tabClasses = tabRecipe({ full: true });
 ---
 
-<div {...rest} class={cx('krds-tab-area', 'layer', className)}>
-  <div class="tab line full">
+<div {...rest} class={cx(tabClasses.root, className)}>
+  <div class={tabClasses.listContainer}>
     <ul role="tablist">
       {tabs.map((tab) => {
         const active = tab.id === activeValue;
         return (
           <li
-            id={tabId(tab)}
-            role="tab"
-            aria-selected={active ? 'true' : 'false'}
-            aria-controls={panelId(tab)}
-            aria-disabled={tab.disabled ? 'true' : undefined}
-            class={active ? 'active' : undefined}
+            role="presentation"
+            class={tabRecipe({ full: true, active }).item}
           >
-            <button type="button" class="btn-tab" disabled={tab.disabled}>
+            <button
+              id={tabId(tab)}
+              type="button"
+              role="tab"
+              aria-selected={active ? 'true' : 'false'}
+              aria-controls={panelId(tab)}
+              aria-disabled={tab.disabled ? 'true' : undefined}
+              tabindex={active ? 0 : -1}
+              class={tabClasses.trigger}
+              disabled={tab.disabled}
+            >
               {tab.label}
               {active && message && <i class="sr-only created"> {message}</i>}
             </button>
@@ -72,6 +79,7 @@ const resolvePanelTitle = (tab: TabItem) =>
           aria-labelledby={tabId(tab)}
           class={cx('tab-conts', active && 'active')}
           data-quick-nav="false"
+          hidden={!active}
         >
           {resolvePanelTitle(tab) && <h3 class="sr-only">{resolvePanelTitle(tab)}</h3>}
           {panels[tab.id]}
@@ -82,28 +90,35 @@ const resolvePanelTitle = (tab: TabItem) =>
 </div>
 
 <script>
+  import { tabRecipe } from '@krds-community/recipes';
+
+  const activeClass = tabRecipe({ active: true }).item!;
   document.querySelectorAll<HTMLElement>('.krds-tab-area').forEach((area) => {
-    const tabElements = Array.from(area.querySelectorAll<HTMLElement>('[role="tab"]'));
+    const tabElements = Array.from(area.querySelectorAll<HTMLButtonElement>('button[role="tab"]'));
     const panels = Array.from(area.querySelectorAll<HTMLElement>(':scope > .tab-conts-wrap > .tab-conts'));
     const selectionMessage =
-      area.querySelector<HTMLElement>('[role="tab"].active .created')?.textContent ?? '';
+      area.querySelector<HTMLElement>('[role="tab"][aria-selected="true"] .created')?.textContent ?? '';
 
-    const selectTab = (tab: HTMLElement) => {
+    const selectTab = (tab: HTMLButtonElement) => {
       if (tab.getAttribute('aria-disabled') === 'true') return;
       const controlledPanel = tab.getAttribute('aria-controls');
       tabElements.forEach((candidate) => {
         const active = candidate === tab;
-        candidate.classList.toggle('active', active);
+        candidate.closest('li')?.classList.toggle(activeClass, active);
+        candidate.tabIndex = active ? 0 : -1;
         candidate.setAttribute('aria-selected', String(active));
         candidate.querySelector('.created')?.remove();
       });
-      panels.forEach((panel) => panel.classList.toggle('active', panel.id === controlledPanel));
-      const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
-      if (button && selectionMessage) {
+      panels.forEach((panel) => {
+        const active = panel.id === controlledPanel;
+        panel.classList.toggle(activeClass, active);
+        panel.hidden = !active;
+      });
+      if (selectionMessage) {
         const text = document.createElement('i');
         text.className = 'sr-only created';
         text.textContent = selectionMessage;
-        button.append(text);
+        tab.append(text);
       }
       area.dispatchEvent(
         new CustomEvent('krds:tab-change', {
@@ -114,14 +129,13 @@ const resolvePanelTitle = (tab: TabItem) =>
     };
 
     tabElements.forEach((tab, index) => {
-      const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
-      button?.addEventListener('click', () => selectTab(tab));
-      button?.addEventListener('keydown', (event) => {
+      tab.addEventListener('click', () => selectTab(tab));
+      tab.addEventListener('keydown', (event) => {
         const enabled = tabElements.filter(
           (candidate) => candidate.getAttribute('aria-disabled') !== 'true',
         );
         const currentIndex = enabled.indexOf(tab);
-        let next: HTMLElement | undefined;
+        let next: HTMLButtonElement | undefined;
         if (event.key === 'ArrowRight') next = enabled[(currentIndex + 1) % enabled.length];
         else if (event.key === 'ArrowLeft') {
           next = enabled[(currentIndex - 1 + enabled.length) % enabled.length];
@@ -129,9 +143,10 @@ const resolvePanelTitle = (tab: TabItem) =>
         else if (event.key === 'End') next = enabled[enabled.length - 1];
         if (!next) return;
         event.preventDefault();
-        next.querySelector<HTMLButtonElement>('.btn-tab')?.focus();
+        selectTab(next);
+        next.focus();
       });
-      if (index === 0 && !area.querySelector('[role="tab"].active')) selectTab(tab);
+      if (index === 0 && !area.querySelector('[role="tab"][aria-selected="true"]')) selectTab(tab);
     });
   });
 </script>

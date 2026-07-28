@@ -1,0 +1,47 @@
+id: errata.help-panel.trigger-relationship
+component: help-panel
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/help_panel.html
+    - upstream/krds-html/html/code/tutorial_panel.html
+defect:
+  type: opener-missing-expanded-state-and-panel-reference
+  literalSource:
+    selectors:
+      - ".btn-help-panel.btn-help-exec"
+      - ".krds-help-panel"
+    behavior: >-
+      The pinned opener has no aria-expanded state or programmatic relationship to the help panel.
+      Consumers therefore cannot derive the disclosure state or controlled region from the opener.
+correction:
+  behavior: >-
+    A framework surface that renders the opener with the panel gives the panel a stable generated
+    id and references it from the opener with aria-controls while exposing the current open state
+    through aria-expanded. Generated id tokens remain non-semantic DOM evidence.
+  attributes:
+    - selector: ".btn-help-panel.btn-help-exec"
+      attribute: aria-expanded
+      rule: "boolean-current-open-state"
+    - selector: ".btn-help-panel.btn-help-exec"
+      attribute: aria-controls
+      rule: "references:.krds-help-panel[id]"
+    - selector: ".krds-help-panel"
+      attribute: id
+      rule: "referenced-by-opener"
+fixtures:
+  - help-panel.default
+  - tutorial-panel.default
+normalization:
+  whitelist:
+    - selector: ".krds-help-panel"
+      attribute: id
+      rule: "generated relationship token; raw accessibility remains unnormalized"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/
+    - https://github.com/KRDS-uiux/krds-uiux/blob/d6bb184c823e4757f05807ea4646a23e3133b6e6/html/code/help_panel.html#L7-L12
+  rationale: >-
+    The disclosure pattern requires the controlling button to expose aria-expanded, and permits
+    aria-controls to identify the controlled content. Ignoring only the generated panel id in the
+    normalized DOM does not alter raw accessibility, focus, visibility, or relationship checks.

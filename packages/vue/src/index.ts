@@ -535,7 +535,7 @@ export const Accordion = defineComponent<AccordionProps>({
           const itemId = encodeURIComponent(item.id);
           const headerId = `${generatedId}-header-${itemId}`;
           const panelId = `${generatedId}-panel-${itemId}`;
-          return h('div', { class: 'accordion-item', key: item.id }, [
+          return h('div', { class: ['accordion-item', open ? 'active' : undefined], key: item.id }, [
             h(
               'h5',
               { class: 'accordion-header' },
@@ -543,7 +543,7 @@ export const Accordion = defineComponent<AccordionProps>({
                 'button',
                 {
                   type: 'button',
-                  class: 'btn-accordion',
+                  class: ['btn-accordion', open ? 'active' : undefined],
                   id: headerId,
                   'aria-expanded': open ? 'true' : 'false',
                   'aria-controls': panelId,

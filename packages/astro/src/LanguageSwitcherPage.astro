@@ -52,22 +52,22 @@ const links = entries.filter((language) => language.value !== activeValue);
 const openState = open ?? defaultOpen;
 ---
 
-<div {...rest} class={cx('krds-drop-wrap', 'krds-language', className)} data-krds-language-page>
+<div {...rest} class={cx('krds-drop-wrap', 'krds-language', className)}>
   <button
     type="button"
     class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
     aria-expanded={openState ? 'true' : 'false'}
   >
-    <i class="svg-icon ico-global" aria-hidden="true"></i>
-    {label}
-    <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+    <i class="svg-icon ico-global"></i>{' '}
+    {label}{' '}
+    <i class="svg-icon ico-toggle"></i>
   </button>
   <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
     <div class="drop-in">
       <div class="drop-top">
         <p class="current-laguage">
           <span>{currentLabel ?? text}</span>
-          <strong lang={current?.lang ?? current?.value}>{current?.label}</strong>
+          <strong>{current?.label}</strong>
         </p>
       </div>
       <ul class="drop-list">
@@ -82,9 +82,9 @@ const openState = open ?? defaultOpen;
               title={language.title ?? externalTitle}
               aria-disabled={language.disabled ? 'true' : undefined}
               tabindex={language.disabled ? -1 : undefined}
-              data-language-value={language.value}
             >
-              {language.label}<i class="svg-icon ico-go" aria-hidden="true"></i>
+              {language.label}<i class="svg-icon ico-go"></i>
+              {(language.target ?? '_blank') === '_blank' && <span class="sr-only"></span>}
             </a>
           </li>
         ))}
@@ -94,7 +94,7 @@ const openState = open ?? defaultOpen;
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-krds-language-page]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('.krds-language').forEach((root) => {
     const button = root.querySelector<HTMLButtonElement>(':scope > .drop-btn');
     const menu = root.querySelector<HTMLElement>(':scope > .drop-menu');
     if (!button || !menu) return;
@@ -125,7 +125,7 @@ const openState = open ?? defaultOpen;
         root.dispatchEvent(
           new CustomEvent('krds:language-change', {
             bubbles: true,
-            detail: { value: link.dataset.languageValue, href: link.href },
+            detail: { value: link.lang, href: link.href },
           }),
         );
       });

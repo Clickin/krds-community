@@ -17,11 +17,29 @@ fixtures:
           - action: add-class
             target: fixture
             value: shown
+          - action: add-class
+            target: fixture
+            value: in
+          - action: add-class
+            target: '.modal-back'
+            value: in
+          - action: remove-attribute
+            target: fixture
+            value: hidden
       - id: focus-visible
         setup:
           - action: add-class
             target: fixture
             value: shown
+          - action: add-class
+            target: fixture
+            value: in
+          - action: add-class
+            target: '.modal-back'
+            value: in
+          - action: remove-attribute
+            target: fixture
+            value: hidden
           - action: keyboard-focus
             target: fixture
 contract:

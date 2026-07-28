@@ -3,6 +3,7 @@ import * as Components from '@krds-community/astro';
 import catalogData from '@krds-community/conformance-host/fixtures.json';
 import { baseProps } from '@krds-community/conformance-host/fixture-props';
 import '@krds-community/conformance-host/host.css';
+import { fixtureRootAttributes } from '@krds-community/conformance-host/protocol';
 import type {
   FixtureCatalog,
   FixtureDefinition,
@@ -34,6 +35,7 @@ const Component = Components[componentExport as keyof typeof Components] as any;
 if (!Component) throw new Error(`Astro package export is missing: ${componentExport}`);
 
 const componentProps = { ...baseProps(fixture), ...state.props };
+const rootAttributes = fixtureRootAttributes(fixture);
 const initialStateId = fixture.states[0]?.id;
 if (!initialStateId) throw new Error(`Fixture has no declared states: ${fixture.id}`);
 const runtimeData = JSON.stringify({
@@ -52,7 +54,7 @@ const runtimeData = JSON.stringify({
     <title>KRDS Astro conformance fixture</title>
   </head>
   <body data-framework="astro" data-state={state.id}>
-    <main id="fixture-root"><Component {...componentProps} /></main>
+    <div id="fixture-root" {...rootAttributes}><Component {...componentProps} /></div>
     <script id="fixture-runtime-data" type="application/json" is:inline set:html={runtimeData}></script>
     <script src="../../runtime.ts"></script>
   </body>

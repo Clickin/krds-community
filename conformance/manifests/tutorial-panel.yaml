@@ -13,6 +13,7 @@ fixtures:
     states: [default, focus-visible]
 errata:
   - errata.tab.runtime-state-semantics
+  - errata.help-panel.trigger-relationship
 contract:
   semanticElement: native-element
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

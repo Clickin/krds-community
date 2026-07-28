@@ -1,0 +1,59 @@
+id: errata.select.description-relationships
+component: select
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/select.html
+    - upstream/krds-html/html/code/select_size.html
+    - upstream/krds-html/html/code/select_state.html
+defect:
+  type: missing-select-description-and-error-relationships
+  literalSource:
+    selectors:
+      - ".form-group .krds-form-select"
+      - ".form-hint"
+      - ".form-hint-invalid"
+    behavior: >-
+      The visible hint or error text has no id referenced by the native select. The error-state
+      select is styled with is-error but does not expose aria-invalid, so its validation state and
+      accompanying message are not programmatically associated with the control.
+correction:
+  behavior: >-
+    Preserve the native label-for/id relationship, give the visible message a stable generated id,
+    reference that id with aria-describedby, and expose aria-invalid=true only for the error state.
+  attributes:
+    - selector: ".form-group .krds-form-select"
+      attribute: aria-describedby
+      rule: "references: adjacent field message[id]"
+    - selector: ".form-hint, .form-hint-invalid"
+      attribute: id
+      rule: "stable-generated-id; referenced-by: .krds-form-select[aria-describedby]"
+    - selector: ".krds-form-select.is-error"
+      attribute: aria-invalid
+      rule: "exact-value:true"
+fixtures:
+  - select.default
+  - select-size.default
+  - select-state.default
+normalization:
+  whitelist:
+    - selector: ".form-group .krds-form-select"
+      attribute: aria-describedby
+      operation: rewrite
+      rewriteValue: generated-2
+    - selector: ".form-hint, .form-hint-invalid"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-2
+    - selector: ".krds-form-select.is-error"
+      attribute: aria-invalid
+      operation: rewrite
+      rewriteValue: "true"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1
+    - https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA21
+  rationale: >-
+    W3C technique ARIA1 uses an id-referenced aria-describedby relationship to expose supplemental
+    instructions for a form control. ARIA21 pairs aria-invalid with aria-describedby when a visible
+    validation failure and its error message apply to the control.

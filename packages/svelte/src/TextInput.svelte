@@ -2,9 +2,11 @@
   import type { TextInputContractProps } from '@krds-community/recipes';
   type Props = Omit<TextInputContractProps, 'value'> & {
     value?: string;
+    error?: string;
     id?: string;
     class?: string;
     className?: string;
+    oninput?: (event: Event & { currentTarget: HTMLInputElement }) => void;
   };
 
   const generatedId = $props.id();
@@ -13,6 +15,7 @@
     label = '',
     hint = '',
     state = 'default',
+    error = '',
     size,
     id = generatedId,
     disabled = false,
@@ -20,8 +23,16 @@
     required = false,
     class: classValue = '',
     className = '',
+    oninput,
     ...restProps
   }: Props = $props();
+
+  const message = $derived(state === 'error' ? error || hint : hint);
+  let inputElement: HTMLInputElement;
+  $effect(() => {
+    if (value) inputElement.setAttribute('value', value);
+    else inputElement.removeAttribute('value');
+  });
 </script>
 
 <div class="form-group">
@@ -36,17 +47,22 @@
   >
     <input
       {...restProps}
-      bind:value
+      value={value}
+      bind:this={inputElement}
+      oninput={(event) => {
+        value = event.currentTarget.value;
+        oninput?.(event);
+      }}
       {id}
       {disabled}
       {readonly}
       {required}
       class={`krds-input${size ? ` ${size}` : ''}${classValue ? ` ${classValue}` : ''}${className ? ` ${className}` : ''}`}
       aria-invalid={state === 'error' ? 'true' : undefined}
-      aria-describedby={hint ? `${id}-hint` : undefined}
+      aria-describedby={message ? `${id}-hint` : undefined}
     />
   </div>
-  {#if hint}
+  {#if message}
     <p
       id={`${id}-hint`}
       class={state === 'error'
@@ -57,7 +73,7 @@
             ? 'form-hint-information'
             : 'form-hint'}
     >
-      {hint}
+      {message}
     </p>
   {/if}
 </div>

@@ -6,7 +6,6 @@ upstream:
     - upstream/krds-html/html/code/text_input_state.html
 errata:
   - errata.text-input.error-description
-  - errata.text-input.hint-description
 fixtures:
   - id: text-input-state.default
     sourceSelector: "input.krds-input"

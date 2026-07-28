@@ -4,6 +4,10 @@
   "description": "KRDS token을 Tailwind CSS v4 theme에 연결하는 통합 패키지.",
   "license": "Apache-2.0",
   "type": "module",
+  "style": "./dist/index.css",
+  "sideEffects": [
+    "./dist/index.css"
+  ],
   "files": [
     "dist",
     "LICENSE",

@@ -2,13 +2,52 @@
 import {
   Accordion,
   Checkbox,
+  CriticalAlerts,
+  FileUpload,
+  HelpPanel,
+  InPageNavigation,
+  LanguageSwitcher,
+  LanguageSwitcherPage,
+  Link,
+  RadioSize,
+  Select,
+  Spinner,
+  Tab,
+  Tag,
+  TagLink,
   TextInput,
+  Tooltip,
+  Tts,
+  TutorialPanel,
 } from '../../../../packages/astro/src/index.js';
 
 const accordionItems = [
   { id: 'first', title: 'First section', content: 'First section content' },
   { id: 'second', title: 'Second section', content: 'Second section content' },
 ];
+const tabs = [
+  { id: 'first', label: 'First tab' },
+  { id: 'second', label: 'Second tab' },
+];
+const panelTabs = [
+  { id: 'help', label: 'Help', panelId: 'help-content', value: 'help' },
+  { id: 'tutorial', label: 'Tutorial', panelId: 'tutorial-content', value: 'tutorial' },
+];
+const panelProps = {
+  open: true,
+  tabs: panelTabs,
+  selectedLabel: 'Selected',
+  helpTitle: 'Help title',
+  helpDescription: 'Help body',
+  downloadLinks: [],
+  relatedGroups: [],
+  tutorialTitle: 'Tutorial title',
+  tutorialHref: '#tutorial',
+  tasks: [],
+  stopLabel: 'Stop',
+  collapseLabel: 'Collapse',
+  label: 'Help',
+};
 ---
 
 <form action="/search" method="post">
@@ -32,6 +71,148 @@ const accordionItems = [
     value="weekly"
     label="Receive updates"
   />
+  <Select
+    id="astro-select"
+    name="selection"
+    label="Choose an option"
+    options={[
+      { value: 'first', label: 'First option' },
+      { value: 'second', label: 'Second option' },
+    ]}
+    value="second"
+    variant="size"
+    size="large"
+    state="error"
+    class="consumer-select"
+  />
+  <Select
+    id="astro-sorting-error"
+    options={[
+      { value: 'first', label: 'First option' },
+      { value: 'second', label: 'Second option' },
+    ]}
+    variant="sorting"
+    state="error"
+  />
+  <Select
+    id="astro-sorting-default"
+    options={[
+      { value: 'first', label: 'First option' },
+      { value: 'second', label: 'Second option' },
+    ]}
+    variant="sorting"
+    state="default"
+  />
   <Accordion items={accordionItems} defaultOpen={['first']} />
+  <Tab
+    id="astro-tabs"
+    tabs={tabs}
+    panels={{ first: 'First panel', second: 'Second panel' }}
+    defaultValue="first"
+    class="consumer-tabs"
+  />
   <button type="submit">Submit</button>
 </form>
+
+<Tag id="astro-tag" label="Tag" removeLabel="Remove tag" />
+<TagLink id="astro-tag-link" href="#tag" label="Tag link" />
+<Spinner id="astro-spinner" label="Loading" />
+<InPageNavigation
+  id="astro-in-page-navigation"
+  title="On this page"
+  pageTitle="Contents"
+  items={[{ id: 'intro', label: 'Introduction', href: '#intro', current: true }]}
+  actionLabel="Apply"
+  actionInfo="Other"
+  actionCount="1 item"
+  navigationLabel="Page sections"
+/>
+<RadioSize
+  id="astro-radio-medium"
+  name="astro-radio-size"
+  label="Size: medium"
+  largeLabel="Size: large"
+  size="medium"
+/>
+<HelpPanel
+  {...panelProps}
+  id="astro-help-panel"
+  activeTab="help"
+/>
+<TutorialPanel
+  {...panelProps}
+  id="astro-tutorial-panel"
+  activeTab="tutorial"
+/>
+<Tooltip
+  id="astro-tooltip"
+  label="Tooltip label"
+  message="Tooltip message"
+  tooltipId="astro-tooltip-message"
+/>
+<LanguageSwitcher
+  id="astro-language"
+  label="Language"
+  selectedLabel="Selected"
+  currentLabel="Current language"
+  text="Current language"
+  externalTitle="Opens in a new window"
+  languages={[
+    { value: 'ko', label: 'Korean', href: '#ko' },
+    { value: 'en', label: 'English', href: '#en' },
+  ]}
+/>
+<LanguageSwitcherPage
+  id="astro-language-page"
+  label="Language"
+  currentLabel="Current language"
+  externalTitle="Opens in a new window"
+  languages={[
+    { value: 'ko', label: 'Korean', href: '#ko' },
+    { value: 'en', label: 'English', href: '#en' },
+  ]}
+/>
+<Link id="astro-link" href="#link" label="Link label" icon="ico-go" />
+<Tts id="astro-tts" label="Read aloud" />
+<CriticalAlerts
+  id="astro-critical-alerts"
+  items={[
+    {
+      id: 'danger',
+      tone: 'danger',
+      badgeLabel: 'Urgent',
+      message: 'Critical message',
+      href: '#critical',
+      linkLabel: 'Details',
+    },
+  ]}
+/>
+<FileUpload
+  rootAttributes={{ id: 'astro-file-upload' }}
+  inputId="astro-file-input"
+  title="Attachments"
+  description="Upload supporting files"
+  prompt="Drop files here"
+  selectLabel="Select files"
+  currentCount={2}
+  maxCount={10}
+  countSuffix="개"
+  line
+  files={[
+    {
+      id: 'uploading',
+      name: 'first.txt',
+      status: 'uploading',
+      statusLabel: 'Uploading',
+    },
+    {
+      id: 'error',
+      name: 'second.txt',
+      status: 'error',
+      deleteLabel: 'Delete',
+      errors: ['Too large', 'Try again'],
+    },
+  ]}
+  deleteAllLabel="Delete all"
+  label="Attachments"
+/>

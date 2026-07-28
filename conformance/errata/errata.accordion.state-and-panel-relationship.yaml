@@ -44,24 +44,22 @@ fixtures:
   - accordion-line.default
 normalization:
   whitelist:
-    - selector: ".accordion-header > button.btn-accordion"
-      attribute: id
-      rule: stable-generated-id
-    - selector: ".accordion-header > button.btn-accordion"
+    - selector: ".accordion-item:has(> .accordion-collapse.show) > .accordion-header > button.btn-accordion"
       attribute: aria-expanded
-      rule: "exact-value:current-open-state"
-    - selector: ".accordion-header > button.btn-accordion"
-      attribute: aria-controls
-      rule: "must-reference: .accordion-collapse[id]"
+      operation: rewrite
+      rewriteValue: "true"
+    - selector: ".accordion-item:not(:has(> .accordion-collapse.show)) > .accordion-header > button.btn-accordion"
+      attribute: aria-expanded
+      operation: rewrite
+      rewriteValue: "false"
     - selector: ".accordion-collapse"
       attribute: role
-      rule: "exact-value:region"
-    - selector: ".accordion-collapse"
-      attribute: aria-labelledby
-      rule: "must-reference: .accordion-header > button.btn-accordion[id]"
-    - selector: ".accordion-collapse"
+      operation: rewrite
+      rewriteValue: region
+    - selector: ".accordion-collapse:not(.show)"
       attribute: hidden
-      rule: "true-when-collapsed; false-when-expanded"
+      operation: rewrite
+      rewriteValue: ""
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/accordion/

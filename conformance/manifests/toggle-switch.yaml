@@ -10,7 +10,15 @@ fixtures:
     mandatory: true
     viewport: desktop
     props: {}
-    states: [default, focus-visible]
+    states:
+      - default
+      - id: focus-visible
+        setup:
+          - action: keyboard-focus
+            target: fixture
+          - action: add-class
+            target: fixture
+            value: focus
 contract:
   semanticElement: native-element
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

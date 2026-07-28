@@ -31,5 +31,5 @@ const className = classNameProp ?? classAttribute;
   class={cx('krds-btn', variant, size, className)}
 >
   <slot>{children ?? label}</slot>
-  <slot name="icon"><i class={cx('svg-icon', iconClass)} aria-hidden="true"></i></slot>
+  <slot name="icon"><i class={cx('svg-icon', iconClass)}></i></slot>
 </button>

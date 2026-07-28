@@ -68,7 +68,7 @@ const {
           title={site.title}
           disabled={site.disabled}
           name={site.name}
-          value={site.value ?? site.id}
+          value={site.value}
         >
           {site.label}
         </button>
@@ -101,7 +101,7 @@ const {
               rel={item.rel}
               title={item.title}
             >
-              {item.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+              {item.label} <i class="svg-icon ico-angle right"></i>
             </a>
           ))}
         </div>
@@ -115,7 +115,7 @@ const {
               title={item.title}
             >
               <span class="sr-only">{item.label}</span>
-              <i class={cx('svg-icon', item.icon && `ico-${item.icon}`)} aria-hidden="true"></i>
+              <i class={cx('svg-icon', item.icon && `ico-${item.icon}`)}></i>
             </a>
           ))}
         </div>

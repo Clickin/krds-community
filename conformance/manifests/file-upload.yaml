@@ -12,6 +12,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.file-upload.nested-interactive-control
 contract:
   semanticElement: native-element
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

@@ -18,11 +18,14 @@ defect:
 correction:
   behavior: >-
     Preserve the literal container hierarchy and interactive descendants while exposing each
-    container as a labelled navigation landmark.
+    container as a navigation landmark. Give pagination the descriptive name "페이지 이동".
   attributes:
     - selector: ".krds-main-menu-mobile, .krds-pagination"
       attribute: role
       rule: "exact-value:navigation"
+    - selector: ".krds-pagination"
+      attribute: aria-label
+      rule: "exact-value:페이지 이동"
 fixtures:
   - main-menu-mobile.default
   - pagination.default
@@ -30,10 +33,12 @@ normalization:
   whitelist:
     - selector: ".krds-main-menu-mobile, .krds-pagination"
       attribute: role
-      rule: "exact-value:navigation"
+      operation: rewrite
+      rewriteValue: navigation
     - selector: ".krds-pagination"
       attribute: aria-label
-      rule: "accessible-landmark-name"
+      operation: rewrite
+      rewriteValue: "페이지 이동"
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/examples/navigation.html

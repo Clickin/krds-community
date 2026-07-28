@@ -18,12 +18,25 @@ const immutableExtensions = new Set(['.css', '.js', '.mjs', '.svg', '.woff', '.w
 
 export const createConformanceServer = async (repositoryRoot) => {
   const hostRoot = resolve(repositoryRoot, 'apps/conformance-host/dist');
+  let runtimeDocument;
   const roots = [
     { prefix: '/host/', directory: hostRoot },
     { prefix: '/', directory: resolve(repositoryRoot) },
   ];
   const server = createServer(async (request, response) => {
     const pathname = decodeURIComponent(new URL(request.url ?? '/', 'http://localhost').pathname);
+    if (pathname === '/__upstream-runtime') {
+      if (runtimeDocument === undefined) {
+        response.writeHead(404).end('Not Found');
+        return;
+      }
+      response.writeHead(200, {
+        'Cache-Control': 'no-store',
+        'Content-Type': contentTypes['.html'],
+      });
+      response.end(runtimeDocument);
+      return;
+    }
     const mapping = roots.find(({ prefix }) => pathname.startsWith(prefix));
     if (!mapping) {
       response.writeHead(404).end('Not Found');
@@ -57,6 +70,9 @@ export const createConformanceServer = async (repositoryRoot) => {
   if (!address || typeof address === 'string') throw new Error('Conformance server failed to bind');
   return {
     baseUrl: `http://127.0.0.1:${address.port}`,
+    setRuntimeDocument: (html) => {
+      runtimeDocument = html;
+    },
     close: () => new Promise((resolvePromise, reject) => server.close((error) => (error ? reject(error) : resolvePromise()))),
   };
 };

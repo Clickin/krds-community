@@ -1,0 +1,35 @@
+id: errata.structured-list-table.invalid-disabled-pagination-href
+component: structured-list-table
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/structured_list_table.html
+defect:
+  type: invalid-href-on-disabled-span
+  literalSource:
+    selectors:
+      - ".krds-pagination > span.page-navi.prev.disabled[href]"
+    behavior: >-
+      The disabled previous-page item is a span with href="#", but href is not a permitted
+      attribute on span and does not create link semantics.
+correction:
+  behavior: >-
+    Preserve the disabled span and its visible text while omitting only the invalid href attribute.
+  attributes:
+    - selector: ".krds-pagination > span.page-navi.prev.disabled"
+      attribute: href
+      rule: "omit-invalid-attribute-from-span"
+fixtures:
+  - structured-list-table.default
+normalization:
+  whitelist:
+    - selector: ".krds-pagination > span.page-navi.prev.disabled"
+      attribute: href
+      rule: "omit invalid href from non-anchor span"
+evidence:
+  sourceUrls:
+    - https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-span-element
+    - https://github.com/KRDS-uiux/krds-uiux/blob/d6bb184c823e4757f05807ea4646a23e3133b6e6/html/code/structured_list_table.html#L222-L224
+  rationale: >-
+    The HTML standard permits global attributes on span, not href. Removing only href preserves the
+    disabled item and its accessible text without pretending that the span is an actionable link.

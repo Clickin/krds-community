@@ -3,11 +3,12 @@ import { cx } from '@krds-community/recipes';
 import type { KrdsTone } from '@krds-community/recipes';
 import type { HTMLAttributes } from 'astro/types';
 
-export interface Props extends Omit<HTMLAttributes<'span'>, 'class' | 'class:list'> {
+export interface Props extends Omit<HTMLAttributes<'span'>, 'class' | 'class:list' | 'size'> {
   label?: string;
   message?: string;
   removeLabel?: string;
   removable?: boolean;
+  size?: 'small' | 'medium' | 'large';
   tone?: KrdsTone;
   class?: string;
 }
@@ -17,6 +18,7 @@ const {
   message,
   removeLabel,
   removable = true,
+  size = 'large',
   tone,
   class: className,
   ...rest
@@ -24,11 +26,13 @@ const {
 const accessibleRemoveLabel = removeLabel ?? message;
 ---
 
-<span {...rest} class={cx('krds-btn-tag', tone && `bg-${tone}`, className)}>
-  <slot>{label}</slot>
-  {removable && (
-    <button type="button" class="btn-delete">
-      <span class="sr-only">{accessibleRemoveLabel}</span>
-    </button>
-  )}
-</span>
+<div class={cx('krds-tag-wrap', size)}>
+  <span {...rest} class={cx('krds-btn-tag', tone && `bg-${tone}`, className)}>
+    <slot>{label}</slot>
+    {removable && (
+      <button type="button" class="btn-delete">
+        <span class="sr-only">{accessibleRemoveLabel}</span>
+      </button>
+    )}
+  </span>
+</div>

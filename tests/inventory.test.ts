@@ -2,6 +2,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadFixtureManifests, loadManifests } from '@krds-community/conformance';
+import { fixtureRootAttributes } from '../apps/conformance-host/src/protocol';
 
 const root = resolve(import.meta.dirname, '..');
 const inventoryNames = [
@@ -126,25 +127,81 @@ describe('KRDS component inventory', () => {
       'disabled',
     ]);
   });
-  it('keeps zero-box popup roots paired with an explicit visual selector', async () => {
+  it('keeps calendar fixture roots paired with the calendar visual surface', async () => {
     const fixtures = (await loadFixtureManifests(resolve(root, 'conformance/manifests'))).flatMap(
       (manifest) => manifest.fixtures,
     );
-    for (const fixtureId of [
-      'calendar.default',
-      'calendar-range.default',
-      'date-input.default',
-    ]) {
+    for (const fixtureId of ['calendar.default', 'calendar-range.default']) {
       expect(fixtures.find((fixture) => fixture.id === fixtureId)).toMatchObject({
         sourceSelector: '.krds-calendar-area',
         visualSelector: '.calendar-wrap',
       });
     }
+    expect(fixtures.find((fixture) => fixture.id === 'date-input.default')).toMatchObject({
+      sourceSelector: '.form-group',
+      visualSelector: '.calendar-wrap',
+    });
     expect(fixtures.find((fixture) => fixture.id === 'modal.default')).toMatchObject({
       sourceSelector: '.krds-modal[role="dialog"]',
       visualSelector: '.modal-dialog',
     });
   });
+  it('captures select labels and descriptions with their native controls', async () => {
+    const fixtures = (await loadFixtureManifests(resolve(root, 'conformance/manifests'))).flatMap(
+      (manifest) => manifest.fixtures,
+    );
+    for (const fixtureId of ['select.default', 'select-size.default', 'select-state.default']) {
+      expect(fixtures.find((fixture) => fixture.id === fixtureId)).toMatchObject({
+        sourceSelector: '.krds-form-select',
+        sourceAncestorSelector: '.form-group',
+      });
+    }
+  });
+
+  it('declares the exact shared layout context applied by both fixture hosts', async () => {
+    const fixtures = (await loadFixtureManifests(resolve(root, 'conformance/manifests'))).flatMap(
+      (manifest) => manifest.fixtures,
+    );
+    expect(fixtures.filter((fixture) => fixture.layoutContext)).toHaveLength(2);
+
+    const carousel = fixtures.find((fixture) => fixture.id === 'carousel-banner.default')!;
+    expect(carousel.layoutContext).toBe('content-inner');
+    expect(fixtureRootAttributes(carousel)).toEqual({
+      class: 'inner',
+      'data-layout-context': 'content-inner',
+    });
+
+    const mobileMenu = fixtures.find((fixture) => fixture.id === 'main-menu-mobile.default')!;
+    expect(mobileMenu.layoutContext).toBe('viewport-height');
+    expect(fixtureRootAttributes(mobileMenu)).toEqual({
+      'data-layout-context': 'viewport-height',
+    });
+
+    const button = fixtures.find((fixture) => fixture.id === 'button.primary.medium.default')!;
+    expect(fixtureRootAttributes(button)).toEqual({});
+  });
+
+  it('keeps native focus in wrapper focus-proxy states', async () => {
+    const fixtures = (await loadFixtureManifests(resolve(root, 'conformance/manifests'))).flatMap(
+      (manifest) => manifest.fixtures,
+    );
+    for (const fixtureId of [
+      'checkbox-chip.default',
+      'switch.default.medium',
+      'switch.default.large',
+      'toggle-switch.default',
+      'toggle-switch-size.default',
+    ]) {
+      const focusState = fixtures
+        .find((fixture) => fixture.id === fixtureId)
+        ?.states.find((state) => state.id === 'focus-visible');
+      expect(focusState?.setup).toEqual([
+        { action: 'keyboard-focus', target: 'fixture' },
+        { action: 'add-class', target: 'fixture', value: 'focus' },
+      ]);
+    }
+  });
+
   it('treats every official HTML fixture as mapped before runtime evidence', async () => {
     const inventory = JSON.parse(
       await readFile(resolve(root, 'conformance/generated/source-inventory.json'), 'utf8'),

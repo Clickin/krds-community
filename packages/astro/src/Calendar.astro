@@ -98,13 +98,13 @@ const {
 const instanceId = `krds-calendar-${crypto.randomUUID()}`;
 const inputId = providedInputId ?? `${instanceId}-input`;
 const calendarId = providedCalendarId ?? `${instanceId}-popup`;
-const yearListId = `${calendarId}-year`;
-const monthListId = `${calendarId}-month`;
+const yearListId = `${calendarId}-year-list`;
+const monthListId = `${calendarId}-month-list`;
 const hintId = hint !== undefined || Astro.slots.has('hint') ? `${inputId}-hint` : undefined;
 const year = displayYear ?? providedYear;
 const month = displayMonth ?? providedMonth;
-const activeYear = selectedYear ?? year;
-const activeMonth = selectedMonth ?? month;
+const activeYear = selectedYear ?? providedYear;
+const activeMonth = selectedMonth ?? providedMonth;
 const pad = (value: number) => String(value).padStart(2, '0');
 const previousMonth = month === 1 ? 12 : month - 1;
 const previousYear = month === 1 ? year - 1 : year;
@@ -163,7 +163,11 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     {...calendarAttributes}
     class={cx('krds-calendar-area', open && 'active', calendarClass)}
   >
-    <div class={cx('calendar-wrap', 'bottom', selectionMode === 'single' && 'single')} aria-label={calendarLabel} tabindex="0">
+    <div
+      class={cx('calendar-wrap', 'bottom', selectionMode === 'single' && 'single')}
+      aria-label={calendarLabel}
+      tabindex="0"
+    >
       <div class="calendar-head">
         <button type="button" class="btn-cal-move prev">
           <span class="sr-only">{previousMonthLabel}</span>
@@ -173,11 +177,11 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
             <button
               type="button"
               class="btn-cal-switch year"
-              role="combobox"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-controls={yearListId}
               aria-label={yearSelectLabel}
+              aria-controls={yearListId}
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              role="combobox"
             >{year}년</button>
             <div class="calendar-select calendar-year-wrap">
               <ul class="sel year" id={yearListId} role="listbox">
@@ -185,8 +189,8 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
                   <li role="none">
                     <button
                       type="button"
-                      role="option"
                       class={optionYear === activeYear ? 'active' : undefined}
+                      role="option"
                       aria-selected={optionYear === activeYear ? 'true' : 'false'}
                       disabled={disabledYears.includes(optionYear)}
                     >{optionYear}년</button>
@@ -199,11 +203,11 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
             <button
               type="button"
               class="btn-cal-switch month"
-              role="combobox"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-controls={monthListId}
               aria-label={monthSelectLabel}
+              aria-controls={monthListId}
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              role="combobox"
             >{pad(month)}월</button>
             <div class="calendar-select calendar-mon-wrap">
               <ul class="sel month" id={monthListId} role="listbox">
@@ -211,8 +215,8 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
                   <li role="none">
                     <button
                       type="button"
-                      role="option"
                       class={optionMonth === activeMonth ? 'active' : undefined}
+                      role="option"
                       aria-selected={optionMonth === activeMonth ? 'true' : 'false'}
                       disabled={disabledMonths.includes(optionMonth)}
                     >{pad(optionMonth)}월</button>
@@ -241,13 +245,15 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
                       <button
                         type="button"
                         class="btn-set-date"
-                        disabled={cell.outside || cell.disabled}
+                        disabled={cell.outside ? 'true' : cell.disabled}
                         aria-pressed={cell.period ? 'true' : undefined}
-                        aria-label={cell.today
-                          ? `${cell.day} ${todayLabel ?? ''}`.trim()
-                          : cell.event
-                            ? `${cell.day} ${eventLabel ?? ''}`.trim()
-                            : undefined}
+                        aria-label={
+                          cell.today
+                            ? `${cell.day} ${todayLabel ?? ''}`.trim()
+                            : cell.event
+                              ? `${cell.day} ${eventLabel ?? ''}`.trim()
+                              : undefined
+                        }
                       ><span>{cell.day}</span></button>
                     </td>
                   ))}
@@ -296,8 +302,12 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
       <Astro.self
         surfaceOnly={true}
         selectionMode={selectionMode}
-        year={year}
-        month={month}
+        year={providedYear}
+        month={providedMonth}
+        displayYear={year}
+        displayMonth={month}
+        selectedYear={activeYear}
+        selectedMonth={activeMonth}
         years={years}
         disabledYears={disabledYears}
         disabledMonths={disabledMonths}
@@ -391,7 +401,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     if (!trigger) return;
     trigger.textContent = part === 'year' ? `${value}년` : `${padCalendarPart(value)}월`;
     const list = area.querySelector<HTMLElement>(`.sel.${part}`);
-    list?.querySelectorAll<HTMLButtonElement>('[role="option"]').forEach((option) => {
+    list?.querySelectorAll<HTMLButtonElement>('button').forEach((option) => {
       const selected = Number.parseInt(option.textContent ?? '', 10) === value;
       option.classList.toggle('active', selected);
       option.setAttribute('aria-selected', selected ? 'true' : 'false');

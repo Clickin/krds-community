@@ -45,10 +45,6 @@ const safeInitialIndex = slides.length
 <div
   {...rest}
   class:list={['main-vban-wrap', 'bg', className]}
-  data-krds-carousel
-  data-initial-index={safeInitialIndex}
-  data-auto-play={autoPlay ? 'true' : 'false'}
-  data-interval={Math.max(interval, 0)}
 >
   <div class="inner">
     <div class="vb-swiper">
@@ -57,7 +53,7 @@ const safeInitialIndex = slides.length
           {slides.map((slide) => {
             const resolvedImageLabel = slide.imageAlt ?? imageLabel;
             return (
-              <li class="swiper-slide" data-slide-id={slide.id}>
+              <li class="swiper-slide">
                 <div class="in">
                   <div class="text">
                     <p class="tit">
@@ -80,14 +76,12 @@ const safeInitialIndex = slides.length
                         viewBox="0 0 243 178"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        role={resolvedImageLabel ? 'img' : undefined}
                         aria-label={resolvedImageLabel}
-                        aria-hidden={resolvedImageLabel ? undefined : 'true'}
                       >
                         <rect
                           width="243"
                           height="178"
-                          fill="var(--krds-primitive-color-light-gray-10)"
+                          fill="#E6E8EA"
                         />
                       </svg>
                     )}
@@ -98,10 +92,10 @@ const safeInitialIndex = slides.length
           })}
         </ul>
       </div>
-      <button type="button" class="swiper-button-prev" disabled={slides.length < 2}>
+      <button type="button" class="swiper-button-prev">
         <span class="sr-only">{previousLabel}</span>
       </button>
-      <button type="button" class="swiper-button-next" disabled={slides.length < 2}>
+      <button type="button" class="swiper-button-next">
         <span class="sr-only">{nextLabel}</span>
       </button>
       <div class="swiper-indicator text-center">
@@ -113,63 +107,59 @@ const safeInitialIndex = slides.length
     </div>
   </div>
 </div>
+<script
+  is:inline
+  type="application/json"
+  class="krds-carousel-data"
+  set:html={JSON.stringify({
+    autoPlay,
+    initialIndex: safeInitialIndex,
+    interval: Math.max(interval, 0),
+    slideIds: slides.map((slide) => slide.id),
+  })}
+></script>
 
 <script>
   const enhancedCarousels = new WeakSet<HTMLElement>();
 
   function enhanceCarousels() {
-    document.querySelectorAll<HTMLElement>('[data-krds-carousel]').forEach((root) => {
+    document.querySelectorAll<HTMLElement>('.main-vban-wrap').forEach((root) => {
       if (enhancedCarousels.has(root)) return;
       enhancedCarousels.add(root);
+      const dataScript = root.nextElementSibling;
+      const data: {
+        autoPlay?: boolean;
+        initialIndex?: number;
+        interval?: number;
+        slideIds?: string[];
+      } =
+        dataScript instanceof HTMLScriptElement && dataScript.classList.contains('krds-carousel-data')
+          ? JSON.parse(dataScript.textContent ?? '{}')
+          : {};
 
       const slides = Array.from(root.querySelectorAll<HTMLElement>('.swiper-slide'));
       const previous = root.querySelector<HTMLButtonElement>('.swiper-button-prev');
       const next = root.querySelector<HTMLButtonElement>('.swiper-button-next');
-      const pagination = root.querySelector<HTMLElement>('.swiper-pagination');
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const requestedAutoplay = root.dataset.autoPlay === 'true';
-      const interval = Number(root.dataset.interval) || 0;
+      const requestedAutoplay = data.autoPlay === true;
+      const interval = Number(data.interval) || 0;
       let current = Math.min(
-        Math.max(Number(root.dataset.initialIndex) || 0, 0),
+        Math.max(Number(data.initialIndex) || 0, 0),
         Math.max(slides.length - 1, 0),
       );
       let timer: number | undefined;
       let pointerPaused = false;
       let focusPaused = false;
 
-      const bullets = slides.map((_slide, index) => {
-        const bullet = document.createElement('button');
-        bullet.type = 'button';
-        bullet.className = 'swiper-pagination-bullet';
-        bullet.setAttribute('aria-label', String(index + 1));
-        bullet.addEventListener('click', () => {
-          show(index, true);
-          schedule();
-        });
-        pagination?.append(bullet);
-        return bullet;
-      });
 
       function show(index: number, announce: boolean) {
         if (!slides.length) return;
         current = (index + slides.length) % slides.length;
-        slides.forEach((slide, slideIndex) => {
-          const active = slideIndex === current;
-          slide.hidden = !active;
-          slide.inert = !active;
-          slide.setAttribute('aria-hidden', active ? 'false' : 'true');
-        });
-        bullets.forEach((bullet, bulletIndex) => {
-          const active = bulletIndex === current;
-          bullet.classList.toggle('swiper-pagination-bullet-active', active);
-          if (active) bullet.setAttribute('aria-current', 'true');
-          else bullet.removeAttribute('aria-current');
-        });
         if (announce) {
           root.dispatchEvent(
             new CustomEvent('krds:slidechange', {
               bubbles: true,
-              detail: { index: current, id: slides[current]?.dataset.slideId },
+              detail: { index: current, id: data.slideIds?.[current] },
             }),
           );
         }

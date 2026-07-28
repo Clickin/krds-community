@@ -43,8 +43,18 @@
           "sourceFile": { "type": "string", "minLength": 1 },
           "sourceIndex": { "type": "integer", "minimum": 0 },
           "sourceAncestorSelector": { "type": "string", "minLength": 1 },
+          "contractAncestorSelector": {
+            "type": "object",
+            "required": ["upstream", "framework"],
+            "additionalProperties": false,
+            "properties": {
+              "upstream": { "type": "string", "minLength": 1 },
+              "framework": { "type": "string", "minLength": 1 }
+            }
+          },
           "visualSelector": { "type": "string", "minLength": 1 },
           "visualAncestorSelector": { "type": "string", "minLength": 1 },
+          "layoutContext": { "enum": ["content-inner", "viewport-height"] },
           "mandatory": { "type": "boolean" },
           "viewport": {
             "oneOf": [

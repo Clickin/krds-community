@@ -7,23 +7,40 @@ upstream:
     - upstream/krds-html/html/code/help_panel.html
     - upstream/krds-html/html/code/tutorial_panel.html
 defect:
-  type: incorrect-selected-state-and-private-runtime-marker
+  type: incorrect-selected-state-nonfocusable-tab-ownership-and-private-runtime-marker
   literalSource:
     selectors:
+      - ".krds-tab-area > .tab > ul[role=tablist] > li[role=tab]"
+      - ".krds-tab-area > .tab > ul[role=tablist] > li > button.btn-tab"
       - "[role=tab].active"
       - "[role=tab][data-listener-attached]"
     behavior: >-
-      After the pinned imperative runtime initializes, the visibly active tab may expose
-      aria-selected=false and each tab receives a private data-listener-attached marker. The
-      marker is not semantic, while the selected-state value contradicts the active tab.
+      The pinned runtime assigns the tab role, selected state, id, and panel reference to a
+      non-focusable list item while the nested native button receives focus. It can also expose
+      aria-selected=false on the visibly active tab and adds a private data-listener-attached
+      marker. The marker is not semantic, and splitting focus from tab state contradicts the
+      tabs interaction model.
 correction:
   behavior: >-
-    Expose aria-selected=true on the active tab and false on inactive tabs. Framework-native
-    listeners must not reproduce the upstream runtime's private listener bookkeeping attribute.
+    Put role=tab, aria-selected, aria-controls, the stable id, and roving tabindex on the native
+    button. Keep its list item presentational, hide inactive panels, expose true on the active
+    tab and false on inactive tabs, and omit private listener bookkeeping.
   attributes:
-    - selector: "[role=tab].active"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li"
+      attribute: role
+      rule: "exact-value:presentation"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li > button.btn-tab"
+      attribute: role
+      rule: "exact-value:tab"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li > button.btn-tab"
       attribute: aria-selected
-      rule: "exact-value:true"
+      rule: "exact-value:current-selected-state"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li > button.btn-tab"
+      attribute: aria-controls
+      rule: "references: .tab-conts-wrap > .tab-conts[id]"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li > button.btn-tab"
+      attribute: tabindex
+      rule: "zero-when-selected; negative-one-otherwise"
     - selector: "[role=tab]"
       attribute: data-listener-attached
       rule: omitted
@@ -36,13 +53,79 @@ normalization:
     - selector: "[role=tab]"
       attribute: data-listener-attached
       rule: "non-semantic-runtime-bookkeeping"
-    - selector: "[role=tab].active"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li"
+      attribute: role
+      operation: rewrite
+      rewriteValue: presentation
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li"
+      attribute: id
+      rule: "relocated-to-focusable-tab"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li"
+      attribute: aria-selected
+      rule: "relocated-to-focusable-tab"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li"
+      attribute: aria-controls
+      rule: "relocated-to-focusable-tab"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li > button.btn-tab"
+      attribute: role
+      operation: rewrite
+      rewriteValue: tab
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li.active > button.btn-tab"
       attribute: aria-selected
       operation: rewrite
       rewriteValue: "true"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li:not(.active) > button.btn-tab"
+      attribute: aria-selected
+      operation: rewrite
+      rewriteValue: "false"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li.active > button.btn-tab"
+      attribute: tabindex
+      operation: rewrite
+      rewriteValue: "0"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li:not(.active) > button.btn-tab"
+      attribute: tabindex
+      operation: rewrite
+      rewriteValue: "-1"
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li:nth-child(1) > button.btn-tab"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-1
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li:nth-child(2) > button.btn-tab"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-2
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li:nth-child(1) > button.btn-tab"
+      attribute: aria-controls
+      operation: rewrite
+      rewriteValue: generated-3
+    - selector: ".krds-tab-area > .tab > ul[role=tablist] > li:nth-child(2) > button.btn-tab"
+      attribute: aria-controls
+      operation: rewrite
+      rewriteValue: generated-4
+    - selector: ".krds-tab-area > .tab-conts-wrap > section.tab-conts:nth-child(1)"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-3
+    - selector: ".krds-tab-area > .tab-conts-wrap > section.tab-conts:nth-child(2)"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-4
+    - selector: ".krds-tab-area > .tab-conts-wrap > section.tab-conts:nth-child(1)"
+      attribute: aria-labelledby
+      operation: rewrite
+      rewriteValue: generated-1
+    - selector: ".krds-tab-area > .tab-conts-wrap > section.tab-conts:nth-child(2)"
+      attribute: aria-labelledby
+      operation: rewrite
+      rewriteValue: generated-2
+    - selector: ".krds-tab-area > .tab-conts-wrap > section.tab-conts:not(.active)"
+      attribute: hidden
+      operation: rewrite
+      rewriteValue: ""
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
   rationale: >-
-    The selected tab must expose aria-selected=true. Listener bookkeeping is private to the
-    imperative implementation and has no place in framework-native DOM.
+    The WAI-ARIA Authoring Practices tabs pattern puts role=tab, aria-selected, panel ownership,
+    and roving focus on the interactive tab element. Listener bookkeeping and concrete generated
+    id tokens are non-semantic; raw accessibility and live relationship checks remain unnormalized.

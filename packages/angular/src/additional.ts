@@ -17,6 +17,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import type { ControlValueAccessor } from '@angular/forms';
+import {
+  accordionRecipe,
+  selectRecipe,
+  tabRecipe,
+  type SelectRecipeSize,
+} from '@krds-community/recipes';
 import type {
   KrdsAdditionalProps,
   KrdsCarouselSlide,
@@ -80,6 +86,8 @@ export type HeaderMobileMenu = {
   closeLabel: string;
   bottomItems: AngularNavItem[];
 };
+
+export type AngularTableRow = KrdsTableRow;
 
 export type AngularTableAction = {
   id: string;
@@ -373,25 +381,29 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </nav>
       }
       @case ('accordion') {
-        <div class="krds-accordion type-line">
+        <div [class]="accordionClass">
           @for (item of items; track $index) {
-            <div class="accordion-item">
+            <div class="accordion-item" [class.active]="isAccordionOpen($index)">
               <h5 class="accordion-header">
                 <button
                   type="button"
                   class="btn-accordion"
+                  [class.active]="isAccordionOpen($index)"
                   [id]="accordionHeaderId($index)"
                   [attr.aria-controls]="accordionPanelId($index)"
-                  [attr.aria-expanded]="'false'"
+                  [attr.aria-expanded]="isAccordionOpen($index)"
+                  (click)="toggleAccordion($index)"
                 >
                   {{ navLabel(item) }}
                 </button>
               </h5>
               <div
                 class="accordion-collapse collapse"
+                [class.show]="isAccordionOpen($index)"
                 [id]="accordionPanelId($index)"
                 [attr.aria-labelledby]="accordionHeaderId($index)"
                 role="region"
+                [hidden]="!isAccordionOpen($index)"
               >
                 <div class="accordion-body">{{ itemDescription(item) }}</div>
               </div>
@@ -486,7 +498,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                             role="option"
                             [class.active]="optionYear === calendarSelectedYear"
                             [attr.aria-selected]="optionYear === calendarSelectedYear"
-                            [attr.disabled]="disabledYears.includes(optionYear) ? 'true' : null"
+                            [disabled]="disabledYears.includes(optionYear)"
                             (click)="selectCalendarYear(optionYear)"
                           >
                             {{ optionYear }}년
@@ -522,9 +534,10 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                         <li role="none">
                           <button
                             type="button"
+                            role="option"
                             [class.active]="optionMonth === calendarSelectedMonth"
                             [attr.aria-selected]="optionMonth === calendarSelectedMonth"
-                            [attr.disabled]="disabledMonths.includes(optionMonth) ? 'true' : null"
+                            [disabled]="disabledMonths.includes(optionMonth)"
                             (click)="selectCalendarMonth(optionMonth)"
                           >
                             {{ padCalendarPart(optionMonth) }}월
@@ -564,7 +577,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                             <button
                               type="button"
                               class="btn-set-date"
-                              [attr.disabled]="cell.disabled ? 'true' : null"
+                              [disabled]="cell.disabled"
                               [attr.aria-pressed]="cell.pressed ? true : null"
                               [attr.aria-label]="cell.ariaLabel"
                               (click)="selectCalendarDate(cell)"
@@ -628,6 +641,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                 <ng-container [ngTemplateOutlet]="calendarSurface"></ng-container>
               </div>
             </div>
+            <p class="form-hint">{{ hint }}</p>
           </div>
         } @else {
           <ng-container [ngTemplateOutlet]="calendarSurface"></ng-container>
@@ -808,13 +822,13 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
             <button
               type="button"
               class="krds-btn medium icon tooltip-btn"
-              [attr.aria-expanded]="contextualHelpFocused ? null : 'false'"
-              (focus)="contextualHelpFocused = true"
+              aria-expanded="false"
+              [attr.aria-controls]="tooltipPopoverId"
             >
               <span class="sr-only">{{ label }}</span>
               <i class="svg-icon ico-tooltip"></i>
             </button>
-            <div class="tooltip-popover" role="tooltip">
+            <div [id]="tooltipPopoverId" class="tooltip-popover" role="tooltip">
               <h4 class="tooltip-title">{{ title }}</h4>
               <div class="tooltip-contents">
                 <p>{{ description }}</p>
@@ -833,22 +847,25 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </div>
       }
       @case ('critical-alerts') {
-        <ul class="krds-critical-alerts" role="alert">
-          @for (item of items; track $index) {
-            <li>
-              <div class="critical-ban">
-                <span [class]="'critical-badge ' + criticalTone(item)">
-                  {{ criticalLabel(item) }}
-                </span>
-                <p class="critical-txt">{{ navLabel(item) }}</p>
-                <a [href]="navHref(item)" class="krds-btn medium link basic">
-                  <span class="m-hide">{{ itemLinkLabel(item) }}</span>
-                  <i class="svg-icon ico-angle right"></i>
-                </a>
-              </div>
-            </li>
-          }
-        </ul>
+        <div class="main-urgent-wrap" role="alert">
+          <ul class="krds-critical-alerts">
+            @for (item of items; track $index) {
+              <li>
+                <div class="critical-ban">
+                  <span [class]="'critical-badge ' + criticalTone(item)">
+                    {{ criticalLabel(item) }}
+                  </span>
+                  <p class="critical-txt">{{ navLabel(item) }}</p>
+                  <a [href]="navHref(item)" class="krds-btn medium link basic">
+                    <span class="m-hide">{{ itemLinkLabel(item) }}</span>{{ ' ' }}<i
+                      class="svg-icon ico-angle right"
+                    ></i>
+                  </a>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
       }
       @case ('disclosure') {
         <div class="krds-disclosure conts-expand-area">
@@ -900,23 +917,24 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
             <p class="txt">{{ prompt }}</p>
             <div class="file-upload-btn-wrap">
               <input
+                #fileInput
                 type="file"
                 [name]="name"
                 [id]="inputId"
                 hidden
               />
-              <label [for]="inputId">
-                <button type="button" class="krds-btn medium">
-                  <i class="svg-icon ico-upload"></i>{{ selectLabel }}
-                </button>
-              </label>
+              <button
+                type="button"
+                class="krds-btn medium"
+                [disabled]="disabled"
+                (click)="fileInput.click()"
+              >
+                <i class="svg-icon ico-upload"></i>{{ selectLabel }}
+              </button>
             </div>
           </div>
           <div class="file-list">
-            <div class="total">
-              <span class="current">{{ currentCount }}{{ countSuffix }}</span> /
-              {{ maxCount }}{{ countSuffix }}
-            </div>
+            <div class="total"><span class="current">{{ currentCount }}{{ countSuffix }}</span>{{ ' / ' + maxCount + countSuffix }}</div>
             <ul class="upload-list">
               @for (file of files; track file.id) {
                 <li [class.is-error]="file.status === 'error'">
@@ -1035,7 +1053,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
       @case ('header') {
         <header
           [id]="id.startsWith('krds-additional') ? 'krds-header' : id"
-          [class]="additionalRootClass('krds-header')"
+          [attr.class]="className || null"
           [ngStyle]="style"
         >
           <div class="header-in">
@@ -1059,7 +1077,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                             class="krds-drop-wrap"
                             [class.krds-resize]="item.kind === 'resize'"
                           >
-                            <button type="button" class="krds-btn small text drop-btn">
+                            <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
                               {{ item.label }} <i class="svg-icon ico-toggle"></i>
                             </button>
                             <div class="drop-menu">
@@ -1077,9 +1095,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                                           [class.active]="dropItem.selected"
                                         >
                                           {{ dropItem.label }}
-                                          @if (dropItem.selected) {
-                                            <span class="sr-only">{{ item.selectedLabel }}</span>
-                                          }
+                                          <span class="sr-only">{{
+                                            dropItem.selected ? item.selectedLabel : ''
+                                          }}</span>
                                         </button>
                                       } @else {
                                         <a
@@ -1092,6 +1110,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                                           [attr.title]="dropItem.title || null"
                                         >
                                           {{ dropItem.label }}
+                                          <span class="sr-only"></span>
                                         </a>
                                       }
                                     </li>
@@ -1126,7 +1145,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                     <button type="button" class="btn-navi join">{{ joinLabel }}</button>
                     @if (myMenu) {
                       <div class="krds-drop-wrap my-drop">
-                        <button type="button" class="btn-navi my drop-btn">{{ myMenu.label }}</button>
+                        <button type="button" class="btn-navi my drop-btn" aria-expanded="false">{{ myMenu.label }}</button>
                         <div class="drop-menu">
                           <div class="drop-in">
                             <div class="drop-top">
@@ -1146,6 +1165,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                                 <li>
                                   <a [href]="item.href || '#'" class="item-link">
                                     {{ item.label }}
+                                    <span class="sr-only"></span>
                                   </a>
                                 </li>
                               }
@@ -1170,9 +1190,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                 </div>
               </div>
             </div>
-            <nav class="krds-main-menu" [attr.aria-label]="menuLabel || null">
+            <nav class="krds-main-menu">
               <div class="inner">
-                <ul class="gnb-menu">
+                <ul class="gnb-menu" [attr.aria-label]="menuLabel || null">
                   @for (item of headerDesktopItems; track item.id) {
                     <li>
                       @if (item.href) {
@@ -1196,10 +1216,17 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                           class="gnb-main-trigger"
                           [class.active]="item.active"
                           data-trigger="gnb"
+                          [attr.aria-controls]="headerDesktopMenuId(item)"
+                          aria-expanded="false"
+                          aria-haspopup="true"
                         >
                           {{ item.label }}
                         </button>
-                        <div class="gnb-toggle-wrap" [class.is-open]="item.active">
+                        <div
+                          class="gnb-toggle-wrap"
+                          [class.is-open]="item.active"
+                          [id]="headerDesktopMenuId(item)"
+                        >
                           <div
                             class="gnb-main-list"
                             [attr.data-has-submenu]="isSingleDesktopMenu(item) ? null : 'true'"
@@ -1255,15 +1282,19 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                                       <button
                                         type="button"
                                         class="gnb-sub-trigger"
-                                        [class.active]="child.active"
+                                        [class.active]="child.active || childIndex === 0"
                                         data-trigger="gnb"
+                                        [attr.aria-controls]="headerDesktopSubmenuId(child)"
+                                        [attr.aria-expanded]="child.active || childIndex === 0"
+                                        aria-haspopup="true"
                                       >
                                         {{ child.label }}
                                       </button>
                                       <div
                                         class="gnb-sub-list"
-                                        [class.active]="child.active"
+                                        [class.active]="child.active || childIndex === 0"
                                         [class.between]="!child.active && childIndex > 0"
+                                        [id]="headerDesktopSubmenuId(child)"
                                       >
                                         <div class="gnb-sub-content">
                                           <h2 class="sub-title">
@@ -1348,7 +1379,11 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
             </nav>
           </div>
           @if (mobileMenu) {
-            <div [id]="headerMobileId" class="krds-main-menu-mobile">
+            <div
+              [id]="headerMobileId"
+              class="krds-main-menu-mobile"
+              style="display: none"
+            >
               <div class="gnb-wrap">
                 <div class="gnb-header">
                   <div class="gnb-utils">
@@ -1388,10 +1423,22 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                 <div class="gnb-body">
                   <div class="gnb-menu">
                     <div class="menu-wrap">
-                      <ul>
-                        @for (item of mobileMenu.items; track item.id) {
-                          <li>
-                            <a [href]="item.href || '#'" class="gnb-main-trigger">
+                      <ul role="tablist">
+                        @for (
+                          item of mobileMenu.items;
+                          track item.id;
+                          let mobileIndex = $index
+                        ) {
+                          <li role="none">
+                            <a
+                              [id]="mobileMenuTabId(mobileIndex)"
+                              [href]="item.href || '#'"
+                              class="gnb-main-trigger"
+                              [class.active]="mobileIndex === 0"
+                              role="tab"
+                              [attr.aria-selected]="mobileIndex === 0"
+                              [attr.aria-controls]="mobileMenuId(item)"
+                            >
                               {{ item.label }}
                             </a>
                           </li>
@@ -1400,7 +1447,12 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                     </div>
                     <div class="submenu-wrap">
                       @for (item of mobileMenu.items; track item.id) {
-                        <div class="gnb-sub-list" [id]="mobileMenuId(item)">
+                        <div
+                          class="gnb-sub-list"
+                          [id]="mobileMenuId(item)"
+                          role="tabpanel"
+                          [attr.aria-labelledby]="mobileMenuTabId($index)"
+                        >
                           <h2 class="sub-title">{{ item.label }}</h2>
                           <ul>
                             @for (child of item.children || []; track child.id) {
@@ -1409,6 +1461,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                                   [href]="child.href || '#'"
                                   class="gnb-sub-trigger"
                                   [class.has-depth3]="!!child.children?.length"
+                                  [attr.aria-expanded]="child.children?.length ? false : null"
                                 >
                                   {{ child.label }}
                                 </a>
@@ -1508,30 +1561,26 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
       }
       @case ('help-panel') {
         <div
-          [class]="'krds-help-panel' + (open && !helpPanelFocused ? ' expand' : '')"
+          [class]="'krds-help-panel' + (open ? ' expand' : '')"
         >
           <div
             class="help-panel-wrap"
-            [attr.tabindex]="helpPanelFocused ? null : '0'"
-            (focus)="helpPanelFocused = true"
+            [attr.tabindex]="open ? '0' : null"
           >
             <div class="help-conts-area">
               <div class="krds-tab-area layer">
                 <div class="tab line">
                   <ul role="tablist">
                     @for (tab of tabs; track tab.id) {
-                      <li [class.active]="helpTabValue(tab) === activeTab">
+                      <li role="presentation" [class.active]="helpTabValue(tab) === activeTab">
                         <button
                           [id]="tab.id"
                           type="button"
                           class="btn-tab"
                           role="tab"
-                          [attr.aria-selected]="
-                            helpPanelFocused ? helpTabValue(tab) === activeTab : false
-                          "
+                          [attr.aria-selected]="helpTabValue(tab) === activeTab"
                           [attr.aria-controls]="helpTabPanelId(tab)"
-                          [attr.data-listener-attached]="helpPanelFocused ? null : 'true'"
-                          (focus)="helpPanelFocused = true"
+                          [attr.tabindex]="helpTabValue(tab) === activeTab ? '0' : '-1'"
                           (click)="activeTab = helpTabValue(tab)"
                         >
                           {{ tab.label }}
@@ -1551,6 +1600,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       [attr.aria-labelledby]="tabs[0].id"
                       class="tab-conts"
                       [class.active]="helpTabValue(tabs[0]) === activeTab"
+                      [hidden]="helpTabValue(tabs[0]) !== activeTab"
                     >
                       <h3 class="sr-only">{{ tabs[0].label }}</h3>
                       <div class="help-conts-area-inner">
@@ -1613,6 +1663,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       [attr.aria-labelledby]="tabs[1].id"
                       class="tab-conts"
                       [class.active]="helpTabValue(tabs[1]) === activeTab"
+                      [hidden]="helpTabValue(tabs[1]) !== activeTab"
                     >
                       <h3 class="sr-only">{{ tabs[1].label }}</h3>
                       <div class="help-conts-area-inner">
@@ -1621,18 +1672,27 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                             <a href="#;" [attr.title]="tutorialBackTitle">{{ tutorialTitle }}</a>
                           </h4>
                           <ul class="coach-help-process">
-                            @for (task of tasks; track $index) {
+                            @for (task of tasks; track $index; let taskIndex = $index) {
                               <li>
                                 <h4 class="tit" [class.current]="task.current">{{ task.title }}</h4>
                                 <div class="krds-disclosure conts-expand-area">
-                                  <button type="button" class="btn-conts-expand">
+                                  <button
+                                    type="button"
+                                    class="btn-conts-expand"
+                                    [attr.aria-controls]="helpDisclosureId(taskIndex)"
+                                    aria-expanded="false"
+                                  >
                                     {{ task.summary }}
                                   </button>
-                                  <div class="expand-wrap">
+                                  <div
+                                    class="expand-wrap"
+                                    [id]="helpDisclosureId(taskIndex)"
+                                    inert
+                                  >
                                     <div class="expand-in">
-                                      <ul class="krds-info-list decimal">
+                                      <ul class="krds-info-list decimal" role="list">
                                         @for (step of task.steps; track $index) {
-                                          <li>{{ step }}</li>
+                                          <li role="listitem">{{ step }}</li>
                                         }
                                       </ul>
                                     </div>
@@ -1673,27 +1733,29 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </div>
       }
       @case ('in-page-navigation') {
-        <div class="krds-in-page-navigation-area">
-          <div class="in-page-navigation-header">
-            <p class="quick-caption">{{ title }}</p>
-            <p class="quick-title">{{ pageTitle }}</p>
-          </div>
-          <nav class="in-page-navigation-list">
-            <ul>
-              @for (item of items; track $index) {
-                <li>
-                  <a [href]="navHref(item)" [class.active]="$index === 0">
-                    {{ navLabel(item) }}
-                  </a>
-                </li>
+        <div class="krds-in-page-navigation-type">
+          <div class="krds-in-page-navigation-area">
+            <div class="in-page-navigation-header">
+              <p class="quick-caption">{{ title }}</p>
+              <p class="quick-title">{{ pageTitle }}</p>
+            </div>
+            <nav class="in-page-navigation-list">
+              <ul>
+                @for (item of items; track $index) {
+                  <li>
+                    <a [href]="navHref(item)" [class.active]="$index === 0">
+                      {{ navLabel(item) }}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </nav>
+            <div class="in-page-navigation-action">
+              <button type="button" class="krds-btn medium">{{ actionLabel }}</button>
+              @if (actionInfo || actionCount) {
+                <p class="quick-info">{{ actionInfo }} <strong>{{ actionCount }}</strong></p>
               }
-            </ul>
-          </nav>
-          <div class="in-page-navigation-action">
-            <button type="button" class="krds-btn medium">{{ actionLabel }}</button>
-            @if (actionInfo || actionCount) {
-              <p class="quick-info">{{ actionInfo }} <strong>{{ actionCount }}</strong></p>
-            }
+            </div>
           </div>
         </div>
       }
@@ -1702,12 +1764,11 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
           <button
             type="button"
             class="krds-btn small text drop-btn"
-            [attr.aria-expanded]="languageFocused ? null : 'false'"
-            (focus)="languageFocused = true"
+            aria-expanded="false"
           >
-            <i class="svg-icon ico-global"></i>
-            {{ label }}
-            <i class="svg-icon ico-toggle"></i>
+            <i class="svg-icon ico-global"></i>{{ ' ' + label + ' ' }}<i
+              class="svg-icon ico-toggle"
+            ></i>
           </button>
           <div class="drop-menu">
             <div class="drop-in">
@@ -1734,11 +1795,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       @if (kind === 'language-switcher-page') {
                         <i class="svg-icon ico-go"></i>
                       }
-                      @if (!languageFocused) {
-                        <span class="sr-only">{{
-                          kind === 'language-switcher' && option.value === selected ? selectedLabel : ''
-                        }}</span>
-                      }
+                      <span class="sr-only">{{
+                        kind === 'language-switcher' && option.value === selected ? selectedLabel : ''
+                      }}</span>
                     </a>
                   </li>
                 }
@@ -1749,8 +1808,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
       }
       @case ('link') {
         <a [href]="href" class="krds-btn small link" [attr.target]="target" [attr.title]="title">
-          <span class="underline">{{ label }}</span>
-          <i class="svg-icon ico-go"></i>
+          <span class="underline">{{ label }}</span>{{ ' ' }}<i class="svg-icon ico-go"></i>
         </a>
       }
       @case ('main-menu-mobile') {
@@ -2143,7 +2201,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         }
       }
       @case ('pagination') {
-        <div class="krds-pagination" role="navigation">
+        <div class="krds-pagination" role="navigation" [attr.aria-label]="navigationLabel">
           <span class="page-navi prev disabled" href="#">{{ previousLabel }}</span>
           <div class="page-links">
             @for (page of items; track $index) {
@@ -2172,8 +2230,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
           <button
             type="button"
             class="krds-btn small text drop-btn"
-            [attr.aria-expanded]="resizeFocused ? null : 'false'"
-            (focus)="resizeFocused = true"
+            aria-expanded="false"
           >
             {{ label }} <i class="svg-icon ico-toggle"></i>
           </button>
@@ -2189,11 +2246,9 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       (click)="setSelected(option.value)"
                     >
                       {{ option.label }}
-                      @if (!resizeFocused) {
-                        <span class="sr-only">{{
-                          option.value === selected ? selectedLabel : ''
-                        }}</span>
-                      }
+                      <span class="sr-only">{{
+                        option.value === selected ? selectedLabel : ''
+                      }}</span>
                     </button>
                   </li>
                 }
@@ -2213,27 +2268,63 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </div>
       }
       @case ('select') {
-        <select
-          [id]="id"
-          [class]="selectClass"
-          title="선택"
-          [value]="selected"
-          [disabled]="disabled"
-          (change)="setSelected(inputValue($event))"
-          (blur)="touch()"
-        >
-          @for (option of options; track $index) {
-            <option
-              [attr.value]="option.value"
-              [disabled]="option.disabled"
-              [attr.selected]="kind === 'select-size' && $first ? '' : null"
-            >
-              {{ option.label }}
-            </option>
-          }
-        </select>
-        @if (kind !== 'select-sorting') {
-          <label [for]="id">{{ label }}</label>
+        @if (selectKind === 'select-sorting') {
+          <select
+            [id]="id"
+            [attr.name]="name || null"
+            [attr.class]="selectClass"
+            [attr.title]="title || null"
+            [value]="selected"
+            [disabled]="disabled"
+            [required]="required"
+            (change)="setSelected(inputValue($event))"
+            (blur)="touch()"
+          >
+            @for (option of options; track $index) {
+              <option
+                [attr.value]="option.value"
+                [disabled]="option.disabled"
+                [selected]="selectOptionSelected($index)"
+              >
+                {{ option.label }}
+              </option>
+            }
+          </select>
+        } @else {
+          <div class="form-group">
+            <div class="form-tit">
+              <label [for]="id">{{ label }}</label>
+            </div>
+            <div class="form-conts">
+              <select
+                [id]="id"
+                [attr.name]="name || null"
+                [attr.class]="selectClass"
+                [attr.title]="title || null"
+                [value]="selected"
+                [disabled]="disabled"
+                [required]="required"
+                [attr.aria-invalid]="state === 'error' ? 'true' : null"
+                [attr.aria-describedby]="hint ? selectHintId : null"
+                (change)="setSelected(inputValue($event))"
+                (blur)="touch()"
+              >
+                @for (option of options; track $index) {
+                  <option
+                    [attr.value]="option.value"
+                    [disabled]="option.disabled"
+                    [attr.selected]="selectKind === 'select-size' && $first ? '' : null"
+                    [selected]="selectOptionSelected($index)"
+                  >
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+            </div>
+            @if (hint) {
+              <p [id]="selectHintId" [attr.class]="selectHintClass">{{ hint }}</p>
+            }
+          </div>
         }
       }
       @case ('side-navigation') {
@@ -2314,8 +2405,23 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </div>
       }
       @case ('spinner') {
-        <div class="krds-spinner" role="status">
-          <span class="sr-only">{{ label }}</span>
+        <div class="form-group">
+          <div class="form-tit">
+            <label [for]="id + '-input'">Label</label>
+          </div>
+          <div class="form-conts">
+            <div class="form-spinner">
+              <input
+                type="text"
+                [id]="id + '-input'"
+                class="krds-input"
+                placeholder="placeholder"
+              />
+              <div class="krds-spinner" role="status">
+                <span class="sr-only">{{ label }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       }
       @case ('step-indicator') {
@@ -2428,6 +2534,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                               type="checkbox"
                               class="chk"
                               [id]="tableRowControlId(row, $index)"
+                              [attr.aria-label]="row.selectionLabel"
                               [checked]="tableCellBoolean(row, column.key)"
                             />
                             <label [for]="tableRowControlId(row, $index)"></label>
@@ -2438,8 +2545,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       ) {
                         <td>
                           <button type="button" class="krds-btn medium text">
-                            <i class="svg-icon ico-down"></i>
-                            {{ row[column.key] }}
+                            <i class="svg-icon ico-down"></i>{{ ' ' + row[column.key] }}
                           </button>
                         </td>
                       } @else if (columnIndex === 0) {
@@ -2469,9 +2575,10 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                     <li>
                       <button type="button" class="krds-btn medium text">
                         @if (action.icon) {
-                          <i [class]="'svg-icon ico-' + action.icon"></i>
+                          <i [class]="'svg-icon ico-' + action.icon"></i>{{ ' ' + action.label }}
+                        } @else {
+                          {{ action.label }}
                         }
-                        {{ action.label }}
                       </button>
                     </li>
                   }
@@ -2482,6 +2589,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                   <strong class="sort-label">
                     <label [for]="id + '-result-count'">{{ countLabel }}</label>
                   </strong>
+                  {{ ' ' }}
                   <select class="krds-form-select-sort" [id]="id + '-result-count'">
                     @for (option of countOptions; track option) {
                       <option>{{ option }}</option>
@@ -2501,6 +2609,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                       >
                         {{ option }}
                       </button>
+                      {{ ' ' }}
                     }
                   </div>
                   <div class="m-sort-btn">
@@ -2558,43 +2667,62 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         }
       }
       @case ('tab') {
-        <div class="krds-tab-area layer">
-          <div class="tab line full">
+        <div [class]="tabClasses.root">
+          <div [class]="tabClasses.listContainer">
             <ul role="tablist">
               @for (tab of tabs; track tab.id) {
-                <li [class.active]="(selected || tabs[0]?.id) === tab.id">
+                <li role="presentation" [attr.class]="tabItemClass(tab)">
                   <button
                     [id]="'tab_' + tab.id"
                     type="button"
-                    class="btn-tab"
+                    [class]="tabClasses.trigger"
                     role="tab"
                     [attr.aria-selected]="(selected || tabs[0]?.id) === tab.id"
                     [attr.aria-controls]="'panel_' + tab.id"
-                    [attr.data-listener-attached]="tabFocused ? null : 'true'"
-                    (focus)="tabFocused = true"
+                    [attr.tabindex]="(selected || tabs[0]?.id) === tab.id ? '0' : '-1'"
                     (click)="setSelected(tab.id)"
                   >
                     {{ tab.label }}
                     @if ((selected || tabs[0]?.id) === tab.id) {
-                      <i class="sr-only created"> {{ selectedLabel }}</i>
+                      <i class="sr-only created"> {{ selectedLabel || message }}</i>
                     }
                   </button>
                 </li>
               }
             </ul>
           </div>
+          <div class="tab-conts-wrap">
+            @for (tab of tabs; track tab.id) {
+              <section
+                [id]="'panel_' + tab.id"
+                [attr.aria-labelledby]="'tab_' + tab.id"
+                class="tab-conts"
+                [class.active]="(selected || tabs[0]?.id) === tab.id"
+                [hidden]="(selected || tabs[0]?.id) !== tab.id"
+                role="tabpanel"
+                data-quick-nav="false"
+              >
+                <h3 class="sr-only">{{ panelTitle }}</h3>
+                {{ panels[tab.id] || '' }}
+              </section>
+            }
+          </div>
         </div>
       }
       @case ('tag') {
-        <span class="krds-btn-tag">
-          {{ label }}
-          <button type="button" class="btn-delete">
-            <span class="sr-only">{{ message }}</span>
-          </button>
-        </span>
+        <div class="krds-tag-wrap large">
+          <span class="krds-btn-tag">
+            {{ label }}
+            <button type="button" class="btn-delete">
+              <span class="sr-only">{{ message }}</span>
+            </button>
+          </span>
+        </div>
       }
       @case ('tag-link') {
-        <a class="krds-btn-tag link" [href]="href">{{ label }}</a>
+        <div class="krds-tag-wrap large">
+          <a class="krds-btn-tag link" [href]="href">{{ label }}</a>
+        </div>
       }
       @case ('textarea') {
         <textarea
@@ -2627,29 +2755,41 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
                 [readonly]="readonly"
                 [required]="required"
                 [class]="textInputClass"
+                [attr.aria-describedby]="hint ? textInputHintId : null"
+                [attr.aria-invalid]="state === 'error' ? 'true' : null"
                 (input)="setValue(inputValue($event))"
                 (blur)="touch()"
               />
             </div>
             @if (hint) {
-              <p [class]="textInputHintClass">{{ hint }}</p>
+              <p [id]="textInputHintId" [class]="textInputHintClass">{{ hint }}</p>
             }
           </div>
         } @else {
-          <input
-            [id]="id"
-            class="krds-input"
-            [attr.type]="type"
-            [value]="value"
-            [attr.value]="value || null"
-            [placeholder]="placeholder"
-            [disabled]="disabled"
-            [readonly]="readonly"
-            [required]="required"
-            (input)="setValue(inputValue($event))"
-            (blur)="touch()"
-          />
-          <label [for]="id">{{ label }}</label>
+          <div class="form-group">
+            <div class="form-tit">
+              <label [for]="id">{{ label }}</label>
+            </div>
+            <div class="form-conts btn-ico-wrap">
+              <input
+                [id]="id"
+                class="krds-input"
+                [attr.type]="type"
+                [value]="value"
+                [attr.value]="value || null"
+                [placeholder]="placeholder"
+                [disabled]="disabled"
+                [readonly]="readonly"
+                [required]="required"
+                (input)="setValue(inputValue($event))"
+                (blur)="touch()"
+              />
+              <button type="button" class="krds-btn medium icon">
+                <span class="sr-only">입력한 비밀번호 보기</span>
+                <i class="svg-icon ico-pw-visible"></i>
+              </button>
+            </div>
+          </div>
         }
       }
       @case ('text-list') {
@@ -2698,10 +2838,22 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         />
       }
       @case ('tooltip') {
-        <button type="button" [class]="tooltipClass" [attr.data-tooltip]="message">
-          {{ label }}
-          <i class="svg-icon ico-angle right"></i>
+        <button
+          type="button"
+          [class]="tooltipClass"
+          [attr.data-tooltip]="message"
+          [attr.aria-labelledby]="tooltipPopoverId"
+        >{{ label + ' ' }}<i class="svg-icon ico-angle right"></i>
         </button>
+        <div
+          [id]="tooltipPopoverId"
+          class="krds-tooltip-popover"
+          role="tooltip"
+          aria-hidden="true"
+        >
+          <span class="sr-only">{{ label }}</span>
+          {{ message }}
+        </div>
       }
       @case ('tts') {
         <button
@@ -2714,7 +2866,7 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
             <i class="svg-icon ico-volume"></i>
           </span>
           @if (kind !== 'tts-icon') {
-            <span class="krds-tts-text">{{ label }}</span>
+            {{ ' ' }}<span class="krds-tts-text">{{ label }}</span>
           }
         </button>
       }
@@ -2740,23 +2892,49 @@ const KIND_ALIASES: Partial<Record<AngularAdditionalKind, AngularAdditionalKind>
         </div>
       }
       @case ('radio-button') {
-        <div
-          [class]="
-            'krds-form-check' + (kind === 'radio-size' ? ' ' + size : '')
-          "
-        >
-          <input
-            [id]="id"
-            type="radio"
-            [attr.name]="name || null"
-            [attr.value]="value || null"
-            [checked]="checked || (value !== '' && selected === value)"
-            [disabled]="disabled"
-            (change)="setSelected(value || 'on')"
-            (blur)="touch()"
-          />
-          <label [for]="id">{{ label }}</label>
-        </div>
+        @if (kind === 'radio-size' || radioSizeHost) {
+          <div class="krds-check-area">
+            <div class="krds-form-check medium">
+              <input
+                [id]="id"
+                type="radio"
+                [attr.name]="name || null"
+                [attr.value]="value || null"
+                [checked]="checked || (value !== '' && selected === value)"
+                [disabled]="disabled"
+                (change)="setSelected(value || 'on')"
+                (blur)="touch()"
+              />
+              <label [for]="id">{{ label }}</label>
+            </div>
+            <div class="krds-form-check large">
+              <input
+                [id]="id + '-large'"
+                type="radio"
+                [attr.name]="name || null"
+                [attr.value]="value || null"
+                [disabled]="disabled"
+                (change)="setSelected(value || 'on')"
+                (blur)="touch()"
+              />
+              <label [for]="id + '-large'">사이즈 : large</label>
+            </div>
+          </div>
+        } @else {
+          <div class="krds-form-check">
+            <input
+              [id]="id"
+              type="radio"
+              [attr.name]="name || null"
+              [attr.value]="value || null"
+              [checked]="checked || (value !== '' && selected === value)"
+              [disabled]="disabled"
+              (change)="setSelected(value || 'on')"
+              (blur)="touch()"
+            />
+            <label [for]="id">{{ label }}</label>
+          </div>
+        }
       }
       @case ('surface') {
         <label class="krds-field"
@@ -2815,6 +2993,7 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   @Input() totalStepsLabel = '';
   @Input() collapseLabel = '';
   @Input() activeTab = '';
+  @Input() panelTitle = '';
   @Input() position = 'top';
   @Input() step = '1/1';
   @Input() open = false;
@@ -2910,6 +3089,7 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   slideIndex = 0;
   @Input() previousLabel = '';
   @Input() nextLabel = '';
+  @Input() navigationLabel = '페이지 이동';
   @Input() moreLabel = '';
   @Input() imageLabel = '';
   @Input() actionLabel = '';
@@ -2957,17 +3137,13 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   @Input() panels: Record<string, string> = {};
   @Input() steps: KrdsStep[] = [];
   @Input() columns: KrdsTableColumn[] = [];
-  @Input() rows: KrdsTableRow[] = [];
+  @Input() rows: AngularTableRow[] = [];
   @Output() valueChange = new EventEmitter<string>();
   @Output() selectedChange = new EventEmitter<string>();
   @Output() checkedChange = new EventEmitter<boolean>();
   @Output() yearChange = new EventEmitter<number>();
   @Output() monthChange = new EventEmitter<number>();
-  helpPanelFocused = false;
-  contextualHelpFocused = false;
-  languageFocused = false;
-  resizeFocused = false;
-  tabFocused = false;
+  accordionOpenIndex: number | null = null;
   calendarYearOpen = false;
   calendarMonthOpen = false;
   private onChange: (value: string | number | boolean | string[]) => void = () => undefined;
@@ -2977,6 +3153,8 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   private readonly elementRef = inject<ElementRef<{ tagName?: string }>>(ElementRef, {
     optional: true,
   });
+  readonly radioSizeHost =
+    this.elementRef?.nativeElement?.tagName?.toLowerCase() === 'krds-radio-size';
   private readonly sanitizer = inject(DomSanitizer, { optional: true });
 
   writeValue(value: string | number | boolean | string[] | null): void {
@@ -3106,7 +3284,8 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
         const end = period && day === this.rangeEndDay;
         const today = currentMonth && day === this.todayDay;
         const event = currentMonth && this.eventDays.includes(day);
-        const disabled = !currentMonth || this.disabledDays.includes(day);
+        const dateDisabled = currentMonth && this.disabledDays.includes(day);
+        const disabled = !currentMonth || dateDisabled;
         const date = `${year}.${this.padCalendarPart(month)}.${this.padCalendarPart(day)}`;
         const selected = this.value === date;
         const classes = [
@@ -3117,7 +3296,7 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
           end || (selected && !period) ? 'end' : null,
           today ? 'today' : null,
           event ? 'day-event' : null,
-          disabled ? 'disabled' : null,
+          dateDisabled ? 'disabled' : null,
         ].filter((className): className is string => className !== null);
 
         week.push({
@@ -3241,11 +3420,55 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
       ? this.options.filter((option) => option.value !== this.selected)
       : this.options;
   }
+  get selectKind(): AngularAdditionalKind {
+    return this.hostAliasKind ?? this.kind;
+  }
   get selectClass(): string {
-    if (this.kind === 'select-size') return `krds-form-select ${this.size}`;
-    if (this.kind === 'select-state') return 'krds-form-select is-error';
-    if (this.kind === 'select-sorting') return 'krds-form-select-sort';
-    return 'krds-form-select';
+    const kind = this.selectKind;
+    const control =
+      kind === 'select-sorting'
+        ? selectRecipe({ variant: 'sorting' }).control
+        : selectRecipe({
+            variant:
+              kind === 'select-size' ? 'size' : kind === 'select-state' ? 'state' : 'default',
+            size: kind === 'select-size' ? (this.size as SelectRecipeSize) : undefined,
+            state: this.state,
+          }).control;
+    return `${control}${this.className ? ` ${this.className}` : ''}`;
+  }
+  get selectHintId(): string {
+    return `${this.id}-hint`;
+  }
+  get selectHintClass(): string {
+    if (this.state === 'error') return 'form-hint-invalid';
+    if (this.state === 'success') return 'form-hint-success';
+    if (this.state === 'information') return 'form-hint-information';
+    return 'form-hint';
+  }
+  selectOptionSelected(index: number): boolean {
+    if (this.selectKind === 'select-size') return index === 0;
+    return this.options.findIndex((option) => option.value === this.selected) === index;
+  }
+  get accordionClass(): string {
+    const kind = this.hostAliasKind ?? this.kind;
+    return accordionRecipe({
+      type: kind === 'accordion-line' || this.type === 'line' ? 'line' : 'default',
+    }).className;
+  }
+  isAccordionOpen(index: number): boolean {
+    return this.accordionOpenIndex === index;
+  }
+  toggleAccordion(index: number): void {
+    this.accordionOpenIndex = this.isAccordionOpen(index) ? null : index;
+  }
+  get textInputHintId(): string {
+    return `${this.id}-hint`;
+  }
+  get tabClasses() {
+    return tabRecipe({ full: true });
+  }
+  tabItemClass(tab: KrdsTabItem): string | undefined {
+    return tabRecipe({ active: (this.selected || this.tabs[0]?.id) === tab.id }).item;
   }
   get textInputContainerClass(): string {
     return `form-conts${this.state === 'default' ? '' : ` is-${this.state}`}`;
@@ -3263,13 +3486,17 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
     return `krds-contextual-help ${this.position.split('-').join(' ')}`;
   }
   get tooltipClass(): string {
+    const kind = this.hostAliasKind ?? this.kind;
     const variation =
-      this.kind === 'tooltip-box'
+      kind === 'tooltip-box'
         ? ' tooltip-box'
-        : this.kind === 'tooltip-vertical'
+        : kind === 'tooltip-vertical'
           ? ' tooltip-vertical'
           : '';
     return `krds-btn small text krds-tooltip${variation}`;
+  }
+  get tooltipPopoverId(): string {
+    return `${this.id}-tooltip`;
   }
   get ttsClass(): string {
     return `krds-tts ${this.kind === 'tts-size' ? this.size : 'medium'}`;
@@ -3285,6 +3512,9 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   }
   helpTabPanelId(tab: KrdsTabItem & { panelId?: string }): string {
     return tab.panelId ?? `${tab.id}-panel`;
+  }
+  helpDisclosureId(index: number): string {
+    return `${this.id}-help-disclosure-${index}`;
   }
   sideMenuId(index: number): string {
     return `${this.id}-side-${index}`;
@@ -3344,11 +3574,11 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
       (column as KrdsTableColumn & { visuallyHidden?: boolean }).visuallyHidden,
     );
   }
-  tableRowControlId(row: KrdsTableRow, index: number): string {
+  tableRowControlId(row: AngularTableRow, index: number): string {
     const rowId = 'id' in row ? String(row.id) : String(index + 1);
     return `list_chk_${rowId}`;
   }
-  tableCellBoolean(row: KrdsTableRow, key: string): boolean {
+  tableCellBoolean(row: AngularTableRow, key: string): boolean {
     return Boolean(row[key]);
   }
   unorderedListClass(level: number): string {
@@ -3374,6 +3604,12 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   get headerDesktopItems(): AngularNavItem[] {
     return this.desktopItems.length > 0 ? this.desktopItems : this.links;
   }
+  headerDesktopMenuId(item: AngularNavItem): string {
+    return `${this.id}-gnb-main-${item.id}`;
+  }
+  headerDesktopSubmenuId(item: AngularNavItem): string {
+    return `${this.id}-gnb-sub-${item.id}`;
+  }
   get headerMobileId(): string {
     return `${this.id}-mobile-nav`;
   }
@@ -3387,6 +3623,9 @@ export class KrdsAdditionalComponent implements ControlValueAccessor, KrdsAdditi
   }
   mobileMenuId(item: AngularNavItem): string {
     return item.href?.startsWith('#') ? item.href.slice(1) : (item.id ?? '');
+  }
+  mobileMenuTabId(index: number): string {
+    return `${this.id}-mobile-tab-${index}`;
   }
   isSingleDesktopMenu(item: AngularNavItem): boolean {
     return Boolean(item.title && item.banner);

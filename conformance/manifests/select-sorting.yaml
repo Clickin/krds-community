@@ -12,5 +12,8 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 contract:
-  semanticElement: label-and-select
+  semanticElement: native-element
+  accessibleRole: combobox
+  requiredAttributes:
+    title: 선택
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

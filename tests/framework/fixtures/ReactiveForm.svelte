@@ -2,12 +2,13 @@
   import Accordion from '../../../packages/svelte/src/Accordion.svelte';
   import Checkbox from '../../../packages/svelte/src/Checkbox.svelte';
   import TextInput from '../../../packages/svelte/src/TextInput.svelte';
-  import { Tab } from '../../../packages/svelte/src/index.js';
+  import { SelectSorting, SelectState, Tab } from '../../../packages/svelte/src/index.js';
 
   let value = $state('one');
   let checked = $state(false);
   let disabled = $state(false);
   let submitted = $state('');
+  let selectState: 'default' | 'error' = $state('error');
   let items = $state([
     { id: 'first', title: 'First', content: 'First content' },
     { id: 'second', title: 'Second', content: 'Second content' },
@@ -40,7 +41,33 @@
   />
   <Checkbox id="accepted" name="accepted" label="Accept" bind:checked {disabled} />
   <Accordion bind:openItems {items} />
-  <Tab id="reactive-tabs" bind:selected={selectedTab} {tabs} {panels} message="selected" />
+  <SelectState
+    id="reactive-select"
+    class="consumer-select"
+    label="Reactive select"
+    state={selectState}
+    options={[
+      { value: 'first', label: 'First option' },
+      { value: 'second', label: 'Second option' },
+    ]}
+  />
+  <SelectSorting
+    id="reactive-sorting-select"
+    label="Reactive sorting select"
+    state={selectState}
+    options={[
+      { value: 'first', label: 'First option' },
+      { value: 'second', label: 'Second option' },
+    ]}
+  />
+  <Tab
+    id="reactive-tabs"
+    class="consumer-tabs"
+    bind:selected={selectedTab}
+    {tabs}
+    {panels}
+    message="selected"
+  />
   <output data-testid="count">{value.length}</output>
   <output data-testid="submitted">{submitted}</output>
   <output data-testid="selected-tab">{selectedTab}</output>
@@ -49,6 +76,7 @@
     onclick={() => {
       value = 'updated';
       disabled = true;
+      selectState = 'default';
       items = [
         { id: 'first', title: 'Renamed', content: 'Updated content' },
         { id: 'second', title: 'Second', content: 'Second content' },

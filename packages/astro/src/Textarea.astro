@@ -24,13 +24,12 @@ const {
 } = Astro.props;
 const id = providedId ?? `krds-textarea-${crypto.randomUUID()}`;
 const hintId = hint !== undefined || Astro.slots.has('hint') ? `${id}-hint` : undefined;
-const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;
 const initialValue = value === undefined ? '' : String(value);
 const count = currentLength ?? Array.from(initialValue).length;
 const recipe = inputRecipe({ className });
 ---
 
-<div class="form-group" data-krds-textarea-root="">
+<div class="form-group">
   {(label !== undefined || Astro.slots.has('label')) && (
     <div class="form-tit">
       <label for={id}><slot name="label">{label}</slot></label>
@@ -43,8 +42,7 @@ const recipe = inputRecipe({ className });
         class={recipe.className}
         id={id}
         maxlength={maxLength}
-        aria-describedby={describedBy}
-        data-krds-textarea={maxLength === undefined ? undefined : ''}
+        aria-describedby={consumerDescribedBy}
       >{initialValue}</textarea>
       {maxLength !== undefined && (
         <p class="textarea-count" aria-live="polite">
@@ -58,8 +56,8 @@ const recipe = inputRecipe({ className });
 
 <script>
   document.addEventListener('input', (event) => {
-    if (!(event.target instanceof HTMLTextAreaElement) || !event.target.hasAttribute('data-krds-textarea')) return;
-    const root = event.target.closest<HTMLElement>('[data-krds-textarea-root]');
+    if (!(event.target instanceof HTMLTextAreaElement) || event.target.maxLength < 0) return;
+    const root = event.target.closest<HTMLElement>('.form-group');
     const count = root?.querySelector<HTMLElement>('.textarea-count .count-now');
     if (count) count.textContent = String(Array.from(event.target.value).length);
   });

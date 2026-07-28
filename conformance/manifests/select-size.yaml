@@ -7,10 +7,17 @@ upstream:
 fixtures:
   - id: select-size.default
     sourceSelector: ".krds-form-select"
+    sourceAncestorSelector: ".form-group"
     mandatory: true
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.select.description-relationships
 contract:
   semanticElement: label-and-select
+  accessibleRole: combobox
+  requiredAttributes:
+    label: [for]
+    select: [id, title=선택]
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

@@ -7,6 +7,7 @@ upstream:
 fixtures:
   - id: main-menu-mobile.default
     sourceSelector: ".krds-main-menu-mobile"
+    layoutContext: viewport-height
     mandatory: true
     viewport: desktop
     props: {}

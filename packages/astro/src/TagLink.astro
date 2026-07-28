@@ -2,15 +2,18 @@
 import { cx } from '@krds-community/recipes';
 import type { HTMLAttributes } from 'astro/types';
 
-export interface Props extends Omit<HTMLAttributes<'a'>, 'class' | 'class:list' | 'href'> {
+export interface Props extends Omit<HTMLAttributes<'a'>, 'class' | 'class:list' | 'href' | 'size'> {
   href: string;
   label?: string;
+  size?: 'small' | 'medium' | 'large';
   class?: string;
 }
 
-const { href, label, class: className, ...rest } = Astro.props;
+const { href, label, size = 'large', class: className, ...rest } = Astro.props;
 ---
 
-<a {...rest} href={href} class={cx('krds-btn-tag', 'link', className)}>
-  <slot>{label}</slot>
-</a>
+<div class={cx('krds-tag-wrap', size)}>
+  <a {...rest} href={href} class={cx('krds-btn-tag', 'link', className)}>
+    <slot>{label}</slot>
+  </a>
+</div>

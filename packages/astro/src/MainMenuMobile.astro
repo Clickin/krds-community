@@ -62,7 +62,7 @@ const {
   closeButtonId = 'close-nav',
   sample = false,
   open = false,
-  standalone: _standalone = true,
+  standalone = true,
   navigationLabel,
   className: classNameProp,
   class: classAttribute,
@@ -72,29 +72,28 @@ const {
 } = Astro.props;
 const className = classNameProp ?? classAttribute;
 
-const selectedTopExists = items.some((item) => item.active);
 const bottomSize = providedBottomSize ?? (sample ? 'small' : 'medium');
 const itemKey = (item: MobileMenuItem) =>
   item.id ?? item.label.trim().replace(/[^a-zA-Z0-9_-]+/g, '-');
 const panelId = (item: MobileMenuItem) => item.id ?? `${id}-panel-${itemKey(item)}`;
-const tabId = (item: MobileMenuItem) => `${id}-tab-${itemKey(item)}`;
-const depth3Id = (item: MobileMenuItem) => `${id}-depth3-${itemKey(item)}`;
-const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
+const runtimeInitialized = !sample;
+const resolvedStyle = sample
+  ? 'display: block; position: static; visibility: visible;'
+  : style;
 ---
 
 <div
   {...rest}
   id={id}
-  role="navigation"
-  class={cx('krds-main-menu-mobile', sample && !className ? 'sample' : undefined, open && 'is-open', className)}
-  style={style}
+  role={standalone ? 'navigation' : undefined}
+  class={cx('krds-main-menu-mobile', sample && 'sample', open && 'is-open', className)}
+  style={resolvedStyle}
   aria-label={ariaLabel ?? navigationLabel}
-  data-krds-main-menu-mobile
 >
   <div class="gnb-wrap">
     <div class="gnb-header">
       <div class="gnb-utils">
-        <ul class="gnb-utils-list">
+        <ul class="utility-list">
           {utilityItems.map((item) => (
             <li>
               {item.href ? (
@@ -120,11 +119,11 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
       <div class="gnb-login">
         {loginHref ? (
           <a href={loginHref} class="krds-btn large text">
-            <i class="svg-icon ico-log" aria-hidden="true"></i> {loginLabel}
+            <i class="svg-icon ico-log"></i> {loginLabel}
           </a>
         ) : (
           <button type="button" class="krds-btn large text">
-            <i class="svg-icon ico-log" aria-hidden="true"></i> {loginLabel}
+            <i class="svg-icon ico-log"></i> {loginLabel}
           </button>
         )}
       </div>
@@ -155,27 +154,27 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
           name={searchName}
           value={searchValue ?? defaultSearchValue}
         />
-        <button type="button" class="krds-btn medium icon ico-search" data-mobile-search>
+        <button type="button" class="krds-btn medium icon ico-search">
           <span class="sr-only">{searchLabel}</span>
-          <i class="svg-icon ico-sch" aria-hidden="true"></i>
+          <i class="svg-icon ico-sch"></i>
         </button>
       </div>
     </div>
     <div class="gnb-body">
       <div class="gnb-menu">
         <div class="menu-wrap">
-          <ul role="tablist">
+          <ul role={runtimeInitialized ? 'tablist' : undefined}>
             {items.map((item, index) => {
-              const active = Boolean(item.active || (!selectedTopExists && index === 0));
+              const active = Boolean(item.active || (runtimeInitialized && index === 0));
               return (
-                <li role="none">
+                <li role={runtimeInitialized ? 'none' : undefined}>
                   <a
-                    id={tabId(item)}
                     href={item.href ?? `#${panelId(item)}`}
+                    id={runtimeInitialized ? `tab-${index}` : undefined}
+                    role={runtimeInitialized ? 'tab' : undefined}
+                    aria-selected={runtimeInitialized ? (active ? 'true' : 'false') : undefined}
+                    aria-controls={runtimeInitialized ? panelId(item) : undefined}
                     class={cx('gnb-main-trigger', active && 'active')}
-                    role="tab"
-                    aria-selected={active ? 'true' : 'false'}
-                    aria-controls={panelId(item)}
                     aria-disabled={item.disabled ? 'true' : undefined}
                     tabindex={item.disabled ? -1 : undefined}
                   >
@@ -187,8 +186,13 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
           </ul>
         </div>
         <div class="submenu-wrap">
-          {items.map((item) => (
-            <div class="gnb-sub-list" id={panelId(item)} role="tabpanel" aria-labelledby={tabId(item)}>
+          {items.map((item, index) => (
+            <div
+              class="gnb-sub-list"
+              id={panelId(item)}
+              role={runtimeInitialized ? 'tabpanel' : undefined}
+              aria-labelledby={runtimeInitialized ? `tab-${index}` : undefined}
+            >
               <h2 class="sub-title">{item.label}</h2>
               <ul>
                 {item.children?.map((second) => {
@@ -202,8 +206,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
                         rel={second.rel}
                         title={second.title}
                         aria-current={second.current ? 'page' : undefined}
-                        aria-controls={hasDepth3 ? depth3Id(second) : undefined}
-                        aria-expanded={hasDepth3 ? (second.active ? 'true' : 'false') : undefined}
+                        aria-expanded={runtimeInitialized && hasDepth3 ? (second.active ? 'true' : 'false') : undefined}
                         aria-disabled={second.disabled ? 'true' : undefined}
                         tabindex={second.disabled ? -1 : undefined}
                       >
@@ -211,7 +214,6 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
                       </a>
                       {hasDepth3 && (
                         <div
-                          id={depth3Id(second)}
                           class={cx('depth3-wrap', second.active && 'is-open')}
                         >
                           <ul>
@@ -226,26 +228,24 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
                                     rel={third.rel}
                                     title={hasDepth4 ? undefined : third.title}
                                     aria-current={third.current ? 'page' : undefined}
-                                    aria-controls={hasDepth4 ? depth4Id(third) : undefined}
-                                    aria-expanded={hasDepth4 ? 'false' : undefined}
                                     aria-disabled={third.disabled ? 'true' : undefined}
                                     tabindex={third.disabled ? -1 : undefined}
                                   >
                                     {third.label}
                                   </a>
                                   {hasDepth4 && (
-                                    <div id={depth4Id(third)} class="depth4-wrap">
+                                    <div class="depth4-wrap">
                                       <div class="depth4-head">
                                         <button type="button" class="krds-btn icon trigger-prev">
                                           <span class="sr-only">{previousLabel}</span>
-                                          <i class="svg-icon ico-angle left" aria-hidden="true"></i>
+                                          <i class="svg-icon ico-angle left"></i>
                                         </button>
                                         <button type="button" class="krds-btn icon trigger-close">
                                           <span class="sr-only">{closeLabel}</span>
-                                          <i class="svg-icon ico-popup-close" aria-hidden="true"></i>
+                                          <i class="svg-icon ico-popup-close"></i>
                                         </button>
                                       </div>
-                                      <div class="depth4-body">
+                                      <ul class="depth4-body">
                                         <h4 class="sub-title">{third.title}</h4>
                                         <ul class="depth4-ul">
                                           {third.children?.map((fourth) => (
@@ -266,7 +266,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
                                             </li>
                                           ))}
                                         </ul>
-                                      </div>
+                                      </ul>
                                     </div>
                                   )}
                                 </li>
@@ -297,45 +297,48 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
               {item.label}
               <i
                 class={cx('svg-icon', item.target ? 'ico-go' : 'ico-angle right')}
-                aria-hidden="true"
               ></i>
             </a>
           ) : (
             <button type="button" class={cx('krds-btn', bottomSize, 'text')} disabled={item.disabled}>
-              {item.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+              {item.label} <i class="svg-icon ico-angle right"></i>
             </button>
           )
         ))}
       </div>
     </div>
-    <button type="button" class="krds-btn medium icon" id={closeButtonId} data-mobile-close>
+    <button type="button" class="krds-btn medium icon" id={closeButtonId}>
       <span class="sr-only">{closeLabel}</span>
-      <i class="svg-icon ico-popup-close" aria-hidden="true"></i>
+      <i class="svg-icon ico-popup-close"></i>
     </button>
   </div>
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-krds-main-menu-mobile]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('.krds-main-menu-mobile').forEach((root) => {
     const wrap = root.querySelector<HTMLElement>(':scope > .gnb-wrap');
     const body = root.querySelector<HTMLElement>('.gnb-body');
-    const tabs = Array.from(root.querySelectorAll<HTMLAnchorElement>('.menu-wrap [role="tab"]'));
+    const tabs = Array.from(root.querySelectorAll<HTMLAnchorElement>('.menu-wrap .gnb-main-trigger'));
     const panels = Array.from(root.querySelectorAll<HTMLElement>('.submenu-wrap > .gnb-sub-list'));
-    const closeButton = root.querySelector<HTMLButtonElement>('[data-mobile-close]');
+    const closeButton = root.querySelector<HTMLButtonElement>('.gnb-wrap > button.krds-btn.icon');
     const opener = Array.from(document.querySelectorAll<HTMLElement>('[aria-controls]')).find(
       (element) => element.getAttribute('aria-controls') === root.id,
     );
     const sample = root.classList.contains('sample');
-    if (!wrap || !body) return;
+    if (!wrap || !body || sample) return;
 
     const activateTab = (tab: HTMLAnchorElement, scroll = true) => {
       if (tab.getAttribute('aria-disabled') === 'true') return;
       tabs.forEach((candidate) => {
         const active = candidate === tab;
         candidate.classList.toggle('active', active);
-        candidate.setAttribute('aria-selected', String(active));
+        candidate.setAttribute('aria-selected', active ? 'true' : 'false');
       });
-      const panel = root.querySelector<HTMLElement>(`#${CSS.escape(tab.getAttribute('aria-controls') ?? '')}`);
+      const panelTarget = tab.getAttribute('href');
+      const panel =
+        panelTarget?.startsWith('#')
+          ? root.querySelector<HTMLElement>(panelTarget)
+          : null;
       if (scroll && panel) body.scrollTo({ top: panel.offsetTop, behavior: 'smooth' });
     };
     tabs.forEach((tab) => {
@@ -349,7 +352,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
       panels.forEach((panel) => {
         if (body.scrollTop >= panel.offsetTop) activePanel = panel;
       });
-      const tab = tabs.find((candidate) => candidate.getAttribute('aria-controls') === activePanel?.id);
+      const tab = tabs.find((candidate) => candidate.getAttribute('href') === `#${activePanel?.id}`);
       if (tab) activateTab(tab, false);
     });
 
@@ -371,7 +374,6 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
       const closeDepth = () => {
         panel.classList.remove('is-open');
         panel.style.removeProperty('display');
-        trigger.setAttribute('aria-expanded', 'false');
         trigger.focus();
       };
       trigger.addEventListener('click', (event) => {
@@ -379,7 +381,6 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
         event.preventDefault();
         panel.style.display = 'block';
         panel.classList.add('is-open');
-        trigger.setAttribute('aria-expanded', 'true');
         previous?.focus();
       });
       previous?.addEventListener('click', closeDepth);
@@ -394,19 +395,15 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
     const openMenu = () => {
       root.style.display = 'block';
       root.classList.add('is-backdrop', 'is-open');
-      root.setAttribute('aria-hidden', 'false');
       wrap.setAttribute('tabindex', '0');
-      opener?.setAttribute('aria-expanded', 'true');
       document.body.classList.add('is-gnb-mobile');
       wrap.focus();
       root.dispatchEvent(new CustomEvent('krds:menu-open', { bubbles: true }));
     };
     const closeMenu = (restoreFocus = true) => {
       root.classList.remove('is-backdrop', 'is-open');
-      root.setAttribute('aria-hidden', 'true');
-      opener?.setAttribute('aria-expanded', 'false');
       document.body.classList.remove('is-gnb-mobile');
-      if (!sample) root.style.display = 'none';
+      root.style.display = 'none';
       if (restoreFocus) opener?.focus();
       root.dispatchEvent(new CustomEvent('krds:menu-close', { bubbles: true }));
     };
@@ -414,7 +411,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
     closeButton?.addEventListener('click', () => closeMenu());
     if (!sample && !root.classList.contains('is-open')) closeMenu(false);
 
-    root.querySelector<HTMLButtonElement>('[data-mobile-search]')?.addEventListener('click', () => {
+    root.querySelector<HTMLButtonElement>('.sch-input .krds-btn')?.addEventListener('click', () => {
       const input = root.querySelector<HTMLInputElement>('.sch-input .krds-input');
       root.dispatchEvent(
         new CustomEvent('krds:search', {
@@ -429,7 +426,7 @@ const depth4Id = (item: MobileMenuItem) => `${id}-depth4-${itemKey(item)}`;
         closeMenu();
         return;
       }
-      if (event.key !== 'Tab' || !root.classList.contains('is-open') || sample) return;
+      if (event.key !== 'Tab' || !root.classList.contains('is-open')) return;
       const focusable = Array.from(
         root.querySelectorAll<HTMLElement>(
           'a[href]:not([aria-disabled="true"]), button:not(:disabled), input:not(:disabled), [tabindex]:not([tabindex="-1"])',

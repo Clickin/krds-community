@@ -116,13 +116,9 @@ const resolvedDescription = helpDescription ?? children;
   {...rest}
   id={panelId}
   class:list={['krds-help-panel', open && 'expand', className]}
-  aria-hidden={open ? 'false' : 'true'}
-  data-krds-tutorial-panel
-  data-help-trigger-id={triggerId}
-  data-active-tab={selectedTab?.value}
-  data-selected-label={selectedLabel}
+  hidden={!open}
 >
-  <div class="help-panel-wrap" tabindex={open ? -1 : undefined}>
+  <div class="help-panel-wrap" tabindex={open ? 0 : undefined}>
     <div class="help-conts-area">
       <div class="krds-tab-area layer">
         <div class="tab line">
@@ -131,17 +127,17 @@ const resolvedDescription = helpDescription ?? children;
               const selected = tab.value === selectedTab?.value;
               return (
                 <li
-                  id={tab.domId}
-                  role="tab"
-                  aria-selected={selected ? 'true' : 'false'}
-                  aria-controls={tab.domPanelId}
-                  aria-disabled={tab.disabled ? 'true' : undefined}
+                  role="presentation"
                   class:list={[selected && 'active']}
-                  data-tab-value={tab.value}
                 >
                   <button
                     type="button"
+                    id={tab.domId}
+                    role="tab"
                     class="btn-tab"
+                    aria-selected={selected ? 'true' : 'false'}
+                    aria-controls={tab.domPanelId}
+                    aria-disabled={tab.disabled ? 'true' : undefined}
                     tabindex={selected ? 0 : -1}
                     disabled={tab.disabled}
                   >
@@ -183,7 +179,7 @@ const resolvedDescription = helpDescription ?? children;
                           <a
                             href={link.href}
                             target={link.target}
-                            rel={link.rel ?? (link.target === '_blank' ? 'noopener noreferrer' : undefined)}
+                            rel={link.rel}
                             title={link.title ?? (link.target === '_blank' ? externalTitle : undefined)}
                             class="krds-btn xsmall link basic"
                           >
@@ -205,7 +201,7 @@ const resolvedDescription = helpDescription ?? children;
                             <a
                               href={link.href}
                               target={link.target}
-                              rel={link.rel ?? (link.target === '_blank' ? 'noopener noreferrer' : undefined)}
+                              rel={link.rel}
                               title={link.title ?? (link.target === '_blank' ? externalTitle : undefined)}
                               class="krds-btn xsmall link basic"
                             >
@@ -238,7 +234,6 @@ const resolvedDescription = helpDescription ?? children;
                     <a
                       href={tutorialHref}
                       title={tutorialBackTitle ?? backTitle}
-                      data-tutorial-back
                     >
                       {tutorialTitle}
                     </a>
@@ -259,12 +254,11 @@ const resolvedDescription = helpDescription ?? children;
                           <div
                             id={task.disclosureId}
                             class="expand-wrap"
-                            hidden={!task.open}
-                            aria-hidden={task.open ? 'false' : 'true'}
+                            inert={!task.open}
                           >
                             <div class="expand-in">
-                              <ul class="krds-info-list decimal">
-                                {task.steps.map((step) => <li>{step}</li>)}
+                              <ul class="krds-info-list decimal" role="list">
+                                {task.steps.map((step) => <li role="listitem">{step}</li>)}
                               </ul>
                             </div>
                           </div>
@@ -277,7 +271,6 @@ const resolvedDescription = helpDescription ?? children;
                   <button
                     type="button"
                     class="krds-btn medium secondary coach-btn-stop"
-                    data-tutorial-stop
                   >
                     {stopLabel}
                   </button>
@@ -288,7 +281,7 @@ const resolvedDescription = helpDescription ?? children;
         </div>
       </div>
 
-      <button type="button" class="krds-btn small tertiary btn-help-panel fold" data-help-collapse>
+      <button type="button" class="krds-btn small tertiary btn-help-panel fold">
         <span class="sr-only">{label}</span> {collapseLabel} <i class="svg-icon ico-angle right"></i>
       </button>
     </div>
@@ -299,61 +292,56 @@ const resolvedDescription = helpDescription ?? children;
   const enhancedTutorialPanels = new WeakSet<HTMLElement>();
 
   function enhanceTutorialPanels() {
-    document.querySelectorAll<HTMLElement>('[data-krds-tutorial-panel]').forEach((root) => {
+    document.querySelectorAll<HTMLElement>('.krds-help-panel').forEach((root) => {
       if (enhancedTutorialPanels.has(root)) return;
       enhancedTutorialPanels.add(root);
 
-      const trigger = document.getElementById(root.dataset.helpTriggerId ?? '') as HTMLButtonElement | null;
+      const previous = root.previousElementSibling;
+      const trigger =
+        previous instanceof HTMLButtonElement && previous.classList.contains('btn-help-exec')
+          ? previous
+          : null;
       const panelWrap = root.querySelector<HTMLElement>('.help-panel-wrap');
-      const collapse = root.querySelector<HTMLButtonElement>('[data-help-collapse]');
-      const tabs = Array.from(root.querySelectorAll<HTMLElement>('[role="tab"]'));
+      const collapse = root.querySelector<HTMLButtonElement>('.btn-help-panel.fold');
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('button[role="tab"]'));
       const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
-      const selectedLabel = root.dataset.selectedLabel ?? '';
+      const selectedLabel =
+        root.querySelector<HTMLElement>('button[role="tab"][aria-selected="true"] .created')
+          ?.textContent?.trim() ?? '';
       let returnFocus: HTMLElement | null = trigger;
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        root.style.transition = 'none';
-        panelWrap?.style.setProperty('transition', 'none');
-        root.querySelectorAll<HTMLElement>('.expand-wrap').forEach((element) => {
-          element.style.transition = 'none';
-        });
-      }
 
       const setOpen = (open: boolean, source?: HTMLElement) => {
         if (open && source) returnFocus = source;
         root.classList.toggle('expand', open);
-        root.setAttribute('aria-hidden', open ? 'false' : 'true');
-        root.inert = !open;
+        root.hidden = !open;
         if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
         if (open) panelWrap?.focus({ preventScroll: true });
         else if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
         root.dispatchEvent(
-          new CustomEvent('krds:helpopenchange', {
-            bubbles: true,
-            detail: { open },
-          }),
+          new CustomEvent('krds:helpopenchange', { bubbles: true, detail: { open } }),
         );
       };
 
-      const setTab = (value: string, emit: boolean) => {
+      const setTab = (id: string, emit: boolean) => {
         const requested = tabs.find(
-          (tab) => tab.dataset.tabValue === value && tab.getAttribute('aria-disabled') !== 'true',
+          (tab) => tab.id === id && tab.getAttribute('aria-disabled') !== 'true',
         );
-        const activeTab = requested ?? tabs.find((tab) => tab.getAttribute('aria-disabled') !== 'true');
+        const activeTab =
+          requested ??
+          tabs.find((tab) => tab.getAttribute('aria-selected') === 'true') ??
+          tabs.find((tab) => tab.getAttribute('aria-disabled') !== 'true');
         if (!activeTab) return;
         tabs.forEach((tab) => {
           const active = tab === activeTab;
-          tab.classList.toggle('active', active);
+          tab.closest('li')?.classList.toggle('active', active);
           tab.setAttribute('aria-selected', active ? 'true' : 'false');
-          const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
-          if (!button) return;
-          button.tabIndex = active ? 0 : -1;
-          button.querySelector('.created')?.remove();
-          if (active) {
+          tab.tabIndex = active ? 0 : -1;
+          tab.querySelector('.created')?.remove();
+          if (active && selectedLabel) {
             const marker = document.createElement('i');
             marker.className = 'sr-only created';
             marker.textContent = ` ${selectedLabel}`;
-            button.append(marker);
+            tab.append(marker);
           }
         });
         panels.forEach((panel) => {
@@ -361,22 +349,20 @@ const resolvedDescription = helpDescription ?? children;
           panel.classList.toggle('active', active);
           panel.hidden = !active;
         });
-        root.dataset.activeTab = activeTab.dataset.tabValue;
         if (emit) {
           root.dispatchEvent(
             new CustomEvent('krds:tabchange', {
               bubbles: true,
-              detail: { value: activeTab.dataset.tabValue },
+              detail: { value: activeTab.id },
             }),
           );
         }
       };
 
       tabs.forEach((tab) => {
-        const button = tab.querySelector<HTMLButtonElement>('.btn-tab');
-        if (!button || button.disabled) return;
-        button.addEventListener('click', () => setTab(tab.dataset.tabValue ?? '', true));
-        button.addEventListener('keydown', (event) => {
+        if (tab.disabled) return;
+        tab.addEventListener('click', () => setTab(tab.id, true));
+        tab.addEventListener('keydown', (event) => {
           const enabled = tabs.filter((item) => item.getAttribute('aria-disabled') !== 'true');
           const current = enabled.indexOf(tab);
           let next = current;
@@ -387,8 +373,8 @@ const resolvedDescription = helpDescription ?? children;
           else return;
           event.preventDefault();
           const nextTab = enabled[next];
-          setTab(nextTab.dataset.tabValue ?? '', true);
-          nextTab.querySelector<HTMLButtonElement>('.btn-tab')?.focus();
+          setTab(nextTab.id, true);
+          nextTab.focus();
         });
       });
 
@@ -401,9 +387,7 @@ const resolvedDescription = helpDescription ?? children;
           const expanded = button.getAttribute('aria-expanded') !== 'true';
           button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
           disclosure.classList.toggle('active', expanded);
-          content.hidden = !expanded;
           content.inert = !expanded;
-          content.setAttribute('aria-hidden', expanded ? 'false' : 'true');
           root.dispatchEvent(
             new CustomEvent('krds:disclosurechange', {
               bubbles: true,
@@ -420,19 +404,16 @@ const resolvedDescription = helpDescription ?? children;
         event.preventDefault();
         setOpen(false);
       });
-      root.querySelector<HTMLAnchorElement>('[data-tutorial-back]')?.addEventListener('click', (event) => {
+      root.querySelector<HTMLAnchorElement>('.help-title > a')?.addEventListener('click', (event) => {
         const link = event.currentTarget as HTMLAnchorElement;
         if (link.getAttribute('href') === '#;') event.preventDefault();
         root.dispatchEvent(new CustomEvent('krds:tutorialback', { bubbles: true }));
       });
-      root.querySelector<HTMLButtonElement>('[data-tutorial-stop]')?.addEventListener('click', () => {
+      root.querySelector<HTMLButtonElement>('.coach-btn-stop')?.addEventListener('click', () => {
         root.dispatchEvent(new CustomEvent('krds:tutorialstop', { bubbles: true }));
       });
 
-      const initiallyOpen = root.classList.contains('expand');
-      root.inert = !initiallyOpen;
-      if (trigger) trigger.setAttribute('aria-expanded', initiallyOpen ? 'true' : 'false');
-      setTab(root.dataset.activeTab ?? '', false);
+      setTab(tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.id ?? '', false);
     });
   }
 

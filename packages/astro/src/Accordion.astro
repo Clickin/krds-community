@@ -31,19 +31,16 @@ const renderedItems = items.map((item, index) => ({
 <div
   {...rest}
   class={recipe.className}
-  data-krds-accordion=""
-  data-multiple={multiple ? 'true' : 'false'}
 >
   {renderedItems.map(({ item, expanded, headerId, panelId }) => (
-    <div class="accordion-item">
+    <div class={cx('accordion-item', expanded && 'active')}>
       <h5 class="accordion-header">
         <button
           type="button"
           id={headerId}
-          class="btn-accordion"
+          class={cx('btn-accordion', expanded && 'active')}
           aria-expanded={expanded ? 'true' : 'false'}
           aria-controls={panelId}
-          data-accordion-item={item.id}
           disabled={item.disabled}
         >
           {item.title}
@@ -61,6 +58,12 @@ const renderedItems = items.map((item, index) => ({
     </div>
   ))}
 </div>
+<script
+  is:inline
+  type="application/json"
+  class="krds-accordion-data"
+  set:html={JSON.stringify({ multiple })}
+></script>
 
 <script>
   const accordionPanelFor = (root: HTMLElement, button: HTMLButtonElement) => {
@@ -78,6 +81,8 @@ const renderedItems = items.map((item, index) => ({
     const panel = accordionPanelFor(root, button);
     if (!panel) return;
     button.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    button.classList.toggle('active', expanded);
+    button.closest('.accordion-item')?.classList.toggle('active', expanded);
     panel.hidden = !expanded;
     panel.classList.toggle('show', expanded);
   };
@@ -86,13 +91,18 @@ const renderedItems = items.map((item, index) => ({
     if (!(event.target instanceof Element)) return;
     const button = event.target.closest<HTMLButtonElement>('button.btn-accordion');
     if (!button || button.disabled) return;
-    const root = button.closest<HTMLElement>('[data-krds-accordion]');
+    const root = button.closest<HTMLElement>('.krds-accordion');
     if (!root) return;
 
     const expanded = button.getAttribute('aria-expanded') !== 'true';
-    if (expanded && root.dataset.multiple !== 'true') {
+    const dataScript = root.nextElementSibling;
+    const allowsMultiple =
+      dataScript instanceof HTMLScriptElement && dataScript.classList.contains('krds-accordion-data')
+        ? JSON.parse(dataScript.textContent ?? '{}').multiple === true
+        : false;
+    if (expanded && !allowsMultiple) {
       root.querySelectorAll<HTMLButtonElement>('button.btn-accordion').forEach((candidate) => {
-        if (candidate !== button && candidate.closest('[data-krds-accordion]') === root) {
+        if (candidate !== button && candidate.closest('.krds-accordion') === root) {
           setAccordionExpanded(root, candidate, false);
         }
       });

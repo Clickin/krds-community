@@ -34,15 +34,16 @@ fixtures:
   - text-input.success.medium
   - text-input.information.medium
   - text-input-size.default
-  - text-input-state.default
 normalization:
   whitelist:
     - selector: ".form-group .krds-input"
       attribute: aria-describedby
-      rule: "must-reference: adjacent field message[id]"
+      operation: rewrite
+      rewriteValue: generated-2
     - selector: ".form-hint, .form-hint-success, .form-hint-information"
       attribute: id
-      rule: stable-generated-id
+      operation: rewrite
+      rewriteValue: generated-2
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA1

@@ -66,6 +66,14 @@ export interface FixtureComparisons {
   visual: 'exact' | 'none';
   accessibility: 'strict' | 'none';
 }
+export const fixtureLayoutContexts = ['content-inner', 'viewport-height'] as const;
+export type FixtureLayoutContext = (typeof fixtureLayoutContexts)[number];
+
+
+export interface FixtureSideAwareSelector {
+  upstream: string;
+  framework: string;
+}
 
 export interface ConformanceFixture {
   id: string;
@@ -73,8 +81,10 @@ export interface ConformanceFixture {
   sourceFile: string;
   sourceIndex: number;
   sourceAncestorSelector?: string;
+  contractAncestorSelector?: FixtureSideAwareSelector;
   visualSelector?: string;
   visualAncestorSelector?: string;
+  layoutContext?: FixtureLayoutContext;
   mandatory: boolean;
   viewport: FixtureViewport;
   props: Record<string, unknown>;
@@ -216,6 +226,29 @@ const stringList = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 
 const recordValue = (value: unknown): UnknownRecord => (isRecord(value) ? value : {});
+const parseSideAwareSelector = (
+  value: unknown,
+  fixtureId: string,
+  field: string,
+  validationErrors: string[],
+): FixtureSideAwareSelector | undefined => {
+  if (value === undefined) return undefined;
+  if (!isRecord(value)) {
+    validationErrors.push(`${fixtureId}: ${field} must declare upstream and framework selectors`);
+    return undefined;
+  }
+  const upstream = stringValue(value.upstream);
+  const framework = stringValue(value.framework);
+  const unexpected = Object.keys(value).filter((key) => key !== 'upstream' && key !== 'framework');
+  if (!upstream || !framework || unexpected.length > 0) {
+    validationErrors.push(
+      `${fixtureId}: ${field} must contain only non-empty upstream and framework selectors`,
+    );
+    return undefined;
+  }
+  return { upstream, framework };
+};
+
 
 const viewportPresets: Record<FixtureViewport['name'], Omit<FixtureViewport, 'name'>> = {
   mobile: { width: 390, height: 844 },
@@ -374,6 +407,9 @@ const isStatus = (value: string): value is ConformanceStatus =>
 const isEvidenceStatus = (value: string): value is EvidenceStatus =>
   (evidenceStatuses as readonly string[]).includes(value);
 
+const isFixtureLayoutContext = (value: string): value is FixtureLayoutContext =>
+  (fixtureLayoutContexts as readonly string[]).includes(value);
+
 const parseManifest = async (
   path: string,
   projectRoot: string,
@@ -411,8 +447,18 @@ const parseManifest = async (
         ? fixture.sourceIndex
         : 0;
     const sourceAncestorSelector = stringValue(fixture.sourceAncestorSelector);
+    const contractAncestorSelector = parseSideAwareSelector(
+      fixture.contractAncestorSelector,
+      fixtureId,
+      'contractAncestorSelector',
+      validationErrors,
+    );
     const visualSelector = stringValue(fixture.visualSelector);
     const visualAncestorSelector = stringValue(fixture.visualAncestorSelector);
+    const rawLayoutContext = stringValue(fixture.layoutContext);
+    const layoutContext = isFixtureLayoutContext(rawLayoutContext)
+      ? rawLayoutContext
+      : undefined;
     const mandatory = fixture.mandatory === true;
 
     if (!sourceFile) validationErrors.push(`${fixtureId}: sourceFile is required for multi-file manifests`);
@@ -431,6 +477,11 @@ const parseManifest = async (
     if ('visualAncestorSelector' in fixture && !visualAncestorSelector) {
       validationErrors.push(`${fixtureId}: visualAncestorSelector must be a non-empty string`);
     }
+    if ('layoutContext' in fixture && !layoutContext) {
+      validationErrors.push(
+        `${fixtureId}: layoutContext must be content-inner or viewport-height`,
+      );
+    }
 
     return [
       {
@@ -439,8 +490,10 @@ const parseManifest = async (
         sourceIndex,
         sourceFile,
         ...(sourceAncestorSelector ? { sourceAncestorSelector } : {}),
+        ...(contractAncestorSelector ? { contractAncestorSelector } : {}),
         ...(visualSelector ? { visualSelector } : {}),
         ...(visualAncestorSelector ? { visualAncestorSelector } : {}),
+        ...(layoutContext ? { layoutContext } : {}),
         mandatory,
         viewport: parseViewport(fixture.viewport, fixtureId, validationErrors),
         props: recordValue(fixture.props),

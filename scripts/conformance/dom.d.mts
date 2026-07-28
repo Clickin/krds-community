@@ -7,6 +7,40 @@ export type DomSnapshot = {
 
 export type DomNormalizationRule = Record<string, unknown>;
 
+export type SemanticSnapshot = Record<string, unknown> & {
+  form: Record<string, unknown> & { disabled?: boolean };
+};
+
+export class SelectorResolutionError extends Error {
+  constructor(details: {
+    kind: string;
+    side: 'upstream' | 'framework';
+    selector?: string;
+    message: string;
+  });
+  toEvidence(context: {
+    fixtureId: string;
+    framework: string;
+    stateId: string;
+  }): Record<string, unknown>;
+}
+
+export type EvaluatedLocator = {
+  evaluate: (
+    callback: (root: Element, argument: unknown) => unknown,
+    argument: unknown,
+  ) => Promise<unknown>;
+};
+
+export type ContractLocator = EvaluatedLocator & {
+  count: () => Promise<number>;
+  nth: (index: number) => ContractLocator;
+};
+
+export type ContractAncestorSelectors = Partial<
+  Record<'upstream' | 'framework', string>
+>;
+
 export function captureDom(
   locator: unknown,
   ignoredAttributes?: string | DomNormalizationRule[],
@@ -18,4 +52,17 @@ export function compareDom(
   framework: DomSnapshot,
 ): { passed: boolean; expected: string; actual: string };
 
-export function inspectSemantics(locator: unknown): Promise<Record<string, unknown>>;
+export function resolveContractRoot(
+  page: { locator: (selector: string) => ContractLocator },
+  root: EvaluatedLocator,
+  selectors: ContractAncestorSelectors | undefined,
+  side: 'upstream' | 'framework',
+): Promise<{ locator: ContractLocator; marker?: string }>;
+
+export function inspectSemantics(locator: unknown): Promise<SemanticSnapshot>;
+
+export function withCorrectedAttributes<T>(
+  root: EvaluatedLocator,
+  rules: DomNormalizationRule[] | { accessibilityRules?: DomNormalizationRule[] },
+  captureCorrectedEvidence: () => Promise<T>,
+): Promise<T>;

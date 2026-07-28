@@ -43,15 +43,13 @@ const openState = open ?? defaultOpen;
   {...rest}
   class={cx('krds-drop-wrap', 'krds-resize', className)}
   data-adjust="scale"
-  data-default-scale={resetValue}
-  data-krds-resize
 >
   <button
     type="button"
     class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
     aria-expanded={openState ? 'true' : 'false'}
   >
-    {label} <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+    {label} <i class="svg-icon ico-toggle"></i>
   </button>
   <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
     <div class="drop-in">
@@ -64,7 +62,6 @@ const openState = open ?? defaultOpen;
                 type="button"
                 class={cx('item-link', option.value, active && 'active')}
                 data-adjust-scale={option.value}
-                aria-selected={active ? 'true' : 'false'}
                 disabled={option.disabled}
               >
                 {option.label}<span class="sr-only">{active ? selectedLabel : undefined}</span>
@@ -75,7 +72,7 @@ const openState = open ?? defaultOpen;
       </ul>
       <div class="drop-bottom">
         <button type="button" class="krds-btn medium text" data-adjust-scale={resetValue}>
-          <i class="svg-icon ico-reset" aria-hidden="true"></i> {resetLabel}
+          <i class="svg-icon ico-reset"></i> {resetLabel}
         </button>
       </div>
     </div>
@@ -91,7 +88,7 @@ const openState = open ?? defaultOpen;
     xxlg: '--krds-zoom-xxlarge',
   };
 
-  document.querySelectorAll<HTMLElement>('[data-krds-resize]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('.krds-resize').forEach((root) => {
     const button = root.querySelector<HTMLButtonElement>(':scope > .drop-btn');
     const menu = root.querySelector<HTMLElement>(':scope > .drop-menu');
     const options = Array.from(menu?.querySelectorAll<HTMLButtonElement>('.drop-list .item-link') ?? []);
@@ -110,7 +107,6 @@ const openState = open ?? defaultOpen;
       options.forEach((option) => {
         const active = option.dataset.adjustScale === nextValue;
         option.classList.toggle('active', active);
-        option.setAttribute('aria-selected', String(active));
         const text = option.querySelector<HTMLElement>('.sr-only');
         if (text) text.textContent = active ? selectionMessage : '';
       });
@@ -146,7 +142,7 @@ const openState = open ?? defaultOpen;
       });
     });
     reset?.addEventListener('click', () => {
-      const nextValue = reset.dataset.adjustScale ?? root.dataset.defaultScale;
+      const nextValue = reset.dataset.adjustScale;
       if (nextValue) applyScale(nextValue);
       close(true);
     });

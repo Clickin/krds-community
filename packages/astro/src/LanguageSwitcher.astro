@@ -21,6 +21,9 @@ export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list
   defaultValue?: string;
   label?: string;
   selectedLabel?: string;
+  currentLabel?: string;
+  text?: string;
+  externalTitle?: string;
   open?: boolean;
   defaultOpen?: boolean;
   class?: string;
@@ -34,6 +37,9 @@ const {
   defaultValue,
   label,
   selectedLabel,
+  currentLabel: _currentLabel,
+  text: _text,
+  externalTitle: _externalTitle,
   open,
   defaultOpen = false,
   class: className,
@@ -44,15 +50,15 @@ const activeValue = value ?? selected ?? defaultValue ?? entries[0]?.value;
 const openState = open ?? defaultOpen;
 ---
 
-<div {...rest} class={cx('krds-drop-wrap', 'krds-language', className)} data-krds-language>
+<div {...rest} class={cx('krds-drop-wrap', 'krds-language', className)}>
   <button
     type="button"
     class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
     aria-expanded={openState ? 'true' : 'false'}
   >
-    <i class="svg-icon ico-global" aria-hidden="true"></i>
-    {label}
-    <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+    <i class="svg-icon ico-global"></i>{' '}
+    {label}{' '}
+    <i class="svg-icon ico-toggle"></i>
   </button>
   <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
     <div class="drop-in">
@@ -68,10 +74,8 @@ const openState = open ?? defaultOpen;
                 target={language.target}
                 rel={language.rel}
                 title={language.title}
-                aria-selected={active ? 'true' : 'false'}
                 aria-disabled={language.disabled ? 'true' : undefined}
                 tabindex={language.disabled ? -1 : undefined}
-                data-language-value={language.value}
               >
                 {language.label}
                 <span class="sr-only">{active ? selectedLabel : undefined}</span>
@@ -85,7 +89,7 @@ const openState = open ?? defaultOpen;
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-krds-language]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('.krds-language').forEach((root) => {
     const button = root.querySelector<HTMLButtonElement>(':scope > .drop-btn');
     const menu = root.querySelector<HTMLElement>(':scope > .drop-menu');
     const links = Array.from(menu?.querySelectorAll<HTMLAnchorElement>('.item-link') ?? []);
@@ -120,7 +124,6 @@ const openState = open ?? defaultOpen;
         links.forEach((candidate) => {
           const active = candidate === link;
           candidate.classList.toggle('active', active);
-          candidate.setAttribute('aria-selected', String(active));
           const text = candidate.querySelector<HTMLElement>('.sr-only');
           if (text) text.textContent = active ? selectionMessage : '';
         });
@@ -128,7 +131,7 @@ const openState = open ?? defaultOpen;
         root.dispatchEvent(
           new CustomEvent('krds:language-change', {
             bubbles: true,
-            detail: { value: link.dataset.languageValue, href: link.href },
+            detail: { value: link.lang, href: link.href },
           }),
         );
       });

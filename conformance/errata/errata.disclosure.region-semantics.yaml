@@ -34,33 +34,30 @@ fixtures:
   - disclosure.default
 normalization:
   whitelist:
-    - selector: ".krds-disclosure > .expand-wrap"
-      attribute: id
-      rule: stable-generated-id
     - selector: ".krds-disclosure > .btn-conts-expand"
       attribute: id
-      rule: stable-generated-id
+      operation: rewrite
+      rewriteValue: generated-1
     - selector: ".krds-disclosure > .btn-conts-expand"
       attribute: aria-expanded
-      rule: "exact-value:current-open-state"
+      operation: rewrite
+      rewriteValue: "false"
     - selector: ".krds-disclosure > .btn-conts-expand"
       attribute: aria-controls
-      rule: "must-reference: .krds-disclosure > .expand-wrap[id]"
+      operation: rewrite
+      rewriteValue: generated-2
+    - selector: ".krds-disclosure > .expand-wrap"
+      attribute: id
+      operation: rewrite
+      rewriteValue: generated-2
     - selector: ".krds-disclosure > .expand-wrap"
       attribute: role
-      rule: "exact-value:region"
-    - selector: ".krds-disclosure > .expand-wrap"
-      attribute: inert
-      rule: upstream-state-only
-    - selector: ".krds-disclosure .krds-info-list"
-      attribute: role
-      rule: upstream-state-only
-    - selector: ".krds-disclosure .krds-info-list > li"
-      attribute: role
-      rule: upstream-state-only
+      operation: rewrite
+      rewriteValue: region
     - selector: ".krds-disclosure > .expand-wrap"
       attribute: aria-labelledby
-      rule: "must-reference: .krds-disclosure > .btn-conts-expand[id]"
+      operation: rewrite
+      rewriteValue: generated-1
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/

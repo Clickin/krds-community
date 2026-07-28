@@ -1,6 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import { cx } from '@krds-community/recipes';
+import { cx, selectRecipe } from '@krds-community/recipes';
 
 export interface SelectOption {
   value: string;
@@ -49,13 +49,18 @@ const valueIndex = value === undefined
   : options.findIndex((option) => option.value === String(value));
 const isSelected = (option: SelectOption, index: number) =>
   option.selected ?? (valueIndex >= 0 ? index === valueIndex : variant === 'size' && index === 0 ? true : undefined);
-const selectClass = cx(
-  variant === 'sorting' ? 'krds-form-select-sort' : 'krds-form-select',
-  variant === 'size' && size,
-  state === 'error' && 'is-error',
-  state === 'complete' && 'completed',
-  className,
-);
+const recipe =
+  variant === 'sorting'
+    ? selectRecipe({
+        variant: 'sorting',
+        state: state === 'error' ? 'error' : 'default',
+      })
+    : selectRecipe({
+        variant,
+        size: variant === 'size' ? size : undefined,
+        state: state === 'complete' ? 'default' : state,
+      });
+const selectClass = cx(recipe.control, state === 'complete' && 'completed', className);
 ---
 
 {surfaceOnly || variant === 'sorting' ? (
@@ -73,6 +78,7 @@ const selectClass = cx(
     <slot />
   </select>
 ) : (
+<>
   <div class="form-group">
     {(label !== undefined || Astro.slots.has('label')) && (
       <div class="form-tit">
@@ -84,6 +90,7 @@ const selectClass = cx(
         {...Astro.props}
         id={id}
         surfaceOnly={true}
+        aria-describedby={describedBy}
       >
         {Astro.slots.has('default') && <slot />}
       </Astro.self>
@@ -94,4 +101,5 @@ const selectClass = cx(
       </p>
     )}
   </div>
+</>
 )}

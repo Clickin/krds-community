@@ -6,7 +6,7 @@ upstream:
     - upstream/krds-html/html/code/date_input.html
 fixtures:
   - id: date-input.default
-    sourceSelector: ".krds-calendar-area"
+    sourceSelector: ".form-group"
     # The official area is a zero-height relative wrapper around an absolute calendar surface.
     visualSelector: ".calendar-wrap"
     mandatory: true
@@ -16,15 +16,19 @@ fixtures:
       - id: default
         setup:
           - action: add-class
-            target: fixture
+            target: ".krds-calendar-area"
             value: active
       - id: focus-visible
         setup:
           - action: add-class
-            target: fixture
+            target: ".krds-calendar-area"
             value: active
           - action: keyboard-focus
             target: fixture
 contract:
-  semanticElement: native-element
+  semanticElement: label-and-input
+  accessibleRole: textbox
+  requiredAttributes:
+    label: [for]
+    input: [id, type=number]
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

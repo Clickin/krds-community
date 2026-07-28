@@ -1,9 +1,22 @@
 <script lang="ts">
-  import type { KrdsAdditionalProps, KrdsNavItem, KrdsTone } from '@krds-community/recipes';
+  import {
+    selectRecipe,
+    tabRecipe,
+    type InputState,
+    type KrdsAdditionalProps,
+    type KrdsNavItem,
+    type KrdsTone,
+    type SelectRecipeSize,
+  } from '@krds-community/recipes';
   import type { Snippet } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
 
-  type Props = Omit<KrdsAdditionalProps, 'className' | 'open'> &
+  type StructuredListTableRow = {
+    selectionLabel?: string;
+    [key: string]: string | number | boolean | null | undefined;
+  };
+
+  type Props = Omit<KrdsAdditionalProps, 'className' | 'open' | 'rows'> &
     Omit<HTMLAttributes<HTMLElement>, 'children' | 'class' | 'id' | 'title'> & {
       children?: Snippet;
       class?: string;
@@ -22,12 +35,14 @@
       form?: string;
       maxLength?: number;
       defaultValue?: string;
+      rows?: StructuredListTableRow[];
       languages?: NonNullable<KrdsAdditionalProps['options']>;
       nav?: KrdsNavItem[];
       text?: string;
       step?: string;
       previousLabel?: string;
       nextLabel?: string;
+      navigationLabel?: string;
       moreLabel?: string;
       imageLabel?: string;
       actionLabel?: string;
@@ -205,7 +220,7 @@
     multiple = false,
     autocomplete,
     form,
-    maxLength = 100,
+    maxLength,
     defaultValue = '',
     languages = [],
     nav = [],
@@ -213,6 +228,7 @@
     step = '',
     previousLabel = '이전',
     nextLabel = '다음',
+    navigationLabel = '페이지 이동',
     moreLabel = '더 보기',
     imageLabel = '',
     actionLabel = '',
@@ -239,7 +255,7 @@
     previousDisabled = false,
     removable = false,
     sizes,
-    activeTab = kind === 'tutorial-panel' ? 'tutorial' : 'help',
+    activeTab = $bindable<'help' | 'tutorial'>(kind === 'tutorial-panel' ? 'tutorial' : 'help'),
     helpTitle = '',
     helpDescription = '',
     downloadLinks = [],
@@ -387,6 +403,14 @@
   const invoke = (handler: unknown, event: Event) => {
     if (typeof handler === 'function') (handler as (event: Event) => void)(event);
   };
+  const reflectValueAttribute = (node: HTMLInputElement, reflectedValue: string) => {
+    const reflect = (nextValue: string) => {
+      if (nextValue) node.setAttribute('value', nextValue);
+      else node.removeAttribute('value');
+    };
+    reflect(reflectedValue);
+    return { update: reflect };
+  };
 
   const rootClass = $derived(`${classProp} ${className}`.trim());
   const navigationItems = $derived(items.length ? items : links.length ? links : nav);
@@ -398,6 +422,29 @@
         ? selected
         : defaultValue || String(options[0]?.value ?? tabs[0]?.id ?? ''),
   );
+  const currentLanguage = $derived(languageItems.find((language) => language.value === selection));
+  const selectState: InputState = $derived(
+    controlState === 'error' ||
+      controlState === 'success' ||
+      controlState === 'information'
+      ? controlState
+      : 'default',
+  );
+  const selectClasses = $derived(
+    kind === 'select-sorting'
+      ? selectRecipe({ variant: 'sorting', state: selectState === 'error' ? 'error' : 'default' })
+      : selectRecipe({
+          variant:
+            kind === 'select-size'
+              ? 'size'
+              : kind === 'select-state' || selectState !== 'default'
+                ? 'state'
+                : 'default',
+          size: kind === 'select-size' ? (size as SelectRecipeSize) : undefined,
+          state: selectState,
+        }),
+  );
+  const tabClasses = $derived(tabRecipe());
   const inputValue = $derived(
     value !== undefined
       ? String(value)
@@ -430,7 +477,7 @@
   const selectedCalendarYear = $derived(selectedYear ?? year ?? Number(dateParts?.[1] ?? calendarYear));
   const selectedCalendarMonth = $derived(selectedMonth ?? month ?? Number(dateParts?.[2] ?? calendarMonth));
   const selectedDay = $derived(Number(dateParts?.[3] ?? rangeStartDay));
-  const calendarYears = Array.from({ length: 24 }, (_, index) => calendarYear - 1 + index);
+  const calendarYears = $derived(Array.from({ length: 24 }, (_, index) => calendarYear - 1 + index));
   const calendarMonths = Array.from({ length: 12 }, (_, index) => index + 1);
   const calendarDays = Array.from({ length: 42 }, (_, index) => index + 1);
   const zoomOptions = [
@@ -526,11 +573,18 @@
   };
 
   let uploadValue = $state('');
-  let modalRoot: HTMLDialogElement | undefined = $state();
+  let uploadInput: HTMLInputElement | undefined = $state();
+  let modalRoot: HTMLElement | undefined = $state();
   let restoreFocus: HTMLElement | null = null;
   let wasOpen = false;
+  let hasObservedModalState = false;
   $effect(() => {
     if (!modalRoot) return;
+    if (!hasObservedModalState) {
+      hasObservedModalState = true;
+      wasOpen = isOpen;
+      return;
+    }
     if (isOpen && !wasOpen) {
       restoreFocus =
         typeof document !== 'undefined' && document.activeElement instanceof HTMLElement
@@ -555,13 +609,52 @@
       if (event.defaultPrevented) return;
     }
     open = false;
+    if (event.currentTarget instanceof Element) {
+      event.currentTarget.closest('.krds-modal')?.classList.remove('in', 'shown');
+    }
     if (event.type !== 'cancel') invoke(onclose, event);
+  };
+  const handleModalKeydown = (event: KeyboardEvent) => {
+    if (event.key === 'Tab' && isOpen) {
+      const focusable = Array.from(
+        modalRoot?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const activeElement = modalRoot?.ownerDocument.activeElement;
+      if (event.shiftKey && (activeElement === first || !modalRoot?.contains(activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+      return;
+    }
+    if (event.key !== 'Escape') return;
+    const cancelEvent = new Event('cancel', { cancelable: true });
+    invoke(oncancel, cancelEvent);
+    if (cancelEvent.defaultPrevented) return;
+    event.preventDefault();
+    open = false;
+    if (event.currentTarget instanceof Element) {
+      event.currentTarget.closest('.krds-modal')?.classList.remove('in', 'shown');
+    }
+    invoke(onclose, event);
   };
   const setUpload = (event: Event) => {
     uploadValue = Array.from((event.currentTarget as HTMLInputElement).files ?? [])
       .map((file) => file.name)
       .join(', ');
     invoke(onchange, event);
+  };
+  const inertWhen = (node: HTMLElement, value: boolean) => {
+    const sync = (next: boolean) => node.toggleAttribute('inert', next);
+    sync(value);
+    return { update: sync };
   };
 </script>
 
@@ -625,242 +718,296 @@
       <div class="form-tit"><label for={id}>{label}</label></div>
     {/if}
     <div class={kind === 'date-input' ? 'form-conts' : undefined}>
-    <div class={kind === 'date-input' ? 'form-conts calendar-conts' : 'calendar-surface-host'}>
-      {#if kind === 'date-input'}
-        <div class="calendar-input">
-          <input
-            id={id}
-            name={name || undefined}
-            class="krds-input datepicker cal"
-            type="number"
-            placeholder={placeholder || 'YYYY.MM.DD'}
-            value={inputValue}
-            disabled={disabled}
-            required={required}
-            readonly={readonly}
-            form={form}
-            oninput={setValue}
-            onfocus={(event) =>
-              (event.currentTarget as HTMLInputElement)
-                .closest('.form-conts')
-                ?.querySelector('.calendar-wrap')
-                ?.removeAttribute('tabindex')}
-          />
-          <button class="krds-btn medium icon form-btn-datepicker" type="button">
-            <span class="sr-only">달력 열기</span>
-            <i class="svg-icon ico-calendar"></i>
-          </button>
-        </div>
-      {/if}
-      <div class="krds-calendar-area">
-        <div
-          class={`bottom calendar-wrap ${kind === 'calendar' ? 'single' : ''}`}
-          aria-label={calendarLabel}
-          tabindex="0"
-          onfocus={(event) => event.currentTarget.removeAttribute('tabindex')}
-        >
-      <div class="calendar-head">
-        <button class="btn-cal-move prev" type="button">
-          <span class="sr-only">{previousMonthLabel}</span>
-        </button>
-        <div class="calendar-switch-wrap">
-          <div class="calendar-drop-down">
-            <button
-              class="btn-cal-switch year"
-              type="button"
-              role="combobox"
-              aria-label={yearSelectLabel}
-              aria-haspopup="listbox"
-              aria-expanded={isOpen}
-              aria-controls={`${id}-year`}
-              onclick={toggleOpen}
-            >{calendarYear}년</button>
-            <div class="calendar-select calendar-year-wrap">
-              <ul class="sel year" id={`${id}-year`} role="listbox">
-                {#each (years.length ? years : calendarYears) as optionYear}
-                  <li role="none">
-                    <button
-                      type="button"
-                      role="option"
-                      class:active={optionYear === calendarYear}
-                      aria-selected={optionYear === calendarYear}
-                      disabled={disabledYears.includes(optionYear)}
-                    >{optionYear}년</button>
-                  </li>
-                {/each}
-              </ul>
+      <div class={kind === 'date-input' ? 'form-conts calendar-conts' : 'calendar-surface-host'}>
+        {#if kind === 'date-input'}
+          <div class="calendar-input">
+            <input
+              id={id}
+              name={name || undefined}
+              class="krds-input datepicker cal"
+              type="number"
+              placeholder={placeholder || 'YYYY.MM.DD'}
+              value={inputValue}
+              use:reflectValueAttribute={inputValue}
+              {disabled}
+              {required}
+              {readonly}
+              {form}
+              oninput={setValue}
+            />
+            <button class="krds-btn medium icon form-btn-datepicker" type="button">
+              <span class="sr-only">달력 열기</span>
+              <i class="svg-icon ico-calendar"></i>
+            </button>
+          </div>
+        {/if}
+        <div class="krds-calendar-area">
+          <div
+            class={`bottom calendar-wrap ${kind === 'calendar' ? 'single' : ''}`}
+            aria-label={calendarLabel}
+            tabindex="0"
+          >
+            <div class="calendar-head">
+              <button class="btn-cal-move prev" type="button">
+                <span class="sr-only">{previousMonthLabel}</span>
+              </button>
+              <div class="calendar-switch-wrap">
+                <div class="calendar-drop-down">
+                  <button
+                    class="btn-cal-switch year"
+                    type="button"
+                    role="combobox"
+                    aria-label={yearSelectLabel}
+                    aria-haspopup="listbox"
+                    aria-expanded={isOpen}
+                    aria-controls={`${id}-year`}
+                    onclick={toggleOpen}
+                  >{calendarYear}년</button>
+                  <div class="calendar-select calendar-year-wrap">
+                    <ul class="sel year" id={`${id}-year`} role="listbox">
+                      {#each (years.length ? years : calendarYears) as optionYear}
+                        <li role="none">
+                          <button
+                            type="button"
+                            role="option"
+                            class:active={optionYear === selectedCalendarYear}
+                            aria-selected={optionYear === selectedCalendarYear}
+                            disabled={disabledYears.includes(optionYear)}
+                          >{optionYear}년</button>
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+                </div>
+                <div class="calendar-drop-down">
+                  <button
+                    class="btn-cal-switch month"
+                    type="button"
+                    role="combobox"
+                    aria-label={monthSelectLabel}
+                    aria-haspopup="listbox"
+                    aria-expanded={isOpen}
+                    aria-controls={`${id}-month`}
+                    onclick={toggleOpen}
+                  >{String(calendarMonth).padStart(2, '0')}월</button>
+                  <div class="calendar-mon-wrap calendar-select">
+                    <ul class="month sel" id={`${id}-month`} role="listbox">
+                      {#each calendarMonths as calendarMonthOption}
+                        <li role="none">
+                          <button
+                            type="button"
+                            role="option"
+                            class:active={calendarMonthOption === selectedCalendarMonth}
+                            aria-selected={calendarMonthOption === selectedCalendarMonth}
+                            disabled={disabledMonths.includes(calendarMonthOption)}
+                          >{String(calendarMonthOption).padStart(2, '0')}월</button>
+                        </li>
+                      {/each}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-cal-move next" type="button">
+                <span class="sr-only">{nextMonthLabel}</span>
+              </button>
+            </div>
+            <div class="calendar-body">
+              <div class="calendar-table-wrap">
+                <table class="calendar-tbl">
+                  <caption>{calendarYear}년 {String(calendarMonth).padStart(2, '0')}월</caption>
+                  <thead>
+                    <tr>
+                      {#each (weekdays.length ? weekdays : ['일', '월', '화', '수', '목', '금', '토']) as weekday}
+                        <th>{weekday}</th>
+                      {/each}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {#each Array.from({ length: 6 }) as _, week}
+                      <tr>
+                        {#each calendarDays.slice(week * 7, week * 7 + 7) as _, dayIndex}
+                          {@const cellIndex = week * 7 + dayIndex}
+                          {@const isLeading = cellIndex < leadingDays}
+                          {@const currentDay = cellIndex - leadingDays + 1}
+                          {@const isTrailing = currentDay > dayCount}
+                          {@const day = isLeading
+                            ? previousMonthDayCount - leadingDays + cellIndex + 1
+                            : isTrailing
+                              ? currentDay - dayCount
+                              : currentDay}
+                          {@const cellMonth = isLeading
+                            ? calendarMonth === 1
+                              ? 12
+                              : calendarMonth - 1
+                            : isTrailing
+                              ? calendarMonth === 12
+                                ? 1
+                                : calendarMonth + 1
+                              : calendarMonth}
+                          {@const cellYear = isLeading && calendarMonth === 1
+                            ? calendarYear - 1
+                            : isTrailing && calendarMonth === 12
+                              ? calendarYear + 1
+                              : calendarYear}
+                          {@const inCurrentMonth = !isLeading && !isTrailing}
+                          {@const inRange =
+                            inCurrentMonth &&
+                            rangeStartDay > 0 &&
+                            day >= rangeStartDay &&
+                            day <= rangeEndDay}
+                          {@const isSelected =
+                            inRange ||
+                            (inCurrentMonth &&
+                              cellYear === selectedCalendarYear &&
+                              cellMonth === selectedCalendarMonth &&
+                              selectedDay === day)}
+                          <td
+                            class:day-off={dayIndex === 0}
+                            class:old={isLeading}
+                            class:new={isTrailing}
+                            class:period={inRange}
+                            class:start={inCurrentMonth && day === rangeStartDay}
+                            class:end={inCurrentMonth && day === rangeEndDay}
+                            class:today={inCurrentMonth && day === todayDay}
+                            class:day-event={inCurrentMonth && eventDays.includes(day)}
+                            class:disabled={inCurrentMonth && disabledDays.includes(day)}
+                            data-date={`${cellYear}.${String(cellMonth).padStart(2, '0')}.${String(day).padStart(2, '0')}`}
+                          >
+                            {#if inCurrentMonth}
+                              <button
+                                class="btn-set-date"
+                                type="button"
+                                disabled={disabledDays.includes(day)}
+                                aria-pressed={isSelected ? 'true' : undefined}
+                                aria-label={eventDays.includes(day)
+                                  ? `${day} ${eventLabel}`
+                                  : day === todayDay
+                                    ? `${day} ${todayLabel}`
+                                    : undefined}
+                                onclick={(event) => selectCalendarDay(day, event)}
+                              >
+                                <span>{day}</span>
+                              </button>
+                            {:else}
+                              <button class="btn-set-date" type="button" disabled="true">
+                                <span>{day}</span>
+                              </button>
+                            {/if}
+                          </td>
+                        {/each}
+                      </tr>
+                    {/each}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="calendar-footer">
+              <div class="calendar-btn-wrap">
+                <button class="krds-btn small text" id={`${id}-today`} type="button">{todayLabel}</button>
+                <button class="krds-btn small tertiary" type="button">{cancelLabel}</button>
+                <button class="krds-btn small primary" type="button">{confirmLabel}</button>
+              </div>
             </div>
           </div>
-          <div class="calendar-drop-down">
-            <button
-              class="btn-cal-switch month"
-              type="button"
-              role="combobox"
-              aria-label={monthSelectLabel}
-              aria-haspopup="listbox"
-              aria-expanded={isOpen}
-              aria-controls={`${id}-month`}
-              onclick={toggleOpen}
-            >{String(calendarMonth).padStart(2, '0')}월</button>
-            <div class="calendar-mon-wrap calendar-select">
-              <ul class="month sel" id={`${id}-month`} role="listbox">
-                {#each calendarMonths as month}
-                  <li role="none">
-                    <button
-                      type="button"
-                      role="option"
-                      class:active={month === calendarMonth}
-                      aria-selected={month === calendarMonth}
-                      disabled={disabledMonths.includes(month)}
-                    >{String(month).padStart(2, '0')}월</button>
-                  </li>
-                {/each}
-              </ul>
-            </div>
-          </div>
-        </div>
-        <button class="btn-cal-move next" type="button">
-          <span class="sr-only">{nextMonthLabel}</span>
-        </button>
-      </div>
-      <div class="calendar-body">
-        <div class="calendar-table-wrap">
-          <table class="calendar-tbl">
-            <caption>{calendarYear}년 {calendarMonth}월</caption>
-            <thead>
-              <tr>
-                {#each (weekdays.length ? weekdays : ['일', '월', '화', '수', '목', '금', '토']) as weekday}<th>{weekday}</th>{/each}
-              </tr>
-            </thead>
-            <tbody>
-              {#each Array.from({ length: 6 }) as _, week}
-                <tr>
-                  {#each calendarDays.slice(week * 7, week * 7 + 7) as _, dayIndex}
-                    {@const cellIndex = week * 7 + dayIndex}
-                    {@const isLeading = cellIndex < leadingDays}
-                    {@const currentDay = cellIndex - leadingDays + 1}
-                    {@const isTrailing = currentDay > dayCount}
-                    {@const day = isLeading
-                      ? previousMonthDayCount - leadingDays + cellIndex + 1
-                      : isTrailing
-                        ? currentDay - dayCount
-                        : currentDay}
-                    {@const cellMonth = isLeading
-                      ? calendarMonth === 1 ? 12 : calendarMonth - 1
-                      : isTrailing
-                        ? calendarMonth === 12 ? 1 : calendarMonth + 1
-                        : calendarMonth}
-                    {@const cellYear = isLeading && calendarMonth === 1
-                      ? calendarYear - 1
-                      : isTrailing && calendarMonth === 12
-                        ? calendarYear + 1
-                        : calendarYear}
-                    {@const inCurrentMonth = !isLeading && !isTrailing}
-                    {@const inRange = inCurrentMonth && rangeStartDay > 0 && day >= rangeStartDay && day <= rangeEndDay}
-                    {@const isSelected = inCurrentMonth && cellYear === selectedCalendarYear && cellMonth === selectedCalendarMonth && (selectedDay === day || day === rangeStartDay || day === rangeEndDay)}
-                    <td
-                      class:day-off={dayIndex === 0}
-                      class:old={isLeading}
-                      class:new={isTrailing}
-                      class:start={inCurrentMonth && day === rangeStartDay}
-                      class:end={inCurrentMonth && day === rangeEndDay}
-                        disabled={!inCurrentMonth || disabledDays.includes(day) ? 'true' : undefined}
-                      class:today={inCurrentMonth && day === todayDay}
-                      class:day-event={inCurrentMonth && eventDays.includes(day)}
-                      class:disabled={inCurrentMonth && disabledDays.includes(day)}
-                      data-date={`${cellYear}.${String(cellMonth).padStart(2, '0')}.${String(day).padStart(2, '0')}`}
-                    >
-                      <button
-                        class="btn-set-date"
-                        type="button"
-                        disabled={!inCurrentMonth || disabledDays.includes(day)}
-                        aria-pressed={isSelected ? 'true' : undefined}
-                        aria-label={
-                          inCurrentMonth && eventDays.includes(day)
-                            ? `${day} ${eventLabel}`
-                            : inCurrentMonth && day === todayDay
-                              ? `${day} ${todayLabel}`
-                              : undefined
-                        }
-                        onclick={(event) => selectCalendarDay(day, event)}
-                      >
-                        <span>{day}</span>
-                      </button>
-                    </td>
-                  {/each}
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="calendar-footer">
-        <div class="calendar-btn-wrap">
-          <button class="krds-btn small text" id={`${id}-today`} type="button">{todayLabel}</button>
-          <button class="krds-btn small tertiary" type="button">{cancelLabel}</button>
-          <button class="krds-btn small primary" type="button">{confirmLabel}</button>
         </div>
       </div>
     </div>
-  </div>
-    </div>
-    </div>
-    {#if kind === 'date-input'}
-      {#if hint}<p class="form-hint">{hint}</p>{/if}
-    {/if}
+    {#if kind === 'date-input' && hint}<p class="form-hint">{hint}</p>{/if}
   </div>
 {:else if kind === 'carousel' || kind === 'carousel-banner'}
   {#if kind === 'carousel-banner'}
-    <div {...rest} class={`main-d-ban-swiper ${rootClass}`} aria-roledescription="carousel">
+    <div {...rest} class={`main-d-ban-swiper ${rootClass}`}>
       <div class="swiper">
         <ul class="swiper-wrapper">
-          {#each slides as slide, index}
-            <li class="swiper-slide" aria-current={index === currentIndex ? 'true' : undefined}>
-              {#if slide.description}<p class="in-sub">{slide.description}</p>{/if}
-              <p class="in-tit">{slide.title}</p>
-              {#if fieldOf(slide, 'image') || imageLabel}
-                <svg aria-label={imageLabel} fill="none" height="178" viewBox="0 0 243 178" width="243" xmlns="http://www.w3.org/2000/svg"><rect fill="#E6E8EA" height="178" width="243"></rect></svg>
-              {/if}
+          {#each slides as slide}
+            <li class="swiper-slide">
+              <div class="text">
+                <p class="cate">{slide.description}</p>
+                <p class="tit">{slide.title}</p>
+              </div>
+              <div class="im">
+                <svg
+                  width="243"
+                  height="178"
+                  viewBox="0 0 243 178"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-label={imageLabel}
+                >
+                  <rect width="243" height="178" fill="#E6E8EA"></rect>
+                </svg>
+              </div>
             </li>
           {/each}
         </ul>
       </div>
       <div class="swiper-indicator">
-        <div class="swiper-pagination" aria-live="polite">
-          <span class="swiper-pagination-current">{currentIndex + 1}</span>
-          <span class="swiper-pagination-total">{slides.length}</span>
-        </div>
+        <div class="swiper-pagination"></div>
         <div class="swiper-controller">
-          <button type="button" aria-label={playLabel}><i class="ico-play svg-icon"></i></button>
-          <button type="button" aria-label={stopLabel}><i class="ico-stop svg-icon"></i></button>
+          <button type="button" class="swiper-button-play" onclick={(event) => invoke(onclick, event)}>
+            <span class="sr-only">{playLabel}</span>
+          </button>
+          <button type="button" class="swiper-button-stop" onclick={(event) => invoke(onclick, event)}>
+            <span class="sr-only">{stopLabel}</span>
+          </button>
         </div>
         <div class="swiper-navigation">
-          <button type="button" aria-label={previousLabel} onclick={(event) => moveSlide(-1, event)}></button>
-          <button type="button" aria-label={nextLabel} onclick={(event) => moveSlide(1, event)}></button>
+          <button type="button" class="swiper-button-prev" onclick={(event) => moveSlide(-1, event)}>
+            <span class="sr-only">{previousLabel}</span>
+          </button>
+          <button type="button" class="swiper-button-next" onclick={(event) => moveSlide(1, event)}>
+            <span class="sr-only">{nextLabel}</span>
+          </button>
+          <a href={href} class="swiper-button-more">
+            <span class="sr-only">{moreLabel}</span>
+          </a>
         </div>
-        <a class="krds-btn link" href={href}>{moreLabel}</a>
       </div>
     </div>
   {:else}
-    <div {...rest} class={`bg main-vban-wrap ${rootClass}`} aria-roledescription="carousel">
+    <div {...rest} class={`main-vban-wrap bg ${rootClass}`}>
       <div class="inner">
         <div class="vb-swiper">
-          <ul class="swiper-wrapper">
-            {#each slides as slide, index}
-              <li class="swiper-slide" aria-current={index === currentIndex ? 'true' : undefined}>
-                <p class="in-tit">{slide.title}</p>
-                {#if slide.description}<p class="in-txt">{slide.description}</p>{/if}
-                {#if actionLabel}<a class="krds-btn" href={slide.href ?? '#'}>{actionLabel}</a>{/if}
-                {#if fieldOf(slide, 'image') || imageLabel}
-                  <svg aria-label={imageLabel} fill="none" height="178" viewBox="0 0 243 178" width="243" xmlns="http://www.w3.org/2000/svg"><rect fill="#E6E8EA" height="178" width="243"></rect></svg>
-                {/if}
-              </li>
-            {/each}
-          </ul>
-          <div class="swiper-indicator">
-            <button type="button" aria-label={previousLabel} onclick={(event) => moveSlide(-1, event)}></button>
-            <span aria-live="polite">{currentIndex + 1} / {slides.length}</span>
-            <button type="button" aria-label={nextLabel} onclick={(event) => moveSlide(1, event)}></button>
+          <div class="swiper">
+            <ul class="swiper-wrapper">
+              {#each slides as slide}
+                <li class="swiper-slide">
+                  <div class="in">
+                    <div class="text">
+                      <p class="tit">{slide.title} <br class="w-hide" />{slide.title}</p>
+                      <p class="txt">
+                        {slide.description} <br class="w-hide" />{slide.description}
+                      </p>
+                      <a href={slide.href ?? '#'} class="krds-btn primary">{actionLabel}</a>
+                    </div>
+                    <div class="im">
+                      <svg
+                        width="243"
+                        height="178"
+                        viewBox="0 0 243 178"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-label={imageLabel}
+                      >
+                        <rect width="243" height="178" fill="#E6E8EA"></rect>
+                      </svg>
+                    </div>
+                  </div>
+                </li>
+              {/each}
+            </ul>
+          </div>
+          <button type="button" class="swiper-button-prev" onclick={(event) => moveSlide(-1, event)}>
+            <span class="sr-only">{previousLabel}</span>
+          </button>
+          <button type="button" class="swiper-button-next" onclick={(event) => moveSlide(1, event)}>
+            <span class="sr-only">{nextLabel}</span>
+          </button>
+          <div class="swiper-indicator text-center">
+            <div class="swiper-pagination"></div>
+            <a href={href} class="swiper-button-more">
+              <span class="sr-only">{moreLabel}</span>
+            </a>
           </div>
         </div>
       </div>
@@ -917,20 +1064,26 @@
   <label class="krds-form-chip-outline" for={id}>{label}</label>
   </div>
 {:else if kind === 'radio-size'}
-  <div class={`krds-form-check ${size} ${rootClass}`}>
-    <input
-      {...rest}
-      type="radio"
-      id={id}
-      name={name || undefined}
-      value={value}
-      checked={radioChecked}
-      disabled={disabled}
-      required={required}
-      form={form}
-      onchange={setRadio}
-    />
-    <label for={id}>{label}</label>
+  <div class="krds-check-area">
+    <div class={`krds-form-check ${size} ${rootClass}`}>
+      <input
+        {...rest}
+        type="radio"
+        id={id}
+        name={name || undefined}
+        value={value}
+        checked={radioChecked}
+        disabled={disabled}
+        required={required}
+        form={form}
+        onchange={setRadio}
+      />
+      <label for={id}>{label}</label>
+    </div>
+    <div class="krds-form-check large">
+      <input type="radio" id={`${id}-large`} name={name || undefined} />
+      <label for={`${id}-large`}>사이즈 : large</label>
+    </div>
   </div>
 {:else if kind === 'coach-mark'}
   <div {...rest} class={`bg-white bg-white krds-coach-mark txt-box ${rootClass}`} hidden={!isOpen}>
@@ -979,24 +1132,26 @@
     </div>
   </div>
 {:else if kind === 'critical-alerts'}
-  <ul {...rest} class={`krds-critical-alerts ${rootClass}`}>
-    {#each items as item}
-      <li>
-        <div class="critical-ban">
-          <span class={`critical-badge ${fieldOf(item, 'tone') || 'info'}`}
-            >{fieldOf(item, 'badgeLabel') || fieldOf(item, 'badge') || labelOf(item)}</span
-          >
-          <p class="critical-txt"
-            >{fieldOf(item, 'message') || fieldOf(item, 'text') || fieldOf(item, 'description') || labelOf(item)}</p
-          >
-          <a class="basic krds-btn link medium" href={hrefOf(item)}>
-            <span class="m-hide">{fieldOf(item, 'linkLabel') || fieldOf(item, 'actionLabel') || linkLabel}</span>
-            <i class="ico-angle right svg-icon"></i>
-          </a>
-        </div>
-      </li>
-    {/each}
-  </ul>
+  <div {...rest} class={`main-urgent-wrap ${rootClass}`} role="alert">
+    <ul class="krds-critical-alerts">
+      {#each items as item}
+        <li>
+          <div class="critical-ban">
+            <span class={`critical-badge ${fieldOf(item, 'tone') || 'info'}`}
+              >{fieldOf(item, 'badgeLabel') || fieldOf(item, 'badge') || labelOf(item)}</span
+            >
+            <p class="critical-txt"
+              >{fieldOf(item, 'message') || fieldOf(item, 'text') || fieldOf(item, 'description') || labelOf(item)}</p
+            >
+            <a class="basic krds-btn link medium" href={hrefOf(item)}>
+              <span class="m-hide">{fieldOf(item, 'linkLabel') || fieldOf(item, 'actionLabel') || linkLabel}</span>
+              <i class="ico-angle right svg-icon"></i>
+            </a>
+          </div>
+        </li>
+      {/each}
+    </ul>
+  </div>
 {:else if kind === 'disclosure'}
   <div {...rest} class={`conts-expand-area krds-disclosure ${rootClass}`}>
     <button
@@ -1012,12 +1167,12 @@
       id={`${id}-content`}
       role="region"
       aria-labelledby={`${id}-trigger`}
-      inert={!isOpen}
+      use:inertWhen={!isOpen}
     >
       <div class="expand-in">
         {#if items.length}
-          <ul class="dash krds-info-list">
-            {#each items as item}<li>{labelOf(item)}</li>{/each}
+          <ul class="dash krds-info-list" role="list">
+            {#each items as item}<li role="listitem">{labelOf(item)}</li>{/each}
           </ul>
         {:else if children}
           {@render children()}
@@ -1033,12 +1188,13 @@
   <div {...rest} class={`krds-file-upload line ${rootClass}`}>
     <div class="file-head">
       <h3 class="tit">{title}</h3>
-      {#if description}<div>{description}</div>{/if}
+      {#if description}<div><p>{description}</p></div>{/if}
     </div>
     <div class="file-upload">
       <p class="txt">{prompt}</p>
       <div class="file-upload-btn-wrap">
         <input
+          bind:this={uploadInput}
           hidden
           id={inputId || id}
           name={name}
@@ -1050,103 +1206,130 @@
           {form}
           onchange={setUpload}
         />
-        <label class="krds-btn medium" for={inputId || id}>
-          <i class="ico-upload svg-icon"></i>{selectLabel}
-        </label>
+        <button
+          type="button"
+          class="krds-btn medium"
+          {disabled}
+          onclick={() => uploadInput?.click()}
+        ><i class="svg-icon ico-upload"></i>{selectLabel}</button>
       </div>
     </div>
     <div class="file-list">
-      <div class="total">{currentCount}개 / {maxCount}개</div>
+      <div class="total">
+        <span class="current">{currentCount}{countSuffix || '개'}</span> / {maxCount}{countSuffix || '개'}
+      </div>
       <ul class="upload-list">
         {#each files as file}
-          <li>
-            <div class="file-info">
-              <span class="file-name">{fieldOf(file, 'name')}</span>
-              {#if fieldOf(file, 'statusLabel')}
-                {#if fieldOf(file, 'status') === 'uploading'}
-                  <span role="status">{fieldOf(file, 'statusLabel')}</span>
-                {:else}
-                  <em>{fieldOf(file, 'statusLabel')}</em>
+          {@const fileStatus = fieldOf(file, 'status')}
+          {@const fileErrors = listOf(file, 'errors')}
+          <li class:is-error={fileStatus === 'error'}>
+            <div class="file-info" class:m-column={fileStatus === 'downloadable'}>
+              <div class="file-name">{fieldOf(file, 'name')}</div>
+              <div class="btn-wrap">
+                {#if fileStatus === 'uploading'}
+                  <span class="krds-spinner" role="status">
+                    <span class="sr-only">{fieldOf(file, 'statusLabel')}</span>
+                  </span>
+                {:else if fileStatus === 'complete'}
+                  <span class="ico-invalid complete">
+                    <em class="sr-only">{fieldOf(file, 'statusLabel')}</em>
+                  </span>
                 {/if}
-              {/if}
-              {#if fieldOf(file, 'deleteLabel')}
-                <button class="krds-btn medium text" type="button">
-                  {fieldOf(file, 'deleteLabel')}<i class="ico-delete-fill svg-icon"></i>
-                </button>
-              {/if}
-              {#each listOf(file, 'errors') as fileError}<p>{labelOf(fileError)}</p>{/each}
-              {#if fieldOf(file, 'downloadLabel')}
-                <button class="krds-btn medium text" type="button">
-                  {fieldOf(file, 'downloadLabel')}<i class="ico-down svg-icon"></i>
-                </button>
-              {/if}
-              {#if fieldOf(file, 'previewLabel')}
-                <button class="krds-btn medium text" type="button">
-                  {fieldOf(file, 'previewLabel')}<i class="ico-angle right svg-icon"></i>
-                </button>
-              {/if}
+                {#if fieldOf(file, 'deleteLabel')}
+                  <button class="krds-btn medium text" type="button">
+                    {fieldOf(file, 'deleteLabel')} <i class="svg-icon ico-delete-fill"></i>
+                  </button>
+                {/if}
+                {#if fieldOf(file, 'downloadLabel')}
+                  <button class="krds-btn medium text" type="button">
+                    {fieldOf(file, 'downloadLabel')} <i class="svg-icon ico-down"></i>
+                  </button>
+                {/if}
+                {#if fieldOf(file, 'previewLabel')}
+                  <button class="krds-btn medium text" type="button">
+                    {fieldOf(file, 'previewLabel')} <i class="svg-icon ico-angle right"></i>
+                  </button>
+                {/if}
+              </div>
             </div>
+            {#if fileErrors.length}
+              <p class="file-hint-invalid">
+                {#each fileErrors as fileError, index}
+                  {labelOf(fileError)}{#if index < fileErrors.length - 1}<br />{/if}
+                {/each}
+              </p>
+            {/if}
           </li>
         {/each}
       </ul>
       {#if uploadValue}<p aria-live="polite">{uploadValue}</p>{/if}
       <div class="upload-delete-btn">
-        <button class="krds-btn tertiary xsmall" type="button">
-          {deleteAllLabel}<i class="ico-angle right svg-icon"></i>
+        <button class="krds-btn xsmall tertiary" type="button">
+          {deleteAllLabel}<i class="svg-icon ico-angle right"></i>
         </button>
       </div>
     </div>
   </div>
 {:else if kind === 'footer'}
   <footer {...rest} id={id} class={rootClass}>
-    {#if relatedSites.length}
-      <div class="foot-quick">
-        <div class="inner">
-          {#each relatedSites as item, index}
-            <button
-              class="link"
-              type="button"
-              aria-expanded="false"
-              aria-controls={`${id}-related-${index}`}
-            >{item.label}</button>
-          {/each}
-        </div>
+    <div class="foot-quick">
+      <div class="inner">
+        {#each relatedSites as item}
+          <button class="link" type="button" title={fieldOf(item, 'title') || undefined}>
+            {item.label}
+          </button>
+        {/each}
       </div>
-    {/if}
+    </div>
     <div class="inner">
       <div class="f-logo"><span class="sr-only">{logoLabel}</span></div>
       <div class="f-cnt">
-        <p>{address}</p>
-        <ul>
-          {#each contacts as contact}
-            <li><strong>{fieldOf(contact, 'title')}</strong> {fieldOf(contact, 'description')}</li>
-          {/each}
-        </ul>
-        <nav aria-label={organization}>
-          <ul>{#each links as item}<li><a href={hrefOf(item)}>{item.label}</a></li>{/each}</ul>
-        </nav>
-        <ul class="f-sns">
-          {#each socialLinks as item}
-            <li>
+        <div class="f-info">
+          <p class="info-addr">{address}</p>
+          <ul class="info-cs">
+            {#each contacts as contact}
+              <li>
+                <strong class="strong">{fieldOf(contact, 'title')}</strong><span class="span">{fieldOf(contact, 'description')}</span>
+              </li>
+            {/each}
+          </ul>
+        </div>
+        <div class="f-link">
+          <div class="link-go">
+            {#each links as item}
+              <a href={hrefOf(item)} class="krds-btn medium text">
+                {item.label} <i class="svg-icon ico-angle right"></i>
+              </a>
+            {/each}
+          </div>
+          <div class="link-sns">
+            {#each socialLinks as item}
               <a
                 href={hrefOf(item)}
+                class="krds-btn xlarge icon border"
                 target={fieldOf(item, 'target') || undefined}
                 title={fieldOf(item, 'title') || undefined}
               >
                 <span class="sr-only">{item.label}</span>
-                <i class={`ico-${fieldOf(item, 'icon')} svg-icon`}></i>
+                <i class={`svg-icon ico-${fieldOf(item, 'icon')}`}></i>
               </a>
-            </li>
-          {/each}
-        </ul>
+            {/each}
+          </div>
+        </div>
       </div>
       <div class="f-btm">
-        <ul>
-          {#each policyLinks as item}
-            <li><a class:point={flagOf(item, 'emphasis')} href={hrefOf(item)}>{item.label}</a></li>
-          {/each}
-        </ul>
-        <p>{copyright}</p>
+        <div class="f-btm-text">
+          <div class="f-menu">
+            {#each policyLinks as item}
+              <a class:point={flagOf(item, 'emphasis')} href={hrefOf(item)}>{item.label}</a>
+            {/each}
+          </div>
+          <p class="f-copy">{copyright}</p>
+        </div>
+        <div class="krds-identifier">
+          <span class="logo"><span class="sr-only">{organization}</span></span>
+          <span class="ban-txt">{description}</span>
+        </div>
       </div>
     </div>
   </footer>
@@ -1164,37 +1347,53 @@
                 <li>
                   {#if fieldOf(item, 'kind') === 'link'}
                     <a
-                      class="krds-btn small text"
                       href={hrefOf(item)}
+                      class="krds-btn small text"
                       target={fieldOf(item, 'target') || undefined}
                       title={fieldOf(item, 'title') || undefined}
-                    >{labelOf(item)}<i class="ico-go svg-icon"></i></a>
+                    >
+                      {labelOf(item)} <i class="svg-icon ico-go"></i>
+                    </a>
                   {:else}
-                    <div class={`krds-drop-wrap ${fieldOf(item, 'kind') === 'resize' ? 'krds-resize' : ''}`}>
-                      <button class="drop-btn krds-btn small text" type="button">{labelOf(item)}</button>
+                    <div
+                      class="krds-drop-wrap"
+                      class:krds-resize={fieldOf(item, 'kind') === 'resize'}
+                    >
+                      <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
+                        {labelOf(item)} <i class="svg-icon ico-toggle"></i>
+                      </button>
                       <div class="drop-menu">
                         <div class="drop-in">
                           <ul class="drop-list">
                             {#each listOf(item, 'items') as option}
                               <li>
-                                {#if hrefOf(option) !== '#'}
+                                {#if fieldOf(item, 'kind') === 'resize'}
+                                  <button
+                                    type="button"
+                                    class={`item-link ${fieldOf(option, 'className')}`}
+                                    class:active={flagOf(option, 'selected')}
+                                  >
+                                    {labelOf(option)}<span class="sr-only">{flagOf(option, 'selected') ? fieldOf(item, 'selectedLabel') : ''}</span>
+                                  </button>
+                                {:else}
                                   <a
                                     href={hrefOf(option)}
+                                    class={`item-link ${fieldOf(option, 'className')}`}
                                     target={fieldOf(option, 'target') || undefined}
                                     title={fieldOf(option, 'title') || undefined}
-                                  >{labelOf(option)}{#if fieldOf(option, 'className')}<i class={`${fieldOf(option, 'className')} svg-icon`}></i>{/if}</a>
-                                {:else}
-                                  <button
-                                    class={fieldOf(option, 'className') || undefined}
-                                    class:active={flagOf(option, 'selected')}
-                                    type="button"
-                                  >{labelOf(option)}{#if flagOf(option, 'selected')}<span class="sr-only">{fieldOf(item, 'selectedLabel')}</span>{/if}</button>
+                                  >{labelOf(option)}<span class="sr-only"></span></a>
                                 {/if}
                               </li>
                             {/each}
                           </ul>
+                          {#if fieldOf(item, 'resetLabel')}
+                            <div class="drop-bottom">
+                              <button type="button" class="krds-btn medium text">
+                                <i class="svg-icon ico-reset"></i> {fieldOf(item, 'resetLabel')}
+                              </button>
+                            </div>
+                          {/if}
                         </div>
-                        {#if fieldOf(item, 'resetLabel')}<div class="drop-bottom"><button type="button"><i class="ico-reset svg-icon"></i>{fieldOf(item, 'resetLabel')}</button></div>{/if}
                       </div>
                     </div>
                   {/if}
@@ -1203,64 +1402,202 @@
             </ul>
           </div>
           <div class="header-branding">
-            <h2 class="logo"><a href={logoHref}><span class="sr-only">{logoLabel}</span></a></h2>
+            <h2 class="logo">
+              <a href={logoHref}><span class="sr-only">{logoLabel}</span></a>
+            </h2>
             <div class="header-actions">
-              <button class="btn-navi sch" type="button">{searchLabel}</button>
-              <a class="btn-navi login" href={loginHref}>{loginLabel}</a>
-              <button class="btn-navi join" type="button">{joinLabel}</button>
+              <button type="button" class="btn-navi sch" title={searchTitle}>{searchLabel}</button>
+              <a href={loginHref} class="btn-navi login">{loginLabel}</a>
+              <button type="button" class="btn-navi join">{joinLabel}</button>
               <div class="krds-drop-wrap my-drop">
-                <button class="btn-navi drop-btn my" type="button">{fieldOf(myMenuData, 'label')}</button>
+                <button type="button" class="btn-navi my drop-btn" aria-expanded="false">{fieldOf(myMenuData, 'label')}</button>
                 <div class="drop-menu">
                   <div class="drop-in">
-                    <div class="my-name">{fieldOf(myMenuData, 'userName')}</div>
-                    <div class="my-time"><span>{fieldOf(myMenuData, 'timeLabel')}</span><strong>{fieldOf(myMenuData, 'time')}</strong><button type="button">{fieldOf(myMenuData, 'extendLabel')}</button></div>
-                    <ul>{#each listOf(myMenuData, 'items') as item}<li><a href={hrefOf(item)}>{labelOf(item)}</a></li>{/each}</ul>
-                    <button type="button">{fieldOf(myMenuData, 'logoutLabel')}</button>
+                    <div class="drop-top">
+                      <p class="my-name">{fieldOf(myMenuData, 'userName')}</p>
+                      <dl class="my-time">
+                        <dt>{fieldOf(myMenuData, 'timeLabel')}</dt>
+                        <dd>
+                          <span class="time">{fieldOf(myMenuData, 'time')}</span>
+                          <button type="button" class="krds-btn medium text">{fieldOf(myMenuData, 'extendLabel')}</button>
+                        </dd>
+                      </dl>
+                    </div>
+                    <ul class="drop-list">
+                      {#each listOf(myMenuData, 'items') as item}
+                        <li><a href={hrefOf(item)} class="item-link">{labelOf(item)}<span class="sr-only"></span></a></li>
+                      {/each}
+                    </ul>
+                    <div class="drop-bottom">
+                      <button type="button" class="krds-btn medium text">
+                        <i class="svg-icon ico-logout"></i> {fieldOf(myMenuData, 'logoutLabel')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <button class="all btn-navi" type="button" onclick={toggleOpen}>{allMenuLabel}</button>
+              <button
+                type="button"
+                class="btn-navi all"
+                aria-controls={`${id}-mobile`}
+                onclick={toggleOpen}
+              >{allMenuLabel}</button>
             </div>
           </div>
         </div>
       </div>
       <nav class="krds-main-menu">
         <div class="inner">
-          <ul class="gnb-menu" aria-label={menuLabel}>
-            {#each headerItems as item, index}
+          <ul class="gnb-menu" aria-label={menuLabel || undefined}>
+            {#each headerItems as item, topIndex}
+              {@const topChildren = childrenOf(item)}
+              {@const topBanner = recordOf(item, 'banner')}
+              {@const mainPanelId = `${id}-desktop-main-${topIndex}`}
               <li>
                 {#if fieldOf(item, 'href')}
                   <a
-                    class="gnb-main-trigger is-link"
                     href={hrefOf(item)}
+                    class="gnb-main-trigger is-link"
+                    data-trigger="gnb"
                     target={fieldOf(item, 'target') || undefined}
                     title={fieldOf(item, 'title') || undefined}
                   >{labelOf(item)}</a>
                 {:else if flagOf(item, 'button')}
-                  <button class="gnb-main-trigger is-link" type="button">{labelOf(item)}</button>
+                  <button type="button" class="gnb-main-trigger is-link" data-trigger="gnb">
+                    {labelOf(item)}
+                  </button>
                 {:else}
-                  <button class="gnb-main-trigger" type="button" aria-expanded="false" aria-controls={`${id}-menu-${index}`}>{labelOf(item)}</button>
-                  <div class="gnb-toggle-wrap" id={`${id}-menu-${index}`}>
-                    <div class="gnb-main-list">
-                      {#if childrenOf(item).length}
+                  <button
+                    type="button"
+                    class="gnb-main-trigger"
+                    class:active={flagOf(item, 'active')}
+                    data-trigger="gnb"
+                    aria-controls={mainPanelId}
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                  >{labelOf(item)}</button>
+                  <div
+                    id={mainPanelId}
+                    class="gnb-toggle-wrap"
+                    class:is-open={flagOf(item, 'active')}
+                  >
+                    <div
+                      class="gnb-main-list"
+                      data-has-submenu={fieldOf(item, 'title') ? undefined : 'true'}
+                    >
+                      {#if fieldOf(item, 'title')}
+                        <div class="gnb-sub-list single-list between">
+                          <div class="gnb-sub-content">
+                            <h2 class="sub-title"><span>{fieldOf(item, 'title')}</span></h2>
+                            <ul>
+                              {#each topChildren as leaf}
+                                <li>
+                                  {#if fieldOf(leaf, 'href')}
+                                    <a href={hrefOf(leaf)}>{labelOf(leaf)}</a>
+                                  {:else}
+                                    <button type="button">{labelOf(leaf)}</button>
+                                  {/if}
+                                </li>
+                              {/each}
+                            </ul>
+                          </div>
+                          {#if topBanner}
+                            <div class="gnb-sub-banner">
+                              <span class="krds-badge bg-secondary">{fieldOf(topBanner, 'badge')}</span>
+                              <button type="button" class="krds-btn medium text">
+                                {labelOf(topBanner)} <i class="svg-icon ico-angle right"></i>
+                              </button>
+                            </div>
+                          {/if}
+                        </div>
+                      {:else}
                         <ul>
-                          {#each childrenOf(item) as child}
+                          {#each topChildren as child, childIndex}
+                            {@const childChildren = childrenOf(child)}
+                            {@const descriptionItems = listOf(child, 'descriptionItems')}
+                            {@const childBanner = recordOf(child, 'banner')}
+                            {@const childPanelId = `${id}-desktop-sub-${topIndex}-${childIndex}`}
                             <li>
-                              {#if childrenOf(child).length || listOf(child, 'descriptionItems').length}
-                                <button type="button">{labelOf(child)}</button>
-                                <div class="gnb-sub-list">
-                                  {#if fieldOf(child, 'title')}<h2>{fieldOf(child, 'title')}</h2>{/if}
-                                  <ul>
-                                    {#each childrenOf(child) as leaf}
-                                      <li>{#if flagOf(leaf, 'button')}<button type="button">{labelOf(leaf)}</button>{:else}<a href={hrefOf(leaf)}>{labelOf(leaf)}</a>{/if}</li>
-                                    {/each}
-                                    {#each listOf(child, 'descriptionItems') as detail}
-                                      <li><a href={hrefOf(detail)} target={fieldOf(detail, 'target') || undefined}><strong>{fieldOf(detail, 'title')}</strong><span>{fieldOf(detail, 'description')}</span></a></li>
-                                    {/each}
-                                  </ul>
-                                </div>
+                              {#if fieldOf(child, 'href') && !childChildren.length && !descriptionItems.length}
+                                <a
+                                  href={hrefOf(child)}
+                                  class="gnb-sub-trigger is-link"
+                                  class:external-link={fieldOf(child, 'target') === '_blank'}
+                                  data-trigger="gnb"
+                                  target={fieldOf(child, 'target') || undefined}
+                                  title={fieldOf(child, 'title') || undefined}
+                                >{labelOf(child)}</a>
                               {:else}
-                                <a href={hrefOf(child)} target={fieldOf(child, 'target') || undefined} title={fieldOf(child, 'title') || undefined}>{labelOf(child)}</a>
+                                <button
+                                  type="button"
+                                  class="gnb-sub-trigger"
+                                  class:active={flagOf(child, 'active') || childIndex === 0}
+                                  data-trigger="gnb"
+                                  aria-controls={childPanelId}
+                                  aria-expanded={childIndex === 0 ? 'true' : 'false'}
+                                  aria-haspopup="true"
+                                >{labelOf(child)}</button>
+                                <div
+                                  class="gnb-sub-list"
+                                  class:active={flagOf(child, 'active') || childIndex === 0}
+                                  class:between={childIndex > 0}
+                                  id={childPanelId}
+                                >
+                                  <div class="gnb-sub-content">
+                                    <h2 class="sub-title">
+                                      {#if fieldOf(child, 'titleHref')}
+                                        {fieldOf(child, 'title')}
+                                        <a
+                                          href={fieldOf(child, 'titleHref')}
+                                          class="krds-btn link basic small"
+                                        >
+                                          <span class="underline">{fieldOf(child, 'titleLinkLabel')}</span>
+                                          <i class="svg-icon ico-angle right"></i>
+                                        </a>
+                                      {:else}
+                                        <span>{fieldOf(child, 'title')}</span>
+                                      {/if}
+                                    </h2>
+                                    {#if descriptionItems.length}
+                                      <ul class="type-description">
+                                        {#each descriptionItems as detail}
+                                          <li>
+                                            <h3 class="tit">
+                                              <a
+                                                href={hrefOf(detail)}
+                                                target={fieldOf(detail, 'target') || undefined}
+                                                title={fieldOf(detail, 'externalTitle') || undefined}
+                                              >
+                                                {fieldOf(detail, 'title')} <i class="svg-icon ico-go"></i>
+                                              </a>
+                                            </h3>
+                                            <p class="txt">{fieldOf(detail, 'description')}</p>
+                                          </li>
+                                        {/each}
+                                      </ul>
+                                    {:else}
+                                      <ul>
+                                        {#each childChildren as leaf}
+                                          <li>
+                                            {#if fieldOf(leaf, 'href')}
+                                              <a href={hrefOf(leaf)}>{labelOf(leaf)}</a>
+                                            {:else}
+                                              <button type="button">{labelOf(leaf)}</button>
+                                            {/if}
+                                          </li>
+                                        {/each}
+                                      </ul>
+                                    {/if}
+                                  </div>
+                                  {#if childBanner}
+                                    <div class="gnb-sub-banner">
+                                      <span class="krds-badge bg-secondary">{fieldOf(childBanner, 'badge')}</span>
+                                      <button type="button" class="krds-btn medium text">
+                                        {labelOf(childBanner)} <i class="svg-icon ico-angle right"></i>
+                                      </button>
+                                    </div>
+                                  {/if}
+                                </div>
                               {/if}
                             </li>
                           {/each}
@@ -1275,36 +1612,112 @@
         </div>
       </nav>
     </div>
-    <div class="krds-main-menu-mobile" id={`${id}-mobile`}>
+    <div id={`${id}-mobile`} class="krds-main-menu-mobile" style:display={isOpen ? 'block' : 'none'}>
       <div class="gnb-wrap">
         <div class="gnb-header">
           <div class="gnb-utils">
-            <ul class="utility-list">{#each listOf(mobileData, 'utilityItems') as item}<li><button class="krds-btn text xsmall" type="button">{labelOf(item)}</button></li>{/each}</ul>
+            <ul class="utility-list">
+              {#each listOf(mobileData, 'utilityItems') as item}
+                <li><button type="button" class="krds-btn xsmall text">{labelOf(item)}</button></li>
+              {/each}
+            </ul>
           </div>
-          <div class="gnb-login"><button class="krds-btn large text" type="button"><i class="ico-log svg-icon"></i>{fieldOf(mobileData, 'loginLabel')}</button></div>
-          <div class="gnb-service-menu">{#each listOf(mobileData, 'serviceItems') as item}<a class="link" href={hrefOf(item)}>{labelOf(item)}</a>{/each}</div>
+          <div class="gnb-login">
+            <button type="button" class="krds-btn large text">
+              <i class="svg-icon ico-log"></i> {fieldOf(mobileData, 'loginLabel')}
+            </button>
+          </div>
+          <div class="gnb-service-menu">
+            {#each listOf(mobileData, 'serviceItems') as item}
+              <a href={hrefOf(item)} class="link">{labelOf(item)}</a>
+            {/each}
+          </div>
           <div class="sch-input">
-            <input class="krds-input" aria-label={fieldOf(mobileData, 'searchLabel') || fieldOf(mobileData, 'searchTitle') || '검색'} title={fieldOf(mobileData, 'searchTitle')} placeholder={fieldOf(mobileData, 'searchPlaceholder')} />
-            <button class="ico-search icon krds-btn medium" type="button"><span class="sr-only">{fieldOf(mobileData, 'searchLabel')}</span><i class="ico-sch svg-icon"></i></button>
+            <input
+              type="text"
+              class="krds-input"
+              placeholder={fieldOf(mobileData, 'searchPlaceholder')}
+              title={fieldOf(mobileData, 'searchTitle')}
+            />
+            <button type="button" class="krds-btn medium icon ico-search">
+              <span class="sr-only">{fieldOf(mobileData, 'searchLabel')}</span>
+              <i class="svg-icon ico-sch"></i>
+            </button>
           </div>
         </div>
         <div class="gnb-body">
           <div class="gnb-menu">
             <div class="menu-wrap">
               <ul role="tablist">
-                {#each listOf(mobileData, 'items') as item, index}<li role="none"><a class:active={index === 0} class="gnb-main-trigger" id={`${id}-mobile-tab-${index}`} href={hrefOf(item)} role="tab" aria-selected={index === 0} aria-controls={`${id}-mobile-panel-${index}`}>{labelOf(item)}</a></li>{/each}
+                {#each listOf(mobileData, 'items') as item, itemIndex}
+                  <li role="none">
+                    <a
+                      href={`#${item.id}`}
+                      id={`${id}-mobile-tab-${itemIndex}`}
+                      class="gnb-main-trigger"
+                      class:active={itemIndex === 0}
+                      role="tab"
+                      aria-selected={itemIndex === 0 ? 'true' : 'false'}
+                      aria-controls={item.id}
+                    >{labelOf(item)}</a>
+                  </li>
+                {/each}
               </ul>
             </div>
             <div class="submenu-wrap">
-              {#each listOf(mobileData, 'items') as item, index}
-                <div class="gnb-sub-list" id={`${id}-mobile-panel-${index}`} role="tabpanel" aria-labelledby={`${id}-mobile-tab-${index}`}>
+              {#each listOf(mobileData, 'items') as item, itemIndex}
+                <div
+                  class="gnb-sub-list"
+                  id={item.id}
+                  role="tabpanel"
+                  aria-labelledby={`${id}-mobile-tab-${itemIndex}`}
+                >
                   <h2 class="sub-title">{labelOf(item)}</h2>
                   <ul>
                     {#each childrenOf(item) as child}
                       <li>
-                        <a href={hrefOf(child)}>{labelOf(child)}</a>
+                        <a
+                          href={hrefOf(child)}
+                          class="gnb-sub-trigger"
+                          class:has-depth3={childrenOf(child).length > 0}
+                          aria-expanded={childrenOf(child).length > 0 ? 'false' : undefined}
+                        >{labelOf(child)}</a>
                         {#if childrenOf(child).length}
-                          <ul>{#each childrenOf(child) as depthThree}<li><a href={hrefOf(depthThree)}>{labelOf(depthThree)}</a>{#if childrenOf(depthThree).length}<h3>{fieldOf(depthThree, 'title')}</h3><ul>{#each childrenOf(depthThree) as depthFour}<li><a href={hrefOf(depthFour)}>{labelOf(depthFour)}</a></li>{/each}</ul>{/if}</li>{/each}</ul>
+                          <div class="depth3-wrap">
+                            <ul>
+                              {#each childrenOf(child) as depthThree}
+                                <li>
+                                  <a
+                                    href={hrefOf(depthThree)}
+                                    class="depth3-trigger"
+                                    class:has-depth4={childrenOf(depthThree).length > 0}
+                                  >{labelOf(depthThree)}</a>
+                                  {#if childrenOf(depthThree).length}
+                                    <div class="depth4-wrap">
+                                      <div class="depth4-head">
+                                        <button type="button" class="krds-btn icon trigger-prev">
+                                          <span class="sr-only">{fieldOf(mobileData, 'previousLabel')}</span>
+                                          <i class="svg-icon ico-angle left"></i>
+                                        </button>
+                                        <button type="button" class="krds-btn icon trigger-close">
+                                          <span class="sr-only">{fieldOf(mobileData, 'closeLabel')}</span>
+                                          <i class="svg-icon ico-popup-close"></i>
+                                        </button>
+                                      </div>
+                                      <ul class="depth4-body">
+                                        <h4 class="sub-title">{fieldOf(depthThree, 'title')}</h4>
+                                        <ul class="depth4-ul">
+                                          {#each childrenOf(depthThree) as depthFour}
+                                            <li><a href={hrefOf(depthFour)}>{labelOf(depthFour)}</a></li>
+                                          {/each}
+                                        </ul>
+                                      </ul>
+                                    </div>
+                                  {/if}
+                                </li>
+                              {/each}
+                            </ul>
+                          </div>
                         {/if}
                       </li>
                     {/each}
@@ -1313,9 +1726,29 @@
               {/each}
             </div>
           </div>
-          <div class="gnb-bottom">{#each listOf(mobileData, 'bottomItems') as item}<a class="krds-btn medium text" href={hrefOf(item)} target={fieldOf(item, 'target') || undefined} title={fieldOf(item, 'title') || undefined}>{labelOf(item)}<i class={`${fieldOf(item, 'target') ? 'ico-go' : 'ico-angle right'} svg-icon`}></i></a>{/each}</div>
+          <div class="gnb-bottom">
+            {#each listOf(mobileData, 'bottomItems') as item}
+              <a
+                href={hrefOf(item)}
+                class="krds-btn medium text"
+                target={fieldOf(item, 'target') || undefined}
+                title={fieldOf(item, 'title') || undefined}
+              >
+                {labelOf(item)}
+                <i class={`svg-icon ${fieldOf(item, 'target') ? 'ico-go' : 'ico-angle right'}`}></i>
+              </a>
+            {/each}
+          </div>
         </div>
-        <button class="icon krds-btn medium" id={`${id}-mobile-close`} type="button" onclick={toggleOpen}><span class="sr-only">{fieldOf(mobileData, 'closeLabel')}</span><i class="ico-popup-close svg-icon"></i></button>
+        <button
+          type="button"
+          class="krds-btn medium icon"
+          id={`${id}-mobile-close`}
+          onclick={toggleOpen}
+        >
+          <span class="sr-only">{fieldOf(mobileData, 'closeLabel')}</span>
+          <i class="svg-icon ico-popup-close"></i>
+        </button>
       </div>
     </div>
   </header>
@@ -1323,120 +1756,193 @@
   <div
     {...rest}
     id={id}
-    class={`krds-main-menu-mobile sample ${rootClass}`}
+    class={`krds-main-menu-mobile ${rootClass}`}
+    class:sample={sample}
+    style={sample ? 'display: block; position: static; visibility: visible;' : 'display: none;'}
     role="navigation"
   >
     <div class="gnb-wrap">
       <div class="gnb-header">
-        {#if utilityItems.length}
-          <ul>
-            {#each utilityItems as item}<li><button type="button">{item.label}</button></li>{/each}
+        <div class="gnb-utils">
+          <ul class="utility-list">
+            {#each utilityItems as item}
+              <li><button type="button" class="krds-btn xsmall text">{item.label}</button></li>
+            {/each}
           </ul>
-        {/if}
-        <button type="button">{loginLabel}</button>
-        {#if serviceItems.length}
-          <ul>
-            {#each serviceItems as item}<li><a href={hrefOf(item)}>{item.label}</a></li>{/each}
-          </ul>
-        {/if}
-        <form role="search">
-          <input class="krds-input" aria-label={searchLabel || searchTitle || '검색'} title={searchTitle} placeholder={searchPlaceholder} />
-          <button type="submit">{searchLabel}</button>
-        </form>
+        </div>
+        <div class="gnb-login">
+          <button type="button" class="krds-btn large text">
+            <i class="svg-icon ico-log"></i> {loginLabel}
+          </button>
+        </div>
+        <div class="gnb-service-menu">
+          {#each serviceItems as item}<a href={hrefOf(item)} class="link">{item.label}</a>{/each}
+        </div>
+        <div class="sch-input">
+          <input
+            type="text"
+            class="krds-input"
+            placeholder={searchPlaceholder}
+            title={searchTitle}
+          />
+          <button type="button" class="krds-btn medium icon ico-search">
+            <span class="sr-only">{searchLabel}</span>
+            <i class="svg-icon ico-sch"></i>
+          </button>
+        </div>
       </div>
       <div class="gnb-body">
-        <ul>
-          {#each navigationItems as item}
-            <li><a href={item.id ? `#${item.id}` : hrefOf(item)}>{labelOf(item)}</a></li>
-          {/each}
-        </ul>
-        {#each navigationItems as item}
-          <section id={item.id}>
-            <h2>{labelOf(item)}</h2>
-            <ul>
-              {#each childrenOf(item) as child}
-                <li>
-                  <a href={hrefOf(child)}>{labelOf(child)}</a>
-                  {#if childrenOf(child).length}
-                    <ul>
-                      {#each childrenOf(child) as grandchild}
-                        <li>
-                          <a href={hrefOf(grandchild)}>{labelOf(grandchild)}</a>
-                          {#if fieldOf(grandchild, 'title')}<h3>{fieldOf(grandchild, 'title')}</h3>{/if}
-                          {#if childrenOf(grandchild).length}
-                            <ul>
-                              {#each childrenOf(grandchild) as leaf}
-                                <li><a href={hrefOf(leaf)}>{labelOf(leaf)}</a></li>
-                              {/each}
-                            </ul>
-                          {/if}
-                        </li>
-                      {/each}
-                    </ul>
-                  {/if}
+        <div class="gnb-menu">
+          <div class="menu-wrap">
+            <ul role={sample ? undefined : 'tablist'}>
+              {#each navigationItems as item, itemIndex}
+                <li role={sample ? undefined : 'none'}>
+                  <a
+                    href={`#${item.id}`}
+                    id={sample ? undefined : `${id}-tab-${itemIndex}`}
+                    class="gnb-main-trigger"
+                    class:active={!sample && itemIndex === 0}
+                    role={sample ? undefined : 'tab'}
+                    aria-selected={sample ? undefined : itemIndex === 0 ? 'true' : 'false'}
+                    aria-controls={sample ? undefined : item.id}
+                  >{labelOf(item)}</a>
                 </li>
               {/each}
             </ul>
-          </section>
-        {/each}
-      </div>
-      {#if bottomItems.length}
-        <ul>
-          {#each bottomItems as item}
-            <li>
-              <a href={hrefOf(item)} target={fieldOf(item, 'target') || undefined} title={fieldOf(item, 'title') || undefined}
-                >{labelOf(item)}</a
+          </div>
+          <div class="submenu-wrap">
+            {#each navigationItems as item, itemIndex}
+              <div
+                class="gnb-sub-list"
+                id={item.id}
+                role={sample ? undefined : 'tabpanel'}
+                aria-labelledby={sample ? undefined : `${id}-tab-${itemIndex}`}
               >
-            </li>
+                <h2 class="sub-title">{labelOf(item)}</h2>
+                <ul>
+                  {#each childrenOf(item) as child}
+                    <li>
+                      <a
+                        href={hrefOf(child)}
+                        class="gnb-sub-trigger"
+                        class:has-depth3={childrenOf(child).length > 0}
+                        aria-expanded={!sample && childrenOf(child).length > 0 ? 'false' : undefined}
+                      >{labelOf(child)}</a>
+                      {#if childrenOf(child).length}
+                        <div class="depth3-wrap">
+                          <ul>
+                            {#each childrenOf(child) as depthThree}
+                              <li>
+                                <a
+                                  href={hrefOf(depthThree)}
+                                  class="depth3-trigger"
+                                  class:has-depth4={childrenOf(depthThree).length > 0}
+                                >{labelOf(depthThree)}</a>
+                                {#if childrenOf(depthThree).length}
+                                  <div class="depth4-wrap">
+                                    <div class="depth4-head">
+                                      <button type="button" class="krds-btn icon trigger-prev">
+                                        <span class="sr-only">{previousLabel}</span>
+                                        <i class="svg-icon ico-angle left"></i>
+                                      </button>
+                                      <button type="button" class="krds-btn icon trigger-close">
+                                        <span class="sr-only">{closeLabel}</span>
+                                        <i class="svg-icon ico-popup-close"></i>
+                                      </button>
+                                    </div>
+                                    <ul class="depth4-body">
+                                      <h4 class="sub-title">{fieldOf(depthThree, 'title')}</h4>
+                                      <ul class="depth4-ul">
+                                        {#each childrenOf(depthThree) as depthFour}
+                                          <li><a href={hrefOf(depthFour)}>{labelOf(depthFour)}</a></li>
+                                        {/each}
+                                      </ul>
+                                    </ul>
+                                  </div>
+                                {/if}
+                              </li>
+                            {/each}
+                          </ul>
+                        </div>
+                      {/if}
+                    </li>
+                  {/each}
+                </ul>
+              </div>
+            {/each}
+          </div>
+        </div>
+        <div class="gnb-bottom">
+          {#each bottomItems as item}
+            <a
+              href={hrefOf(item)}
+              class="krds-btn small text"
+              target={fieldOf(item, 'target') || undefined}
+              title={fieldOf(item, 'title') || undefined}
+            >
+              {labelOf(item)}
+              <i class={`svg-icon ${fieldOf(item, 'target') ? 'ico-go' : 'ico-angle right'}`}></i>
+            </a>
           {/each}
-        </ul>
-      {/if}
-      <button class="icon krds-btn medium" type="button" onclick={toggleOpen}>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="krds-btn medium icon"
+        id={sample ? 'close-nav' : `${id}-close`}
+        onclick={sample ? undefined : toggleOpen}
+      >
         <span class="sr-only">{closeLabel}</span>
+        <i class="svg-icon ico-popup-close"></i>
       </button>
     </div>
   </div>
 {:else if kind === 'main-menu-pc'}
-  <nav {...rest} class={`krds-main-menu sample ${rootClass}`} aria-label={menuLabel}>
+  <nav {...rest} class={`krds-main-menu ${rootClass}`} class:sample={sample}>
     <div class="inner">
-      <ul class="gnb-menu">
-        {#each navigationItems as item, index}
-          {@const itemBanner = recordOf(item, 'banner')}
-          <li class:active={flagOf(item, 'active')}>
-            {#if hrefOf(item) !== '#' || fieldOf(item, 'href')}
-              <a href={hrefOf(item)} target={fieldOf(item, 'target') || undefined} title={fieldOf(item, 'title') || undefined}
-                >{labelOf(item)}</a
-              >
+      <ul class="gnb-menu" aria-label={sample ? undefined : menuLabel || undefined}>
+        {#each navigationItems as item, topIndex}
+          {@const topChildren = childrenOf(item)}
+          {@const topBanner = recordOf(item, 'banner')}
+          {@const mainPanelId = `${id}-main-${topIndex}`}
+          <li>
+            {#if fieldOf(item, 'href')}
+              <a
+                href={hrefOf(item)}
+                class="gnb-main-trigger is-link"
+                data-trigger="gnb"
+                target={fieldOf(item, 'target') || undefined}
+                title={fieldOf(item, 'title') || undefined}
+              >{labelOf(item)}</a>
+            {:else if flagOf(item, 'button')}
+              <button type="button" class="gnb-main-trigger is-link" data-trigger="gnb">
+                {labelOf(item)}
+              </button>
             {:else}
-              <button type="button" aria-expanded={false} aria-controls={`${id}-pc-${index}`}
-                >{labelOf(item)}</button
+              <button
+                type="button"
+                class="gnb-main-trigger"
+                class:active={flagOf(item, 'active')}
+                data-trigger="gnb"
+                aria-controls={sample ? undefined : mainPanelId}
+                aria-expanded={sample ? undefined : 'false'}
+                aria-haspopup={sample ? undefined : 'true'}
+              >{labelOf(item)}</button>
+              <div
+                id={sample ? undefined : mainPanelId}
+                class="gnb-toggle-wrap"
+                class:is-open={flagOf(item, 'active')}
               >
-            {/if}
-            {#if fieldOf(item, 'title')}<h2>{fieldOf(item, 'title')}</h2>{/if}
-            {#if childrenOf(item).length}
-              <ul id={`${id}-pc-${index}`}>
-                {#each childrenOf(item) as child}
-                  {@const childBanner = recordOf(child, 'banner')}
-                  <li class:active={flagOf(child, 'active')}>
-                    {#if fieldOf(child, 'href') && !childrenOf(child).length && !listOf(child, 'descriptionItems').length}
-                      <a
-                        href={hrefOf(child)}
-                        target={fieldOf(child, 'target') || undefined}
-                        title={fieldOf(child, 'title') || undefined}
-                      >{labelOf(child)}</a>
-                    {:else}
-                      <button type="button">{labelOf(child)}</button>
-                      {#if fieldOf(child, 'title')}
-                        <h2>
-                          {fieldOf(child, 'title')}
-                          {#if fieldOf(child, 'titleHref')}
-                            <a href={fieldOf(child, 'titleHref')}>{fieldOf(child, 'titleLinkLabel')}</a>
-                          {/if}
-                        </h2>
-                      {/if}
-                      {#if childrenOf(child).length}
+                <div
+                  class="gnb-main-list"
+                  data-has-submenu={fieldOf(item, 'title') ? undefined : 'true'}
+                >
+                  {#if fieldOf(item, 'title')}
+                    <div class="gnb-sub-list single-list between">
+                      <div class="gnb-sub-content">
+                        <h2 class="sub-title"><span>{fieldOf(item, 'title')}</span></h2>
                         <ul>
-                          {#each childrenOf(child) as leaf}
+                          {#each topChildren as leaf}
                             <li>
                               {#if fieldOf(leaf, 'href')}
                                 <a href={hrefOf(leaf)}>{labelOf(leaf)}</a>
@@ -1446,101 +1952,269 @@
                             </li>
                           {/each}
                         </ul>
+                      </div>
+                      {#if topBanner}
+                        <div class="gnb-sub-banner">
+                          <span class="krds-badge bg-secondary">{fieldOf(topBanner, 'badge')}</span>
+                          <button type="button" class="krds-btn medium text">
+                            {labelOf(topBanner)} <i class="svg-icon ico-angle right"></i>
+                          </button>
+                        </div>
                       {/if}
-                      {#if listOf(child, 'descriptionItems').length}
-                        <ul>
-                          {#each listOf(child, 'descriptionItems') as descriptionItem}
-                            <li>
-                              <a
-                                href={hrefOf(descriptionItem)}
-                                target={fieldOf(descriptionItem, 'target') || undefined}
-                                title={fieldOf(descriptionItem, 'externalTitle') || undefined}
-                              >
-                                <strong>{fieldOf(descriptionItem, 'title')}</strong>
-                                <span>{fieldOf(descriptionItem, 'description')}</span>
-                              </a>
-                            </li>
-                          {/each}
-                        </ul>
-                      {/if}
-                      {#if childBanner}
-                        <span>{fieldOf(childBanner, 'badge')}</span><button type="button">{labelOf(childBanner)}</button>
-                      {/if}
-                    {/if}
-                  </li>
-                {/each}
-              </ul>
+                    </div>
+                  {:else}
+                    <ul>
+                      {#each topChildren as child, childIndex}
+                        {@const childChildren = childrenOf(child)}
+                        {@const descriptionItems = listOf(child, 'descriptionItems')}
+                        {@const childBanner = recordOf(child, 'banner')}
+                        {@const childPanelId = `${id}-sub-${topIndex}-${childIndex}`}
+                        {@const runtimeSubActive = !sample && childIndex === 0}
+                        <li>
+                          {#if fieldOf(child, 'href') && !childChildren.length && !descriptionItems.length}
+                            <a
+                              href={hrefOf(child)}
+                              class="gnb-sub-trigger is-link"
+                              class:external-link={fieldOf(child, 'target') === '_blank'}
+                              data-trigger="gnb"
+                              target={fieldOf(child, 'target') || undefined}
+                              title={fieldOf(child, 'title') || undefined}
+                            >{labelOf(child)}</a>
+                          {:else}
+                            <button
+                              type="button"
+                              class="gnb-sub-trigger"
+                              class:active={flagOf(child, 'active') || runtimeSubActive}
+                              data-trigger="gnb"
+                              aria-controls={sample ? undefined : childPanelId}
+                              aria-expanded={sample ? undefined : runtimeSubActive ? 'true' : 'false'}
+                              aria-haspopup={sample ? undefined : 'true'}
+                            >{labelOf(child)}</button>
+                            <div
+                              class="gnb-sub-list"
+                              class:active={flagOf(child, 'active') || runtimeSubActive}
+                              class:between={childIndex > 0}
+                              id={sample ? undefined : childPanelId}
+                            >
+                              <div class="gnb-sub-content">
+                                <h2 class="sub-title">
+                                  {#if fieldOf(child, 'titleHref')}
+                                    {fieldOf(child, 'title')}
+                                    <a
+                                      href={fieldOf(child, 'titleHref')}
+                                      class="krds-btn link basic small"
+                                    >
+                                      <span class="underline">{fieldOf(child, 'titleLinkLabel')}</span>
+                                      <i class="svg-icon ico-angle right"></i>
+                                    </a>
+                                  {:else}
+                                    <span>{fieldOf(child, 'title')}</span>
+                                  {/if}
+                                </h2>
+                                {#if descriptionItems.length}
+                                  <ul class="type-description">
+                                    {#each descriptionItems as detail}
+                                      <li>
+                                        <h3 class="tit">
+                                          <a
+                                            href={hrefOf(detail)}
+                                            target={fieldOf(detail, 'target') || undefined}
+                                            title={fieldOf(detail, 'externalTitle') || undefined}
+                                          >
+                                            {fieldOf(detail, 'title')} <i class="svg-icon ico-go"></i>
+                                          </a>
+                                        </h3>
+                                        <p class="txt">{fieldOf(detail, 'description')}</p>
+                                      </li>
+                                    {/each}
+                                  </ul>
+                                {:else}
+                                  <ul>
+                                    {#each childChildren as leaf}
+                                      <li>
+                                        {#if fieldOf(leaf, 'href')}
+                                          <a href={hrefOf(leaf)}>{labelOf(leaf)}</a>
+                                        {:else}
+                                          <button type="button">{labelOf(leaf)}</button>
+                                        {/if}
+                                      </li>
+                                    {/each}
+                                  </ul>
+                                {/if}
+                              </div>
+                              {#if childBanner}
+                                <div class="gnb-sub-banner">
+                                  <span class="krds-badge bg-secondary">{fieldOf(childBanner, 'badge')}</span>
+                                  <button type="button" class="krds-btn medium text">
+                                    {labelOf(childBanner)} <i class="svg-icon ico-angle right"></i>
+                                  </button>
+                                </div>
+                              {/if}
+                            </div>
+                          {/if}
+                        </li>
+                      {/each}
+                    </ul>
+                  {/if}
+                </div>
+              </div>
             {/if}
-            {#if itemBanner}<span>{fieldOf(itemBanner, 'badge')}</span><button type="button">{labelOf(itemBanner)}</button>{/if}
           </li>
         {/each}
       </ul>
     </div>
   </nav>
 {:else if kind === 'help-panel' || kind === 'tutorial-panel'}
-  {@const activeTabItem = tabs[activeTab === 'tutorial' ? 1 : 0]}
-  <div {...rest} class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`} hidden={!isOpen} onfocus={() => (open = false)}>
-    <div class="help-panel-wrap" tabindex={isOpen ? '0' : undefined}>
+  <div
+    {...rest}
+    class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`}
+    hidden={!isOpen}
+  >
+    <div class="help-panel-wrap" tabindex={isOpen ? 0 : undefined}>
       <div class="help-conts-area">
-        <ul role="tablist">
-          {#each tabs as tab, index}
-            {@const tabName = index === 0 ? 'help' : 'tutorial'}
-            <li
-              role="none"
-              class:active={activeTab === tabName}
-            >
-              <button
-                id={tab.id}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === tabName}
-                aria-controls={fieldOf(tab, 'panelId')}
-              >
-                {tab.label}
-              </button>
-            </li>
-          {/each}
-        </ul>
-        <div
-          id={fieldOf(activeTabItem, 'panelId')}
-          role="tabpanel"
-          aria-labelledby={activeTabItem?.id}
-        >
-          {#if activeTab === 'help'}
-            <h3 class="sr-only">{activeTabItem?.label}</h3>
-            <h4>{helpTitle}</h4>
-            <p>{helpDescription}</p>
-            {#if downloadLinks.length}
-              <ul>
-                {#each downloadLinks as item}<li><a href={hrefOf(item)}>{labelOf(item)}</a></li>{/each}
-              </ul>
-            {/if}
-            {#each relatedGroups as group}
-              <h4>{fieldOf(group, 'title')}</h4>
-              <ul>
-                {#each listOf(group, 'links') as item}
-                  <li><a href={hrefOf(item)}>{labelOf(item)}</a></li>
-                {/each}
-              </ul>
-            {/each}
-          {:else}
-            <h3 class="sr-only">{activeTabItem?.label}</h3>
-            <h4><a href={href}>{tutorialTitle}</a></h4>
-            <ol>
-              {#each tasks as task}
-                <li>
-                  <h4>{fieldOf(task, 'title')}</h4>
-                  <button type="button">{fieldOf(task, 'label')}</button>
-                  <ol>
-                    {#each listOf(task, 'steps') as taskStep}<li>{labelOf(taskStep)}</li>{/each}
-                  </ol>
+        <div class="krds-tab-area layer">
+          <div class="tab line">
+            <ul role="tablist">
+              {#each tabs as tab, index}
+                {@const tabName = index === 0 ? 'help' : 'tutorial'}
+                <li role="presentation" class:active={activeTab === tabName}>
+                  <button
+                    id={tab.id}
+                    type="button"
+                    class="btn-tab"
+                    role="tab"
+                    aria-selected={activeTab === tabName}
+                    aria-controls={fieldOf(tab, 'panelId')}
+                    tabindex={activeTab === tabName ? 0 : -1}
+                    onclick={(event) => {
+                      activeTab = tabName;
+                      invoke(onclick, event);
+                    }}
+                  >
+                    {tab.label}
+                    {#if activeTab === tabName}<i class="sr-only created"> {selectedLabel}</i>{/if}
+                  </button>
                 </li>
               {/each}
-            </ol>
-            <button type="button">{stopLabel}</button>
-          {/if}
+            </ul>
+          </div>
+          <div class="tab-conts-wrap">
+            {#each tabs as tab, index}
+              {@const tabName = index === 0 ? 'help' : 'tutorial'}
+              <section
+                id={fieldOf(tab, 'panelId')}
+                role="tabpanel"
+                aria-labelledby={tab.id}
+                class="tab-conts"
+                class:active={activeTab === tabName}
+                hidden={activeTab !== tabName}
+              >
+                <h3 class="sr-only">{tab.label}</h3>
+                <div class="help-conts-area-inner">
+                  {#if tabName === 'help'}
+                    <div class="conts-area help-conts">
+                      <div class="conts-wrap">
+                        <h4 class="help-title">
+                          {helpTitle}
+                          <span class="krds-btn medium icon">
+                            <span class="sr-only">{label}</span>
+                            <i class="svg-icon ico-help"></i>
+                          </span>
+                        </h4>
+                        <div class="conts-desc"><p>{helpDescription}</p></div>
+                        <ul class="link-list">
+                          {#each downloadLinks as item}
+                            <li>
+                              <a
+                                href={hrefOf(item)}
+                                target={fieldOf(item, 'target') || undefined}
+                                title={fieldOf(item, 'title') || externalTitle || undefined}
+                                class="krds-btn xsmall link basic"
+                              >
+                                {labelOf(item)} <i class="svg-icon ico-go"></i>
+                              </a>
+                            </li>
+                          {/each}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="conts-area related-service">
+                      {#each relatedGroups as group}
+                        <div class="conts-wrap">
+                          <h4 class="help-title">{fieldOf(group, 'title')}</h4>
+                          <ul class="link-list">
+                            {#each listOf(group, 'links') as item}
+                              <li>
+                                <a href={hrefOf(item)} class="krds-btn xsmall link basic">
+                                  {#if fieldOf(item, 'icon')}<i class={`svg-icon ico-${fieldOf(item, 'icon')}`}></i>{/if}
+                                  {labelOf(item)}
+                                  {#if !fieldOf(item, 'icon')}<i class="svg-icon ico-angle right"></i>{/if}
+                                </a>
+                              </li>
+                            {/each}
+                          </ul>
+                        </div>
+                      {/each}
+                    </div>
+                  {:else}
+                    <div class="conts-area">
+                      <h4 class="help-title">
+                        <a href="#;" title={tutorialBackTitle || backTitle || undefined}>
+                          {tutorialTitle}
+                        </a>
+                      </h4>
+                      <ul class="coach-help-process">
+                        {#each tasks as task, taskIndex}
+                          <li>
+                            <h4 class="tit" class:current={flagOf(task, 'current')}>
+                              {fieldOf(task, 'title')}
+                            </h4>
+                            <div class="krds-disclosure conts-expand-area">
+                              <button
+                                type="button"
+                                class="btn-conts-expand"
+                                aria-controls={`${id}-help-disclosure-${taskIndex}`}
+                                aria-expanded="false"
+                              >
+                                {fieldOf(task, 'summary')}
+                              </button>
+                              <div
+                                class="expand-wrap"
+                                id={`${id}-help-disclosure-${taskIndex}`}
+                                inert
+                              >
+                                <div class="expand-in">
+                                  <ul class="krds-info-list decimal" role="list">
+                                    {#each listOf(task, 'steps') as taskStep}
+                                      <li role="listitem">{labelOf(taskStep)}</li>
+                                    {/each}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        {/each}
+                      </ul>
+                    </div>
+                    <div class="help-panel-action">
+                      <button type="button" class="krds-btn medium secondary coach-btn-stop">
+                        {stopLabel}
+                      </button>
+                    </div>
+                  {/if}
+                </div>
+              </section>
+            {/each}
+          </div>
         </div>
-        <button type="button" onclick={toggleOpen}>{collapseLabel}</button>
+        <button
+          type="button"
+          class="krds-btn small tertiary btn-help-panel fold"
+          onclick={toggleOpen}
+        >
+          <span class="sr-only">{label}</span> {collapseLabel}
+          <i class="svg-icon ico-angle right"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -1550,63 +2224,62 @@
     <span class="ban-txt">{description || organization || title}</span>
   </div>
 {:else if kind === 'in-page-navigation'}
-  <div {...rest} class={`krds-in-page-navigation-area ${rootClass}`}>
-    <div class="in-page-navigation-header">
-      <p class="quick-caption">{title}</p>
-      {#if pageTitle}<p class="quick-title">{pageTitle}</p>{/if}
-    </div>
-    <nav class="in-page-navigation-list" aria-label={title}>
-      <ul>
-        {#each navigationItems as item, index}
-          <li><a class:active={index === 0} href={hrefOf(item)}>{labelOf(item)}</a></li>
-        {/each}
-      </ul>
-    </nav>
-    {#if actionLabel}
+  <div class="krds-in-page-navigation-type">
+    <div {...rest} class={`krds-in-page-navigation-area ${rootClass}`}>
+      <div class="in-page-navigation-header">
+        <p class="quick-caption">{title}</p>
+        <p class="quick-title">{pageTitle}</p>
+      </div>
+      <nav class="in-page-navigation-list">
+        <ul>
+          {#each navigationItems as item}
+            <li><a class:active={flagOf(item, 'current')} href={hrefOf(item)}>{labelOf(item)}</a></li>
+          {/each}
+        </ul>
+      </nav>
       <div class="in-page-navigation-action">
         <button class="krds-btn medium" type="button">{actionLabel}</button>
-        {#if actionInfo || actionCount}<p class="quick-info">{actionInfo} <strong>{actionCount}</strong></p>{/if}
+        <p class="quick-info">{actionInfo} <strong>{actionCount}</strong></p>
       </div>
-    {/if}
+    </div>
   </div>
 {:else if kind === 'language-switcher' || kind === 'language-switcher-page'}
   <div {...rest} class={`krds-drop-wrap krds-language ${rootClass}`}>
     <button
-      class="drop-btn krds-btn small text"
+      class="krds-btn small text drop-btn"
       type="button"
       aria-expanded={isOpen}
-      aria-controls={`${id}-languages`}
       onclick={toggleOpen}
-    >
-      <i class="ico-global svg-icon"></i>{label}<i class="ico-toggle svg-icon"></i>
-    </button>
-    <div class="drop-menu" id={`${id}-languages`}>
+    ><i class="svg-icon ico-global"></i>{' '}{label}{' '}<i class="svg-icon ico-toggle"></i></button>
+    <div class="drop-menu">
       <div class="drop-in">
         {#if kind === 'language-switcher-page'}
           <div class="drop-top">
-            <p class="current-laguage"><span>{title}</span><strong>{description}</strong></p>
+            <p class="current-laguage">
+              <span>{currentLabel}</span>
+              <strong>{currentLanguage?.label}</strong>
+            </p>
           </div>
         {/if}
         <ul class="drop-list">
           {#each languageItems as language}
-            <li>
-              <a
-                class:active={selection === language.value}
-                class="item-link"
-                href={fieldOf(language, 'href') || '#'}
-                lang={language.value}
-                target={kind === 'language-switcher-page' ? '_blank' : undefined}
-                title={kind === 'language-switcher-page' ? message : undefined}
-                onclick={(event) => {
-                  event.preventDefault();
-                  setSelection(language.value, event);
-                }}
-              >
-                {language.label}
-                {#if kind === 'language-switcher-page'}<i class="ico-go svg-icon"></i>{/if}
-                {#if selection === language.value}<span class="sr-only">{selectedLabel}</span>{/if}
-              </a>
-            </li>
+            {#if kind !== 'language-switcher-page' || selection !== language.value}
+              <li>
+                <a
+                  class="item-link"
+                  class:active={kind === 'language-switcher' && selection === language.value}
+                  href={fieldOf(language, 'href') || '#'}
+                  lang={fieldOf(language, 'lang') || language.value}
+                  target={kind === 'language-switcher-page' ? '_blank' : undefined}
+                  title={kind === 'language-switcher-page' ? externalTitle : undefined}
+                  onclick={(event) => setSelection(language.value, event)}
+                >
+                  {language.label}
+                  {#if kind === 'language-switcher-page'}<i class="svg-icon ico-go"></i>{/if}
+                  <span class="sr-only">{selection === language.value ? selectedLabel : ''}</span>
+                </a>
+              </li>
+            {/if}
           {/each}
         </ul>
       </div>
@@ -1634,24 +2307,26 @@
     </div>
   </div>
 {:else if kind === 'modal' || kind === 'modal-sample'}
-  <dialog
-    role="dialog"
+  <section
     {...rest}
     bind:this={modalRoot}
-    open={isOpen}
     id={`${id}-dialog`}
-    class={`fade krds-modal ${isOpen ? 'in shown' : ''} ${rootClass}`}
+    class={`krds-modal fade ${isOpen ? 'in shown' : ''} ${rootClass}`}
+    role="dialog"
     aria-labelledby={`${id}-title`}
-    oncancel={closeModal}
-    onclose={closeModal}
+    onkeydown={handleModalKeydown}
   >
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header"><h2 class="modal-title" id={`${id}-title`}>{title}</h2></div>
+        <div class="modal-header">
+          <h2 id={`${id}-title`} class="modal-title">{title}</h2>
+        </div>
         <div class="modal-conts">
           <div class="conts-area">
             {#if items.length}
-              {#each items as item, index}{labelOf(item)}{#if index < items.length - 1}<br />{/if}{/each}
+              {#each items as item, index}
+                {labelOf(item)}{#if index < items.length - 1}<br />{/if}
+              {/each}
             {:else if children}
               {@render children()}
             {:else}
@@ -1659,105 +2334,112 @@
             {/if}
           </div>
         </div>
-        <div class="btn-wrap modal-btn">
-          <button class="close-modal krds-btn medium tertiary" type="button" onclick={closeModal}
-            >{cancelLabel}</button
-          >
-          <button class="close-modal krds-btn medium primary" type="button" onclick={closeModal}
-            >{confirmLabel}</button
-          >
+        <div class="modal-btn btn-wrap">
+          <button type="button" class="krds-btn medium tertiary close-modal" onclick={closeModal}>
+            {cancelLabel}
+          </button>
+          <button type="button" class="krds-btn medium primary close-modal" onclick={closeModal}>
+            {confirmLabel}
+          </button>
         </div>
-        <button class="btn-close close-modal icon krds-btn medium" type="button" onclick={closeModal}>
-          <span class="sr-only">{closeLabel}</span><i class="ico-popup-close svg-icon"></i>
+        <button type="button" class="krds-btn medium icon btn-close close-modal" onclick={closeModal}>
+          <span class="sr-only">{closeLabel}</span>
+          <i class="svg-icon ico-popup-close"></i>
         </button>
       </div>
     </div>
     <div class={`modal-back ${isOpen ? 'in' : ''}`}></div>
-  </dialog>
+  </section>
 {:else if kind === 'pagination'}
-  <div {...rest} class={`krds-pagination ${rootClass}`} role="navigation">
+  <div
+    {...rest}
+    class={`krds-pagination ${rootClass}`}
+    role="navigation"
+    aria-label={navigationLabel}
+  >
     {#if previousDisabled || (current ?? 1) <= 1}
-      <span class="disabled page-navi prev">{previousLabel}</span>
+      <span class="page-navi prev disabled" href="#">{previousLabel}</span>
     {:else}
-      <button
+      <a
+        href="#"
         class="page-navi prev"
-        type="button"
         onclick={(event) => {
           event.preventDefault();
           selectPage((current ?? 1) - 1, event);
         }}
-      >{previousLabel}</button>
+      >{previousLabel}</a>
     {/if}
     <div class="page-links">
       {#each items as item}
         {#if labelOf(item) === 'ellipsis'}
-          <span class="link-dot page-link"></span>
+          <span class="page-link link-dot"></span>
         {:else}
           {@const page = Number(labelOf(item))}
-          <button
-            class:active={page === (current ?? 1)}
+          <a
+            href="#"
             class="page-link"
-            type="button"
-            aria-current={page === (current ?? 1) ? 'page' : undefined}
+            class:active={page === (current ?? 1)}
             onclick={(event) => {
               event.preventDefault();
               selectPage(page, event);
             }}
           >
-            {#if page === (current ?? 1)}<span class="sr-only">{message}</span>{/if}
+            {#if page === (current ?? 1)}<span class="sr-only">{message} </span>{/if}
             {page}
-          </button>
+          </a>
         {/if}
       {/each}
     </div>
-    <button
-      class="next page-navi"
-      type="button"
+    <a
+      href="#"
+      class="page-navi next"
       onclick={(event) => {
         event.preventDefault();
         selectPage((current ?? 1) + 1, event);
       }}
-    >{nextLabel}</button>
+    >{nextLabel}</a>
   </div>
 {:else if kind === 'resize'}
   <div {...rest} class={`krds-drop-wrap krds-resize ${rootClass}`} data-adjust="scale">
     <button
-      class="drop-btn krds-btn small text"
       type="button"
+      class="krds-btn small text drop-btn"
       aria-expanded={isOpen}
-      aria-controls={`${id}-scale`}
       onclick={toggleOpen}
-    >{label}<i class="ico-toggle svg-icon"></i></button>
-    <div class="drop-menu" id={`${id}-scale`}>
+    >
+      {label} <i class="svg-icon ico-toggle"></i>
+    </button>
+    <div class="drop-menu">
       <div class="drop-in">
         <ul class="drop-list">
           {#each (options.length ? options : zoomOptions) as option}
             <li>
               <button
+                type="button"
                 class={`item-link ${option.value}`}
                 class:active={(selection || 'md') === option.value}
                 data-adjust-scale={option.value}
-                type="button"
                 onclick={(event) => setSelection(option.value, event)}
               >
-                {option.label}
-                {#if (selection || 'md') === option.value}<span class="sr-only">{selectedLabel}</span>{/if}
+                {option.label}<span class="sr-only">{(selection || 'md') === option.value ? selectedLabel : ''}</span>
               </button>
             </li>
           {/each}
         </ul>
         <div class="drop-bottom">
           <button
+            type="button"
             class="krds-btn medium text"
             data-adjust-scale="md"
-            type="button"
             onclick={(event) => setSelection('md', event)}
-          ><i class="ico-reset svg-icon"></i>{resetLabel}</button>
+          >
+            <i class="svg-icon ico-reset"></i> {resetLabel}
+          </button>
         </div>
       </div>
     </div>
   </div>
-{:else if kind === 'select' || kind === 'select-size' || kind === 'select-state' || kind === 'select-sorting'}
+{:else if kind === 'select-sorting'}
   <select
     {...rest}
     id={id}
@@ -1766,20 +2448,57 @@
     {required}
     {form}
     title={title}
+    aria-invalid={selectState === 'error' ? 'true' : undefined}
     value={selection}
     onchange={(event) => setSelection(event.currentTarget.value, event)}
-    class={`${
-      kind === 'select-sorting' ? 'krds-form-select-sort' : 'krds-form-select'
-    } ${kind === 'select-size' ? size : ''} ${kind === 'select-state' || controlState === 'error' ? 'is-error' : ''} ${rootClass}`}
-    aria-invalid={kind === 'select-state' || controlState === 'error' ? 'true' : undefined}
-    aria-describedby={hint ? `${id}-hint` : undefined}
+    class={`${selectClasses.control} ${rootClass}`.trim()}
   >
-    {#each options as option}<option value={option.value} disabled={option.disabled}>{option.label}</option>{/each}
+    {#each options as option}
+      <option value={option.value} disabled={option.disabled}>{option.label}</option>
+    {/each}
   </select>
-  <label class="sr-only" for={id}>{label}</label>
-  {#if hint}<span id={`${id}-hint`} class="sr-only">{hint}</span>{/if}
+{:else if kind === 'select' || kind === 'select-size' || kind === 'select-state'}
+  <div class="form-group">
+    <div class="form-tit"><label for={id}>{label}</label></div>
+    <div class="form-conts">
+      <select
+        {...rest}
+        id={id}
+        name={name || undefined}
+        {disabled}
+        {required}
+        {form}
+        title={title}
+        value={selection}
+        onchange={(event) => setSelection(event.currentTarget.value, event)}
+        class={`${selectClasses.control} ${rootClass}`.trim()}
+        aria-invalid={selectState === 'error' ? 'true' : undefined}
+        aria-describedby={hint ? `${id}-hint` : undefined}
+      >
+        {#each options as option, index}
+          <option
+            value={option.value}
+            disabled={option.disabled}
+            selected={kind === 'select-size' && index === 0 ? true : undefined}
+          >{option.label}</option>
+        {/each}
+      </select>
+    </div>
+    {#if hint}
+      <p
+        id={`${id}-hint`}
+        class={selectState === 'error'
+          ? 'form-hint-invalid'
+          : selectState === 'success'
+            ? 'form-hint-success'
+            : selectState === 'information'
+              ? 'form-hint-information'
+              : 'form-hint'}
+      >{hint}</p>
+    {/if}
+  </div>
 {:else if kind === 'side-navigation'}
-  <nav {...rest} class={`krds-side-navigation ${rootClass}`} aria-label={title}>
+  <nav {...rest} class={`krds-side-navigation ${rootClass}`}>
     <h2 class="lnb-tit">{title}</h2>
     <ul class="lnb-list" role="menubar">
       {#each navigationItems as item, index}
@@ -1796,7 +2515,7 @@
             <div class="lnb-submenu">
               <ul id={`${id}-side-${index}`} role="menu">
                 {#each childrenOf(item) as child, childIndex}
-                  <li class="lnb-subitem" role="none">
+                  <li class="lnb-subitem" class:active={flagOf(child, 'current')} role="none">
                     {#if childrenOf(child).length}
                       <button
                         class="lnb-btn lnb-toggle-popup"
@@ -1807,7 +2526,7 @@
                         aria-controls={`${id}-side-${index}-${childIndex}`}
                       >{labelOf(child)}</button>
                       <div class="lnb-submenu-lv2" id={`${id}-side-${index}-${childIndex}`} role="menu">
-                        <button class="lnb-btn-tit" type="button">{labelOf(child)}</button>
+                        <button class="lnb-btn-tit" type="button">{fieldOf(child, 'description')}</button>
                         <ul>
                           {#each childrenOf(child) as leaf}
                             <li role="none">
@@ -1842,8 +2561,18 @@
     </a>
   </div>
 {:else if kind === 'spinner'}
-  <div {...rest} class={`krds-spinner ${rootClass}`} role="status">
-    <span class="sr-only">{label}</span>
+  <div class="form-group">
+    <div class="form-tit">
+      <label for={`${id}-input`}>Label</label>
+    </div>
+    <div class="form-conts">
+      <div class="form-spinner">
+        <input type="text" id={`${id}-input`} class="krds-input" placeholder="placeholder" />
+        <div {...rest} class={`krds-spinner ${rootClass}`} role="status">
+          <span class="sr-only">{label}</span>
+        </div>
+      </div>
+    </div>
   </div>
 {:else if kind === 'step-indicator'}
   <ol {...rest} class={`krds-step-wrap ${rootClass}`}>
@@ -1888,8 +2617,8 @@
             <div class="card-btm">{#each tags as tag}<span class="tag">{tag}</span>{/each}</div>
           {/if}
           <div class="card-btn">
-            <button class="krds-btn medium text" title={labelOf(item)} type="button"><i class="ico-share svg-icon"></i>{shareLabel}</button>
-            <button class="krds-btn medium text" title={labelOf(item)} type="button"><i class="ico-like svg-icon"></i>{favoriteLabel}</button>
+            <button class="krds-btn medium text" title={labelOf(item)} type="button"><i class="ico-share svg-icon"></i>{' '}{shareLabel}</button>
+            <button class="krds-btn medium text" title={labelOf(item)} type="button"><i class="ico-like svg-icon"></i>{' '}{favoriteLabel}</button>
           </div>
         </div>
       </li>
@@ -1910,7 +2639,7 @@
             {#each actions as action}
               <li>
                 <button class="krds-btn medium text" type="button">
-                  <i class={`svg-icon ico-${fieldOf(action, 'icon')}`}></i>{fieldOf(action, 'label')}
+                  <i class={`svg-icon ico-${fieldOf(action, 'icon')}`}></i>{' '}{fieldOf(action, 'label')}
                 </button>
               </li>
             {/each}
@@ -1919,6 +2648,7 @@
         <ul class="sch-sort">
           <li>
             <strong class="sort-label"><label for={`${id}-result-count`}>{countLabel}</label></strong>
+            {' '}
             <select class="krds-form-select-sort" id={`${id}-result-count`}>
               {#each countOptions as option}<option>{option}</option>{/each}
             </select>
@@ -1928,6 +2658,7 @@
             <div class="w-sort-btn">
               {#each sortOptions as option}
                 <button class:active={option === sortValue} type="button">{option}</button>
+                {' '}
               {/each}
             </div>
             <div class="m-sort-btn">
@@ -1945,11 +2676,12 @@
             {#each columns as column}
               <col style={fieldOf(column, 'width') ? `width: ${fieldOf(column, 'width')};` : undefined} />
             {/each}
+            <col />
           </colgroup>
           <thead>
             <tr>
               {#each columns as column}
-                <th class:sr-only={flagOf(column, 'visuallyHidden')} scope="col">
+                <th scope="col">
                   {#if column.key === 'download'}<span class="sr-only">{column.label}</span>{:else}{column.label}{/if}
                 </th>
               {/each}
@@ -1958,18 +2690,24 @@
           <tbody>
             {#each rows as row, rowIndex}
               <tr>
-                {#each columns as column, columnIndex}
+                {#each columns as column}
                   {#if column.key === 'selected'}
                     <th scope="row">
                       <div class="krds-form-check">
-                        <input class="chk" id={`${id}-row-${rowIndex + 1}`} type="checkbox" checked={flagOf(row, 'selected')} />
+                        <input
+                          class="chk"
+                          id={`${id}-row-${rowIndex + 1}`}
+                          type="checkbox"
+                          aria-label={fieldOf(row, 'selectionLabel') || undefined}
+                          checked={flagOf(row, 'selected')}
+                        />
                         <label for={`${id}-row-${rowIndex + 1}`}></label>
                       </div>
                     </th>
                   {:else if column.key === 'download'}
                     <td>
                       <button class="krds-btn medium text" type="button">
-                        <i class="svg-icon ico-down"></i>{row[column.key]}
+                        <i class="svg-icon ico-down"></i>{' '}{row[column.key]}
                       </button>
                     </td>
                   {:else}
@@ -2035,20 +2773,21 @@
   {/if}
 {:else if kind === 'tab'}
   {@const active = selection || tabs[0]?.id}
-  <div {...rest} class={`krds-tab-area layer ${rootClass}`}>
-    <div class="tab line full">
+  <div {...rest} class={`${tabClasses.root} ${rootClass}`.trim()}>
+    <div class={tabClasses.listContainer}>
       <ul role="tablist">
     {#each tabs as tab, index}
+      {@const itemClasses = tabRecipe({ active: active === tab.id })}
       <li
-        role="none"
-        class:active={active === tab.id}
+        role="presentation"
+        class={itemClasses.item}
       >
         <button
           id={`${id}-tab-${tab.id}`}
           role="tab"
           aria-selected={active === tab.id}
           aria-controls={`${id}-panel-${tab.id}`}
-          class="btn-tab"
+          class={itemClasses.trigger}
           type="button"
           disabled={tab.disabled}
           tabindex={active === tab.id ? 0 : -1}
@@ -2066,9 +2805,9 @@
   {#each tabs as tab}
       <section
         role="tabpanel"
-        tabindex="0"
         id={`${id}-panel-${tab.id}`}
         aria-labelledby={`${id}-tab-${tab.id}`}
+        data-quick-nav="false"
         class={`tab-conts ${active === tab.id ? 'active' : ''}`}
         hidden={active !== tab.id}
       ><h3 class="sr-only">{panelTitle || '탭 영역 타이틀'}</h3>{panels[tab.id] ?? (tab.id === active ? description : '')}</section>
@@ -2076,21 +2815,25 @@
     </div>
   </div>
 {:else if kind === 'tag-link'}
-  <a
-    {...rest}
-    href={href}
-    class={`krds-btn-tag link ${rootClass}`}
-    onclick={(event) => invoke(onclick, event)}
-  >{label}</a>
+  <div class={`krds-tag-wrap ${size || 'large'}`}>
+    <a
+      {...rest}
+      href={href}
+      class={`krds-btn-tag link ${rootClass}`}
+      onclick={(event) => invoke(onclick, event)}
+    >{label}</a>
+  </div>
 {:else if kind === 'tag'}
-  <span {...rest} class={`krds-btn-tag ${rootClass}`}>
-    {label}
-    {#if removable}
-      <button class="btn-delete" type="button" onclick={(event) => invoke(onclick, event)}>
-        <span class="sr-only">{message}</span>
-      </button>
-    {/if}
-  </span>
+  <div class={`krds-tag-wrap ${size || 'large'}`}>
+    <span {...rest} class={`krds-btn-tag ${rootClass}`}>
+      {label}
+      {#if removable}
+        <button class="btn-delete" type="button" onclick={(event) => invoke(onclick, event)}>
+          <span class="sr-only">{message}</span>
+        </button>
+      {/if}
+    </span>
+  </div>
 {:else if kind === 'textarea'}
   <textarea
     {...rest}
@@ -2105,30 +2848,39 @@
     {readonly}
     {autocomplete}
     {form}
-    aria-describedby={hint ? `${id}-hint` : undefined}
     oninput={setValue}
   ></textarea>
   <label class="sr-only" for={id}>{label}</label>
-  {#if hint}<span class="sr-only" id={`${id}-hint`}>{hint}</span>{/if}
 {:else if kind === 'text-input-icon'}
-  <input
-    {...rest}
-    id={id}
-    name={name || undefined}
-    class={`krds-input ${rootClass}`}
-    type={type || 'text'}
-    {placeholder}
-    value={inputValue}
-    {disabled}
-    {required}
-    {readonly}
-    {autocomplete}
-    {form}
-    aria-describedby={hint ? `${id}-hint` : undefined}
-    oninput={setValue}
-  />
-  <label class="sr-only" for={id}>{label}</label>
-  {#if hint}<span class="sr-only" id={`${id}-hint`}>{hint}</span>{/if}
+  <div class="form-group">
+    <div class="form-tit">
+      <label for={id}>{label}</label>
+    </div>
+    <div class="form-conts btn-ico-wrap">
+      <input
+        {...rest}
+        id={id}
+        name={name || undefined}
+        class={`krds-input ${rootClass}`}
+        type={type || 'text'}
+        {placeholder}
+        value={inputValue}
+        use:reflectValueAttribute={inputValue}
+        {disabled}
+        {required}
+        {readonly}
+        {autocomplete}
+        {form}
+        aria-describedby={hint ? `${id}-hint` : undefined}
+        oninput={setValue}
+      />
+      <button type="button" class="krds-btn medium icon">
+        <span class="sr-only">입력한 비밀번호 보기</span>
+        <i class="svg-icon ico-pw-visible"></i>
+      </button>
+    </div>
+    {#if hint}<p class="form-hint" id={`${id}-hint`}>{hint}</p>{/if}
+  </div>
 {:else if kind === 'text-list' || kind === 'text-list-ordered'}
   {#if kind === 'text-list-ordered'}
     <ol {...rest} class={`krds-info-list ordered ${rootClass}`} role="list">
@@ -2188,11 +2940,10 @@
     aria-labelledby={`${id}-tip`}
     onclick={toggleOpen}
   >
-    {#if children}{@render children()}{:else}{label}{/if}
-    <i class="ico-angle right svg-icon"></i>
+    {#if children}{@render children()}{:else}{label}{/if}{' '}<i class="ico-angle right svg-icon"></i>
   </button>
   <span id={`${id}-tip`} role="tooltip" hidden={!isOpen}>
-    {#if children}{@render children()} {/if}{message}
+    {#if children}{@render children()}{/if}{' '}{message}
   </span>
 {:else if kind === 'tts' || kind === 'tts-icon' || kind === 'tts-size'}
   <button

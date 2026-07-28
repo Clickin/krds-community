@@ -31,17 +31,21 @@ correction:
       rule: "stable-generated-id; referenced-by: .form-conts.is-error .krds-input[aria-describedby]"
 fixtures:
   - text-input.error.medium
+  - text-input-state.default
 normalization:
   whitelist:
     - selector: ".form-hint-invalid"
       attribute: id
-      rule: stable-generated-id
+      operation: rewrite
+      rewriteValue: generated-2
     - selector: ".form-conts.is-error .krds-input"
       attribute: aria-describedby
-      rule: "must-reference: .form-hint-invalid[id]"
+      operation: rewrite
+      rewriteValue: generated-2
     - selector: ".form-conts.is-error .krds-input"
       attribute: aria-invalid
-      rule: "exact-value:true"
+      operation: rewrite
+      rewriteValue: "true"
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA9

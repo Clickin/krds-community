@@ -34,11 +34,12 @@
     {@const open = openItems.includes(item.id)}
     {@const headerId = `krds-accordion-header-${item.id}`}
     {@const panelId = `krds-accordion-panel-${item.id}`}
-    <div class="accordion-item">
+    <div class="accordion-item" class:active={open}>
       <h5 class="accordion-header">
         <button
           type="button"
           class="btn-accordion"
+          class:active={open}
           id={headerId}
           aria-expanded={open}
           aria-controls={panelId}

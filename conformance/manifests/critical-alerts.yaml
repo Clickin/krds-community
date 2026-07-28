@@ -7,6 +7,9 @@ upstream:
 fixtures:
   - id: critical-alerts.default
     sourceSelector: ".krds-critical-alerts"
+    contractAncestorSelector:
+      upstream: ".main-urgent-wrap"
+      framework: "[role=alert]"
     mandatory: true
     viewport: desktop
     props: {}

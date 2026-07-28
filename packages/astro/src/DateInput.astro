@@ -81,11 +81,11 @@ const {
 const instanceId = `krds-date-input-${crypto.randomUUID()}`;
 const inputId = providedId ?? `${instanceId}-input`;
 const calendarId = providedCalendarId ?? `${instanceId}-calendar`;
-const hintId = hint !== undefined || Astro.slots.has('hint') ? `${inputId}-hint` : undefined;
+const hasHint = hint !== undefined || Astro.slots.has('hint');
 const recipe = inputRecipe({ className: cx('datepicker', 'cal', inputAttributes.class, inputClass) });
 const calendarSurface = {
-  year: displayYear ?? year,
-  month: displayMonth ?? month,
+  year,
+  month,
   displayYear,
   displayMonth,
   selectedYear,
@@ -151,5 +151,5 @@ const calendarSurface = {
       <Calendar {...calendarSurface} surfaceOnly={true} selectionMode="range" />
     </div>
   </div>
-  {hintId && <p id={hintId} class="form-hint"><slot name="hint">{hint}</slot></p>}
+  {hasHint && <p class="form-hint"><slot name="hint">{hint}</slot></p>}
 </div>

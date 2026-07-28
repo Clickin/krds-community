@@ -44,32 +44,30 @@ const placementClass =
   disabled={disabled}
   class={cx('krds-btn', 'small', 'text', 'krds-tooltip', placementClass, className)}
   data-tooltip={message}
-  data-krds-tooltip={resolvedTooltipId}
   aria-labelledby={labelledBy}
 >
-  <slot>{label ?? children}</slot>
-  <slot name="icon"><i class={cx('svg-icon', iconClass)} aria-hidden="true"></i></slot>
+  <slot>{label ?? children}</slot>{' '}
+  <slot name="icon"><i class={cx('svg-icon', iconClass)}></i></slot>
 </button>
 <div
   id={resolvedTooltipId}
   class="krds-tooltip-popover"
   role="tooltip"
   aria-hidden="true"
-  data-tooltip-placement={placement}
 >
   <span class="sr-only">{label ?? children}</span>
   {message}
 </div>
 
 <script>
-  const tooltipPopoverFor = (button: HTMLButtonElement) => {
-    const tooltipId = button.dataset.krdsTooltip;
-    if (!tooltipId) return null;
-    const popover = document.getElementById(tooltipId);
-    return popover instanceof HTMLElement && popover.classList.contains('krds-tooltip-popover')
-      ? popover
-      : null;
-  };
+  const tooltipPopoverFor = (button: HTMLButtonElement) =>
+    button
+      .getAttribute('aria-labelledby')
+      ?.split(/\s+/)
+      .map((id) => document.getElementById(id))
+      .find((element): element is HTMLElement =>
+        element instanceof HTMLElement && element.classList.contains('krds-tooltip-popover'),
+      ) ?? null;
 
   const closeTooltip = (button: HTMLButtonElement) => {
     const popover = tooltipPopoverFor(button);
@@ -85,7 +83,11 @@ const placementClass =
     const popover = tooltipPopoverFor(button);
     if (!popover) return;
 
-    const placement = popover.dataset.tooltipPlacement;
+    const placement = button.classList.contains('tooltip-box')
+      ? 'box'
+      : button.classList.contains('tooltip-vertical')
+        ? 'vertical'
+        : 'horizontal';
     popover.className = 'krds-tooltip-popover';
     if (placement === 'box') popover.classList.add('tooltip-box');
     if (placement === 'vertical') popover.classList.add('tooltip-vertical');
@@ -130,7 +132,7 @@ const placementClass =
     popover.style.left = window.innerWidth <= 420 ? '50%' : `${left}px`;
   };
 
-  document.querySelectorAll<HTMLButtonElement>('button[data-krds-tooltip]').forEach((button) => {
+  document.querySelectorAll<HTMLButtonElement>('button.krds-tooltip').forEach((button) => {
     button.addEventListener('mouseenter', () => showTooltip(button));
     button.addEventListener('mouseleave', () => closeTooltip(button));
     button.addEventListener('focus', () => showTooltip(button));
@@ -142,12 +144,12 @@ const placementClass =
 
   window.addEventListener('scroll', () => {
     document
-      .querySelectorAll<HTMLButtonElement>('button[data-krds-tooltip]')
+      .querySelectorAll<HTMLButtonElement>('button.krds-tooltip')
       .forEach(closeTooltip);
   });
   window.addEventListener('resize', () => {
     document
-      .querySelectorAll<HTMLButtonElement>('button[data-krds-tooltip]')
+      .querySelectorAll<HTMLButtonElement>('button.krds-tooltip')
       .forEach(closeTooltip);
   });
 </script>

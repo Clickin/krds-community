@@ -15,4 +15,7 @@ errata:
   - errata.navigation.missing-landmark-semantics
 contract:
   semanticElement: navigation
+  requiredAttributes:
+    role: navigation
+    aria-label: 페이지 이동
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

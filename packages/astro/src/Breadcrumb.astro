@@ -20,7 +20,7 @@ export interface Props extends Omit<HTMLAttributes<'nav'>, 'class' | 'class:list
 
 const {
   items = [],
-  label,
+  label = '현재 경로',
   id = 'breadcrumb',
   class: className,
   'aria-label': ariaLabel,

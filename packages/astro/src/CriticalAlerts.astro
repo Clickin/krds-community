@@ -36,8 +36,8 @@ const alerts = items.map((rawItem) => {
 });
 ---
 
-<div class="main-urgent-wrap">
-  <ul {...rest} class={cx('krds-critical-alerts', className)} role="alert">
+<div class="main-urgent-wrap" role="alert">
+  <ul {...rest} class={cx('krds-critical-alerts', className)}>
     {alerts.map((item) => (
       <li>
         <div class="critical-ban">
@@ -47,8 +47,8 @@ const alerts = items.map((rawItem) => {
           <p class="critical-txt">{item.content}</p>
           {item.href && item.linkLabel && (
             <a href={item.href} class="krds-btn medium link basic">
-              <span class="m-hide">{item.linkLabel}</span>
-              <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+              <span class="m-hide">{item.linkLabel}</span>{' '}
+              <i class="svg-icon ico-angle right"></i>
             </a>
           )}
         </div>

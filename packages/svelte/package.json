@@ -19,7 +19,8 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "lint": "node scripts/check.mjs && node scripts/build.mjs --check"
+    "check": "pnpm --filter @krds-community/recipes build && node scripts/check.mjs",
+    "lint": "pnpm run check && node scripts/build.mjs --check"
   },
   "dependencies": {
     "@krds-community/recipes": "workspace:*",

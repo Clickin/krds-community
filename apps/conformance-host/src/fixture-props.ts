@@ -157,7 +157,12 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
         { value: 'xxlg', label: '가장크게' },
       ],
     };
-  } else if (['select', 'select-sorting'].includes(componentId)) {
+  } else if (componentId === 'select-sorting') {
+    defaults = {
+      title: '선택',
+      options: selectOptions,
+    };
+  } else if (componentId === 'select') {
     defaults = {
       label: '레이블',
       hint: '도움말',
@@ -278,9 +283,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
         href: index === 0 ? '#' : undefined,
       }));
     defaults = {
-      className: 'sample',
       sample: true,
-      menuLabel: '메인 메뉴',
       items: [
         {
           id: 'desktop-depth-1',
@@ -408,7 +411,6 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       })),
     }));
     defaults = {
-      className: 'sample',
       sample: true,
       style: { display: 'block', position: 'static', visibility: 'visible' },
       utilityItems: Array.from({ length: 2 }, (_, index) => ({
@@ -551,7 +553,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
         banner,
       },
       { id: 'header-link-anchor', label: '링크(anchor)', href: '#' },
-      { id: 'header-link-button', label: '링크(button)', button: true },
+      { id: 'header-link-button', label: '링크(anchor)', button: true },
     ];
     const mobileItems = Array.from({ length: 5 }, (_, index) => ({
       id: `mGnb-anchor${index + 1}`,
@@ -582,7 +584,6 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       })),
     }));
     defaults = {
-      menuLabel: '메인 메뉴',
       utilityItems: [
         {
           id: 'utility-external',
@@ -628,6 +629,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
           })),
         },
       ],
+      menuLabel: '메인 메뉴',
       logoLabel: 'KRDS - Korea Design System',
       logoHref: '#',
       searchLabel: '통합검색',
@@ -842,6 +844,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       ],
     };
   } else if (componentId === 'structured-list-table') {
+    const caption = '000에 대한 표로 유형 제목 내용 게시일로 구성되어있다.';
     defaults = {
       className: 'sample',
       selectAllLabel: '전체선택',
@@ -855,7 +858,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       sortLabel: '정렬기준',
       sortOptions: ['관련도순', '최신순', '인기순'],
       sortValue: '관련도순',
-      caption: '000에 대한 표로 유형 제목 내용 게시일로 구성되어있다.',
+      caption,
       columns: [
         { key: 'selected', label: '선택', width: '5%' },
         { key: 'type', label: '유형', width: '10%' },
@@ -866,6 +869,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       ],
       rows: Array.from({ length: 7 }, (_, index) => ({
         id: String(index + 1),
+        selectionLabel: `${caption} ${index + 1} 선택`,
         selected: false,
         type: '유형',
         title: '타이틀 영역',
@@ -930,6 +934,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       title: '이전',
       label: '다음',
       message: '현재페이지',
+      navigationLabel: '페이지 이동',
       previousDisabled: true,
       previousLabel: '이전',
       nextLabel: '다음',
@@ -940,10 +945,9 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       options: languages,
       selected: 'ko',
       defaultValue: 'ko',
-      label: '언어 변경',
       selectedLabel: '선택됨',
+      label: '언어 변경',
       currentLabel: '현재 언어',
-      text: '현재 언어',
       externalTitle: '새 창 열림',
     };
   } else if (componentId === 'modal') {
@@ -953,7 +957,6 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
     defaults = {
       title: '모달 제목',
       description: items.join(' '),
-      children: items.join(' '),
       items,
       cancelLabel: '아니요',
       confirmLabel: '예',

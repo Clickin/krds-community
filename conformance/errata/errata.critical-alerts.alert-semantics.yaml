@@ -8,25 +8,26 @@ defect:
   type: missing-alert-semantics
   literalSource:
     selectors:
-      - ".krds-critical-alerts"
+      - ".main-urgent-wrap"
     behavior: >-
       The urgent-message list is visually presented as critical alerts but exposes only generic
       list semantics, so newly presented urgent content is not identified as an alert.
 correction:
   behavior: >-
-    Preserve the native list and its items while exposing the list container as an alert region.
-    Do not remove the list descendants or their link semantics.
+    Preserve the native list and its items while exposing the outer urgent-message container as an
+    alert region. Do not remove the list descendants or their link semantics.
   attributes:
-    - selector: ".krds-critical-alerts"
+    - selector: ".main-urgent-wrap"
       attribute: role
       rule: "exact-value:alert"
 fixtures:
   - critical-alerts.default
 normalization:
   whitelist:
-    - selector: ".krds-critical-alerts"
+    - selector: ".main-urgent-wrap"
       attribute: role
-      rule: "exact-value:alert"
+      operation: rewrite
+      rewriteValue: alert
 evidence:
   sourceUrls:
     - https://www.w3.org/WAI/ARIA/apg/patterns/alert/

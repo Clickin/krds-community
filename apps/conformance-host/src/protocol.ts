@@ -1,5 +1,7 @@
 export type Framework = 'react' | 'vue' | 'svelte' | 'solid' | 'angular' | 'astro';
 
+export type FixtureLayoutContext = 'content-inner' | 'viewport-height';
+
 export interface FixtureAction {
   action: string;
   target?: string;
@@ -21,8 +23,10 @@ export interface FixtureDefinition {
   sourceSelector: string;
   sourceIndex: number;
   sourceAncestorSelector?: string;
+  contractAncestorSelector?: { upstream: string; framework: string };
   visualSelector?: string;
   visualAncestorSelector?: string;
+  layoutContext?: FixtureLayoutContext;
   viewport: { name: string; width: number; height: number };
   props: Record<string, unknown>;
   states: FixtureState[];
@@ -37,6 +41,18 @@ export interface FixtureDefinition {
   };
   errata: string[];
 }
+
+export const fixtureRootAttributes = ({
+  layoutContext,
+}: Pick<FixtureDefinition, 'layoutContext'>) => {
+  if (layoutContext === 'content-inner') {
+    return { class: 'inner', 'data-layout-context': layoutContext } as const;
+  }
+  if (layoutContext === 'viewport-height') {
+    return { 'data-layout-context': layoutContext } as const;
+  }
+  return {};
+};
 
 export interface FixtureCatalog {
   upstream: {

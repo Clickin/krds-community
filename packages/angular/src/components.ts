@@ -14,7 +14,6 @@ import {
   NG_VALUE_ACCESSOR,
   ReactiveFormsModule,
 } from '@angular/forms';
-import type { SimpleChanges } from '@angular/core';
 import type { ControlValueAccessor } from '@angular/forms';
 import type {
   AccordionContractProps,
@@ -365,11 +364,12 @@ export interface KrdsAccordionItem {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<div class="krds-accordion" [class.type-line]="type === 'line'">
-    <div *ngFor="let item of items" class="accordion-item">
+    <div *ngFor="let item of items" class="accordion-item" [class.active]="isOpen(item.id)">
       <h5 class="accordion-header">
         <button
           type="button"
           class="btn-accordion"
+          [class.active]="isOpen(item.id)"
           [id]="'krds-accordion-header-' + item.id"
           [attr.aria-expanded]="isOpen(item.id)"
           [attr.aria-controls]="'krds-accordion-panel-' + item.id"
@@ -397,29 +397,14 @@ export class KrdsAccordionComponent implements AccordionContractProps {
   @Input() type: 'default' | 'line' = 'default';
   @Input() multiple = false;
   private _defaultOpen: string[] = [];
+  openItems: string[] = [];
   @Input()
   get defaultOpen(): string[] {
     return this._defaultOpen;
   }
   set defaultOpen(value: string[]) {
-    this._defaultOpen = value;
-    this.openItems = [...value];
-  }
-  openItems: string[] = [];
-  ngOnInit(): void {
-    this.openItems = [...this.defaultOpen];
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['defaultOpen']) {
-      this.openItems = [...this.defaultOpen];
-    }
-  }
-  private syncedDefaultOpen: string[] = [];
-  ngDoCheck(): void {
-    if (this.defaultOpen !== this.syncedDefaultOpen) {
-      this.syncedDefaultOpen = this.defaultOpen;
-      this.openItems = [...this.defaultOpen];
-    }
+    this._defaultOpen = value ?? [];
+    this.openItems = [...this._defaultOpen];
   }
   isOpen(id: string): boolean {
     return this.openItems.includes(id);

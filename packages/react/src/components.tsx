@@ -258,11 +258,11 @@ export function Accordion({
         const headerId = `${accordionId}-header-${index}-${item.id}`;
         const panelId = `${accordionId}-panel-${index}-${item.id}`;
         return (
-          <div className="accordion-item" key={headerId}>
+          <div className={cx('accordion-item', open && 'active')} key={headerId}>
             <h5 className="accordion-header">
               <button
                 type="button"
-                className="btn-accordion"
+                className={cx('btn-accordion', open && 'active')}
                 id={headerId}
                 aria-expanded={open}
                 aria-controls={panelId}

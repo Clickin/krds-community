@@ -136,13 +136,9 @@ const {
 const resolvedDesktopItems = desktopItems ?? nav ?? links ?? [];
 const resolvedLogoLabel = logoLabel ?? title;
 const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
-const selectedUtilityValue = (item: HeaderUtilityItem) =>
-  item.defaultValue ?? item.items?.find((option) => option.selected)?.value ??
-  item.items?.find((option) => option.selected)?.className ?? item.items?.[0]?.value ??
-  item.items?.[0]?.className;
 ---
 
-<header {...rest} id={id} class={className} data-krds-header>
+<header {...rest} id={id} class={className}>
   <div class="header-in">
     <div class="header-container">
       <div class="inner">
@@ -160,7 +156,12 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                       title={item.title}
                     >
                       {item.label}
-                      {item.target && <i class="svg-icon ico-go" aria-hidden="true"></i>}
+                      {item.target && (
+                        <Fragment>
+                          {' '}
+                          <i class="svg-icon ico-go"></i>
+                        </Fragment>
+                      )}
                     </a>
                   ) : (
                     <button type="button" class="krds-btn small text" disabled={item.disabled}>
@@ -170,13 +171,9 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                 ) : item.kind === 'resize' ? (
                   <div
                     class="krds-drop-wrap krds-resize"
-                    data-adjust="scale"
-                    data-default-scale={selectedUtilityValue(item)}
-                    data-header-dropdown
-                    data-header-resize
                   >
                     <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
-                      {item.label} <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+                      {item.label} <i class="svg-icon ico-toggle"></i>
                     </button>
                     <div class="drop-menu">
                       <div class="drop-in">
@@ -188,8 +185,6 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                                 <button
                                   type="button"
                                   class={cx('item-link', option.className, option.selected && 'active')}
-                                  data-adjust-scale={optionValue}
-                                  aria-selected={option.selected ? 'true' : 'false'}
                                   disabled={option.disabled}
                                 >
                                   {option.label}
@@ -203,18 +198,17 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                           <button
                             type="button"
                             class="krds-btn medium text"
-                            data-adjust-scale={selectedUtilityValue(item)}
                           >
-                            <i class="svg-icon ico-reset" aria-hidden="true"></i> {item.resetLabel}
+                            <i class="svg-icon ico-reset"></i> {item.resetLabel}
                           </button>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div class="krds-drop-wrap" data-header-dropdown>
+                  <div class="krds-drop-wrap">
                     <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
-                      {item.label} <i class="svg-icon ico-toggle" aria-hidden="true"></i>
+                      {item.label} <i class="svg-icon ico-toggle"></i>
                     </button>
                     <div class="drop-menu">
                       <div class="drop-in">
@@ -233,6 +227,7 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                                   tabindex={option.disabled ? -1 : undefined}
                                 >
                                   {option.label}
+                                  <span class="sr-only"></span>
                                 </a>
                               ) : (
                                 <button
@@ -241,6 +236,7 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                                   disabled={option.disabled}
                                 >
                                   {option.label}
+                                  <span class="sr-only"></span>
                                 </button>
                               )}
                             </li>
@@ -273,7 +269,7 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
               <button type="button" class="btn-navi join">{joinLabel}</button>
             )}
             {myMenu && (
-              <div class="krds-drop-wrap my-drop" data-header-dropdown>
+              <div class="krds-drop-wrap my-drop">
                 <button type="button" class="btn-navi my drop-btn" aria-expanded="false">
                   {myMenu.label}
                 </button>
@@ -304,16 +300,20 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
                               aria-current={item.current ? 'page' : undefined}
                             >
                               {item.label}
+                              <span class="sr-only"></span>
                             </a>
                           ) : (
-                            <button type="button" class="item-link" disabled={item.disabled}>{item.label}</button>
+                            <button type="button" class="item-link" disabled={item.disabled}>
+                              {item.label}
+                              <span class="sr-only"></span>
+                            </button>
                           )}
                         </li>
                       ))}
                     </ul>
                     <div class="drop-bottom">
                       <button type="button" class="krds-btn medium text">
-                        <i class="svg-icon ico-logout" aria-hidden="true"></i> {myMenu.logoutLabel}
+                        <i class="svg-icon ico-logout"></i> {myMenu.logoutLabel}
                       </button>
                     </div>
                   </div>
@@ -324,7 +324,6 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
               type="button"
               class="btn-navi all"
               aria-controls={resolvedMobileId}
-              aria-expanded="false"
             >
               {allMenuLabel}
             </button>
@@ -343,6 +342,7 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
     {...mobileMenu}
     id={resolvedMobileId}
     sample={false}
+    standalone={false}
     navigationLabel={mobileMenu.navigationLabel ?? mobileNavigationLabel}
   />
 </header>
@@ -355,9 +355,16 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
     xlg: '--krds-zoom-xlarge',
     xxlg: '--krds-zoom-xxlarge',
   };
+  const headerScaleValues = ['sm', 'md', 'lg', 'xlg', 'xxlg'] as const;
+  const headerScaleValue = (item: HTMLElement) =>
+    headerScaleValues.find((value) => item.classList.contains(value));
 
-  document.querySelectorAll<HTMLElement>('[data-krds-header]').forEach((header) => {
-    const dropdowns = Array.from(header.querySelectorAll<HTMLElement>('[data-header-dropdown]'));
+  document.querySelectorAll<HTMLElement>('header .header-container').forEach((container) => {
+    const header = container.closest<HTMLElement>('header');
+    if (!header) return;
+    const dropdowns = Array.from(
+      header.querySelectorAll<HTMLElement>('.header-utility .krds-drop-wrap, .header-actions .krds-drop-wrap'),
+    );
     const closeDropdown = (dropdown: HTMLElement, restoreFocus = false) => {
       const button = dropdown.querySelector<HTMLButtonElement>(':scope > .drop-btn');
       const menu = dropdown.querySelector<HTMLElement>(':scope > .drop-menu');
@@ -374,14 +381,13 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
     };
     const applyHeaderScale = (dropdown: HTMLElement, value: string) => {
       const options = Array.from(
-        dropdown.querySelectorAll<HTMLButtonElement>('.drop-list [data-adjust-scale]'),
+        dropdown.querySelectorAll<HTMLButtonElement>('.drop-list .item-link'),
       );
       const selectedMessage =
         dropdown.querySelector<HTMLElement>('.item-link.active .sr-only')?.textContent ?? '';
       options.forEach((option) => {
-        const active = option.dataset.adjustScale === value;
+        const active = headerScaleValue(option) === value;
         option.classList.toggle('active', active);
-        option.setAttribute('aria-selected', String(active));
         const text = option.querySelector<HTMLElement>('.sr-only');
         if (text) text.textContent = active ? selectedMessage : '';
       });
@@ -397,6 +403,12 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
     };
 
     dropdowns.forEach((dropdown) => {
+      const initialScaleItem = dropdown.classList.contains('krds-resize')
+        ? dropdown.querySelector<HTMLElement>('.drop-list .item-link.active')
+        : null;
+      const initialScaleValue = initialScaleItem
+        ? headerScaleValue(initialScaleItem)
+        : undefined;
       const button = dropdown.querySelector<HTMLButtonElement>(':scope > .drop-btn');
       const menu = dropdown.querySelector<HTMLElement>(':scope > .drop-menu');
       if (!button || !menu) return;
@@ -417,20 +429,20 @@ const selectedUtilityValue = (item: HeaderUtilityItem) =>
             event.preventDefault();
             return;
           }
-          if (dropdown.hasAttribute('data-header-resize')) {
-            const value = item.dataset.adjustScale;
+          if (dropdown.classList.contains('krds-resize')) {
+            const value = headerScaleValue(item);
             if (value) applyHeaderScale(dropdown, value);
           }
           closeDropdown(dropdown, item instanceof HTMLButtonElement);
         });
       });
-      dropdown.querySelector<HTMLButtonElement>('.drop-bottom [data-adjust-scale]')
-        ?.addEventListener('click', (event) => {
-          const reset = event.currentTarget as HTMLButtonElement;
-          const value = reset.dataset.adjustScale ?? dropdown.dataset.defaultScale;
-          if (value) applyHeaderScale(dropdown, value);
-          closeDropdown(dropdown, true);
-        });
+      if (dropdown.classList.contains('krds-resize')) {
+        dropdown.querySelector<HTMLButtonElement>('.drop-bottom button')
+          ?.addEventListener('click', () => {
+            if (initialScaleValue) applyHeaderScale(dropdown, initialScaleValue);
+            closeDropdown(dropdown, true);
+          });
+      }
       dropdown.addEventListener('focusout', (event) => {
         if (event.relatedTarget instanceof Node && dropdown.contains(event.relatedTarget)) return;
         closeDropdown(dropdown);

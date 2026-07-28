@@ -1,6 +1,7 @@
 import './host.css';
 import '@krds-community/styles';
 import { baseProps } from './fixture-props';
+import { fixtureRootAttributes } from './protocol';
 import type {
   ConformanceRuntime,
   FixtureCatalog,
@@ -22,6 +23,9 @@ if (!catalogResponse.ok) throw new Error(`Fixture catalog unavailable: ${catalog
 const catalog = (await catalogResponse.json()) as FixtureCatalog;
 const fixture = catalog.fixtures.find((candidate) => candidate.id === fixtureId);
 if (!fixture) throw new Error(`Unknown fixture: ${fixtureId}`);
+for (const [name, value] of Object.entries(fixtureRootAttributes(fixture))) {
+  target.setAttribute(name, value);
+}
 
 // The page chooses one framework at runtime; static imports would bundle all five runtimes together.
 const adapterModule = (await import(`./adapters/${framework}.ts`)) as {

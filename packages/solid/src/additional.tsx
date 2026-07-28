@@ -9,7 +9,9 @@ import {
   splitProps,
   type JSX,
 } from 'solid-js';
+import { selectRecipe, tabRecipe } from '@krds-community/recipes';
 import type {
+  InputState,
   KrdsAdditionalProps,
   KrdsCarouselSlide,
   KrdsListItem,
@@ -17,8 +19,8 @@ import type {
   KrdsOption,
   KrdsStep,
   KrdsTableColumn,
-  KrdsTableRow,
   KrdsTabItem,
+  SelectRecipeSize,
   KrdsTone,
 } from '@krds-community/recipes';
 
@@ -58,6 +60,11 @@ const padCalendarPart = (value: number) => String(value).padStart(2, '0');
 export interface TableColumn extends KrdsTableColumn {
   width?: string;
   visuallyHidden?: boolean;
+}
+export interface TableRow extends Record<string, string | number | boolean | undefined> {
+  id?: string | number;
+  selected?: boolean;
+  selectionLabel?: string;
 }
 export interface TablePagination {
   current: number;
@@ -200,6 +207,7 @@ export type AdditionalProps = Omit<KrdsAdditionalProps, 'className' | 'items' | 
     external?: boolean;
     removable?: boolean;
     maxLength?: number;
+    countSuffix?: string;
     ordered?: boolean;
     caption?: string;
     previousLabel?: string;
@@ -288,7 +296,7 @@ export type AdditionalProps = Omit<KrdsAdditionalProps, 'className' | 'items' | 
     sortOptions?: string[];
     sortValue?: string;
     columns?: TableColumn[];
-    rows?: Record<string, string | number | boolean>[];
+    rows?: TableRow[];
     pagination?: TablePagination;
     relatedSites?: MenuItem[];
     logoLabel?: string;
@@ -309,6 +317,7 @@ export type AdditionalProps = Omit<KrdsAdditionalProps, 'className' | 'items' | 
     myMenu?: HeaderMyMenu;
     mobileMenu?: HeaderMobileMenu;
     navigationRole?: JSX.HTMLAttributes<HTMLElement>['role'] | false;
+    navigationLabel?: string;
     bottomSize?: 'small' | 'medium';
     cancelLabel?: string;
     confirmLabel?: string;
@@ -380,7 +389,7 @@ export function createAdditional(defaultKind: string) {
         panels: {} as Record<string, string>,
         steps: [] as KrdsStep[],
         columns: [] as KrdsTableColumn[],
-        rows: [] as KrdsTableRow[],
+        rows: [] as TableRow[],
       },
       rawProps,
     );
@@ -538,6 +547,7 @@ export function createAdditional(defaultKind: string) {
       'selectLabel',
       'currentCount',
       'maxCount',
+      'countSuffix',
       'files',
       'deleteAllLabel',
       'desktopItems',
@@ -548,6 +558,7 @@ export function createAdditional(defaultKind: string) {
       'myMenu',
       'mobileMenu',
       'navigationRole',
+      'navigationLabel',
       'bottomSize',
       'cancelLabel',
       'confirmLabel',
@@ -555,6 +566,7 @@ export function createAdditional(defaultKind: string) {
       'className',
       'children',
     ]);
+    const [selectRefProps, nativeSelectProps] = splitProps(native, ['ref']);
     const [localOpen, setLocalOpen] = createSignal(false);
     const open = () => (props.open === undefined ? localOpen() : Boolean(props.open));
     const setOpen = (next: boolean) => {
@@ -575,7 +587,7 @@ export function createAdditional(defaultKind: string) {
     const setSelected = (next: string) => {
       if (props.modelValue === undefined) setLocalSelected(next);
     };
-    const [localIndex, setLocalIndex] = createSignal(0);
+    const [localIndex, setLocalIndex] = createSignal<number>();
     const index = () =>
       props.current === undefined
         ? localIndex()
@@ -626,12 +638,14 @@ export function createAdditional(defaultKind: string) {
     const [activeMobileDepth3, setActiveMobileDepth3] = createSignal<string>();
     const [activeMobileDepth4, setActiveMobileDepth4] = createSignal<string>();
     let modalRoot: HTMLElement | undefined;
+    let uploadInput: HTMLInputElement | undefined;
     let headerMobileTrigger: HTMLButtonElement | undefined;
     let headerMobileMenu: HTMLElement | undefined;
     let mobileMenuRoot: HTMLElement | undefined;
     let mobileDepth4Trigger: HTMLAnchorElement | undefined;
     let restoreFocus: HTMLElement | undefined;
     let wasFocusSurfaceOpen = false;
+    let hasObservedModalState = false;
     const invokeHandler = (handler: unknown, event: Event) => {
       if (typeof handler === 'function') handler(event);
       else if (Array.isArray(handler) && typeof handler[0] === 'function')
@@ -736,6 +750,56 @@ export function createAdditional(defaultKind: string) {
     const className = () => props.class ?? props.className ?? '';
     const content = () => props.children ?? props.label;
     const optionItems = () => props.languages ?? props.options;
+    const selectControlClass = () => {
+      const currentKind = kind();
+      if (currentKind === 'select-sorting') {
+        return selectRecipe({
+          variant: 'sorting',
+          state: props.state === 'error' ? 'error' : 'default',
+        }).control;
+      }
+      return selectRecipe({
+        variant:
+          currentKind === 'select-size'
+            ? 'size'
+            : currentKind === 'select-state'
+              ? 'state'
+              : 'default',
+        size: props.size as SelectRecipeSize | undefined,
+        state: props.state as InputState | undefined,
+      }).control;
+    };
+    const selectMessage = () =>
+      props.state === 'error' ? (props.error ?? props.hint) : props.hint;
+    const selectDescribedBy = () => {
+      const descriptionId = selectMessage() ? `${props.id}-hint` : undefined;
+      const consumerDescription = native['aria-describedby'];
+      if (typeof consumerDescription !== 'string' || consumerDescription.length === 0)
+        return descriptionId;
+      return descriptionId ? `${consumerDescription} ${descriptionId}` : consumerDescription;
+    };
+    const selectHintClass = () => {
+      if (props.state === 'error') return 'form-hint-invalid';
+      if (props.state === 'success') return 'form-hint-success';
+      if (props.state === 'information') return 'form-hint-information';
+      return 'form-hint';
+    };
+    const bindSelect = (element: HTMLSelectElement) => {
+      const callerRef = selectRefProps.ref;
+      if (typeof callerRef === 'function') callerRef(element);
+      createEffect(() => {
+        const controlledValue = props.value;
+        element.value =
+          controlledValue === undefined ? selected() : String(controlledValue);
+      });
+    };
+    const updateSelect = (
+      event: Event & { currentTarget: HTMLSelectElement; target: HTMLSelectElement },
+    ) => {
+      if (props.value === undefined) setSelected(event.currentTarget.value);
+      invokeHandler(native.onChange, event);
+    };
+    const tabClasses = (active?: boolean) => tabRecipe({ full: true, active });
     const navigation = () =>
       (props.nav?.length
         ? props.nav
@@ -756,19 +820,22 @@ export function createAdditional(defaultKind: string) {
       if (child.active !== undefined) return child.active;
       return !props.sample && childIndex === 0;
     };
-    const mobileTabId = () =>
-      props.selected ??
-      localMobileTab() ??
-      (navigation() as MenuItem[])[0]?.id ??
-      '';
-    const moveSlide = (delta: number) => {
-      const count = props.slides.length;
-      if (count > 0) setIndex((index() + delta + count) % count);
+    const mobileTabIsActive = (item: MenuItem, itemIndex: number) => {
+      const selectedTab = props.selected ?? localMobileTab();
+      if (typeof selectedTab === 'string' && selectedTab.length > 0)
+        return selectedTab === item.id;
+      const configuredTab = (navigation() as MenuItem[]).find((candidate) => candidate.active);
+      return configuredTab ? configuredTab === item : !props.sample && itemIndex === 0;
     };
     const currentSlideIndex = () => {
       const count = props.slides.length;
-      if (count === 0) return -1;
-      return ((index() % count) + count) % count;
+      const current = index();
+      if (count === 0 || current === undefined) return undefined;
+      return ((current % count) + count) % count;
+    };
+    const moveSlide = (delta: number) => {
+      const count = props.slides.length;
+      if (count > 0) setIndex(((currentSlideIndex() ?? 0) + delta + count) % count);
     };
     const paginationPage = () => {
       const page = Number(props.modelValue ?? props.current ?? selected());
@@ -1089,12 +1156,6 @@ export function createAdditional(defaultKind: string) {
                                 <button
                                   type="button"
                                   class="btn-set-date"
-                                  ref={(element) => {
-                                    if (day.disabled)
-                                      queueMicrotask(() =>
-                                        element.setAttribute('disabled', 'true'),
-                                      );
-                                  }}
                                   disabled={day.disabled}
                                   aria-pressed={pressed ? 'true' : undefined}
                                   aria-label={ariaLabel}
@@ -1147,6 +1208,14 @@ export function createAdditional(defaultKind: string) {
       )
         return;
       const currentOpen = open();
+      if (
+        (currentKind === 'modal' || currentKind === 'modal-sample') &&
+        !hasObservedModalState
+      ) {
+        hasObservedModalState = true;
+        wasFocusSurfaceOpen = currentOpen;
+        return;
+      }
       const focusSurface = currentKind === 'header' ? headerMobileMenu : modalRoot;
       if (currentOpen && !wasFocusSurfaceOpen) {
         if (typeof document !== 'undefined') {
@@ -1315,19 +1384,26 @@ export function createAdditional(defaultKind: string) {
                     <li
                       class="swiper-slide"
                       classList={{
-                        'swiper-slide-active': slideIndex() === currentSlideIndex(),
+                        'swiper-slide-active':
+                          currentSlideIndex() !== undefined &&
+                          slideIndex() === currentSlideIndex(),
                         'swiper-slide-prev':
+                          currentSlideIndex() !== undefined &&
                           props.slides.length > 1 &&
                           slideIndex() ===
-                            (currentSlideIndex() - 1 + props.slides.length) %
+                            ((currentSlideIndex() ?? 0) - 1 + props.slides.length) %
                               props.slides.length,
                         'swiper-slide-next':
+                          currentSlideIndex() !== undefined &&
                           props.slides.length > 1 &&
                           slideIndex() ===
-                            (currentSlideIndex() + 1) % props.slides.length,
+                            ((currentSlideIndex() ?? 0) + 1) % props.slides.length,
                       }}
                       aria-current={
-                        slideIndex() === currentSlideIndex() ? 'true' : undefined
+                        currentSlideIndex() !== undefined &&
+                        slideIndex() === currentSlideIndex()
+                          ? 'true'
+                          : undefined
                       }
                     >
                       <div class="in">
@@ -1393,19 +1469,26 @@ export function createAdditional(defaultKind: string) {
                 <li
                   class="swiper-slide"
                   classList={{
-                    'swiper-slide-active': slideIndex() === currentSlideIndex(),
+                    'swiper-slide-active':
+                      currentSlideIndex() !== undefined &&
+                      slideIndex() === currentSlideIndex(),
                     'swiper-slide-prev':
+                      currentSlideIndex() !== undefined &&
                       props.slides.length > 1 &&
                       slideIndex() ===
-                        (currentSlideIndex() - 1 + props.slides.length) %
+                        ((currentSlideIndex() ?? 0) - 1 + props.slides.length) %
                           props.slides.length,
                     'swiper-slide-next':
+                      currentSlideIndex() !== undefined &&
                       props.slides.length > 1 &&
                       slideIndex() ===
-                        (currentSlideIndex() + 1) % props.slides.length,
+                        ((currentSlideIndex() ?? 0) + 1) % props.slides.length,
                   }}
                   aria-current={
-                    slideIndex() === currentSlideIndex() ? 'true' : undefined
+                    currentSlideIndex() !== undefined &&
+                    slideIndex() === currentSlideIndex()
+                      ? 'true'
+                      : undefined
                   }
                 >
                   <div class="text">
@@ -1499,7 +1582,38 @@ export function createAdditional(defaultKind: string) {
           {content()}
         </label>
       </div>
-    ) : kind() === 'checkbox-size' || kind() === 'radio-size' ? (
+    ) : kind() === 'radio-size' ? (
+      <div class="krds-check-area">
+        <div
+          class={[
+            'krds-form-check',
+            props.size ?? 'medium',
+            className(),
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          <input
+            {...(native as Record<string, unknown>)}
+            id={props.id}
+            type="radio"
+            name={props.name}
+            checked={checked()}
+            disabled={props.disabled}
+            onChange={updateChecked}
+          />
+          <label for={props.id}>{content()}</label>
+        </div>
+        <div class="krds-form-check large">
+          <input
+            id={`${props.id}-large`}
+            type="radio"
+            name={props.name}
+          />
+          <label for={`${props.id}-large`}>사이즈 : large</label>
+        </div>
+      </div>
+    ) : kind() === 'checkbox-size' ? (
       <div
         class={[
           'krds-form-check',
@@ -1512,7 +1626,7 @@ export function createAdditional(defaultKind: string) {
         <input
           {...(native as Record<string, unknown>)}
           id={props.id}
-          type={kind() === 'radio-size' ? 'radio' : 'checkbox'}
+          type="checkbox"
           name={props.name}
           checked={checked()}
           disabled={props.disabled}
@@ -1520,8 +1634,7 @@ export function createAdditional(defaultKind: string) {
         />
         <label for={props.id}>{content()}</label>
       </div>
-    )
-    : kind() === 'coach-mark' ? (
+    ) : kind() === 'coach-mark' ? (
       <div
         {...(native as Record<string, unknown>)}
         hidden={props.open === false}
@@ -1571,7 +1684,12 @@ export function createAdditional(defaultKind: string) {
             <span class="sr-only">{props.label}</span>
             <i class="svg-icon ico-tooltip" />
           </button>
-          <div id={`${props.id}-popover`} class="tooltip-popover" role="tooltip" hidden={!open()}>
+          <div
+            id={`${props.id}-popover`}
+            class="tooltip-popover"
+            role="tooltip"
+            style={{ display: open() ? 'block' : undefined }}
+          >
             <h4 class="tooltip-title">{props.title}</h4>
             <div class="tooltip-contents">
               <p>{props.description ?? children()}</p>
@@ -1598,10 +1716,10 @@ export function createAdditional(defaultKind: string) {
     ) : kind() === 'critical-alerts' ? (
       <div
         {...(native as Record<string, unknown>)}
-        class={`krds-critical-alerts${className() ? ` ${className()}` : ''}`}
+        class={`main-urgent-wrap${className() ? ` ${className()}` : ''}`}
         role="alert"
       >
-        <ul>
+        <ul class="krds-critical-alerts">
           <For each={props.items}>
             {(item) => {
               const alert = () =>
@@ -1620,6 +1738,7 @@ export function createAdditional(defaultKind: string) {
                     <Show when={href()}>
                       <a class="krds-btn medium basic link" href={href()}>
                         <span class="m-hide">{alert()?.linkLabel ?? props.actionLabel}</span>
+                        {' '}
                         <i class="svg-icon ico-angle right" />
                       </a>
                     </Show>
@@ -1697,6 +1816,9 @@ export function createAdditional(defaultKind: string) {
           <p class="txt">{props.prompt}</p>
           <div class="file-upload-btn-wrap">
             <input
+              ref={(element) => {
+                uploadInput = element;
+              }}
               hidden
               id={props.inputId}
               name={props.name}
@@ -1710,16 +1832,22 @@ export function createAdditional(defaultKind: string) {
                 invokeHandler(native.onChange, event);
               }}
             />
-            <label for={props.inputId}>
-              <button type="button" class="krds-btn medium">
-                <i class="svg-icon ico-upload" />
-                {props.selectLabel}
-              </button>
-            </label>
+            <button
+              type="button"
+              class="krds-btn medium"
+              disabled={props.disabled}
+              onClick={() => uploadInput?.click()}
+            >
+              <i class="svg-icon ico-upload" />
+              {props.selectLabel}
+            </button>
           </div>
         </div>
         <div class="file-list">
-          <div class="total"><span class="current">{props.currentCount}개</span> / {props.maxCount}개</div>
+          <div class="total">
+            <span class="current">{`${props.currentCount}${props.countSuffix ?? '개'}`}</span>
+            {` / ${props.maxCount}${props.countSuffix ?? '개'}`}
+          </div>
           <ul class="upload-list">
             <For each={props.files}>
               {(file) => (
@@ -1743,16 +1871,19 @@ export function createAdditional(defaultKind: string) {
                       <Show when={file.status === 'deletable' || file.status === 'error'}>
                         <button type="button" class="krds-btn medium text">
                           {file.deleteLabel}
+                          {' '}
                           <i class="svg-icon ico-delete-fill" />
                         </button>
                       </Show>
                       <Show when={file.status === 'downloadable'}>
                         <button type="button" class="krds-btn medium text">
                           {file.downloadLabel}
+                          {' '}
                           <i class="svg-icon ico-down" />
                         </button>
                         <button type="button" class="krds-btn medium text">
                           {file.previewLabel}
+                          {' '}
                           <i class="svg-icon ico-angle right" />
                         </button>
                       </Show>
@@ -1817,6 +1948,7 @@ export function createAdditional(defaultKind: string) {
                   {(item) => (
                     <a href={item.href ?? '#'} class="krds-btn medium text">
                       {item.label}
+                      {' '}
                       <i class="svg-icon ico-angle right" />
                     </a>
                   )}
@@ -1896,7 +2028,7 @@ export function createAdditional(defaultKind: string) {
               <div class="header-utility">
                 <ul class="utility-list">
                   <For each={props.utilityItems}>
-                    {(item, itemIndex) => (
+                    {(item) => (
                       <li>
                         <Show
                           when={item.kind === 'link'}
@@ -1910,18 +2042,16 @@ export function createAdditional(defaultKind: string) {
                                 class="krds-btn small text drop-btn"
                                 classList={{ active: activeHeaderDropdown() === item.id }}
                                 aria-expanded={activeHeaderDropdown() === item.id}
-                                aria-controls={`${props.id}-utility-${item.id ?? itemIndex()}-menu`}
                                 onClick={() =>
                                   setActiveHeaderDropdown((current) =>
                                     current === item.id ? undefined : item.id,
                                   )
                                 }
                               >
-                                {item.label}
+                                {`${item.label} `}
                                 <i class="svg-icon ico-toggle" />
                               </button>
                               <div
-                                id={`${props.id}-utility-${item.id ?? itemIndex()}-menu`}
                                 class="drop-menu"
                                 style={
                                   activeHeaderDropdown() === item.id
@@ -1971,6 +2101,7 @@ export function createAdditional(defaultKind: string) {
                                     <div class="drop-bottom">
                                       <button type="button" class="krds-btn medium text">
                                         <i class="svg-icon ico-reset" />
+                                        {' '}
                                         {item.resetLabel}
                                       </button>
                                     </div>
@@ -1986,7 +2117,7 @@ export function createAdditional(defaultKind: string) {
                             target={item.target}
                             title={item.title}
                           >
-                            {item.label}
+                            {`${item.label} `}
                             <i class="svg-icon ico-go" />
                           </a>
                         </Show>
@@ -2006,7 +2137,6 @@ export function createAdditional(defaultKind: string) {
                     type="button"
                     class="btn-navi sch"
                     title={props.searchTitle}
-                    aria-label={props.searchLabel ?? props.searchTitle}
                   >
                     {props.searchLabel}
                   </button>
@@ -2017,7 +2147,6 @@ export function createAdditional(defaultKind: string) {
                       type="button"
                       class="btn-navi my drop-btn"
                       aria-expanded={activeHeaderDropdown() === 'header-my-menu'}
-                      aria-controls={`${props.id}-my-menu`}
                       onClick={() =>
                         setActiveHeaderDropdown((current) =>
                           current === 'header-my-menu' ? undefined : 'header-my-menu',
@@ -2027,7 +2156,6 @@ export function createAdditional(defaultKind: string) {
                       {props.myMenu?.label}
                     </button>
                     <div
-                      id={`${props.id}-my-menu`}
                       class="drop-menu"
                       style={
                         activeHeaderDropdown() === 'header-my-menu'
@@ -2063,6 +2191,7 @@ export function createAdditional(defaultKind: string) {
                         <div class="drop-bottom">
                           <button type="button" class="krds-btn medium text">
                             <i class="svg-icon ico-logout" />
+                            {' '}
                             {props.myMenu?.logoutLabel}
                           </button>
                         </div>
@@ -2076,7 +2205,6 @@ export function createAdditional(defaultKind: string) {
                     type="button"
                     class="btn-navi all"
                     aria-controls="mobile-nav"
-                    aria-expanded={open()}
                     onClick={() => setOpen(!open())}
                   >
                     {props.allMenuLabel}
@@ -2126,7 +2254,9 @@ export function createAdditional(defaultKind: string) {
           mobileMenuRoot = element;
         }}
         id={props.id}
-        class={['krds-main-menu-mobile', className()].filter(Boolean).join(' ')}
+        class={['krds-main-menu-mobile', props.sample && 'sample', className()]
+          .filter(Boolean)
+          .join(' ')}
         classList={{
           'is-backdrop': props.open === true,
           'is-open': props.open === true,
@@ -2135,6 +2265,7 @@ export function createAdditional(defaultKind: string) {
         onClick={(event) => {
           invokeHandler(native.onClick, event);
           if (
+            !props.sample &&
             props.open === true &&
             !(event.target as Element).closest('.gnb-wrap')
           ) {
@@ -2143,6 +2274,7 @@ export function createAdditional(defaultKind: string) {
         }}
         onKeyDown={(event) => {
           invokeHandler(native.onKeyDown, event);
+          if (props.sample) return;
           if (event.defaultPrevented) return;
           if (event.key === 'Escape' || event.key === 'Esc') {
             event.preventDefault();
@@ -2158,7 +2290,7 @@ export function createAdditional(defaultKind: string) {
           if (focusSurface) trapTabFocus(event, focusSurface);
         }}
       >
-        <div class="gnb-wrap" tabIndex={props.open === true ? 0 : undefined}>
+        <div class="gnb-wrap" tabIndex={!props.sample && props.open === true ? 0 : undefined}>
           <div class="gnb-header">
             <div class="gnb-utils">
               <ul class="utility-list">
@@ -2176,6 +2308,7 @@ export function createAdditional(defaultKind: string) {
             <div class="gnb-login">
               <button type="button" class="krds-btn large text">
                 <i class="svg-icon ico-log" />
+                {' '}
                 {props.loginLabel}
               </button>
             </div>
@@ -2194,7 +2327,6 @@ export function createAdditional(defaultKind: string) {
                 class="krds-input"
                 placeholder={props.searchPlaceholder}
                 title={props.searchTitle}
-                aria-label={props.searchLabel ?? props.searchTitle ?? props.searchPlaceholder}
               />
               <button type="button" class="krds-btn medium icon ico-search">
                 <span class="sr-only">{props.searchLabel}</span>
@@ -2205,23 +2337,31 @@ export function createAdditional(defaultKind: string) {
           <div class="gnb-body">
             <div class="gnb-menu">
               <div class="menu-wrap">
-                <ul role="tablist">
+                <ul role={props.sample ? undefined : 'tablist'}>
                   <For each={navigation() as MenuItem[]}>
                     {(item, itemIndex) => (
-                      <li role="none">
+                      <li role={props.sample ? undefined : 'none'}>
                         <a
-                          id={`${props.id}-tab-${itemIndex()}`}
+                          id={props.sample ? undefined : `tab-${itemIndex()}`}
+                          role={props.sample ? undefined : 'tab'}
+                          aria-selected={
+                            props.sample ? undefined : mobileTabIsActive(item, itemIndex())
+                          }
+                          aria-controls={props.sample ? undefined : item.id}
                           href={`#${item.id}`}
                           class="gnb-main-trigger"
-                          classList={{ active: mobileTabId() === item.id }}
-                          role="tab"
-                          aria-selected={mobileTabId() === item.id}
-                          aria-controls={item.id}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            setLocalMobileTab(item.id);
-                            invokeHandler(native.onChange, event);
+                          classList={{
+                            active: mobileTabIsActive(item, itemIndex()),
                           }}
+                          onClick={
+                            props.sample
+                              ? undefined
+                              : (event) => {
+                                  event.preventDefault();
+                                  setLocalMobileTab(item.id);
+                                  invokeHandler(native.onChange, event);
+                                }
+                          }
                         >
                           {item.label}
                         </a>
@@ -2236,8 +2376,8 @@ export function createAdditional(defaultKind: string) {
                     <div
                       class="gnb-sub-list"
                       id={item.id}
-                      role="tabpanel"
-                      aria-labelledby={`${props.id}-tab-${itemIndex()}`}
+                      role={props.sample ? undefined : 'tabpanel'}
+                      aria-labelledby={props.sample ? undefined : `tab-${itemIndex()}`}
                     >
                       <h2 class="sub-title">{item.label}</h2>
                       <ul>
@@ -2254,26 +2394,26 @@ export function createAdditional(defaultKind: string) {
                                     active: depth3Open(),
                                   }}
                                   aria-expanded={
-                                    child.children?.length ? depth3Open() : undefined
-                                  }
-                                  aria-controls={
-                                    child.children?.length
-                                      ? `${props.id}-depth3-${child.id}`
+                                    !props.sample && child.children?.length
+                                      ? depth3Open()
                                       : undefined
                                   }
-                                  onClick={(event) => {
-                                    if (!child.children?.length) return;
-                                    event.preventDefault();
-                                    setActiveMobileDepth3((current) =>
-                                      current === child.id ? undefined : child.id,
-                                    );
-                                  }}
+                                  onClick={
+                                    props.sample
+                                      ? undefined
+                                      : (event) => {
+                                          if (!child.children?.length) return;
+                                          event.preventDefault();
+                                          setActiveMobileDepth3((current) =>
+                                            current === child.id ? undefined : child.id,
+                                          );
+                                        }
+                                  }
                                 >
                                   {child.label}
                                 </a>
                                 <Show when={child.children?.length}>
                                   <div
-                                    id={`${props.id}-depth3-${child.id}`}
                                     class="depth3-wrap"
                                     classList={{ 'is-open': depth3Open() }}
                                   >
@@ -2287,19 +2427,23 @@ export function createAdditional(defaultKind: string) {
                                               classList={{
                                                 'has-depth4': Boolean(depth3.children?.length),
                                               }}
-                                              onClick={(event) => {
-                                                if (!depth3.children?.length) return;
-                                                event.preventDefault();
-                                                mobileDepth4Trigger = event.currentTarget;
-                                                setActiveMobileDepth4(depth3.id);
-                                                queueMicrotask(() => {
-                                                  mobileMenuRoot
-                                                    ?.querySelector<HTMLButtonElement>(
-                                                      '.depth4-wrap.is-open .trigger-prev',
-                                                    )
-                                                    ?.focus();
-                                                });
-                                              }}
+                                              onClick={
+                                                props.sample
+                                                  ? undefined
+                                                  : (event) => {
+                                                      if (!depth3.children?.length) return;
+                                                      event.preventDefault();
+                                                      mobileDepth4Trigger = event.currentTarget;
+                                                      setActiveMobileDepth4(depth3.id);
+                                                      queueMicrotask(() => {
+                                                        mobileMenuRoot
+                                                          ?.querySelector<HTMLButtonElement>(
+                                                            '.depth4-wrap.is-open .trigger-prev',
+                                                          )
+                                                          ?.focus();
+                                                      });
+                                                    }
+                                              }
                                             >
                                               {depth3.label}
                                             </a>
@@ -2320,7 +2464,7 @@ export function createAdditional(defaultKind: string) {
                                                   <button
                                                     type="button"
                                                     class="krds-btn icon trigger-prev"
-                                                    onClick={closeMobileDepth4}
+                                                    onClick={props.sample ? undefined : closeMobileDepth4}
                                                   >
                                                     <span class="sr-only">
                                                       {props.previousLabel}
@@ -2330,7 +2474,7 @@ export function createAdditional(defaultKind: string) {
                                                   <button
                                                     type="button"
                                                     class="krds-btn icon trigger-close"
-                                                    onClick={closeMobileDepth4}
+                                                    onClick={props.sample ? undefined : closeMobileDepth4}
                                                   >
                                                     <span class="sr-only">
                                                       {props.closeLabel}
@@ -2380,6 +2524,7 @@ export function createAdditional(defaultKind: string) {
                     title={item.title}
                   >
                     {item.label}
+                    {' '}
                     <i class={item.target ? 'svg-icon ico-go' : 'svg-icon ico-angle right'} />
                   </a>
                 )}
@@ -2389,8 +2534,8 @@ export function createAdditional(defaultKind: string) {
           <button
             type="button"
             class="krds-btn medium icon"
-            id={props.id === 'mobile-nav' ? 'close-nav' : `${props.id}-close`}
-            onClick={closeMobileMenu}
+            id={props.sample || props.id === 'mobile-nav' ? 'close-nav' : `${props.id}-close`}
+            onClick={props.sample ? undefined : closeMobileMenu}
           >
             <span class="sr-only">{props.closeLabel}</span>
             <i class="svg-icon ico-popup-close" />
@@ -2400,16 +2545,22 @@ export function createAdditional(defaultKind: string) {
     ) : kind() === 'main-menu-pc' ? (
       <nav
         {...(native as Record<string, unknown>)}
-        class={['krds-main-menu', className()].filter(Boolean).join(' ')}
+        class={['krds-main-menu', props.sample && 'sample', className()]
+          .filter(Boolean)
+          .join(' ')}
         onFocusOut={(event) => {
           invokeHandler(native.onFocusOut, event);
-          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          if (
+            !props.sample &&
+            !event.currentTarget.contains(event.relatedTarget as Node | null)
+          ) {
             setLocalMainMenu(false);
           }
         }}
         onKeyUp={(event) => {
           invokeHandler(native.onKeyUp, event);
           if (
+            !props.sample &&
             !event.defaultPrevented &&
             (event.key === 'Escape' || event.key === 'Esc')
           ) {
@@ -2418,7 +2569,7 @@ export function createAdditional(defaultKind: string) {
         }}
         onKeyDown={(event) => {
           invokeHandler(native.onKeyDown, event);
-          if (event.defaultPrevented) return;
+          if (props.sample || event.defaultPrevented) return;
           const target = event.target as HTMLElement;
           if (!target.matches('[data-trigger="gnb"]')) return;
           const mainTriggers = Array.from(
@@ -2445,9 +2596,12 @@ export function createAdditional(defaultKind: string) {
         }}
       >
         <div class="inner">
-          <ul class="gnb-menu" aria-label={props.menuLabel}>
+          <ul
+            class="gnb-menu"
+            aria-label={props.sample ? undefined : props.menuLabel}
+          >
             <For each={navigation() as MenuItem[]}>
-              {(item) => (
+              {(item, itemIndex) => (
                 <li>
                   <Show
                     when={!item.href && !item.button}
@@ -2474,23 +2628,28 @@ export function createAdditional(defaultKind: string) {
                       class="gnb-main-trigger"
                       classList={{ active: mainMenuIsActive(item) }}
                       data-trigger="gnb"
-                      aria-controls={`${props.id}-main-${item.id}`}
-                      aria-expanded={mainMenuIsActive(item)}
-                      aria-haspopup="true"
-                      onClick={() =>
-                        setLocalMainMenu((current) =>
-                          current === item.id || (current === undefined && item.active)
-                            ? false
-                            : item.id,
-                        )
+                      aria-controls={
+                        props.sample ? undefined : `${props.id}-main-${itemIndex()}`
+                      }
+                      aria-expanded={props.sample ? undefined : mainMenuIsActive(item)}
+                      aria-haspopup={props.sample ? undefined : 'true'}
+                      onClick={
+                        props.sample
+                          ? undefined
+                          : () =>
+                              setLocalMainMenu((current) =>
+                                current === item.id || (current === undefined && item.active)
+                                  ? false
+                                  : item.id,
+                              )
                       }
                     >
                       {item.label}
                     </button>
                     <div
-                      id={`${props.id}-main-${item.id}`}
                       class="gnb-toggle-wrap"
                       classList={{ 'is-open': mainMenuIsActive(item) }}
+                      id={props.sample ? undefined : `${props.id}-main-${itemIndex()}`}
                     >
                       <div
                         class="gnb-main-list"
@@ -2531,24 +2690,34 @@ export function createAdditional(defaultKind: string) {
                                           active: subMenuIsActive(item, child, childIndex()),
                                         }}
                                         data-trigger="gnb"
-                                        aria-controls={`${props.id}-sub-${child.id}`}
-                                        aria-expanded={subMenuIsActive(item, child, childIndex())}
-                                        aria-haspopup="true"
-                                        onClick={() =>
-                                          setLocalSubMenu({
-                                            ...(item.id === undefined
-                                              ? {}
-                                              : { parentId: item.id }),
-                                            ...(child.id === undefined
-                                              ? {}
-                                              : { childId: child.id }),
-                                          })
+                                        aria-controls={
+                                          props.sample
+                                            ? undefined
+                                            : `${props.id}-sub-${itemIndex()}-${childIndex()}`
+                                        }
+                                        aria-expanded={
+                                          props.sample
+                                            ? undefined
+                                            : subMenuIsActive(item, child, childIndex())
+                                        }
+                                        aria-haspopup={props.sample ? undefined : 'true'}
+                                        onClick={
+                                          props.sample
+                                            ? undefined
+                                            : () =>
+                                                setLocalSubMenu({
+                                                  ...(item.id === undefined
+                                                    ? {}
+                                                    : { parentId: item.id }),
+                                                  ...(child.id === undefined
+                                                    ? {}
+                                                    : { childId: child.id }),
+                                                })
                                         }
                                       >
                                         {child.label}
                                       </button>
                                       <div
-                                        id={`${props.id}-sub-${child.id}`}
                                         class="gnb-sub-list"
                                         classList={{
                                           active: subMenuIsActive(item, child, childIndex()),
@@ -2556,16 +2725,19 @@ export function createAdditional(defaultKind: string) {
                                             !subMenuIsActive(item, child, childIndex()) &&
                                             childIndex() > 0,
                                         }}
+                                        id={
+                                          props.sample
+                                            ? undefined
+                                            : `${props.id}-sub-${itemIndex()}-${childIndex()}`
+                                        }
                                       >
                                         <div class="gnb-sub-content">
                                           <h2 class="sub-title">
                                             <Show
-                                              when={child.descriptionItems?.length}
-                                              fallback={child.title}
+                                              when={child.titleHref}
+                                              fallback={<span>{child.title}</span>}
                                             >
-                                              <span>{child.title}</span>
-                                            </Show>
-                                            <Show when={child.titleHref}>
+                                              {child.title}
                                               <a
                                                 href={child.titleHref}
                                                 class="krds-btn link basic small"
@@ -2684,7 +2856,7 @@ export function createAdditional(defaultKind: string) {
                         return props.activeTab === 'tutorial' ? tabIndex() === 1 : tabIndex() === 0;
                       };
                       return (
-                        <li role="none" classList={{ active: active() }}>
+                        <li role="presentation" classList={{ active: active() }}>
                           <button
                             id={tab.id}
                             type="button"
@@ -2730,6 +2902,7 @@ export function createAdditional(defaultKind: string) {
                         aria-labelledby={tab.id}
                         class="tab-conts"
                         classList={{ active: active() }}
+                        hidden={!active()}
                       >
                         <h3 class="sr-only">{tab.label}</h3>
                         <div class="help-conts-area-inner">
@@ -2748,20 +2921,29 @@ export function createAdditional(defaultKind: string) {
                                   </h4>
                                   <ul class="coach-help-process">
                                     <For each={props.tasks}>
-                                      {(task) => (
+                                      {(task, taskIndex) => (
                                         <li>
                                           <h4 class="tit" classList={{ current: task.current }}>
                                             {task.title}
                                           </h4>
                                           <div class="krds-disclosure conts-expand-area">
-                                            <button type="button" class="btn-conts-expand">
+                                            <button
+                                              type="button"
+                                              class="btn-conts-expand"
+                                              aria-expanded="false"
+                                              aria-controls={`${props.id}-help-disclosure-${taskIndex()}`}
+                                            >
                                               {task.summary}
                                             </button>
-                                            <div class="expand-wrap">
+                                            <div
+                                              id={`${props.id}-help-disclosure-${taskIndex()}`}
+                                              class="expand-wrap"
+                                              ref={(element) => element.setAttribute('inert', '')}
+                                            >
                                               <div class="expand-in">
-                                                <ul class="krds-info-list decimal">
+                                                <ul class="krds-info-list decimal" role="list">
                                                   <For each={task.steps}>
-                                                    {(step) => <li>{step}</li>}
+                                                    {(step) => <li role="listitem">{step}</li>}
                                                   </For>
                                                 </ul>
                                               </div>
@@ -2783,7 +2965,7 @@ export function createAdditional(defaultKind: string) {
                             <div class="conts-area help-conts">
                               <div class="conts-wrap">
                                 <h4 class="help-title">
-                                  {props.helpTitle}
+                                  {props.helpTitle === undefined ? undefined : `${props.helpTitle} `}
                                   <span class="krds-btn medium icon">
                                     <span class="sr-only">{props.title}</span>
                                     <i class="svg-icon ico-help" />
@@ -2800,7 +2982,7 @@ export function createAdditional(defaultKind: string) {
                                           title={link.title ?? props.externalTitle}
                                           class="krds-btn xsmall link basic"
                                         >
-                                          {link.label}
+                                          {`${link.label} `}
                                           <i class="svg-icon ico-go" />
                                         </a>
                                       </li>
@@ -2826,9 +3008,15 @@ export function createAdditional(defaultKind: string) {
                                                 class="krds-btn xsmall link basic"
                                               >
                                                 <Show when={leadingIcon()}>
-                                                  <i class={`svg-icon ${link.icon}`} />
+                                                  <i
+                                                    class={`svg-icon ${
+                                                      link.icon?.startsWith('ico-')
+                                                        ? link.icon
+                                                        : `ico-${link.icon}`
+                                                    }`}
+                                                  />
                                                 </Show>
-                                                {link.label}
+                                                {leadingIcon() ? ` ${link.label}` : `${link.label} `}
                                                 <Show when={!leadingIcon()}>
                                                   <i class={`svg-icon ${link.icon ?? 'ico-angle right'}`} />
                                                 </Show>
@@ -2856,7 +3044,7 @@ export function createAdditional(defaultKind: string) {
               onClick={() => setOpen(false)}
             >
               <span class="sr-only">{props.title}</span>
-              {props.collapseLabel}
+              {props.collapseLabel === undefined ? undefined : ` ${props.collapseLabel} `}
               <i class="svg-icon ico-angle right" />
             </button>
           </div>
@@ -2873,30 +3061,32 @@ export function createAdditional(defaultKind: string) {
         <span class="ban-txt">{props.description ?? children()}</span>
       </div>
     ) : kind() === 'in-page-navigation' ? (
-      <div
-        {...(native as Record<string, unknown>)}
-        class={`krds-in-page-navigation-area${className() ? ` ${className()}` : ''}`}
-      >
-        <div class="in-page-navigation-header">
-          <p class="quick-caption">{props.title}</p>
-          <p class="quick-title">{props.pageTitle}</p>
-        </div>
-        <nav class="in-page-navigation-list">
-          <ul>
-            <For each={navigation()}>
-              {(item) => (
-                <li>
-                  <a href={item.href ?? '#'} classList={{ active: item.current }}>
-                    {item.label}
-                  </a>
-                </li>
-              )}
-            </For>
-          </ul>
-        </nav>
-        <div class="in-page-navigation-action">
-          <button type="button" class="krds-btn medium">{props.actionLabel}</button>
-          <p class="quick-info">{props.actionInfo} <strong>{props.actionCount}</strong></p>
+      <div class="krds-in-page-navigation-type">
+        <div
+          {...(native as Record<string, unknown>)}
+          class={`krds-in-page-navigation-area${className() ? ` ${className()}` : ''}`}
+        >
+          <div class="in-page-navigation-header">
+            <p class="quick-caption">{props.title}</p>
+            <p class="quick-title">{props.pageTitle}</p>
+          </div>
+          <nav class="in-page-navigation-list">
+            <ul>
+              <For each={navigation()}>
+                {(item) => (
+                  <li>
+                    <a href={item.href ?? '#'} classList={{ active: item.current }}>
+                      {item.label}
+                    </a>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </nav>
+          <div class="in-page-navigation-action">
+            <button type="button" class="krds-btn medium">{props.actionLabel}</button>
+            <p class="quick-info">{props.actionInfo} <strong>{props.actionCount}</strong></p>
+          </div>
         </div>
       </div>
     ) : kind() === 'language-switcher' || kind() === 'language-switcher-page' ? (
@@ -2908,34 +3098,84 @@ export function createAdditional(defaultKind: string) {
           type="button"
           class="krds-btn small text drop-btn"
           aria-expanded={open()}
-          aria-controls={`${props.id}-language-menu`}
           onClick={() => setOpen(!open())}
         >
+          <i class="svg-icon ico-global" />
+          {' '}
           {props.label}
+          {' '}
           <i class="svg-icon ico-toggle" />
         </button>
-        <div id={`${props.id}-language-menu`} class="drop-menu" hidden={!open()}>
+        <div
+          class="drop-menu"
+          style={{ display: open() ? 'block' : undefined }}
+        >
           <div class="drop-in">
+            <Show when={kind() === 'language-switcher-page'}>
+              <div class="drop-top">
+                <p class="current-laguage">
+                  <span>{props.currentLabel}</span>
+                  <strong>
+                    {optionItems().find((option) => option.value === selected())?.label}
+                  </strong>
+                </p>
+              </div>
+            </Show>
             <ul class="drop-list">
-              <For each={optionItems()}>
-                {(option) => (
-                  <li>
-                    <button
-                      type="button"
-                      class="item-link"
-                      disabled={option.disabled}
-                      onClick={(event) => {
-                        setSelected(option.value);
-                        invokeHandler(native.onChange, event);
-                      }}
-                    >
-                      {option.label}
-                      <Show when={selected() === option.value}>
-                        <span class="sr-only">{props.selectedLabel}</span>
-                      </Show>
-                    </button>
-                  </li>
-                )}
+              <For
+                each={
+                  kind() === 'language-switcher-page'
+                    ? optionItems().filter((option) => option.value !== selected())
+                    : optionItems()
+                }
+              >
+                {(option) => {
+                  const language = option as KrdsOption & {
+                    href?: string;
+                    lang?: string;
+                    target?: string;
+                    title?: string;
+                  };
+                  return (
+                    <li>
+                      <a
+                        href={language.href ?? '#'}
+                        class="item-link"
+                        classList={{
+                          active:
+                            kind() === 'language-switcher' &&
+                            selected() === language.value,
+                        }}
+                        lang={language.lang ?? language.value}
+                        target={
+                          kind() === 'language-switcher-page'
+                            ? (language.target ?? '_blank')
+                            : language.target
+                        }
+                        title={
+                          kind() === 'language-switcher-page'
+                            ? (language.title ?? props.externalTitle)
+                            : language.title
+                        }
+                        onClick={(event) => {
+                          setSelected(language.value);
+                          invokeHandler(native.onChange, event);
+                        }}
+                      >
+                        {language.label}
+                        <Show when={kind() === 'language-switcher-page'}>
+                          <i class="svg-icon ico-go" />
+                        </Show>
+                        <span class="sr-only">
+                          {kind() === 'language-switcher' &&
+                          selected() === language.value
+                            ? props.selectedLabel
+                            : undefined}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                }}
               </For>
             </ul>
           </div>
@@ -3037,10 +3277,18 @@ export function createAdditional(defaultKind: string) {
         {...(native as Record<string, unknown>)}
         class={`krds-pagination${className() ? ` ${className()}` : ''}`}
         role="navigation"
+        aria-label={props.navigationLabel}
       >
         <Show
           when={!props.previousDisabled}
-          fallback={<span class="page-navi prev disabled">{props.title}</span>}
+          fallback={
+            <span
+              {...({ href: '#' } as Record<string, string>)}
+              class="page-navi prev disabled"
+            >
+              {props.title}
+            </span>
+          }
         >
           <a
             class="page-navi prev"
@@ -3089,6 +3337,7 @@ export function createAdditional(defaultKind: string) {
       >
         <span class="underline">{content()}</span>
         <Show when={props.external ?? Boolean(props.target)}>
+          {' '}
           {props.icon ?? <i class="svg-icon ico-go" />}
         </Show>
       </a>
@@ -3116,13 +3365,16 @@ export function createAdditional(defaultKind: string) {
           type="button"
           class="krds-btn small text drop-btn"
           aria-expanded={open()}
-          aria-controls={`${props.id}-resize-menu`}
           onClick={() => setOpen(!open())}
         >
           {props.label}
+          {' '}
           <i class="svg-icon ico-toggle" />
         </button>
-        <div id={`${props.id}-resize-menu`} class="drop-menu" hidden={!open()}>
+        <div
+          class="drop-menu"
+          style={{ display: open() ? 'block' : undefined }}
+        >
           <div class="drop-in">
             <ul class="drop-list">
               <For each={optionItems()}>
@@ -3155,49 +3407,85 @@ export function createAdditional(defaultKind: string) {
                 onClick={() => setSelected(props.defaultValue ?? '')}
               >
                 <i class="svg-icon ico-reset" />
+                {' '}
                 {props.resetLabel}
               </button>
             </div>
           </div>
         </div>
       </div>
-    ) : kind() === 'select' ||
-      kind() === 'select-size' ||
-      kind() === 'select-state' ||
-      kind() === 'select-sorting' ? (
+    ) : kind() === 'select-sorting' ? (
       <select
-        {...(native as Record<string, unknown>)}
+        {...(nativeSelectProps as Record<string, unknown>)}
+        ref={bindSelect}
         id={props.id}
+        name={props.name}
         title={props.title ?? props.label}
-        aria-label={props.label ?? props.title}
-        class={[
-          kind() === 'select-sorting' ? 'krds-form-select-sort' : 'krds-form-select',
-          kind() === 'select-size' && props.size,
-          kind() === 'select-state' && props.state && `is-${props.state}`,
-          className(),
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        value={selected()}
-        onChange={(event) => {
-          setSelected(event.currentTarget.value);
-          invokeHandler(native.onChange, event);
-        }}
+        disabled={props.disabled}
+        required={props.required}
+        aria-invalid={props.state === 'error' ? 'true' : native['aria-invalid']}
+        class={[selectControlClass(), className()].filter(Boolean).join(' ')}
+        value={props.value === undefined ? selected() : String(props.value)}
+        onChange={updateSelect}
       >
         <For each={optionItems()}>
-          {(option, optionIndex) => (
-            <option
-              value={option.value}
-              disabled={option.disabled}
-              selected={
-                kind() === 'select-size' && optionIndex() === 0 ? true : undefined
-              }
-            >
+          {(option) => (
+            <option value={option.value} disabled={option.disabled}>
               {option.label}
             </option>
           )}
         </For>
       </select>
+    ) : kind() === 'select' ||
+      kind() === 'select-size' ||
+      kind() === 'select-state' ? (
+      <div class="form-group">
+        <div class="form-tit">
+          <label for={props.id}>{props.label}</label>
+        </div>
+        <div class="form-conts">
+          <select
+            {...(nativeSelectProps as Record<string, unknown>)}
+            ref={bindSelect}
+            id={props.id}
+            name={props.name}
+            title={props.title ?? props.label}
+            disabled={props.disabled}
+            required={props.required}
+            aria-describedby={selectDescribedBy()}
+            aria-invalid={props.state === 'error' ? 'true' : native['aria-invalid']}
+            class={[selectControlClass(), className()].filter(Boolean).join(' ')}
+            value={props.value === undefined ? selected() : String(props.value)}
+            onChange={updateSelect}
+          >
+            <For each={optionItems()}>
+              {(option, optionIndex) => (
+                <option
+                  value={option.value}
+                  disabled={option.disabled}
+                  ref={(element) => {
+                    if (kind() === 'select-size' && optionIndex() === 0)
+                      element.setAttribute('selected', '');
+                  }}
+                  selected={
+                    kind() === 'select-size' && optionIndex() === 0 ? true : undefined
+                  }
+                >
+                  {option.label}
+                </option>
+              )}
+            </For>
+          </select>
+        </div>
+        <Show when={selectMessage()}>
+          <p
+            id={`${props.id}-hint`}
+            class={selectHintClass()}
+          >
+            {selectMessage()}
+          </p>
+        </Show>
+      </div>
     ) : kind() === 'side-navigation' ? (
       <nav
         {...(native as Record<string, unknown>)}
@@ -3293,12 +3581,27 @@ export function createAdditional(defaultKind: string) {
         </a>
       </div>
     ) : kind() === 'spinner' ? (
-      <div
-        {...(native as Record<string, unknown>)}
-        class={`krds-spinner${className() ? ` ${className()}` : ''}`}
-        role="status"
-      >
-        <span class="sr-only">{content()}</span>
+      <div class="form-group">
+        <div class="form-tit">
+          <label for={`${props.id}-input`}>Label</label>
+        </div>
+        <div class="form-conts">
+          <div class="form-spinner">
+            <input
+              type="text"
+              id={`${props.id}-input`}
+              class="krds-input"
+              placeholder="placeholder"
+            />
+            <div
+              {...(native as Record<string, unknown>)}
+              class={`krds-spinner${className() ? ` ${className()}` : ''}`}
+              role="status"
+            >
+              <span class="sr-only">{content()}</span>
+            </div>
+          </div>
+        </div>
       </div>
     ) : kind() === 'step-indicator' ? (
       <ol
@@ -3317,7 +3620,7 @@ export function createAdditional(defaultKind: string) {
                 <Show when={stepIndex() === stepCurrent()}>
                   <em class="sr-only">{props.message}</em>
                 </Show>
-                <i class="step">{stepIndex() + 1}{props.label}</i>
+                <i class="step">{`${stepIndex() + 1}${props.label}`}</i>
                 <span class="step-tit">{step.label}</span>
               </span>
             </li>
@@ -3378,10 +3681,12 @@ export function createAdditional(defaultKind: string) {
                   <div class="card-btn">
                     <button type="button" class="krds-btn medium text" title={labelOf(item)}>
                       <i class="svg-icon ico-share" />
+                      {' '}
                       {structured?.shareLabel ?? props.shareLabel}
                     </button>
                     <button type="button" class="krds-btn medium text" title={labelOf(item)}>
                       <i class="svg-icon ico-like" />
+                      {' '}
                       {structured?.favoriteLabel ?? props.favoriteLabel}
                     </button>
                   </div>
@@ -3410,6 +3715,7 @@ export function createAdditional(defaultKind: string) {
                   <li>
                     <button type="button" class="krds-btn medium text">
                       <i class={`svg-icon ico-${action.icon}`} />
+                      {' '}
                       {action.label}
                     </button>
                   </li>
@@ -3420,6 +3726,7 @@ export function createAdditional(defaultKind: string) {
           <ul class="sch-sort">
             <li>
               <strong class="sort-label"><label for={`${props.id}-count`}>{props.countLabel}</label></strong>
+              {' '}
               <select
                 class="krds-form-select-sort"
                 id={`${props.id}-count`}
@@ -3433,9 +3740,11 @@ export function createAdditional(defaultKind: string) {
               <div class="w-sort-btn">
                 <For each={props.sortOptions}>
                   {(option) => (
-                    <button type="button" classList={{ active: props.sortValue === option }}>
-                      {option}
-                    </button>
+                    <>
+                      <button type="button" classList={{ active: props.sortValue === option }}>
+                        {option}
+                      </button>{' '}
+                    </>
                   )}
                 </For>
               </div>
@@ -3488,7 +3797,7 @@ export function createAdditional(defaultKind: string) {
             </thead>
             <tbody>
               <For each={props.rows}>
-                {(row, rowIndex) => (
+                {(row) => (
                   <tr>
                     <For each={props.columns}>
                       {(column, columnIndex) =>
@@ -3499,19 +3808,17 @@ export function createAdditional(defaultKind: string) {
                                 type="checkbox"
                                 class="chk"
                                 id={`${props.id}-row-${String(row.id)}`}
+                                aria-label={row.selectionLabel}
                                 checked={Boolean(row.selected)}
                               />
-                              <label for={`${props.id}-row-${String(row.id)}`}>
-                                <span class="sr-only">
-                                  {`${props.caption ?? '행'} ${rowIndex() + 1} 선택`}
-                                </span>
-                              </label>
+                              <label for={`${props.id}-row-${String(row.id)}`} />
                             </div>
                           </th>
                         ) : column.key === 'download' ? (
                           <td>
                             <button type="button" class="krds-btn medium text">
                               <i class="svg-icon ico-down" />
+                              {' '}
                               {String(row[column.key] ?? '')}
                             </button>
                           </td>
@@ -3612,9 +3919,9 @@ export function createAdditional(defaultKind: string) {
     ) : kind() === 'tab' ? (
       <div
         {...(native as Record<string, unknown>)}
-        class={['krds-tab-area', 'layer', className()].filter(Boolean).join(' ')}
+        class={[tabClasses().root, className()].filter(Boolean).join(' ')}
       >
-        <div class="tab line full">
+        <div class={tabClasses().listContainer}>
           <ul role="tablist">
             <For each={props.tabs}>
               {(tab) => {
@@ -3622,11 +3929,11 @@ export function createAdditional(defaultKind: string) {
                 const tabId = `tab-${tab.id}`;
                 const panelId = `panel-${tab.id}`;
                 return (
-                  <li role="none" classList={{ active: active() }}>
+                  <li role="presentation" class={tabClasses(active()).item}>
                     <button
                       id={tabId}
                       type="button"
-                      class="btn-tab"
+                      class={tabClasses().trigger}
                       role="tab"
                       tabIndex={active() ? 0 : -1}
                       disabled={tab.disabled}
@@ -3659,6 +3966,7 @@ export function createAdditional(defaultKind: string) {
                     role="tabpanel"
                     aria-labelledby={`tab-${tab.id}`}
                     class="tab-conts"
+                    data-quick-nav="false"
                     classList={{ active: active() }}
                     hidden={!active()}
                   >
@@ -3672,27 +3980,29 @@ export function createAdditional(defaultKind: string) {
         </div>
       </div>
     ) : kind() === 'tag' || kind() === 'tag-link' ? (
-      kind() === 'tag-link' ? (
-        <a
-          {...(native as Record<string, unknown>)}
-          href={props.href}
-          class={`krds-btn-tag link${className() ? ` ${className()}` : ''}`}
-        >
-          {content()}
-        </a>
-      ) : (
-        <span
-          {...(native as Record<string, unknown>)}
-          class={`krds-btn-tag${className() ? ` ${className()}` : ''}`}
-        >
-          {content()}
-          <Show when={props.removable}>
-            <button type="button" class="btn-delete">
-              <span class="sr-only">{props.message}</span>
-            </button>
-          </Show>
-        </span>
-      )
+      <div class={['krds-tag-wrap', props.size ?? 'large'].filter(Boolean).join(' ')}>
+        {kind() === 'tag-link' ? (
+          <a
+            {...(native as Record<string, unknown>)}
+            href={props.href}
+            class={`krds-btn-tag link${className() ? ` ${className()}` : ''}`}
+          >
+            {content()}
+          </a>
+        ) : (
+          <span
+            {...(native as Record<string, unknown>)}
+            class={`krds-btn-tag${className() ? ` ${className()}` : ''}`}
+          >
+            {content()}
+            <Show when={props.removable}>
+              <button type="button" class="btn-delete">
+                <span class="sr-only">{props.message}</span>
+              </button>
+            </Show>
+          </span>
+        )}
+      </div>
     ) : kind() === 'textarea' ? (
       <div class="form-group">
         <div class="form-tit">
@@ -3715,46 +4025,71 @@ export function createAdditional(defaultKind: string) {
         </Show>
       </div>
     ) : kind() === 'text-input-icon' ? (
-      <input
-        {...(native as Record<string, unknown>)}
-        id={props.id}
-        ref={(element) => {
-          createEffect(() => {
-            const modelValue = props.modelValue;
-            if (
-              props.value !== undefined ||
-              typeof modelValue === 'string' ||
-              typeof modelValue === 'number'
-            )
-              element.value = value();
-          });
-        }}
-        class={['krds-input', className()].filter(Boolean).join(' ')}
-        value={value()}
-        onInput={updateInput}
-      />
+      <div class="form-group">
+        <div class="form-tit">
+          <label for={props.id}>{props.label}</label>
+        </div>
+        <div class="form-conts btn-ico-wrap">
+          <input
+            {...(native as Record<string, unknown>)}
+            id={props.id}
+            ref={(element) => {
+              createEffect(() => {
+                const modelValue = props.modelValue;
+                if (
+                  props.value !== undefined ||
+                  typeof modelValue === 'string' ||
+                  typeof modelValue === 'number'
+                ) {
+                  element.value = value();
+                  element.setAttribute('value', value());
+                }
+              });
+            }}
+            class={['krds-input', className()].filter(Boolean).join(' ')}
+            value={value()}
+            onInput={updateInput}
+          />
+          <button type="button" class="krds-btn medium icon">
+            <span class="sr-only">입력한 비밀번호 보기</span>
+            <i class="svg-icon ico-pw-visible" />
+          </button>
+        </div>
+      </div>
     ) : kind() === 'text-list' || kind() === 'text-list-ordered' ? (
       infoList(() => props.items ?? [], () => kind() === 'text-list-ordered')
     ) : kind() === 'tooltip' || kind() === 'tooltip-box' || kind() === 'tooltip-vertical' ? (
-      <button
-        {...(native as Record<string, unknown>)}
-        type="button"
-        class={[
-          'krds-btn',
-          'krds-tooltip',
-          'small',
-          'text',
-          kind() === 'tooltip-box' && 'tooltip-box',
-          kind() === 'tooltip-vertical' && 'tooltip-vertical',
-          className(),
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        data-tooltip={props.message}
-      >
-        {content()}
-        {props.icon ?? <i class="svg-icon ico-angle right" />}
-      </button>
+      <>
+        <button
+          {...(native as Record<string, unknown>)}
+          type="button"
+          class={[
+            'krds-btn',
+            'krds-tooltip',
+            'small',
+            'text',
+            kind() === 'tooltip-box' && 'tooltip-box',
+            kind() === 'tooltip-vertical' && 'tooltip-vertical',
+            className(),
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          data-tooltip={props.message}
+          aria-labelledby={`${props.id}-tooltip`}
+        >
+          {content()}
+          {' '}
+          {props.icon ?? <i class="svg-icon ico-angle right" />}
+        </button>
+        <span
+          id={`${props.id}-tooltip`}
+          class="krds-tooltip-popover"
+          role="tooltip"
+          hidden
+        >
+          {[props.label, props.message].filter(Boolean).join(' ')}
+        </span>
+      </>
     ) : kind() === 'tts' || kind() === 'tts-icon' || kind() === 'tts-size' ? (
       <button
         {...(native as Record<string, unknown>)}
@@ -3775,6 +4110,7 @@ export function createAdditional(defaultKind: string) {
           <i class={checked() ? 'svg-icon ico-pause' : 'svg-icon ico-volume'} />
         </span>
         <Show when={kind() !== 'tts-icon'}>
+          {' '}
           <span class="krds-tts-text">{content()}</span>
         </Show>
       </button>

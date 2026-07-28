@@ -11,8 +11,6 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
-errata:
-  - errata.tts.inline-handler
 contract:
   semanticElement: native-element
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

@@ -8,6 +8,39 @@ export type InputState = (typeof inputStates)[number];
 export const choiceSizes = ['medium', 'large'] as const;
 export type ChoiceSize = (typeof choiceSizes)[number];
 
+export const selectRecipeVariants = ['default', 'size', 'state', 'sorting'] as const;
+export type SelectRecipeVariant = (typeof selectRecipeVariants)[number];
+export const selectRecipeSizes = ['small', 'medium', 'large'] as const;
+export type SelectRecipeSize = (typeof selectRecipeSizes)[number];
+
+export type SelectRecipeOptions =
+  | {
+      variant?: Exclude<SelectRecipeVariant, 'sorting'> | undefined;
+      size?: SelectRecipeSize | undefined;
+      state?: InputState | undefined;
+    }
+  | {
+      variant: 'sorting';
+      size?: never;
+      state?: Extract<InputState, 'default' | 'error'> | undefined;
+    };
+
+export type SelectRecipeResult = {
+  control: string;
+};
+
+export type TabRecipeOptions = {
+  full?: boolean | undefined;
+  active?: boolean | undefined;
+};
+
+export type TabRecipeResult = {
+  root: string;
+  listContainer: string;
+  item: string | undefined;
+  trigger: string;
+};
+
 export type RecipeResult = {
   className: string;
   data: Record<string, string | undefined>;
@@ -77,6 +110,36 @@ export const accordionRecipe = (
     options.className,
   ),
   data: { type: options.type ?? 'default' },
+});
+
+const selectStateModifiers = {
+  default: undefined,
+  error: 'is-error',
+  success: 'is-success',
+  information: 'is-information',
+} satisfies Record<InputState, string | undefined>;
+
+export const selectRecipe = (options: SelectRecipeOptions = {}): SelectRecipeResult => {
+  if (options.variant === 'sorting') {
+    return {
+      control: cx('krds-form-select-sort', selectStateModifiers[options.state ?? 'default']),
+    };
+  }
+
+  return {
+    control: cx(
+      'krds-form-select',
+      options.size,
+      selectStateModifiers[options.state ?? 'default'],
+    ),
+  };
+};
+
+export const tabRecipe = (options: TabRecipeOptions = {}): TabRecipeResult => ({
+  root: 'krds-tab-area layer',
+  listContainer: cx('tab', 'line', options.full !== false && 'full'),
+  item: options.active ? 'active' : undefined,
+  trigger: 'btn-tab',
 });
 
 export const accordionState = (open: boolean): { expanded: 'true' | 'false'; hidden: boolean } => ({

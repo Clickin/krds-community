@@ -9,6 +9,6 @@ const { state = 'error', class: className, ...rest } = Astro.props;
 
 <Select {...rest} state={state} class={className} variant="state">
   {Astro.slots.has('default') && <slot />}
-  {Astro.slots.has('label') && <Fragment slot="label"><slot name="label" /></Fragment>}
-  {Astro.slots.has('hint') && <Fragment slot="hint"><slot name="hint" /></Fragment>}
+  <Fragment slot="label"><slot name="label">{rest.label}</slot></Fragment>
+  <Fragment slot="hint"><slot name="hint">{rest.hint}</slot></Fragment>
 </Select>

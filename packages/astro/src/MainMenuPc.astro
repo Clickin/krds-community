@@ -64,16 +64,16 @@ const mainPanelId = (item: MainMenuItem, index: number) =>
   `gnb-main-menu-${item.id ?? index + 1}`;
 const subPanelId = (item: MainMenuItem, fallback: string) =>
   `gnb-sub-menu-${item.id ?? fallback}`;
+const runtimeInitialized = !sample;
 ---
 
 <nav
   {...rest}
-  class={cx('krds-main-menu', sample && !className ? 'sample' : undefined, className)}
+  class={cx('krds-main-menu', sample && 'sample', className)}
   aria-label={ariaLabel ?? navigationLabel}
-  data-krds-main-menu-pc
 >
   <div class="inner">
-    <ul class="gnb-menu" aria-label={menuLabel}>
+    <ul class="gnb-menu" aria-label={runtimeInitialized ? menuLabel : undefined}>
       {items.map((item, itemIndex) => {
         if (item.href) {
           return (
@@ -116,14 +116,14 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
               type="button"
               class={cx('gnb-main-trigger', item.active && 'active')}
               data-trigger="gnb"
-              aria-controls={panelId}
-              aria-expanded={item.active ? 'true' : 'false'}
-              aria-haspopup="true"
+              aria-controls={runtimeInitialized ? panelId : undefined}
+              aria-expanded={runtimeInitialized ? (item.active ? 'true' : 'false') : undefined}
+              aria-haspopup={runtimeInitialized ? 'true' : undefined}
               disabled={item.disabled}
             >
               {item.label}
             </button>
-            <div id={panelId} class={cx('gnb-toggle-wrap', item.active && 'is-open')}>
+            <div id={runtimeInitialized ? panelId : undefined} class={cx('gnb-toggle-wrap', item.active && 'is-open')}>
               <div class="gnb-main-list" data-has-submenu={single ? undefined : 'true'}>
                 {single ? (
                   <div class="gnb-sub-list single-list between">
@@ -135,7 +135,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                               {item.title}
                               <a href={item.titleHref} class="krds-btn link basic small">
                                 <span class="underline">{item.titleLinkLabel}</span>
-                                <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                <i class="svg-icon ico-angle right"></i>
                               </a>
                             </>
                           ) : (
@@ -156,7 +156,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                                     title={description.externalTitle}
                                   >
                                     {description.title}
-                                    {description.target && <i class="svg-icon ico-go" aria-hidden="true"></i>}
+                                    {description.target && <i class="svg-icon ico-go"></i>}
                                   </a>
                                 ) : (
                                   <span>{description.title}</span>
@@ -200,11 +200,11 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                               rel={item.banner.rel}
                               title={item.banner.title}
                             >
-                              {item.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                              {item.banner.label} <i class="svg-icon ico-angle right"></i>
                             </a>
                           ) : (
                             <button type="button" class="krds-btn medium text" disabled={item.banner.disabled}>
-                              {item.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                              {item.banner.label} <i class="svg-icon ico-angle right"></i>
                             </button>
                           )
                         )}
@@ -234,22 +234,25 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                         );
                       }
                       const subId = subPanelId(subItem, `${itemIndex + 1}-${subIndex + 1}`);
+                      const subActive = Boolean(
+                        subItem.active || (runtimeInitialized && subIndex === 0),
+                      );
                       return (
                         <li>
                           <button
                             type="button"
-                            class={cx('gnb-sub-trigger', subItem.active && 'active')}
+                            class={cx('gnb-sub-trigger', subActive && 'active')}
                             data-trigger="gnb"
-                            aria-controls={subId}
-                            aria-expanded={subItem.active ? 'true' : 'false'}
-                            aria-haspopup="true"
+                            aria-controls={runtimeInitialized ? subId : undefined}
+                            aria-expanded={runtimeInitialized ? (subActive ? 'true' : 'false') : undefined}
+                            aria-haspopup={runtimeInitialized ? 'true' : undefined}
                             disabled={subItem.disabled}
                           >
                             {subItem.label}
                           </button>
                           <div
-                            id={subId}
-                            class={cx('gnb-sub-list', subItem.active && 'active', subIndex > 0 && 'between')}
+                            id={runtimeInitialized ? subId : undefined}
+                            class={cx('gnb-sub-list', subActive && 'active', subIndex > 0 && 'between')}
                           >
                             <div class="gnb-sub-content">
                               {subItem.title && (
@@ -259,7 +262,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                                       {subItem.title}
                                       <a href={subItem.titleHref} class="krds-btn link basic small">
                                         <span class="underline">{subItem.titleLinkLabel}</span>
-                                        <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                        <i class="svg-icon ico-angle right"></i>
                                       </a>
                                     </>
                                   ) : (
@@ -280,7 +283,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                                             title={description.externalTitle}
                                           >
                                             {description.title}
-                                            {description.target && <i class="svg-icon ico-go" aria-hidden="true"></i>}
+                                            {description.target && <i class="svg-icon ico-go"></i>}
                                           </a>
                                         ) : (
                                           <span>{description.title}</span>
@@ -326,7 +329,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                                       rel={subItem.banner.rel}
                                       title={subItem.banner.title}
                                     >
-                                      {subItem.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                      {subItem.banner.label} <i class="svg-icon ico-angle right"></i>
                                     </a>
                                   ) : (
                                     <button
@@ -334,7 +337,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
                                       class="krds-btn medium text"
                                       disabled={subItem.banner.disabled}
                                     >
-                                      {subItem.banner.label} <i class="svg-icon ico-angle right" aria-hidden="true"></i>
+                                      {subItem.banner.label} <i class="svg-icon ico-angle right"></i>
                                     </button>
                                   )
                                 )}
@@ -356,7 +359,7 @@ const subPanelId = (item: MainMenuItem, fallback: string) =>
 </nav>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-krds-main-menu-pc]').forEach((root) => {
+  document.querySelectorAll<HTMLElement>('nav.krds-main-menu:not(.sample)').forEach((root) => {
     const mainTriggers = Array.from(
       root.querySelectorAll<HTMLButtonElement>('.gnb-menu > li > button.gnb-main-trigger:not(.is-link)'),
     );

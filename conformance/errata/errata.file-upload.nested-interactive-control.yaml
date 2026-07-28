@@ -1,0 +1,28 @@
+id: errata.file-upload.nested-interactive-control
+component: file-upload
+fixtures:
+ - file-upload.default
+upstream:
+ version: 1.1.0
+ files:
+ - upstream/krds-html/html/code/file_upload.html
+defect:
+ type: nested-interactive-control
+ literalSource:
+  selectors:
+  - ".file-upload-btn-wrap > label > button.krds-btn"
+  description: The file-picker button is nested inside its associated label, producing nested activation behavior and invalid interactive content.
+correction:
+ attributes:
+ - selector: ".file-upload-btn-wrap > input[type='file']"
+   attribute: hidden
+   rule: Keep the delegated file input out of direct navigation while a sibling native button owns keyboard and pointer activation.
+normalization:
+ whitelist:
+ - selector: ".file-upload-btn-wrap > label"
+   ignoreElement: true
+evidence:
+ sourceUrls:
+ - https://html.spec.whatwg.org/multipage/forms.html#the-label-element
+ - https://html.spec.whatwg.org/multipage/form-elements.html#the-button-element
+rationale: A sibling native button preserves the fixture's visible control and native keyboard semantics without nesting interactive content; it delegates activation to the hidden file input and keeps raw accessibility evidence independent from DOM normalization.

@@ -5,41 +5,18 @@ body {
 }
 
 #fixture-root {
- display: flex;
- flex-direction: column;
- align-items: flex-start;
+  display: block;
 }
 
-/* Full-width components that must stretch to viewport in both upstream and framework */
-#fixture-root > #krds-header,
-#fixture-root > .krds-header,
-#fixture-root > .krds-footer,
-#fixture-root > .krds-masthead,
-#fixture-root > .krds-main-menu,
-#fixture-root > .krds-main-menu-pc,
-#fixture-root > .krds-main-menu-mobile,
-#fixture-root > .krds-pagination,
-#fixture-root > .krds-help-panel,
-#fixture-root > .krds-tutorial-panel,
-#fixture-root > .krds-contextual-help,
-#fixture-root > .krds-coach-mark,
-#fixture-root > .krds-critical-alerts,
-#fixture-root > .krds-tab-area,
-#fixture-root > .krds-carousel,
-#fixture-root > .krds-carousel-banner,
-#fixture-root > .krds-structured-list,
-#fixture-root > .krds-structured-list-table,
-#fixture-root > .krds-table-wrap,
-#fixture-root > .krds-side-navigation,
-#fixture-root > .krds-file-upload,
-#fixture-root > dialog,
-#fixture-root > .krds-modal,
-#fixture-root > .krds-resize,
-#fixture-root > .krds-header-sample,
-#fixture-root > .krds-footer-sample {
- align-self: stretch;
- width: 100%;
+#fixture-root[data-layout-context="viewport-height"] {
+  height: 100%;
 }
+
+#fixture-root > .krds-form-check,
+#fixture-root > .krds-form-chip {
+  width: fit-content;
+}
+
 
 *,
 *::before,

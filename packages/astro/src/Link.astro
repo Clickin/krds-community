@@ -38,8 +38,11 @@ const labelClass = cx(underline && 'underline', underlineOnInteraction && 'hidde
     <slot>{content}</slot>
   </span>
   {icon && (
-    <slot name="icon">
-      <i class={cx('svg-icon', iconClass)} aria-hidden="true"></i>
-    </slot>
+    <Fragment>
+      {' '}
+      <slot name="icon">
+        <i class={cx('svg-icon', iconClass)}></i>
+      </slot>
+    </Fragment>
   )}
 </a>

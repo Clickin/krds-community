@@ -119,8 +119,11 @@ export function TextInput(rawProps: TextInputProps) {
             if (typeof callerRef === 'function') callerRef(element);
             createEffect(() => {
               const controlledValue = props.value;
-              if (controlledValue !== undefined)
-                element.value = String(controlledValue);
+              if (controlledValue !== undefined) {
+                const serializedValue = String(controlledValue);
+                element.value = serializedValue;
+                element.setAttribute('value', serializedValue);
+              }
             });
           }}
           value={
@@ -268,11 +271,15 @@ export function Accordion(rawProps: AccordionProps) {
         {(item) => {
           const open = () => openItems().includes(item.id);
           return (
-            <div class="accordion-item">
+            <div
+              class="accordion-item"
+              classList={{ active: open() }}
+            >
               <h5 class="accordion-header">
                 <button
                   type="button"
                   class="btn-accordion"
+                  classList={{ active: open() }}
                   id={`krds-accordion-${instanceId}-header-${item.id}`}
                   aria-expanded={open()}
                   aria-controls={`krds-accordion-${instanceId}-panel-${item.id}`}
