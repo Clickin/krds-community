@@ -3621,17 +3621,17 @@ export function createAdditional(defaultKind: string) {
                 const active = () => selected() === tab.id;
                 const tabId = `tab-${tab.id}`;
                 const panelId = `panel-${tab.id}`;
-                  <li
-                    id={tabId}
-                    role="tab"
-                    aria-selected={active()}
-                    aria-controls={panelId}
-                    classList={{ active: active() }}
-                  >
+                return (
+                  <li role="none" classList={{ active: active() }}>
                     <button
+                      id={tabId}
                       type="button"
                       class="btn-tab"
+                      role="tab"
+                      tabIndex={active() ? 0 : -1}
                       disabled={tab.disabled}
+                      aria-selected={active()}
+                      aria-controls={panelId}
                       onClick={(event) => {
                         setSelected(tab.id);
                         invokeHandler(native.onChange, event);
@@ -3643,6 +3643,33 @@ export function createAdditional(defaultKind: string) {
                       </Show>
                     </button>
                   </li>
+                );
+              }}
+            </For>
+          </ul>
+        </div>
+        <div class="tab-conts-wrap">
+          <For each={props.tabs}>
+            {(tab) => {
+              const active = () => selected() === tab.id;
+              return (
+                <Show when={props.panels[tab.id] !== undefined}>
+                  <section
+                    id={`panel-${tab.id}`}
+                    role="tabpanel"
+                    aria-labelledby={`tab-${tab.id}`}
+                    class="tab-conts"
+                    classList={{ active: active() }}
+                    hidden={!active()}
+                  >
+                    <h3 class="sr-only">{props.panelTitle}</h3>
+                    {props.panels[tab.id]}
+                  </section>
+                </Show>
+              );
+            }}
+          </For>
+        </div>
       </div>
     ) : kind() === 'tag' || kind() === 'tag-link' ? (
       kind() === 'tag-link' ? (

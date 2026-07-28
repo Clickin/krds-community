@@ -4079,17 +4079,19 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
             const tabId = tab.tabId ?? `tab_${tab.id}`;
             const panelId = tab.panelId ?? `panel_${tab.id}`;
             const active = activeTab === tab.id;
+            return (
               <li
-                id={tabId}
-                role="tab"
-                aria-selected={active}
-                aria-controls={panelId}
+                role="none"
                 className={active ? 'active' : undefined}
                 key={tab.id}
               >
                 <button
+                  id={tabId}
                   type="button"
                   className="btn-tab"
+                  role="tab"
+                  aria-selected={active}
+                  aria-controls={panelId}
                   tabIndex={active ? 0 : -1}
                   disabled={tab.disabled}
                   onClick={() => selectTab(tab.id)}
@@ -4135,6 +4137,7 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
           return (
             <section
               id={panelId}
+              role="tabpanel"
               aria-labelledby={tabId}
               className={cx('tab-conts', activeTab === tab.id && 'active')}
               data-quick-nav={tab.quickNav ?? false}

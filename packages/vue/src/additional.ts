@@ -3632,17 +3632,19 @@ export function createAdditional(name: string, kind: string) {
                     const isActive = active === tab.id;
                     return create(
                       'li',
-                      { key: tab.id, role: 'none', class: isActive ? 'active' : undefined },
+                      {
+                        key: tab.id,
+                        id: tabId,
+                        role: 'tab',
+                        class: isActive ? 'active' : undefined,
+                        'aria-selected': isActive,
+                        'aria-controls': panelId,
+                      },
                       create(
                         'button',
                         {
-                          id: tabId,
                           type: 'button',
-                          role: 'tab',
                           class: 'btn-tab',
-                          'aria-selected': isActive,
-                          'aria-controls': panelId,
-                          tabIndex: isActive ? 0 : -1,
                           disabled: tab.disabled,
                           onClick: () => setSelected(tab.id),
                           onKeydown: (event: KeyboardEvent) => moveTab(event, tab.id),
