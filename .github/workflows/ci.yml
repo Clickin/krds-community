@@ -26,6 +26,7 @@ jobs:
       - name: Check dependency catalog policy
         run: pnpm catalog:check
       - name: Provision Chrome for browser tests
+        id: chrome
         uses: browser-actions/setup-chrome@v2.1.2
         with:
           install-dependencies: true
@@ -53,8 +54,12 @@ jobs:
         run: pnpm test:ssr
       - name: Run Chromium visual tests
         run: pnpm test:visual
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
       - name: Generate and gate full runtime conformance evidence
         run: pnpm test:conformance
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
       - name: Build conformance viewer (after reports exist)
         run: pnpm --filter @krds-community/conformance-viewer build
       - name: Check publishable package artifacts

@@ -1008,7 +1008,9 @@ const prepareUpstreamPage = async (page, sourceHtml, fixture) => {
   await page.goto(`${server.baseUrl}/__upstream-runtime`, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);
 };
-const browser = directExecution ? await chromium.launch({ headless: true }) : null;
+const browser = directExecution
+  ? await chromium.launch({ headless: true, channel: "chrome" })
+  : null;
 const results = [];
 const unresolvedSelectorsByFramework = new Map(
   selectedFrameworks.map((framework) => [framework, new Set()]),

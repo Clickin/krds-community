@@ -31,11 +31,6 @@ jobs:
           cache: pnpm
       - name: Install locked dependencies
         run: pnpm install --frozen-lockfile
-      - name: Provision Chrome for browser tests
-        uses: browser-actions/setup-chrome@v2.1.2
-        with:
-          install-dependencies: true
-      - run: pnpm test:conformance:runtime
       - run: pnpm build
       - run: pnpm pages:build
         env:
