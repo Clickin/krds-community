@@ -20,6 +20,8 @@
     "conformance:build": "pnpm --filter @krds-community/conformance --filter @krds-community/recipes --filter @krds-community/react --filter @krds-community/vue --filter @krds-community/svelte --filter @krds-community/solid --filter @krds-community/angular --filter @krds-community/astro build && pnpm --filter @krds-community/conformance-host build && pnpm --filter @krds-community/conformance-host-astro build",
     "conformance:run": "node scripts/conformance/parallel.mjs",
     "conformance:run:framework": "node scripts/conformance/runtime.mjs",
+    "conformance:extra:run": "node scripts/conformance/parallel.mjs --catalog apps/conformance-host/dist/fixtures-extra.json --output reports/conformance-extra-runtime.json",
+    "test:conformance:extra": "pnpm conformance:build && pnpm conformance:extra:run && node packages/conformance/dist/cli.js report --manifests extra/manifests --evidence reports/conformance-extra-runtime.json --prefix conformance-extra --format markdown && node packages/conformance/dist/cli.js check --manifests extra/manifests --evidence reports/conformance-extra-runtime.json --strict",
     "test:conformance:fixture": "pnpm conformance:build && pnpm conformance:run:framework --",
     "test:conformance:runtime": "pnpm conformance:build && pnpm conformance:run --output reports/conformance-runtime.json",
     "test:conformance": "pnpm test:conformance:runtime && node packages/conformance/dist/cli.js report --evidence reports/conformance-runtime.json --format markdown && node packages/conformance/dist/cli.js check --evidence reports/conformance-runtime.json --strict",

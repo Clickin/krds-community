@@ -14,6 +14,7 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
+        "@krds-community/vue/extra": resolve("packages/vue/dist/extra.js"),
         "@krds-community/vue": resolve("packages/vue/dist/index.js"),
         "@krds-community/styles/css": resolve("packages/styles/dist/index.css"),
       },

@@ -1,6 +1,7 @@
 import { createComponent, createSignal, type Component } from "solid-js";
 import { render } from "solid-js/web";
 import * as Components from "@krds-community/solid";
+import * as ExtraComponents from "@krds-community/solid/extra";
 import type { FrameworkAdapter } from "../protocol";
 
 const coreExports = {
@@ -24,7 +25,8 @@ const toPascalCase = (componentId: string): string =>
 const resolveComponent = (componentId: string): FixtureComponent => {
   const coreExport = coreExports[componentId as keyof typeof coreExports];
   const exportName = coreExport ?? toPascalCase(componentId);
-  const candidate: unknown = Reflect.get(Components, exportName);
+  const candidate: unknown =
+    Reflect.get(Components, exportName) ?? Reflect.get(ExtraComponents, exportName);
   if (typeof candidate !== "function") {
     throw new Error(`Unknown Solid component: ${componentId} (${exportName})`);
   }

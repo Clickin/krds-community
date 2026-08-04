@@ -15,6 +15,10 @@ pnpm add -D @krds-community/krds-cli
 pnpm dlx @krds-community/krds-cli
 ```
 
+## 대화형 모드
+
+인자 없이 `pnpm krds`(또는 `pnpm dlx @krds-community/krds-cli`)를 실행하면 대화형 마법사가 시작됩니다. 프레임워크 → 컴포넌트(필터 입력 가능) → 출력 경로(기본값 제공) → 누락된 의존성 설치 여부 질의(기본값: 설치) 순서로 진행되며, 모든 안내는 한국어로 표시됩니다. 터미널이 아닌 환경(CI 등)에서는 도움말만 출력됩니다.
+
 사용 가능한 컴포넌트 목록을 확인합니다:
 
 ```sh
@@ -42,14 +46,14 @@ pnpm krds component paste --from button.tsx
 - `--as <name>` — 메타데이터와 스니펫의 컴포넌트 이름 덮어쓰기
 - `--force` — 소스 해시가 다른 파일을 덮어쓰기
 - `--from <file>` — paste 소스 파일 (--clipboard 대체)
+- `--exclude-required-component` — 필요한 의존성 자동 설치 제외 (copy)
+- `--package-manager <pm>` — 설치에 사용할 패키지 매니저 (pnpm, npm, yarn, bun, deno)
 - `-h, --help` — 도움말 표시
 - `-v, --version` — 패키지 버전 출력
 
-복사된 코드는 `.krds-*` BEM 클래스를 사용하므로, 프로젝트 진입점에서 `@krds-community/styles/css`를 import해야 스타일이 적용됩니다. CLI는 npm 의존성을 자동으로 설치하지 않으므로, 필요한 패키지를 직접 설치하세요:
+복사된 코드는 `.krds-*` BEM 클래스를 사용하므로, 프로젝트 진입점에서 `@krds-community/styles/css`를 import해야 스타일이 적용됩니다.
 
-```sh
-pnpm add @krds-community/styles @krds-community/recipes
-```
+`component copy`는 기본적으로 누락된 의존성을 자동으로 설치합니다. 패키지 매니저는 lockfile에서 감지합니다 (pnpm, npm, yarn, bun, deno). `--exclude-required-component`가 유일한 제외 수단이며, `--package-manager <pm>`으로 매니저를 강제할 수 있습니다. 복사되는 코드가 직접 import하는 것은 `@krds-community/recipes`뿐이므로 기본 설치 대상은 `@krds-community/styles`와 `@krds-community/recipes` 두 개입니다 (shadcn/ui처럼 복사된 코드가 실제로 import하는 패키지만 설치합니다). extra 컴포넌트(`search-suggestions`, `validated-input`, `filterable-list`)도 1급으로 동일하게 처리되며, `@krds-community/<framework>/extra`로 제공되므로 필요한 프레임워크 패키지가 기본 설치 대상에 포함됩니다.
 
 이미 [빠른 시작](../installation/)의 설치 단계에서 패키지를 추가했다면 `@krds-community/styles`는 이미 설치되어 있습니다.
 

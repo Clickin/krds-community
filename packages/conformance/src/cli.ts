@@ -23,7 +23,15 @@ const lock = JSON.parse(
   commit: string;
   packageVersion: string;
 };
-const manifests = await loadManifests(join(packageRoot, "conformance/manifests"));
+const manifestFlagIndex = process.argv.indexOf("--manifests");
+const manifestArgument =
+  manifestFlagIndex >= 0 ? process.argv[manifestFlagIndex + 1] : undefined;
+const manifests = await loadManifests(
+  resolve(packageRoot, manifestArgument ?? "conformance/manifests"),
+);
+const prefixFlagIndex = process.argv.indexOf("--prefix");
+const reportPrefix =
+  prefixFlagIndex >= 0 ? process.argv[prefixFlagIndex + 1] ?? "conformance" : "conformance";
 const evidenceFlagIndex = process.argv.indexOf("--evidence");
 const evidencePath =
   evidenceFlagIndex >= 0
@@ -95,7 +103,7 @@ if (command === "inventory") {
   else if (format === "junit") console.log(toJUnit(report));
   else if (format === "html") console.log(toHtml(report));
   else console.log(JSON.stringify(report, null, 2));
-  await writeReport(report, join(packageRoot, "reports"));
+  await writeReport(report, join(packageRoot, "reports"), reportPrefix);
 } else {
   throw new Error(
     `Unknown command ${command}. Use inventory, check [--strict], diff-upstream, or report [--evidence <path>].`,

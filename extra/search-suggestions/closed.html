@@ -1,0 +1,18 @@
+<!--
+  extra: krds-search-suggestions — 상태: closed (입력 없음/최소 글자 미만)
+  fixture: search-suggestions.closed 의 upstream(참조) 측 대상.
+  프레임워크 6종(react/vue/svelte/solid/angular/astro)이 이 DOM과
+  구조·속성·상태(conformance captureDom 정규화 기준)가 동일해야 한다.
+-->
+<div class="krds-search-suggestions">
+  <div class="form-group">
+    <div class="form-tit">
+      <label for="krds-search-suggestions-fixture">검색어</label>
+    </div>
+    <div class="form-conts">
+      <input id="krds-search-suggestions-fixture" class="krds-input" type="text" name="search" placeholder="검색어를 입력하세요" role="combobox" aria-expanded="false" aria-controls="krds-search-suggestions-fixture-listbox" aria-autocomplete="list" aria-describedby="krds-search-suggestions-fixture-status" />
+    </div>
+  </div>
+  <ul id="krds-search-suggestions-fixture-listbox" role="listbox" aria-label="추천 검색어" class="krds-suggestions-list" hidden></ul>
+  <p id="krds-search-suggestions-fixture-status" class="sr-only" aria-live="polite"></p>
+</div>

@@ -1,5 +1,5 @@
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { basename, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isDeepStrictEqual } from "node:util";
 import { chromium } from "playwright";
@@ -239,7 +239,13 @@ if (selectedFrameworks.some((framework) => !frameworkIds.includes(framework))) {
 
 const catalog = directExecution
   ? JSON.parse(
-      await readFile(resolve(repositoryRoot, "apps/conformance-host/dist/fixtures.json"), "utf8"),
+      await readFile(
+        resolve(
+          repositoryRoot,
+          option("--catalog") ?? "apps/conformance-host/dist/fixtures.json",
+        ),
+        "utf8",
+      ),
     )
   : { fixtures: [], upstream: undefined };
 const fixtures = fixtureFilter
@@ -951,10 +957,11 @@ const contractChecks = (fixture, semantics) => {
 };
 
 const server = directExecution ? await createConformanceServer(repositoryRoot) : null;
+const catalogName = option("--catalog") ? basename(option("--catalog")) : undefined;
 const frameworkHostUrl = (framework, fixtureId, stateId) =>
   framework === "astro"
     ? `${server.baseUrl}/apps/conformance-host-astro/dist/${encodeURIComponent(fixtureId)}/${encodeURIComponent(stateId)}/`
-    : `${server.baseUrl}/host/${framework}.html?fixture=${encodeURIComponent(fixtureId)}`;
+    : `${server.baseUrl}/host/${framework}.html?fixture=${encodeURIComponent(fixtureId)}${catalogName ? `&catalog=${encodeURIComponent(catalogName)}` : ""}`;
 const waitForFrameworkReady = (page, framework, fixtureId, stateId) =>
   page.waitForFunction(
     (expected) => {

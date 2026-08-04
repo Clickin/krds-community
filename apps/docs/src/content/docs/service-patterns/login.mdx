@@ -17,6 +17,12 @@ import { TextInput as SvelteTextInput } from "@krds-community/svelte";
 import { TextInput as SolidTextInput } from "@krds-community/solid";
 import { AngularTextInput } from "@docs/angular-previews.ts";
 import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { ValidatedInput as ReactValidatedInput } from "@krds-community/react/extra";
+import { ValidatedInput as VueValidatedInput } from "@krds-community/vue/extra";
+import { ValidatedInput as SvelteValidatedInput } from "@krds-community/svelte/extra";
+import { ValidatedInput as SolidValidatedInput } from "@krds-community/solid/extra";
+import { AngularValidatedInput } from "@docs/angular-previews.ts";
+import { ValidatedInput as AstroValidatedInput } from "@krds-community/astro/extra";
 import { Modal as ReactModal } from "@krds-community/react";
 import { Modal as VueModal } from "@krds-community/vue";
 import { Modal as SvelteModal } from "@krds-community/svelte";
@@ -3884,6 +3890,362 @@ import { TextInput, Button } from "@krds-community/astro";
 
 **제출하기 전 가능한 한 많은 사용자 데이터의 유효성을 검사한다.**
 실시간 유효성 검사는 입력 필드가 포커스를 잃을 때 발생하며 유효하지 않은 문자나 빈 필드와 같은 입력 오류를 확인해야 한다. 이를 통해 사용자는 로그인 양식을 제출하기 전에 실수를 쉽게 식별하고 수정할 수 있다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="실시간 유효성 검사는 입력 필드가 포커스를 잃을 때 발생한다"
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "360px" }}>
+      <ReactValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate="min-length:4"
+        client:only="react"
+      />
+      <ReactValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+        client:only="react"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" client:only="react">로그인</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+      <VueValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        success-message="사용 가능한 아이디입니다."
+        validate="min-length:4"
+        client:only="vue"
+      />
+      <VueValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+        client:only="vue"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" client:only="vue">로그인</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+      <SvelteValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate="min-length:4"
+        client:only="svelte"
+      />
+      <SvelteValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+        client:only="svelte"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" client:only="svelte">로그인</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "360px" }}>
+      <SolidValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate="min-length:4"
+        client:only="solid-js"
+      />
+      <SolidValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+        client:only="solid-js"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" client:only="solid-js">로그인</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+      <AstroValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate="min-length:4"
+      />
+      <AstroValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary">로그인</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+      <AngularValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate="min-length:4"
+        client:only="@analogjs/astro-angular"
+      />
+      <AngularValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+        client:only="@analogjs/astro-angular"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="로그인" client:only="@analogjs/astro-angular">로그인</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+import { ValidatedInput } from "@krds-community/react/extra";
+
+export function Example() {
+  const validateId = (value: string) =>
+    value.trim().length >= 4
+      ? { valid: true }
+      : { valid: false, message: "4자 이상 입력해 주세요." };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 360 }}>
+      <ValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate={validateId}
+      />
+      <ValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">로그인</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from "@krds-community/vue";
+import { ValidatedInput } from "@krds-community/vue/extra";
+
+const validateId = (value) =>
+  value.trim().length >= 4
+    ? { valid: true }
+    : { valid: false, message: "4자 이상 입력해 주세요." };
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+    <ValidatedInput
+      label="아이디"
+      name="id"
+      placeholder="아이디를 입력하세요"
+      hint="영문 4자 이상 입력하세요."
+      success-message="사용 가능한 아이디입니다."
+      :validate="validateId"
+    />
+    <ValidatedInput
+      label="비밀번호"
+      name="password"
+      type="password"
+      placeholder="비밀번호를 입력하세요"
+      validate="required"
+    />
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary">로그인</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from "@krds-community/svelte";
+import { ValidatedInput } from "@krds-community/svelte/extra";
+
+const validateId = (value) =>
+  value.trim().length >= 4
+    ? { valid: true }
+    : { valid: false, message: "4자 이상 입력해 주세요." };
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+  <ValidatedInput
+    label="아이디"
+    name="id"
+    placeholder="아이디를 입력하세요"
+    hint="영문 4자 이상 입력하세요."
+    successMessage="사용 가능한 아이디입니다."
+    validate={validateId}
+  />
+  <ValidatedInput
+    label="비밀번호"
+    name="password"
+    type="password"
+    placeholder="비밀번호를 입력하세요"
+    validate="required"
+  />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">로그인</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+import { ValidatedInput } from "@krds-community/solid/extra";
+
+export function Example() {
+  const validateId = (value: string) =>
+    value.trim().length >= 4
+      ? { valid: true }
+      : { valid: false, message: "4자 이상 입력해 주세요." };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 360 }}>
+      <ValidatedInput
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        validate={validateId}
+      />
+      <ValidatedInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">로그인</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { Component } from "@angular/core";
+import { KrdsButtonComponent } from "@krds-community/angular";
+import { KrdsValidatedInputComponent } from "@krds-community/angular/extra";
+
+@Component({
+  selector: "app-example",
+  imports: [KrdsValidatedInputComponent, KrdsButtonComponent],
+  template: `
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:360px">
+      <krds-validated-input
+        label="아이디"
+        name="id"
+        placeholder="아이디를 입력하세요"
+        hint="영문 4자 이상 입력하세요."
+        successMessage="사용 가능한 아이디입니다."
+        [validate]="validateId"
+      ></krds-validated-input>
+      <krds-validated-input
+        label="비밀번호"
+        name="password"
+        type="password"
+        placeholder="비밀번호를 입력하세요"
+        validate="required"
+      ></krds-validated-input>
+      <div style="display:flex;justify-content:flex-end">
+        <krds-button variant="primary" label="로그인"></krds-button>
+      </div>
+    </div>
+  `,
+})
+export class Example {
+  validateId = (value: string) =>
+    value.trim().length >= 4
+      ? { valid: true }
+      : { valid: false, message: "4자 이상 입력해 주세요." };
+}
+```
+
+```astro fw=astro
+---
+import { Button } from "@krds-community/astro";
+import { ValidatedInput } from "@krds-community/astro/extra";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 360px">
+  <ValidatedInput
+    label="아이디"
+    name="id"
+    placeholder="아이디를 입력하세요"
+    hint="영문 4자 이상 입력하세요."
+    successMessage="사용 가능한 아이디입니다."
+    validate="min-length:4"
+  />
+  <ValidatedInput
+    label="비밀번호"
+    name="password"
+    type="password"
+    placeholder="비밀번호를 입력하세요"
+    validate="required"
+  />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">로그인</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
 
 **사용자가 로그인 폼을 제출하였을 때 오류가 발생한 경우 해당 항목으로 초점을 이동시킨다.**
 서버 측 오류가 발생하면 화면을 다시 로드하고 비밀번호 필드를 지운 다음 사용자 이름 입력 필드로 사용자를 돌려보내야 한다. 인라인 메시지 등의 방식을 활용하여 오류를 표시하고 사용자가 문제를 해결하는 방법에 대한 명확한 지침을 제공한다.

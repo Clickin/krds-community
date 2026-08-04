@@ -964,13 +964,14 @@ export const toHtml = (report: ConformanceReport): string => `<!doctype html>
 export const writeReport = async (
   report: ConformanceReport,
   outputDirectory: string,
+  prefix = "conformance",
 ): Promise<void> => {
   await mkdir(outputDirectory, { recursive: true });
   await writeFile(
-    join(outputDirectory, "conformance.json"),
+    join(outputDirectory, `${prefix}.json`),
     `${JSON.stringify(report, null, 2)}\n`,
   );
-  await writeFile(join(outputDirectory, "conformance.md"), toMarkdown(report));
-  await writeFile(join(outputDirectory, "conformance.xml"), toJUnit(report));
-  await writeFile(join(outputDirectory, "conformance.html"), toHtml(report));
+  await writeFile(join(outputDirectory, `${prefix}.md`), toMarkdown(report));
+  await writeFile(join(outputDirectory, `${prefix}.xml`), toJUnit(report));
+  await writeFile(join(outputDirectory, `${prefix}.html`), toHtml(report));
 };

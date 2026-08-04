@@ -5,6 +5,7 @@
   "exports": {
     "./fixture-props": "./src/fixture-props.ts",
     "./fixtures.json": "./public/fixtures.json",
+    "./fixtures-extra.json": "./public/fixtures-extra.json",
     "./host.css": "./src/host.css",
     "./protocol": "./src/protocol.ts"
   },

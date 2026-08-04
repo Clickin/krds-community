@@ -15,6 +15,10 @@
       "import": "./dist/index.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./extra": {
+      "types": "./dist/extra.d.ts",
+      "import": "./dist/extra.js"
+    },
     "./*": "./dist/*.astro"
   },
   "scripts": {

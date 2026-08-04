@@ -16,6 +16,7 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
+        "@krds-community/svelte/extra": resolve("packages/svelte/dist/extra.js"),
         "@krds-community/svelte": resolve("packages/svelte/dist/index.js"),
         "@krds-community/styles/css": resolve("packages/styles/dist/index.css"),
       },

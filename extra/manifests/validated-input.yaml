@@ -1,0 +1,99 @@
+# extra 컴포넌트 conformance 매니페스트.
+#
+# 실시간 유효성 검사 입력 필드. 공식 TextInput의 정적 error state를 동적
+# 검증(Keyup/Focusout — service_03_05 실시간 유효성 검사, global_08 클라이언트
+# 측 검증)으로 확장한다. "upstream"은 extra/validated-input/ 아래 자체 참조 DOM.
+id: validated-input
+status: passing
+upstream:
+  version: extra-1.0.0
+  files:
+    - extra/validated-input/default.html
+    - extra/validated-input/error.html
+    - extra/validated-input/success.html
+fixtures:
+  - id: validated-input.default
+    sourceSelector: ".krds-validated-input"
+    sourceFile: extra/validated-input/default.html
+    mandatory: true
+    viewport: desktop
+    props:
+      label: 아이디
+      name: id
+      placeholder: 아이디를 입력하세요
+      hint: 영문 4자 이상 입력하세요.
+      successMessage: 사용 가능한 아이디입니다.
+      validate: "min-length:4"
+      mode: focusout
+    states:
+      - id: initial
+        setup: []
+        props: {}
+        expectations: {}
+    comparisons:
+      dom: strict
+      visual: none
+      accessibility: strict
+  - id: validated-input.error
+    sourceSelector: ".krds-validated-input"
+    sourceFile: extra/validated-input/error.html
+    mandatory: true
+    viewport: desktop
+    props:
+      label: 아이디
+      name: id
+      placeholder: 아이디를 입력하세요
+      hint: 영문 4자 이상 입력하세요.
+      successMessage: 사용 가능한 아이디입니다.
+      validate: "min-length:4"
+      mode: focusout
+    states:
+      - id: invalid
+        setup:
+          - action: fill
+            target: input
+            value: abc
+          - action: press
+            target: input
+            key: Tab
+        props: {}
+        expectations: {}
+    comparisons:
+      dom: strict
+      visual: none
+      accessibility: strict
+  - id: validated-input.success
+    sourceSelector: ".krds-validated-input"
+    sourceFile: extra/validated-input/success.html
+    mandatory: true
+    viewport: desktop
+    props:
+      label: 아이디
+      name: id
+      placeholder: 아이디를 입력하세요
+      hint: 영문 4자 이상 입력하세요.
+      successMessage: 사용 가능한 아이디입니다.
+      validate: "min-length:4"
+      mode: focusout
+    states:
+      - id: valid
+        setup:
+          - action: fill
+            target: input
+            value: abcd
+          - action: press
+            target: input
+            key: Tab
+        props: {}
+        expectations: {}
+    comparisons:
+      dom: strict
+      visual: none
+      accessibility: strict
+contract:
+  semanticElement: label-and-input
+  accessibleRole: textbox
+  requiredAttributes:
+    input:
+      - aria-describedby
+  accessibility: [label-for-id, describedby-for-message, aria-invalid-for-error]

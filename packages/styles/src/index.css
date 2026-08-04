@@ -564,6 +564,42 @@
   width: 1px;
 }
 
+/* ===== extra: 검색 제안 (krds-search-suggestions) =====
+ * 커뮤니티 확장 컴포넌트 전용 스타일. 공식 키트에는 없는 컴포넌트다.
+ * 사용자가 해당 클래스를 쓰지 않으면 적용되지 않으므로 옵트인이다. */
+.krds-search-suggestions {
+  position: relative;
+}
+.krds-search-suggestions .krds-suggestions-list {
+  background: var(
+    --krds-mode-light-color-background-gray,
+    var(--krds-mode-light-color-element-gray)
+  );
+  border: 1px solid var(--krds-mode-light-color-border-gray);
+  border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
+  inset-block-start: calc(100% + 0.25rem);
+  inset-inline-start: 0;
+  list-style: none;
+  margin-block: 0;
+  max-block-size: 16rem;
+  overflow-y: auto;
+  padding-inline-start: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.krds-search-suggestions .krds-suggestions-item {
+  cursor: pointer;
+  padding: 0.625rem 0.75rem;
+}
+.krds-search-suggestions .krds-suggestions-item + .krds-suggestions-item {
+  border-block-start: 1px solid var(--krds-mode-light-color-border-gray-light);
+}
+.krds-search-suggestions .krds-suggestions-item.is-active,
+.krds-search-suggestions .krds-suggestions-item:hover {
+  background: var(--krds-mode-light-color-background-primary-light);
+}
+
 :where(
   .krds-btn,
   .krds-link,

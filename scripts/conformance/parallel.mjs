@@ -8,22 +8,23 @@ import { isDeepStrictEqual } from "node:util";
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const runtimePath = resolve(repositoryRoot, "scripts/conformance/runtime.mjs");
 const frameworkIds = ["react", "vue", "svelte", "solid", "angular", "astro"];
-const requiredFixtureCount = 82;
-const requiredEvidenceCount = 492;
 const requiredChecks = ["render", "dom", "accessibility", "behavior", "form", "visual", "contract"];
-if (requiredFixtureCount * frameworkIds.length !== requiredEvidenceCount) {
-  throw new Error(
-    `Strict runtime requires exactly ${requiredEvidenceCount} executable framework fixtures`,
-  );
-}
 const arguments_ = process.argv.slice(2);
 let outputArgument;
 let saveDiffs = false;
+let catalogArgument;
 
 for (let index = 0; index < arguments_.length; index += 1) {
   const argument = arguments_[index];
   if (argument === "--save-diffs") {
     saveDiffs = true;
+    continue;
+  }
+  if (argument === "--catalog") {
+    const value = arguments_[index + 1];
+    if (!value || value.startsWith("--")) throw new Error("--catalog requires a file path");
+    catalogArgument = value;
+    index += 1;
     continue;
   }
   if (argument === "--output") {
@@ -44,16 +45,16 @@ const runStartedAt = Date.now();
 await Promise.all([rm(outputPath, { force: true }), rm(temporaryOutputPath, { force: true })]);
 
 const catalog = JSON.parse(
-  await readFile(resolve(repositoryRoot, "apps/conformance-host/dist/fixtures.json"), "utf8"),
+  await readFile(
+    resolve(repositoryRoot, catalogArgument ?? "apps/conformance-host/dist/fixtures.json"),
+    "utf8",
+  ),
 );
 if (!catalog.upstream || !Array.isArray(catalog.fixtures)) {
   throw new Error("The current conformance host build did not produce a valid fixture catalog");
 }
-if (catalog.fixtures.length !== requiredFixtureCount) {
-  throw new Error(
-    `Strict runtime requires ${requiredFixtureCount} executable fixtures; the current catalog contains ${catalog.fixtures.length}`,
-  );
-}
+// 카탈로그 기반으로 기대값을 계산한다 (공식/extra 스위트 모두 동작).
+const requiredFixtureCount = catalog.fixtures.length;
 
 const fixtureById = new Map();
 const expectedStateKeys = new Set();
@@ -211,6 +212,9 @@ const runFramework = async (framework) => {
     framework,
     "--output",
     shardPath,
+    ...(catalogArgument
+      ? ["--catalog", resolve(repositoryRoot, catalogArgument)]
+      : []),
     ...(saveDiffs
       ? ["--save-diffs", "--diff-directory", resolve(dirname(outputPath), "conformance-diffs")]
       : []),
@@ -276,7 +280,7 @@ try {
   const executedFixtures = new Set(
     results.map((result) => `${result.framework}\0${result.fixtureId}`),
   );
-  const expectedEvidenceCount = requiredEvidenceCount;
+  const expectedEvidenceCount = requiredFixtureCount * frameworkIds.length;
   const failures = [
     ...results
       .filter((result) => result.status !== "passing")

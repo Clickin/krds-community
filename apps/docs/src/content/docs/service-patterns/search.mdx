@@ -71,6 +71,12 @@ import { TextList as SvelteTextList } from "@krds-community/svelte";
 import { TextList as SolidTextList } from "@krds-community/solid";
 import { AngularTextList } from "@docs/angular-previews.ts";
 import { TextList as AstroTextList } from "@krds-community/astro";
+import { SearchSuggestions as ReactSearchSuggestions } from "@krds-community/react/extra";
+import { SearchSuggestions as VueSearchSuggestions } from "@krds-community/vue/extra";
+import { SearchSuggestions as SvelteSearchSuggestions } from "@krds-community/svelte/extra";
+import { SearchSuggestions as SolidSearchSuggestions } from "@krds-community/solid/extra";
+import { AngularSearchSuggestions } from "@docs/angular-previews.ts";
+import { SearchSuggestions as AstroSearchSuggestions } from "@krds-community/astro/extra";
 
 <PatternReference patternId="search" />
 
@@ -1199,82 +1205,49 @@ import { TextInput } from "@krds-community/astro";
 >
   <div slot="react">
     <div style="width: 100%;">
-      <ReactTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="react" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">실시간 검색어 제안</p>
-      <ReactTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
-        client:only="react"
-      />
+      <ReactSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "소득 증명서 발급" }, { id: "3", label: "주민등록등본" }]} client:only="react" />
     </div>
   </div>
   <div slot="vue">
     <div style="width: 100%;">
-      <VueTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="vue" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">실시간 검색어 제안</p>
-      <VueTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
-        client:only="vue"
-      />
+      <VueSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: '1', label: '건강보험 자격 확인' }, { id: '2', label: '소득 증명서 발급' }, { id: '3', label: '주민등록등본' }]} client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
     <div style="width: 100%;">
-      <SvelteTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="svelte" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">실시간 검색어 제안</p>
-      <SvelteTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
-        client:only="svelte"
-      />
+      <SvelteSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "소득 증명서 발급" }, { id: "3", label: "주민등록등본" }]} client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
     <div style="width: 100%;">
-      <SolidTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="solid-js" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">실시간 검색어 제안</p>
-      <SolidTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
-        client:only="solid-js"
-      />
+      <SolidSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "소득 증명서 발급" }, { id: "3", label: "주민등록등본" }]} client:only="solid-js" />
     </div>
   </div>
   <div slot="astro">
     <div style="width: 100%;">
-      <AstroTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">실시간 검색어 제안</p>
-      <AstroTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
-      />
+      <AstroSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "소득 증명서 발급" }, { id: "3", label: "주민등록등본" }]} />
     </div>
   </div>
   <div slot="angular">
     <div style="width: 100%;">
-      <AngularTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="@analogjs/astro-angular" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">실시간 검색어 제안</p>
-      <AngularTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
-        client:only="@analogjs/astro-angular"
-      />
+      <AngularSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "소득 증명서 발급" }, { id: "3", label: "주민등록등본" }]} client:only="@analogjs/astro-angular" />
     </div>
   </div>
 
 ```tsx fw=react
-import { TextInput } from "@krds-community/react";
-import { TextList } from "@krds-community/react";
+import { SearchSuggestions } from "@krds-community/react/extra";
 
 export function Example() {
   return (
     <div style={{ width: "100%" }}>
-      <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style={{ fontWeight: 700, margin: "0.75rem 0 0.25rem" }}>실시간 검색어 제안</p>
-      <TextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
+      <SearchSuggestions
+        label="검색어"
+        placeholder="검색어를 입력하세요"
+        suggestions={[
+          { id: "1", label: "건강보험 자격 확인" },
+          { id: "2", label: "소득 증명서 발급" },
+          { id: "3", label: "주민등록등본" },
+        ]}
       />
     </div>
   );
@@ -1283,17 +1256,19 @@ export function Example() {
 
 ```vue fw=vue
 <script setup>
-import { TextInput } from "@krds-community/vue";
-import { TextList } from "@krds-community/vue";
+import { SearchSuggestions } from "@krds-community/vue/extra";
 </script>
 
 <template>
   <div style="width: 100%">
-    <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-    <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">실시간 검색어 제안</p>
-    <TextList
-      aria-label="실시간 검색어 제안"
-      :items="['건강보험 자격 확인', '소득 증명서 발급', '주민등록등본']"
+    <SearchSuggestions
+      label="검색어"
+      placeholder="검색어를 입력하세요"
+      :suggestions="[
+        { id: '1', label: '건강보험 자격 확인' },
+        { id: '2', label: '소득 증명서 발급' },
+        { id: '3', label: '주민등록등본' },
+      ]"
     />
   </div>
 </template>
@@ -1301,32 +1276,36 @@ import { TextList } from "@krds-community/vue";
 
 ```svelte fw=svelte
 <script>
-import { TextInput } from "@krds-community/svelte";
-import { TextList } from "@krds-community/svelte";
+import { SearchSuggestions } from "@krds-community/svelte/extra";
 </script>
 
 <div style="width: 100%">
-  <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-  <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">실시간 검색어 제안</p>
-  <TextList
-    aria-label="실시간 검색어 제안"
-    items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
+  <SearchSuggestions
+    label="검색어"
+    placeholder="검색어를 입력하세요"
+    suggestions={[
+      { id: "1", label: "건강보험 자격 확인" },
+      { id: "2", label: "소득 증명서 발급" },
+      { id: "3", label: "주민등록등본" },
+    ]}
   />
 </div>
 ```
 
 ```tsx fw=solid
-import { TextInput } from "@krds-community/solid";
-import { TextList } from "@krds-community/solid";
+import { SearchSuggestions } from "@krds-community/solid/extra";
 
 export function Example() {
   return (
     <div style={{ width: "100%" }}>
-      <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style={{ fontWeight: 700, margin: "0.75rem 0 0.25rem" }}>실시간 검색어 제안</p>
-      <TextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
+      <SearchSuggestions
+        label="검색어"
+        placeholder="검색어를 입력하세요"
+        suggestions={[
+          { id: "1", label: "건강보험 자격 확인" },
+          { id: "2", label: "소득 증명서 발급" },
+          { id: "3", label: "주민등록등본" },
+        ]}
       />
     </div>
   );
@@ -1335,36 +1314,36 @@ export function Example() {
 
 ```ts fw=angular
 import { Component } from "@angular/core";
-import { KrdsTextInputComponent, KrdsTextListComponent } from "@krds-community/angular";
+import { KrdsSearchSuggestionsComponent } from "@krds-community/angular/extra";
 
 @Component({
   selector: "app-example",
-  imports: [KrdsTextInputComponent, KrdsTextListComponent],
+  imports: [KrdsSearchSuggestionsComponent],
   template: `
     <div style="width: 100%">
-      <krds-text-input name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">실시간 검색어 제안</p>
-      <krds-text-list aria-label="실시간 검색어 제안" [items]="suggestions" />
+      <krds-search-suggestions label="검색어" placeholder="검색어를 입력하세요" [suggestions]="suggestions" />
     </div>
   `,
 })
 export class Example {
-  suggestions = ["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"];
+  suggestions = [{ id: '1', label: '건강보험 자격 확인' }, { id: '2', label: '소득 증명서 발급' }, { id: '3', label: '주민등록등본' }];
 }
 ```
 
 ```astro fw=astro
 ---
-import { TextInput } from "@krds-community/astro";
-import { TextList } from "@krds-community/astro";
+import { SearchSuggestions } from "@krds-community/astro/extra";
 ---
 
 <div style="width: 100%">
-  <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-  <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">실시간 검색어 제안</p>
-  <TextList
-    aria-label="실시간 검색어 제안"
-    items={["건강보험 자격 확인", "소득 증명서 발급", "주민등록등본"]}
+  <SearchSuggestions
+    label="검색어"
+    placeholder="검색어를 입력하세요"
+    suggestions={[
+      { id: "1", label: "건강보험 자격 확인" },
+      { id: "2", label: "소득 증명서 발급" },
+      { id: "3", label: "주민등록등본" },
+    ]}
   />
 </div>
 ```
@@ -1928,82 +1907,50 @@ import { TextInput } from "@krds-community/astro";
 >
   <div slot="react">
     <div style="width: 100%;">
-      <ReactTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="react" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">추천 검색어</p>
-      <ReactTextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
-        client:only="react"
-      />
+      <ReactSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "주민등록등본" }, { id: "2", label: "건강보험 자격 확인" }, { id: "3", label: "소득 증명서 발급" }, { id: "4", label: "사업자 등록 조회" }]} client:only="react" />
     </div>
   </div>
   <div slot="vue">
     <div style="width: 100%;">
-      <VueTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="vue" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">추천 검색어</p>
-      <VueTextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
-        client:only="vue"
-      />
+      <VueSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: '1', label: '주민등록등본' }, { id: '2', label: '건강보험 자격 확인' }, { id: '3', label: '소득 증명서 발급' }, { id: '4', label: '사업자 등록 조회' }]} client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
     <div style="width: 100%;">
-      <SvelteTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="svelte" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">추천 검색어</p>
-      <SvelteTextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
-        client:only="svelte"
-      />
+      <SvelteSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "주민등록등본" }, { id: "2", label: "건강보험 자격 확인" }, { id: "3", label: "소득 증명서 발급" }, { id: "4", label: "사업자 등록 조회" }]} client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
     <div style="width: 100%;">
-      <SolidTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="solid-js" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">추천 검색어</p>
-      <SolidTextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
-        client:only="solid-js"
-      />
+      <SolidSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "주민등록등본" }, { id: "2", label: "건강보험 자격 확인" }, { id: "3", label: "소득 증명서 발급" }, { id: "4", label: "사업자 등록 조회" }]} client:only="solid-js" />
     </div>
   </div>
   <div slot="astro">
     <div style="width: 100%;">
-      <AstroTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">추천 검색어</p>
-      <AstroTextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
-      />
+      <AstroSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "주민등록등본" }, { id: "2", label: "건강보험 자격 확인" }, { id: "3", label: "소득 증명서 발급" }, { id: "4", label: "사업자 등록 조회" }]} />
     </div>
   </div>
   <div slot="angular">
     <div style="width: 100%;">
-      <AngularTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="@analogjs/astro-angular" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem;">추천 검색어</p>
-      <AngularTextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
-        client:only="@analogjs/astro-angular"
-      />
+      <AngularSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "주민등록등본" }, { id: "2", label: "건강보험 자격 확인" }, { id: "3", label: "소득 증명서 발급" }, { id: "4", label: "사업자 등록 조회" }]} client:only="@analogjs/astro-angular" />
     </div>
   </div>
 
 ```tsx fw=react
-import { TextInput } from "@krds-community/react";
-import { TextList } from "@krds-community/react";
+import { SearchSuggestions } from "@krds-community/react/extra";
 
 export function Example() {
   return (
     <div style={{ width: "100%" }}>
-      <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style={{ fontWeight: 700, margin: "0.75rem 0 0.25rem" }}>추천 검색어</p>
-      <TextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
+      <SearchSuggestions
+        label="검색어"
+        placeholder="검색어를 입력하세요"
+        suggestions={[
+          { id: "1", label: "주민등록등본" },
+          { id: "2", label: "건강보험 자격 확인" },
+          { id: "3", label: "소득 증명서 발급" },
+          { id: "4", label: "사업자 등록 조회" },
+        ]}
       />
     </div>
   );
@@ -2012,17 +1959,20 @@ export function Example() {
 
 ```vue fw=vue
 <script setup>
-import { TextInput } from "@krds-community/vue";
-import { TextList } from "@krds-community/vue";
+import { SearchSuggestions } from "@krds-community/vue/extra";
 </script>
 
 <template>
   <div style="width: 100%">
-    <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-    <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">추천 검색어</p>
-    <TextList
-      aria-label="추천 검색어"
-      :items="['주민등록등본', '건강보험 자격 확인', '소득 증명서 발급', '사업자 등록 조회']"
+    <SearchSuggestions
+      label="검색어"
+      placeholder="검색어를 입력하세요"
+      :suggestions="[
+        { id: '1', label: '주민등록등본' },
+        { id: '2', label: '건강보험 자격 확인' },
+        { id: '3', label: '소득 증명서 발급' },
+        { id: '4', label: '사업자 등록 조회' },
+      ]"
     />
   </div>
 </template>
@@ -2030,32 +1980,38 @@ import { TextList } from "@krds-community/vue";
 
 ```svelte fw=svelte
 <script>
-import { TextInput } from "@krds-community/svelte";
-import { TextList } from "@krds-community/svelte";
+import { SearchSuggestions } from "@krds-community/svelte/extra";
 </script>
 
 <div style="width: 100%">
-  <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-  <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">추천 검색어</p>
-  <TextList
-    aria-label="추천 검색어"
-    items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
+  <SearchSuggestions
+    label="검색어"
+    placeholder="검색어를 입력하세요"
+    suggestions={[
+      { id: "1", label: "주민등록등본" },
+      { id: "2", label: "건강보험 자격 확인" },
+      { id: "3", label: "소득 증명서 발급" },
+      { id: "4", label: "사업자 등록 조회" },
+    ]}
   />
 </div>
 ```
 
 ```tsx fw=solid
-import { TextInput } from "@krds-community/solid";
-import { TextList } from "@krds-community/solid";
+import { SearchSuggestions } from "@krds-community/solid/extra";
 
 export function Example() {
   return (
     <div style={{ width: "100%" }}>
-      <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style={{ fontWeight: 700, margin: "0.75rem 0 0.25rem" }}>추천 검색어</p>
-      <TextList
-        aria-label="추천 검색어"
-        items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
+      <SearchSuggestions
+        label="검색어"
+        placeholder="검색어를 입력하세요"
+        suggestions={[
+          { id: "1", label: "주민등록등본" },
+          { id: "2", label: "건강보험 자격 확인" },
+          { id: "3", label: "소득 증명서 발급" },
+          { id: "4", label: "사업자 등록 조회" },
+        ]}
       />
     </div>
   );
@@ -2064,36 +2020,37 @@ export function Example() {
 
 ```ts fw=angular
 import { Component } from "@angular/core";
-import { KrdsTextInputComponent, KrdsTextListComponent } from "@krds-community/angular";
+import { KrdsSearchSuggestionsComponent } from "@krds-community/angular/extra";
 
 @Component({
   selector: "app-example",
-  imports: [KrdsTextInputComponent, KrdsTextListComponent],
+  imports: [KrdsSearchSuggestionsComponent],
   template: `
     <div style="width: 100%">
-      <krds-text-input name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">추천 검색어</p>
-      <krds-text-list aria-label="추천 검색어" [items]="suggestions" />
+      <krds-search-suggestions label="검색어" placeholder="검색어를 입력하세요" [suggestions]="suggestions" />
     </div>
   `,
 })
 export class Example {
-  suggestions = ["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"];
+  suggestions = [{ id: '1', label: '주민등록등본' }, { id: '2', label: '건강보험 자격 확인' }, { id: '3', label: '소득 증명서 발급' }, { id: '4', label: '사업자 등록 조회' }];
 }
 ```
 
 ```astro fw=astro
 ---
-import { TextInput } from "@krds-community/astro";
-import { TextList } from "@krds-community/astro";
+import { SearchSuggestions } from "@krds-community/astro/extra";
 ---
 
 <div style="width: 100%">
-  <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-  <p style="font-weight: 700; margin: 0.75rem 0 0.25rem">추천 검색어</p>
-  <TextList
-    aria-label="추천 검색어"
-    items={["주민등록등본", "건강보험 자격 확인", "소득 증명서 발급", "사업자 등록 조회"]}
+  <SearchSuggestions
+    label="검색어"
+    placeholder="검색어를 입력하세요"
+    suggestions={[
+      { id: "1", label: "주민등록등본" },
+      { id: "2", label: "건강보험 자격 확인" },
+      { id: "3", label: "소득 증명서 발급" },
+      { id: "4", label: "사업자 등록 조회" },
+    ]}
   />
 </div>
 ```
@@ -2111,75 +2068,49 @@ import { TextList } from "@krds-community/astro";
 >
   <div slot="react">
     <div style="width: 100%;">
-      <ReactTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="react" />
-      <ReactTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
-        client:only="react"
-      />
+      <ReactSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "건강검진 결과 조회" }, { id: "3", label: "건강보험료 조회" }]} client:only="react" />
     </div>
   </div>
   <div slot="vue">
     <div style="width: 100%;">
-      <VueTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="vue" />
-      <VueTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
-        client:only="vue"
-      />
+      <VueSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: '1', label: '건강보험 자격 확인' }, { id: '2', label: '건강검진 결과 조회' }, { id: '3', label: '건강보험료 조회' }]} client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
     <div style="width: 100%;">
-      <SvelteTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="svelte" />
-      <SvelteTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
-        client:only="svelte"
-      />
+      <SvelteSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "건강검진 결과 조회" }, { id: "3", label: "건강보험료 조회" }]} client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
     <div style="width: 100%;">
-      <SolidTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="solid-js" />
-      <SolidTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
-        client:only="solid-js"
-      />
+      <SolidSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "건강검진 결과 조회" }, { id: "3", label: "건강보험료 조회" }]} client:only="solid-js" />
     </div>
   </div>
   <div slot="astro">
     <div style="width: 100%;">
-      <AstroTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <AstroTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
-      />
+      <AstroSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "건강검진 결과 조회" }, { id: "3", label: "건강보험료 조회" }]} />
     </div>
   </div>
   <div slot="angular">
     <div style="width: 100%;">
-      <AngularTextInput name="search" label="검색어" placeholder="검색어를 입력하세요" client:only="@analogjs/astro-angular" />
-      <AngularTextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
-        client:only="@analogjs/astro-angular"
-      />
+      <AngularSearchSuggestions label="검색어" placeholder="검색어를 입력하세요" suggestions={[{ id: "1", label: "건강보험 자격 확인" }, { id: "2", label: "건강검진 결과 조회" }, { id: "3", label: "건강보험료 조회" }]} client:only="@analogjs/astro-angular" />
     </div>
   </div>
 
 ```tsx fw=react
-import { TextInput } from "@krds-community/react";
-import { TextList } from "@krds-community/react";
+import { SearchSuggestions } from "@krds-community/react/extra";
 
 export function Example() {
   return (
     <div style={{ width: "100%" }}>
-      <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <TextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
+      <SearchSuggestions
+        label="검색어"
+        placeholder="검색어를 입력하세요"
+        suggestions={[
+          { id: "1", label: "건강보험 자격 확인" },
+          { id: "2", label: "건강검진 결과 조회" },
+          { id: "3", label: "건강보험료 조회" },
+        ]}
       />
     </div>
   );
@@ -2188,16 +2119,19 @@ export function Example() {
 
 ```vue fw=vue
 <script setup>
-import { TextInput } from "@krds-community/vue";
-import { TextList } from "@krds-community/vue";
+import { SearchSuggestions } from "@krds-community/vue/extra";
 </script>
 
 <template>
   <div style="width: 100%">
-    <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-    <TextList
-      aria-label="실시간 검색어 제안"
-      :items="['건강보험 자격 확인', '건강검진 결과 조회', '건강보험료 조회']"
+    <SearchSuggestions
+      label="검색어"
+      placeholder="검색어를 입력하세요"
+      :suggestions="[
+        { id: '1', label: '건강보험 자격 확인' },
+        { id: '2', label: '건강검진 결과 조회' },
+        { id: '3', label: '건강보험료 조회' },
+      ]"
     />
   </div>
 </template>
@@ -2205,30 +2139,36 @@ import { TextList } from "@krds-community/vue";
 
 ```svelte fw=svelte
 <script>
-import { TextInput } from "@krds-community/svelte";
-import { TextList } from "@krds-community/svelte";
+import { SearchSuggestions } from "@krds-community/svelte/extra";
 </script>
 
 <div style="width: 100%">
-  <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-  <TextList
-    aria-label="실시간 검색어 제안"
-    items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
+  <SearchSuggestions
+    label="검색어"
+    placeholder="검색어를 입력하세요"
+    suggestions={[
+      { id: "1", label: "건강보험 자격 확인" },
+      { id: "2", label: "건강검진 결과 조회" },
+      { id: "3", label: "건강보험료 조회" },
+    ]}
   />
 </div>
 ```
 
 ```tsx fw=solid
-import { TextInput } from "@krds-community/solid";
-import { TextList } from "@krds-community/solid";
+import { SearchSuggestions } from "@krds-community/solid/extra";
 
 export function Example() {
   return (
     <div style={{ width: "100%" }}>
-      <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <TextList
-        aria-label="실시간 검색어 제안"
-        items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
+      <SearchSuggestions
+        label="검색어"
+        placeholder="검색어를 입력하세요"
+        suggestions={[
+          { id: "1", label: "건강보험 자격 확인" },
+          { id: "2", label: "건강검진 결과 조회" },
+          { id: "3", label: "건강보험료 조회" },
+        ]}
       />
     </div>
   );
@@ -2237,34 +2177,36 @@ export function Example() {
 
 ```ts fw=angular
 import { Component } from "@angular/core";
-import { KrdsTextInputComponent, KrdsTextListComponent } from "@krds-community/angular";
+import { KrdsSearchSuggestionsComponent } from "@krds-community/angular/extra";
 
 @Component({
   selector: "app-example",
-  imports: [KrdsTextInputComponent, KrdsTextListComponent],
+  imports: [KrdsSearchSuggestionsComponent],
   template: `
     <div style="width: 100%">
-      <krds-text-input name="search" label="검색어" placeholder="검색어를 입력하세요" />
-      <krds-text-list aria-label="실시간 검색어 제안" [items]="suggestions" />
+      <krds-search-suggestions label="검색어" placeholder="검색어를 입력하세요" [suggestions]="suggestions" />
     </div>
   `,
 })
 export class Example {
-  suggestions = ["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"];
+  suggestions = [{ id: '1', label: '건강보험 자격 확인' }, { id: '2', label: '건강검진 결과 조회' }, { id: '3', label: '건강보험료 조회' }];
 }
 ```
 
 ```astro fw=astro
 ---
-import { TextInput } from "@krds-community/astro";
-import { TextList } from "@krds-community/astro";
+import { SearchSuggestions } from "@krds-community/astro/extra";
 ---
 
 <div style="width: 100%">
-  <TextInput name="search" label="검색어" placeholder="검색어를 입력하세요" />
-  <TextList
-    aria-label="실시간 검색어 제안"
-    items={["건강보험 자격 확인", "건강검진 결과 조회", "건강보험료 조회"]}
+  <SearchSuggestions
+    label="검색어"
+    placeholder="검색어를 입력하세요"
+    suggestions={[
+      { id: "1", label: "건강보험 자격 확인" },
+      { id: "2", label: "건강검진 결과 조회" },
+      { id: "3", label: "건강보험료 조회" },
+    ]}
   />
 </div>
 ```

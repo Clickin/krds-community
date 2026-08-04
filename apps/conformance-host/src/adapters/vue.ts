@@ -1,4 +1,5 @@
 import * as Components from "@krds-community/vue";
+import * as ExtraComponents from "@krds-community/vue/extra";
 import { createApp, h, nextTick, shallowReactive, type Component } from "vue";
 import type { FrameworkAdapter } from "../protocol";
 
@@ -20,7 +21,9 @@ const toPascalCase = (componentId: string): string =>
 
 const resolveComponent = (componentId: string): Component => {
   const exportName = CORE_EXPORTS[componentId] ?? toPascalCase(componentId);
-  const component: unknown = Components[exportName as keyof typeof Components];
+  const component: unknown =
+    Components[exportName as keyof typeof Components] ??
+    ExtraComponents[exportName as keyof typeof ExtraComponents];
 
   if (component === null || (typeof component !== "object" && typeof component !== "function")) {
     throw new Error(`Unknown Vue component: ${componentId}`);

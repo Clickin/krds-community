@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { createApplication } from "@angular/platform-browser";
 import * as Components from "@krds-community/angular";
+import * as ExtraComponents from "@krds-community/angular/extra";
 import type { FrameworkAdapter } from "../protocol";
 
 const coreExports: Readonly<Record<string, string>> = {
@@ -34,7 +35,8 @@ const resolveComponent = (
 ): { component: Type<unknown>; inputNames: ReadonlySet<string> } => {
   const coreExport = coreExports[componentId];
   const exportName = coreExport ?? `Krds${toPascalCase(componentId)}Component`;
-  const candidate: unknown = Reflect.get(Components, exportName);
+  const candidate: unknown =
+    Reflect.get(Components, exportName) ?? Reflect.get(ExtraComponents, exportName);
 
   if (!isComponentType(candidate)) {
     throw new Error(`Unknown Angular component: ${componentId} (${exportName})`);

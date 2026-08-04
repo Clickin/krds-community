@@ -9,6 +9,8 @@ for (const file of await readdir(join(root, "src"))) {
     file.endsWith(".svelte") ||
     file === "index.js" ||
     file === "index.d.ts" ||
+    file === "extra.js" ||
+    file === "extra.d.ts" ||
     file === "styles.css"
   )
     await copyFile(join(root, "src", file), join(dist, file));

@@ -1,0 +1,115 @@
+# extra 컴포넌트 conformance 매니페스트.
+#
+# 공식 upstream HTML 키트에 없는 커뮤니티 확장 컴포넌트다. "upstream"은
+# extra/search-suggestions/ 아래의 자체 참조 DOM(커뮤니티 작성)이며, 6개
+# 프레임워크 구현이 이 참조 DOM과 상태별로 구조적으로 동일함을 검증한다.
+#
+# 상태 구성: 각 fixture가 하나의 상태(파일)를 참조하고, 프레임워크 측은
+# setup 액션(fill/press)으로 동일 상태를 만들어 비교한다.
+id: search-suggestions
+status: passing
+upstream:
+  version: extra-1.0.0
+  files:
+    - extra/search-suggestions/closed.html
+    - extra/search-suggestions/open.html
+    - extra/search-suggestions/active.html
+fixtures:
+  - id: search-suggestions.closed
+    sourceSelector: ".krds-search-suggestions"
+    sourceFile: extra/search-suggestions/closed.html
+    mandatory: true
+    viewport: desktop
+    props:
+      id: krds-search-suggestions-fixture
+      label: 검색어
+      name: search
+      placeholder: 검색어를 입력하세요
+      suggestions:
+        - id: "1"
+          label: 건강보험 자격 확인
+        - id: "2"
+          label: 건강검진 결과 조회
+        - id: "3"
+          label: 건강보험료 조회
+    states:
+      - id: initial
+        setup: []
+        props: {}
+        expectations: {}
+    comparisons:
+      dom: strict
+      visual: none
+      accessibility: strict
+  - id: search-suggestions.open
+    sourceSelector: ".krds-search-suggestions"
+    sourceFile: extra/search-suggestions/open.html
+    mandatory: true
+    viewport: desktop
+    props:
+      id: krds-search-suggestions-fixture
+      label: 검색어
+      name: search
+      placeholder: 검색어를 입력하세요
+      suggestions:
+        - id: "1"
+          label: 건강보험 자격 확인
+        - id: "2"
+          label: 건강검진 결과 조회
+        - id: "3"
+          label: 건강보험료 조회
+    states:
+      - id: open
+        setup:
+          - action: fill
+            target: input
+            value: 건강
+        props: {}
+        expectations: {}
+    comparisons:
+      dom: strict
+      visual: none
+      accessibility: strict
+  - id: search-suggestions.active
+    sourceSelector: ".krds-search-suggestions"
+    sourceFile: extra/search-suggestions/active.html
+    mandatory: true
+    viewport: desktop
+    props:
+      id: krds-search-suggestions-fixture
+      label: 검색어
+      name: search
+      placeholder: 검색어를 입력하세요
+      suggestions:
+        - id: "1"
+          label: 건강보험 자격 확인
+        - id: "2"
+          label: 건강검진 결과 조회
+        - id: "3"
+          label: 건강보험료 조회
+    states:
+      - id: keyboard-active
+        setup:
+          - action: fill
+            target: input
+            value: 건강
+          - action: press
+            target: input
+            key: ArrowDown
+        props: {}
+        expectations: {}
+    comparisons:
+      dom: strict
+      visual: none
+      accessibility: strict
+contract:
+  semanticElement: label-and-input
+  accessibleRole: combobox
+  requiredAttributes:
+    input:
+      - role=combobox
+      - aria-expanded
+      - aria-controls
+      - aria-autocomplete
+      - aria-describedby
+  accessibility: [combobox-pattern, status-messages, label-for-id]

@@ -1,4 +1,5 @@
 import * as Components from "@krds-community/svelte";
+import * as ExtraComponents from "@krds-community/svelte/extra";
 import { createClassComponent } from "svelte/legacy";
 import { createRawSnippet, tick, type Component } from "svelte";
 import type { FrameworkAdapter } from "../protocol";
@@ -11,7 +12,9 @@ const exportName = (componentId: string): string =>
 
 const componentFor = (componentId: string): Component<Record<string, unknown>> => {
   const name = exportName(componentId);
-  const candidate: unknown = (Components as Record<string, unknown>)[name];
+  const candidate: unknown =
+    (Components as Record<string, unknown>)[name] ??
+    (ExtraComponents as Record<string, unknown>)[name];
   if (typeof candidate !== "function") {
     throw new Error(`Svelte package export is missing: ${name}`);
   }

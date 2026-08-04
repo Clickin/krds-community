@@ -17,6 +17,12 @@ import { TextInput as SvelteTextInput } from "@krds-community/svelte";
 import { TextInput as SolidTextInput } from "@krds-community/solid";
 import { AngularTextInput } from "@docs/angular-previews.ts";
 import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { ValidatedInput as ReactValidatedInput } from "@krds-community/react/extra";
+import { ValidatedInput as VueValidatedInput } from "@krds-community/vue/extra";
+import { ValidatedInput as SvelteValidatedInput } from "@krds-community/svelte/extra";
+import { ValidatedInput as SolidValidatedInput } from "@krds-community/solid/extra";
+import { AngularValidatedInput } from "@docs/angular-previews.ts";
+import { ValidatedInput as AstroValidatedInput } from "@krds-community/astro/extra";
 import { Textarea as ReactTextarea } from "@krds-community/react";
 import { Textarea as VueTextarea } from "@krds-community/vue";
 import { Textarea as SvelteTextarea } from "@krds-community/svelte";
@@ -745,6 +751,305 @@ import { Button, Spinner, TextInput } from "@krds-community/astro";
   <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
     <Spinner label="처리 중" />
     <Button variant="primary" disabled>제출</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="클라이언트 측 검증은 실시간으로 입력을 확인한다"
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate="email"
+        mode="both"
+        client:only="react"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" client:only="react">제출</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        success-message="올바른 이메일 형식입니다."
+        validate="email"
+        mode="both"
+        client:only="vue"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" client:only="vue">제출</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate="email"
+        mode="both"
+        client:only="svelte"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" client:only="svelte">제출</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate="email"
+        mode="both"
+        client:only="solid-js"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" client:only="solid-js">제출</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate="email"
+        mode="both"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary">제출</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate="email"
+        mode="both"
+        client:only="@analogjs/astro-angular"
+      />
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="제출" client:only="@analogjs/astro-angular">제출</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+import { ValidatedInput } from "@krds-community/react/extra";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function Example() {
+  const validateEmail = (value: string) =>
+    EMAIL_PATTERN.test(value.trim())
+      ? { valid: true }
+      : { valid: false, message: "올바른 이메일 형식으로 입력해 주세요." };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <ValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate={validateEmail}
+        mode="both"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">제출</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from "@krds-community/vue";
+import { ValidatedInput } from "@krds-community/vue/extra";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const validateEmail = (value) =>
+  EMAIL_PATTERN.test(value.trim())
+    ? { valid: true }
+    : { valid: false, message: "올바른 이메일 형식으로 입력해 주세요." };
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <ValidatedInput
+      label="이메일"
+      name="email"
+      type="email"
+      placeholder="이메일을 입력해 주세요"
+      hint="example@domain.com 형식으로 입력해 주세요."
+      success-message="올바른 이메일 형식입니다."
+      :validate="validateEmail"
+      mode="both"
+    />
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary">제출</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from "@krds-community/svelte";
+import { ValidatedInput } from "@krds-community/svelte/extra";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const validateEmail = (value) =>
+  EMAIL_PATTERN.test(value.trim())
+    ? { valid: true }
+    : { valid: false, message: "올바른 이메일 형식으로 입력해 주세요." };
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <ValidatedInput
+    label="이메일"
+    name="email"
+    type="email"
+    placeholder="이메일을 입력해 주세요"
+    hint="example@domain.com 형식으로 입력해 주세요."
+    successMessage="올바른 이메일 형식입니다."
+    validate={validateEmail}
+    mode="both"
+  />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">제출</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+import { ValidatedInput } from "@krds-community/solid/extra";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function Example() {
+  const validateEmail = (value: string) =>
+    EMAIL_PATTERN.test(value.trim())
+      ? { valid: true }
+      : { valid: false, message: "올바른 이메일 형식으로 입력해 주세요." };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <ValidatedInput
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        validate={validateEmail}
+        mode="both"
+      />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">제출</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { Component } from "@angular/core";
+import { KrdsButtonComponent } from "@krds-community/angular";
+import { KrdsValidatedInputComponent } from "@krds-community/angular/extra";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+@Component({
+  selector: "app-example",
+  imports: [KrdsValidatedInputComponent, KrdsButtonComponent],
+  template: `
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:480px">
+      <krds-validated-input
+        label="이메일"
+        name="email"
+        type="email"
+        placeholder="이메일을 입력해 주세요"
+        hint="example@domain.com 형식으로 입력해 주세요."
+        successMessage="올바른 이메일 형식입니다."
+        [validate]="validateEmail"
+        mode="both"
+      ></krds-validated-input>
+      <div style="display:flex;justify-content:flex-end">
+        <krds-button variant="primary" label="제출"></krds-button>
+      </div>
+    </div>
+  `,
+})
+export class Example {
+  validateEmail = (value: string) =>
+    EMAIL_PATTERN.test(value.trim())
+      ? { valid: true }
+      : { valid: false, message: "올바른 이메일 형식으로 입력해 주세요." };
+}
+```
+
+```astro fw=astro
+---
+import { Button } from "@krds-community/astro";
+import { ValidatedInput } from "@krds-community/astro/extra";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <ValidatedInput
+    label="이메일"
+    name="email"
+    type="email"
+    placeholder="이메일을 입력해 주세요"
+    hint="example@domain.com 형식으로 입력해 주세요."
+    successMessage="올바른 이메일 형식입니다."
+    validate="email"
+    mode="both"
+  />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">제출</Button>
   </div>
 </div>
 ```

@@ -22,6 +22,7 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
+        "@krds-community/react/extra": resolve("packages/react/dist/extra.js"),
         "@krds-community/react": resolve("packages/react/dist/index.js"),
         "@krds-community/styles/css": resolve("packages/styles/dist/index.css"),
       },

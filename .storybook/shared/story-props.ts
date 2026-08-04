@@ -66,3 +66,50 @@ export const MODAL_PROPS = {
 
 /** Modal trigger button text */
 export const MODAL_TRIGGER_TEXT = "모달 열기";
+
+/** extra: 검색 제안 (SearchSuggestions) */
+export const SEARCH_SUGGESTIONS = [
+  { id: "1", label: "건강보험 자격 확인" },
+  { id: "2", label: "건강검진 결과 조회" },
+  { id: "3", label: "건강보험료 조회" },
+] as const;
+
+/** extra: 실시간 유효성 검사 (ValidatedInput) */
+export const VALIDATED_INPUT_PROPS = {
+  label: "아이디",
+  name: "id",
+  placeholder: "아이디를 입력하세요",
+  hint: "영문 4자 이상 입력하세요.",
+  successMessage: "사용 가능한 아이디입니다.",
+} as const;
+
+/** extra: 즉각 표시 필터·정렬 (FilterableList) */
+export const FILTERABLE_LIST_ITEMS = [
+  { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+  { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+  { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+] as const;
+
+export const FILTERABLE_LIST_FILTERS = [
+  {
+    id: "life",
+    label: "생애 주기",
+    field: "life",
+    options: [
+      { value: "infant", label: "영유아" },
+      { value: "child", label: "아동" },
+      { value: "youth", label: "청년" },
+    ],
+  },
+  {
+    id: "family",
+    label: "가구 상황",
+    field: "family",
+    options: [
+      { value: "dual", label: "맞벌이" },
+      { value: "single", label: "1인 가구" },
+    ],
+  },
+] as const;
+
+export const FILTERABLE_LIST_SORT = { id: "title", label: "이름순", field: "label" } as const;

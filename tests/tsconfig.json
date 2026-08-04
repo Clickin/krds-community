@@ -10,7 +10,7 @@
       "@krds-community/conformance": ["../packages/conformance/src/index.ts"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "../apps/conformance-host/src/protocol.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "../apps/conformance-host/src/protocol.ts", "../packages/cli/src/deps.ts"],
   "exclude": [
     "dist",
     "docs-links.test.ts",

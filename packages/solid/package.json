@@ -14,6 +14,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./src/index.tsx"
+    },
+    "./extra": {
+      "types": "./dist/extra.d.ts",
+      "import": "./src/extra.tsx"
     }
   },
   "scripts": {

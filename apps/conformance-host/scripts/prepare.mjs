@@ -5,30 +5,40 @@ import { loadFixtureManifests } from "../../../packages/conformance/dist/index.j
 
 const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryRoot = resolve(appRoot, "../..");
-const manifests = await loadFixtureManifests(resolve(repositoryRoot, "conformance/manifests"));
 const upstreamLock = JSON.parse(
   await readFile(resolve(repositoryRoot, "upstream/upstream.lock.json"), "utf8"),
 );
-const fixtures = manifests.flatMap((manifest) =>
-  manifest.fixtures.map((fixture) => ({
-    ...fixture,
-    componentId: manifest.id,
-    sourcePath: fixture.sourceFile,
-    contract: manifest.contract,
-    errata: manifest.errata,
-  })),
-);
-const output = {
-  upstream: {
-    repository: upstreamLock.repository,
-    ref: upstreamLock.ref,
-    commit: upstreamLock.commit,
-    packageVersion: upstreamLock.packageVersion,
-    snapshotIntegrity: upstreamLock.tarballIntegrity,
-  },
-  fixtures,
+const upstream = {
+  repository: upstreamLock.repository,
+  ref: upstreamLock.ref,
+  commit: upstreamLock.commit,
+  packageVersion: upstreamLock.packageVersion,
+  snapshotIntegrity: upstreamLock.tarballIntegrity,
 };
+const buildCatalog = (manifests) => ({
+  upstream,
+  fixtures: manifests.flatMap((manifest) =>
+    manifest.fixtures.map((fixture) => ({
+      ...fixture,
+      componentId: manifest.id,
+      sourcePath: fixture.sourceFile,
+      contract: manifest.contract,
+      errata: manifest.errata,
+    })),
+  ),
+});
+const manifests = await loadFixtureManifests(resolve(repositoryRoot, "conformance/manifests"));
+const extraManifests = await loadFixtureManifests(resolve(repositoryRoot, "extra/manifests"));
+const catalog = buildCatalog(manifests);
+const extraCatalog = buildCatalog(extraManifests);
 const publicDirectory = resolve(appRoot, "public");
 await mkdir(publicDirectory, { recursive: true });
-await writeFile(resolve(publicDirectory, "fixtures.json"), `${JSON.stringify(output, null, 2)}\n`);
-console.log(`Prepared ${fixtures.length} executable fixtures.`);
+await writeFile(
+  resolve(publicDirectory, "fixtures.json"),
+  `${JSON.stringify(catalog, null, 2)}\n`,
+);
+await writeFile(
+  resolve(publicDirectory, "fixtures-extra.json"),
+  `${JSON.stringify(extraCatalog, null, 2)}\n`,
+);
+console.log(`Prepared ${catalog.fixtures.length} executable fixtures (+${extraCatalog.fixtures.length} extra).`);

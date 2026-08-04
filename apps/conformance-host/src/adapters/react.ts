@@ -2,6 +2,7 @@ import { createElement, type ComponentType } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import * as Components from "@krds-community/react";
+import * as ExtraComponents from "@krds-community/react/extra";
 import type { FrameworkAdapter } from "../protocol";
 
 const exportName = (componentId: string): string =>
@@ -11,7 +12,9 @@ const exportName = (componentId: string): string =>
     .join("");
 
 const componentFor = (componentId: string): ComponentType<Record<string, unknown>> => {
-  const candidate = (Components as Record<string, unknown>)[exportName(componentId)];
+  const candidate =
+    (Components as Record<string, unknown>)[exportName(componentId)] ??
+    (ExtraComponents as Record<string, unknown>)[exportName(componentId)];
   if (typeof candidate !== "function" && typeof candidate !== "object") {
     throw new Error(`React package export is missing: ${exportName(componentId)}`);
   }

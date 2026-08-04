@@ -17,11 +17,12 @@ const framework = document.body.dataset.framework as Framework | undefined;
 const search = new URLSearchParams(window.location.search);
 const fixtureId = search.get("fixture");
 const docsPreview = search.get("preview") === "docs";
+const catalogName = search.get("catalog") ?? "fixtures.json";
 if (!target || !framework || !fixtureId) {
   throw new Error("Conformance host requires a framework page and ?fixture=<id>.");
 }
 
-const catalogResponse = await fetch(`${import.meta.env.BASE_URL}fixtures.json`);
+const catalogResponse = await fetch(`${import.meta.env.BASE_URL}${catalogName}`);
 if (!catalogResponse.ok) throw new Error(`Fixture catalog unavailable: ${catalogResponse.status}`);
 const catalog = (await catalogResponse.json()) as FixtureCatalog;
 const fixture = catalog.fixtures.find((candidate) => candidate.id === fixtureId);

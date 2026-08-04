@@ -1,0 +1,237 @@
+---
+import { cx } from '@krds-community/recipes';
+
+/**
+ * 즉각 표시 필터·정렬 목록 (extra).
+ *
+ * 공식 KRDS HTML 키트에 없는 커뮤니티 확장 컴포넌트다. 공식 상호작용
+ * 계약(global_10.html: 즉각 표시 — 옵션 선택 즉시 필터링·정렬·조회 실행,
+ * 정렬 순서 변경 Click/Enter/Space 토글)을 참조해 필터 select 변경·정렬
+ * 방향 버튼 클릭 시 리스트/결과 카운트를 즉시 갱신한다.
+ *
+ * SSR은 항상 기본 상태(필터 전체·오름차순)로 렌더링하며, 상호작용은
+ * `<script>`(module)에서 서버 렌더 DOM에 배선된다(Calendar.astro 패턴).
+ * 설정(items/filters/sort 등)은 비교 대상이 되는 `.krds-filterable-list` 밖의
+ * wrapper(`krds-filterable-list-wrap`)의 data-* 속성에 둔다(DOM 계약이 루트에
+ * 추가 data-* 속성을 허용하지 않는다).
+ */
+
+export interface FilterableItem {
+  id: string;
+  label: string;
+  [field: string]: string | number | boolean | undefined;
+}
+
+export interface FilterableFilter {
+  id: string;
+  label: string;
+  field: string;
+  options: { value: string; label: string }[];
+}
+
+export interface FilterableSort {
+  id: string;
+  label: string;
+  field: string;
+}
+
+export interface Props {
+  items: FilterableItem[];
+  filters?: FilterableFilter[];
+  sort?: FilterableSort;
+  /** 각 필터 select의 첫 옵션. 기본 "전체". */
+  allLabel?: string;
+  emptyMessage?: string;
+  sortAscendingLabel?: string;
+  sortDescendingLabel?: string;
+  className?: string;
+  /** 제공 시 select/버튼 id 접두사로 사용한다. */
+  id?: string;
+}
+
+const {
+  items,
+  filters,
+  sort,
+  allLabel = '전체',
+  emptyMessage = '검색 결과가 없습니다.',
+  sortAscendingLabel = '오름차순',
+  sortDescendingLabel = '내림차순',
+  className,
+  id: providedId,
+} = Astro.props;
+
+const id = providedId ?? `krds-filterable-list-${crypto.randomUUID()}`;
+
+// 정렬은 유니코드 코드포인트 비교(프레임워크 간 결정성 — localeCompare 금지).
+// 기본 상태는 정렬 select의 첫 옵션이 적용된 오름차순 정렬 상태로 렌더한다.
+const compare = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+const sortField = sort?.field;
+const sortedItems = sortField
+  ? [...items].sort((a, b) => compare(String(a[sortField]), String(b[sortField])))
+  : items;
+---
+
+<div
+  class="krds-filterable-list-wrap"
+  data-items={JSON.stringify(items)}
+  data-filters={filters ? JSON.stringify(filters) : undefined}
+  data-sort={sort ? JSON.stringify(sort) : undefined}
+  data-all-label={allLabel}
+  data-empty-message={emptyMessage}
+  data-sort-ascending-label={sortAscendingLabel}
+  data-sort-descending-label={sortDescendingLabel}
+>
+  <div class={cx('krds-filterable-list', className)}>
+    <div class="krds-filterable-controls">
+      {filters?.map((filter) => (
+        <div class="form-group">
+          <div class="form-tit">
+            <label for={`${id}-filter-${filter.id}`}>{filter.label}</label>
+          </div>
+          <div class="form-conts">
+            <select id={`${id}-filter-${filter.id}`} class="krds-form-select" title={filter.label}>
+              <option value="">{allLabel}</option>
+              {filter.options.map((option) => (
+                <option value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      ))}
+      {sort && (
+        <div class="form-group">
+          <div class="form-tit">
+            <label for={`${id}-sort`}>{sort.label}</label>
+          </div>
+          <div class="form-conts" style="display:flex;gap:0.5rem;align-items:flex-end">
+            <select id={`${id}-sort`} class="krds-form-select" title={sort.label}>
+              <option value={sort.field}>{sort.label}</option>
+            </select>
+            <button type="button" class="krds-btn" aria-pressed="false">{sortAscendingLabel}</button>
+          </div>
+        </div>
+      )}
+    </div>
+    <p class="krds-filterable-result">검색 결과 {sortedItems.length}건</p>
+    <ul class="krds-filterable-items">
+      {sortedItems.map((item) => (
+        <li class="krds-filterable-item">{item.label}</li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<script>
+  interface FilterableItem {
+    id: string;
+    label: string;
+    [field: string]: string | number | boolean | undefined;
+  }
+
+  interface FilterableFilter {
+    id: string;
+    label: string;
+    field: string;
+    options: { value: string; label: string }[];
+  }
+
+  interface FilterableSort {
+    id: string;
+    label: string;
+    field: string;
+  }
+
+  document.querySelectorAll<HTMLElement>('.krds-filterable-list').forEach((root) => {
+    // 설정은 비교 대상이 되는 .krds-filterable-list 밖의 wrapper에 둔다
+    // (DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
+    const configRoot =
+      root.parentElement?.classList.contains('krds-filterable-list-wrap')
+        ? root.parentElement
+        : root;
+    let items: FilterableItem[] = [];
+    let filters: FilterableFilter[] = [];
+    let sort: FilterableSort | undefined;
+    try {
+      items = JSON.parse(configRoot.dataset.items ?? '[]') as FilterableItem[];
+      filters = JSON.parse(configRoot.dataset.filters ?? '[]') as FilterableFilter[];
+      const rawSort = configRoot.dataset.sort;
+      sort = rawSort ? (JSON.parse(rawSort) as FilterableSort) : undefined;
+    } catch {
+      items = [];
+      filters = [];
+      sort = undefined;
+    }
+    const sortAscendingLabel = configRoot.dataset.sortAscendingLabel ?? '오름차순';
+    const sortDescendingLabel = configRoot.dataset.sortDescendingLabel ?? '내림차순';
+
+    // DOM의 select 순서 = filters 배열 순서 + (sort가 있으면) 마지막 정렬 select.
+    const selects = Array.from(root.querySelectorAll<HTMLSelectElement>('select.krds-form-select'));
+    const filterSelects = selects.slice(0, filters.length);
+    const selected = new Map<string, string>(); // filter.id -> 선택 값 ("" = 전체)
+    let direction: 'asc' | 'desc' = 'asc';
+
+    const render = () => {
+      const filtered = items.filter((item) => {
+        for (const filter of filters) {
+          const value = selected.get(filter.id) ?? '';
+          if (value !== '' && item[filter.field] !== value) return false;
+        }
+        return true;
+      });
+      // 정렬은 유니코드 코드포인트 비교(프레임워크 간 결정성 — localeCompare 금지).
+      // 필터 적용 후 정렬한다. 기본 상태(정렬 select 첫 옵션 selected)는
+      // 오름차순 정렬이 이미 적용된 상태다.
+      const compare = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+      const sorted = [...filtered].sort((a, b) => {
+        if (!sort) return 0;
+        const cmp = compare(String(a[sort.field]), String(b[sort.field]));
+        return direction === 'asc' ? cmp : -cmp;
+      });
+
+      const button = root.querySelector<HTMLButtonElement>('button.krds-btn');
+      if (button) {
+        const desc = direction === 'desc';
+        button.setAttribute('aria-pressed', desc ? 'true' : 'false');
+        button.textContent = desc ? sortDescendingLabel : sortAscendingLabel;
+      }
+
+      const result = root.querySelector<HTMLElement>('p.krds-filterable-result');
+      if (result) result.textContent = `검색 결과 ${sorted.length}건`;
+
+      const list = root.querySelector<HTMLElement>('ul.krds-filterable-items');
+      if (list) {
+        list.replaceChildren(
+          ...sorted.map((item) => {
+            const li = document.createElement('li');
+            li.className = 'krds-filterable-item';
+            li.textContent = item.label;
+            return li;
+          }),
+        );
+      }
+    };
+
+    filterSelects.forEach((select, index) => {
+      const filter = filters[index];
+      if (!select || !filter) return;
+      select.addEventListener('change', () => {
+        selected.set(filter.id, select.value);
+        // selected ATTRIBUTE는 실제로 상호작용한 select에만 둔다. 미상호작용
+        // 필터의 첫 옵션(전체)과 정렬 select 단일 옵션에는 attr이 없어야
+        // 한다(참조 DOM 계약 — 프로퍼티만으로는 부족).
+        select.querySelectorAll('option').forEach((option) => {
+          if (option.value === select.value) option.setAttribute('selected', '');
+          else option.removeAttribute('selected');
+        });
+        render();
+      });
+    });
+
+    const button = root.querySelector<HTMLButtonElement>('button.krds-btn');
+    button?.addEventListener('click', () => {
+      direction = direction === 'asc' ? 'desc' : 'asc';
+      render();
+    });
+  });
+</script>

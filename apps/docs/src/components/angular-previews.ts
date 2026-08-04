@@ -79,3 +79,8 @@ export {
   KrdsTtsSizeComponent as AngularTtsSize,
   KrdsTutorialPanelComponent as AngularTutorialPanel,
 } from "../../../../packages/angular/src/index.ts";
+
+export { KrdsSearchSuggestionsComponent as AngularSearchSuggestions } from "../../../../packages/angular/src/extra.ts";
+export type { KrdsSearchSuggestion as AngularSearchSuggestion } from "../../../../packages/angular/src/extra.ts";
+export { KrdsValidatedInputComponent as AngularValidatedInput } from "../../../../packages/angular/src/extra.ts";
+export { KrdsFilterableListComponent as AngularFilterableList } from "../../../../packages/angular/src/extra.ts";

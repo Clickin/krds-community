@@ -32,6 +32,12 @@ import { DateInput as SvelteDateInput } from "@krds-community/svelte";
 import { DateInput as SolidDateInput } from "@krds-community/solid";
 import { AngularDateInput } from "@docs/angular-previews.ts";
 import { DateInput as AstroDateInput } from "@krds-community/astro";
+import { FilterableList as ReactFilterableList } from "@krds-community/react/extra";
+import { FilterableList as VueFilterableList } from "@krds-community/vue/extra";
+import { FilterableList as SvelteFilterableList } from "@krds-community/svelte/extra";
+import { FilterableList as SolidFilterableList } from "@krds-community/solid/extra";
+import { AngularFilterableList } from "@docs/angular-previews.ts";
+import { FilterableList as AstroFilterableList } from "@krds-community/astro/extra";
 
 <PatternReference patternId="filter-sort" />
 
@@ -1166,6 +1172,434 @@ import { Select, Tag } from "@krds-community/astro";
   </div>
   <p style="margin:0.75rem 0 0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
 </div>
+```
+
+</PracticeExample>
+
+**모범 사례 4**
+
+<PracticeExample
+  kind="good"
+  title="옵션 선택 시 결과가 즉시 갱신된다"
+>
+  <div slot="react">
+    <ReactFilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueFilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteFilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidFilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroFilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+    />
+  </div>
+  <div slot="angular">
+    <AngularFilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { FilterableList } from "@krds-community/react/extra";
+
+export function Example() {
+  return (
+    <FilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { FilterableList } from "@krds-community/vue/extra";
+</script>
+
+<template>
+  <FilterableList
+    :items="[
+      { id: '1', label: '영유아 보육료 지원 신청', life: 'infant', family: 'single' },
+      { id: '2', label: '아이돌봄 서비스 이용 신청', life: 'child', family: 'dual' },
+      { id: '3', label: '청년 월세 지원 신청', life: 'youth', family: 'single' },
+    ]"
+    :filters="[
+      {
+        id: 'life',
+        label: '생애 주기',
+        field: 'life',
+        options: [
+          { value: 'infant', label: '영유아' },
+          { value: 'child', label: '아동' },
+          { value: 'youth', label: '청년' },
+        ],
+      },
+      {
+        id: 'family',
+        label: '가구 상황',
+        field: 'family',
+        options: [
+          { value: 'dual', label: '맞벌이' },
+          { value: 'single', label: '1인 가구' },
+        ],
+      },
+    ]"
+    :sort="{ id: 'title', label: '이름순', field: 'label' }"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { FilterableList } from "@krds-community/svelte/extra";
+</script>
+
+<FilterableList
+  items={[
+    { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+    { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+    { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+  ]}
+  filters={[
+    {
+      id: "life",
+      label: "생애 주기",
+      field: "life",
+      options: [
+        { value: "infant", label: "영유아" },
+        { value: "child", label: "아동" },
+        { value: "youth", label: "청년" },
+      ],
+    },
+    {
+      id: "family",
+      label: "가구 상황",
+      field: "family",
+      options: [
+        { value: "dual", label: "맞벌이" },
+        { value: "single", label: "1인 가구" },
+      ],
+    },
+  ]}
+  sort={{ id: "title", label: "이름순", field: "label" }}
+/>
+```
+
+```tsx fw=solid
+import { FilterableList } from "@krds-community/solid/extra";
+
+export function Example() {
+  return (
+    <FilterableList
+      items={[
+        { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+        { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+        { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+      ]}
+      filters={[
+        {
+          id: "life",
+          label: "생애 주기",
+          field: "life",
+          options: [
+            { value: "infant", label: "영유아" },
+            { value: "child", label: "아동" },
+            { value: "youth", label: "청년" },
+          ],
+        },
+        {
+          id: "family",
+          label: "가구 상황",
+          field: "family",
+          options: [
+            { value: "dual", label: "맞벌이" },
+            { value: "single", label: "1인 가구" },
+          ],
+        },
+      ]}
+      sort={{ id: "title", label: "이름순", field: "label" }}
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { Component } from "@angular/core";
+import { KrdsFilterableListComponent } from "@krds-community/angular/extra";
+
+@Component({
+  selector: "app-example",
+  imports: [KrdsFilterableListComponent],
+  template: `
+    <krds-filterable-list [items]="items" [filters]="filters" [sort]="sort"></krds-filterable-list>
+  `,
+})
+export class Example {
+  items = [
+    { id: '1', label: '영유아 보육료 지원 신청', life: 'infant', family: 'single' },
+    { id: '2', label: '아이돌봄 서비스 이용 신청', life: 'child', family: 'dual' },
+    { id: '3', label: '청년 월세 지원 신청', life: 'youth', family: 'single' },
+  ];
+  filters = [
+    {
+      id: 'life',
+      label: '생애 주기',
+      field: 'life',
+      options: [
+        { value: 'infant', label: '영유아' },
+        { value: 'child', label: '아동' },
+        { value: 'youth', label: '청년' },
+      ],
+    },
+    {
+      id: 'family',
+      label: '가구 상황',
+      field: 'family',
+      options: [
+        { value: 'dual', label: '맞벌이' },
+        { value: 'single', label: '1인 가구' },
+      ],
+    },
+  ];
+  sort = { id: 'title', label: '이름순', field: 'label' };
+}
+```
+
+```astro fw=astro
+---
+import { FilterableList } from "@krds-community/astro/extra";
+---
+
+<FilterableList
+  items={[
+    { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+    { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+    { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
+  ]}
+  filters={[
+    {
+      id: "life",
+      label: "생애 주기",
+      field: "life",
+      options: [
+        { value: "infant", label: "영유아" },
+        { value: "child", label: "아동" },
+        { value: "youth", label: "청년" },
+      ],
+    },
+    {
+      id: "family",
+      label: "가구 상황",
+      field: "family",
+      options: [
+        { value: "dual", label: "맞벌이" },
+        { value: "single", label: "1인 가구" },
+      ],
+    },
+  ]}
+  sort={{ id: "title", label: "이름순", field: "label" }}
+/>
 ```
 
 </PracticeExample>

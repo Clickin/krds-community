@@ -1,0 +1,280 @@
+---
+import { cx } from '@krds-community/recipes';
+
+/**
+ * 검색어 입력 시 실시간 추천 검색어를 제공하는 combobox 컴포넌트 (extra).
+ *
+ * 공식 KRDS HTML 키트에 없는 커뮤니티 확장 컴포넌트다. 공식 상호작용
+ * 계약(service_02_03.html: 실시간 검색어 제안 — ↑↓/Enter/Esc, Status Messages)을
+ * 참조해 동일한 키보드·접근성 계약을 구현한다.
+ *
+ * 백엔드 배선: `endpoint`에 URL을 주면 클라이언트 스크립트가
+ * `${endpoint}?q=${query}`를 fetch해 SearchSuggestion[] JSON 배열을 받는다.
+ * 데모/문서/테스트에서는 `suggestions` 정적 목록을 주면 클라이언트에서 필터링한다.
+ * 선택 시 루트 엘리먼트에서 `krds:select` CustomEvent(detail: { id, label, value })가
+ * bubbles로 디스패치된다.
+ *
+ * SSR은 항상 closed 상태로 렌더링하며, 상호작용은 `<script>`(module)에서
+ * 서버 렌더 DOM에 배선된다(Calendar.astro 패턴).
+ */
+
+export interface SearchSuggestion {
+  id: string;
+  label: string;
+  /** 폼 제출/선택 시 사용할 값. 기본값은 label. */
+  value?: string;
+}
+
+export interface Props {
+  label: string;
+  name?: string;
+  placeholder?: string;
+  /** 백엔드 배선: 스크립트가 `${endpoint}?q=${query}`를 fetch해 SearchSuggestion[] JSON을 받는다. */
+  endpoint?: string;
+  /** 정적 제안 목록. `endpoint`가 있으면 무시된다. */
+  suggestions?: SearchSuggestion[];
+  /** 제안 요청을 시작하는 최소 글자 수. 기본 2. */
+  minLength?: number;
+  /** `endpoint` 모드 디바운스(ms). 기본 300. */
+  debounceMs?: number;
+  emptyMessage?: string;
+  loadingMessage?: string;
+  disabled?: boolean;
+  className?: string;
+  /** 제공 시 입력 id로 사용한다. */
+  id?: string;
+}
+
+const {
+  label,
+  name,
+  placeholder,
+  endpoint,
+  suggestions,
+  minLength = 2,
+  debounceMs = 300,
+  emptyMessage = '검색 결과가 없습니다.',
+  loadingMessage = '검색 중입니다.',
+  disabled = false,
+  className,
+  id: providedId,
+} = Astro.props;
+
+const id = providedId ?? `krds-search-suggestions-${crypto.randomUUID()}`;
+const listboxId = `${id}-listbox`;
+const statusId = `${id}-status`;
+---
+
+<div
+  class="krds-search-suggestions-wrap"
+  data-endpoint={endpoint}
+  data-suggestions={suggestions ? JSON.stringify(suggestions) : undefined}
+  data-min-length={minLength}
+  data-debounce-ms={debounceMs}
+  data-empty-message={emptyMessage}
+  data-loading-message={loadingMessage}
+>
+  <div class={cx('krds-search-suggestions', className)}>
+    <div class="form-group">
+    <div class="form-tit">
+      <label for={id}>{label}</label>
+    </div>
+    <div class="form-conts">
+      <input
+        id={id}
+        class="krds-input"
+        type="text"
+        name={name}
+        placeholder={placeholder}
+        role="combobox"
+        aria-expanded="false"
+        aria-controls={listboxId}
+        aria-autocomplete="list"
+        aria-describedby={statusId}
+        disabled={disabled}
+      />
+    </div>
+  </div>
+  <ul id={listboxId} role="listbox" aria-label="추천 검색어" class="krds-suggestions-list" hidden></ul>
+  <p id={statusId} class="sr-only" aria-live="polite"></p>
+  </div>
+</div>
+
+<script>
+  interface SearchSuggestion {
+    id: string;
+    label: string;
+    value?: string;
+  }
+
+  document.querySelectorAll<HTMLElement>('.krds-search-suggestions').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('input.krds-input');
+    const listbox = root.querySelector<HTMLElement>('ul.krds-suggestions-list');
+    const status = root.querySelector<HTMLElement>('p.sr-only');
+    if (!input || !listbox || !status) return;
+
+    // 설정은 비교 대상이 되는 .krds-search-suggestions 밖의 wrapper에 둔다
+    // (DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
+    const configRoot =
+      root.parentElement?.classList.contains('krds-search-suggestions-wrap')
+        ? root.parentElement
+        : root;
+    const id = input.id;
+    const optionId = (index: number) => `${id}-option-${index}`;
+    const endpoint = configRoot.dataset.endpoint || undefined;
+    let suggestions: SearchSuggestion[] = [];
+    try {
+      const raw = configRoot.dataset.suggestions;
+      if (raw) suggestions = JSON.parse(raw) as SearchSuggestion[];
+    } catch {
+      suggestions = [];
+    }
+    const minLength = Number(configRoot.dataset.minLength ?? 2);
+    const debounceMs = Number(configRoot.dataset.debounceMs ?? 300);
+    const emptyMessage = configRoot.dataset.emptyMessage ?? '검색 결과가 없습니다.';
+    const loadingMessage = configRoot.dataset.loadingMessage ?? '검색 중입니다.';
+
+    let items: SearchSuggestion[] = [];
+    let open = false;
+    let activeIndex = -1;
+    let requestToken = 0;
+    let debounceTimer: number | undefined;
+
+    const renderList = () => {
+      listbox.replaceChildren();
+      items.forEach((item, index) => {
+        const option = document.createElement('li');
+        option.id = optionId(index);
+        option.setAttribute('role', 'option');
+        option.setAttribute('aria-selected', index === activeIndex ? 'true' : 'false');
+        option.className =
+          index === activeIndex ? 'krds-suggestions-item is-active' : 'krds-suggestions-item';
+        option.textContent = item.label;
+        listbox.appendChild(option);
+      });
+    };
+
+    const renderActive = () => {
+      if (open && activeIndex >= 0) {
+        input.setAttribute('aria-activedescendant', optionId(activeIndex));
+      } else {
+        input.removeAttribute('aria-activedescendant');
+      }
+      renderList();
+    };
+
+    const announce = (nextItems: SearchSuggestion[]) => {
+      status.textContent =
+        nextItems.length > 0
+          ? `${nextItems.length}개의 추천 검색어가 표시되었습니다.`
+          : emptyMessage;
+    };
+
+    const applyResult = (result: SearchSuggestion[]) => {
+      items = result;
+      activeIndex = -1;
+      open = result.length > 0;
+      input.setAttribute('aria-expanded', open ? 'true' : 'false');
+      listbox.hidden = !open;
+      renderActive();
+      announce(result);
+    };
+
+    const close = () => {
+      open = false;
+      activeIndex = -1;
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
+      listbox.hidden = true;
+      items = [];
+      renderList();
+      status.textContent = '';
+    };
+
+    const selectItem = (item: SearchSuggestion) => {
+      input.value = item.label;
+      input.setAttribute('value', item.label);
+      close();
+      root.dispatchEvent(
+        new CustomEvent('krds:select', {
+          detail: { id: item.id, label: item.label, value: item.value ?? item.label },
+          bubbles: true,
+        }),
+      );
+    };
+
+    const resolve = (query: string) => {
+      if (endpoint) {
+        const token = requestToken;
+        status.textContent = loadingMessage;
+        fetch(`${endpoint}?q=${encodeURIComponent(query)}`)
+          .then((response) => response.json() as Promise<SearchSuggestion[]>)
+          .then((result) => {
+            if (requestToken !== token) return;
+            applyResult(result);
+          })
+          .catch(() => {
+            if (requestToken !== token) return;
+            applyResult([]);
+          });
+        return;
+      }
+      applyResult((suggestions ?? []).filter((item) => item.label.includes(query)));
+    };
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim();
+      input.setAttribute('value', input.value);
+      requestToken += 1;
+      if (debounceTimer !== undefined) window.clearTimeout(debounceTimer);
+      if (query.length < minLength) {
+        close();
+        return;
+      }
+      if (endpoint) {
+        debounceTimer = window.setTimeout(() => resolve(query), debounceMs);
+      } else {
+        resolve(query);
+      }
+    });
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        if (open) {
+          event.preventDefault();
+          close();
+        }
+        return;
+      }
+      if (!open || items.length === 0) return;
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        activeIndex = (activeIndex + 1) % items.length;
+        renderActive();
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        activeIndex = (activeIndex - 1 + items.length) % items.length;
+        renderActive();
+      } else if (event.key === 'Enter' && activeIndex >= 0) {
+        event.preventDefault();
+        selectItem(items[activeIndex]);
+      }
+    });
+
+    input.addEventListener('blur', () => {
+      close();
+    });
+
+    // 목록 클릭 시 입력 필드 blur를 막아 click이 동작하도록 한다.
+    listbox.addEventListener('mousedown', (event) => event.preventDefault());
+    listbox.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const option = target.closest('li[role="option"]');
+      if (!option) return;
+      const index = Number.parseInt(option.id.slice(option.id.lastIndexOf('-') + 1), 10);
+      const item = items[index];
+      if (item) selectItem(item);
+    });
+  });
+</script>

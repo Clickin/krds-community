@@ -1,0 +1,50 @@
+<!--
+  extra: krds-filterable-list — 상태: default (필터 전체, 오름차순)
+  fixture: filterable-list.default 의 upstream(참조) 측 대상.
+-->
+<div class="krds-filterable-list">
+  <div class="krds-filterable-controls">
+    <div class="form-group">
+      <div class="form-tit">
+        <label for="krds-filterable-list-1-filter-life">생애 주기</label>
+      </div>
+      <div class="form-conts">
+        <select id="krds-filterable-list-1-filter-life" class="krds-form-select" title="생애 주기">
+          <option value="">전체</option>
+          <option value="infant">영유아</option>
+          <option value="child">아동</option>
+          <option value="youth">청년</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-tit">
+        <label for="krds-filterable-list-1-filter-family">가구 상황</label>
+      </div>
+      <div class="form-conts">
+        <select id="krds-filterable-list-1-filter-family" class="krds-form-select" title="가구 상황">
+          <option value="">전체</option>
+          <option value="dual">맞벌이</option>
+          <option value="single">1인 가구</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-tit">
+        <label for="krds-filterable-list-1-sort">이름순</label>
+      </div>
+      <div class="form-conts" style="display:flex;gap:0.5rem;align-items:flex-end">
+        <select id="krds-filterable-list-1-sort" class="krds-form-select" title="이름순">
+          <option value="label">이름순</option>
+        </select>
+        <button type="button" class="krds-btn" aria-pressed="false">오름차순</button>
+      </div>
+    </div>
+  </div>
+  <p class="krds-filterable-result">검색 결과 3건</p>
+  <ul class="krds-filterable-items">
+    <li class="krds-filterable-item">아이돌봄 서비스 이용 신청</li>
+    <li class="krds-filterable-item">영유아 보육료 지원 신청</li>
+    <li class="krds-filterable-item">청년 월세 지원 신청</li>
+  </ul>
+</div>

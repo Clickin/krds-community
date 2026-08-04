@@ -134,6 +134,7 @@ CLI package는 `@krds-community/krds-cli`, 실행 명령은 `krds`입니다. 복
 원본 package와 자동 동기화되지 않으므로 변경 내용을 직접 검토해야 합니다.
 
 ```sh
+pnpm krds
 pnpm krds component list
 pnpm krds component copy accordion --framework vue --clipboard
 pnpm krds component paste --from snippet.txt --out target.txt

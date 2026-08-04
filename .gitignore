@@ -20,6 +20,7 @@ test-results/
 # Do not ignore upstream/krds-html.
 apps/conformance-viewer/public/reports/
 apps/conformance-host/public/fixtures.json
+apps/conformance-host/public/fixtures-extra.json
 .astro/
 .angular/
 storybook-static/

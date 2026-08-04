@@ -16,7 +16,15 @@
     ".": "./dist/cli.mjs"
   },
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "lint": "node --check src/cli.mjs"
+    "build": "tsdown",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/prompts": "catalog:",
+    "commander": "catalog:",
+    "prompts": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
   }
 }

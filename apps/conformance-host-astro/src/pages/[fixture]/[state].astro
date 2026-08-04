@@ -1,6 +1,8 @@
 ---
 import * as Components from '@krds-community/astro';
+import * as ExtraComponents from '@krds-community/astro/extra';
 import catalogData from '@krds-community/conformance-host/fixtures.json';
+import extraCatalogData from '@krds-community/conformance-host/fixtures-extra.json';
 import { baseProps } from '@krds-community/conformance-host/fixture-props';
 import '@krds-community/conformance-host/host.css';
 import { fixtureRootAttributes } from '@krds-community/conformance-host/protocol';
@@ -15,9 +17,18 @@ interface Props {
   state: FixtureState;
 }
 
+const mergedCatalog = (): FixtureCatalog => ({
+  upstream: catalogData.upstream,
+  fixtures: [...catalogData.fixtures, ...extraCatalogData.fixtures] as FixtureDefinition[],
+});
+
 export async function getStaticPaths() {
-  const { default: catalogData } = await import('@krds-community/conformance-host/fixtures.json');
-  const catalog = catalogData as FixtureCatalog;
+  const { default: official } = await import('@krds-community/conformance-host/fixtures.json');
+  const { default: extra } = await import('@krds-community/conformance-host/fixtures-extra.json');
+  const catalog: FixtureCatalog = {
+    upstream: official.upstream,
+    fixtures: [...official.fixtures, ...extra.fixtures] as FixtureDefinition[],
+  };
   return catalog.fixtures.flatMap((fixture) =>
     fixture.states.map((state) => ({
       params: { fixture: fixture.id, state: state.id },
@@ -31,7 +42,8 @@ const componentExport = fixture.componentId
   .split('-')
   .map((part) => `${part.charAt(0).toLocaleUpperCase('en-US')}${part.slice(1)}`)
   .join('');
-const Component = Components[componentExport as keyof typeof Components] as any;
+const Component = (Components[componentExport as keyof typeof Components] ??
+  ExtraComponents[componentExport as keyof typeof ExtraComponents]) as any;
 if (!Component) throw new Error(`Astro package export is missing: ${componentExport}`);
 
 const componentProps = { ...baseProps(fixture), ...state.props };
@@ -40,7 +52,7 @@ const initialStateId = fixture.states[0]?.id;
 if (!initialStateId) throw new Error(`Fixture has no declared states: ${fixture.id}`);
 const runtimeData = JSON.stringify({
   fixture,
-  upstream: (catalogData as FixtureCatalog).upstream,
+  upstream: catalogData.upstream,
   currentStateId: state.id,
   initialStateId,
 }).replaceAll('<', '\\u003c');

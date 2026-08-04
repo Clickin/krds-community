@@ -1,0 +1,173 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { cx } from '@krds-community/recipes';
+
+/**
+ * 실시간 유효성 검사 입력 필드 (extra).
+ *
+ * 공식 KRDS HTML 키트에 없는 커뮤니티 확장 컴포넌트다. 공식 상호작용
+ * 계약(service_03_05.html: 실시간 유효성 검사, global_08.html: 클라이언트 측 검증
+ * Keyup/Focusout)을 참조해 blur/keyup 시 검증 결과를 즉시 반영한다.
+ *
+ * 검증 규칙은 함수 대신 **문자열 규칙**만 받는다(astro SSR 한계 — 함수는
+ * 직렬화할 수 없다): `"required"` | `"min-length:<n>"` | `"email"`.
+ * 규칙 메시지는 계약에 따라 고정된다(required→"필수 입력 항목입니다.",
+ * min-length:N→"{N}자 이상 입력해 주세요.", email→"올바른 이메일 형식으로 입력해 주세요.").
+ *
+ * SSR은 항상 검증 전(hint) 상태로 렌더링하며, 상호작용은 `<script>`(module)에서
+ * 서버 렌더 DOM에 배선된다(Calendar.astro 패턴). 설정은 비교 대상이 되는
+ * `.krds-validated-input` 밖의 wrapper(`krds-validated-input-wrap`)의 data-*
+ * 속성에 둔다(DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
+ */
+
+export interface Props {
+  label: string;
+  name?: string;
+  type?: HTMLAttributes<'input'>['type'];
+  placeholder?: string;
+  /** 초기값. 비어 있지 않을 때만 value 속성이 렌더링된다. */
+  value?: string;
+  /** 검증 규칙 문자열: "required" | "min-length:<n>" | "email" */
+  validate: string;
+  /** 검증 시점. 기본 "focusout" (service_03_05 계약). */
+  mode?: 'keyup' | 'focusout' | 'both';
+  /** keyup 모드 디바운스(ms). 기본 300. */
+  debounceMs?: number;
+  /** 검증 전(미입력/미블러) 도움말. */
+  hint?: string;
+  successMessage?: string;
+  required?: boolean;
+  disabled?: boolean;
+  className?: string;
+  /** 제공 시 입력 id로 사용한다. */
+  id?: string;
+}
+
+const {
+  label,
+  name,
+  type = 'text',
+  placeholder,
+  value,
+  validate,
+  mode = 'focusout',
+  debounceMs = 300,
+  hint,
+  successMessage = '입력이 유효합니다.',
+  required = false,
+  disabled = false,
+  className,
+  id: providedId,
+} = Astro.props;
+
+const id = providedId ?? `krds-validated-input-${crypto.randomUUID()}`;
+const messageId = `${id}-message`;
+---
+
+<div
+  class="krds-validated-input-wrap"
+  data-validate={validate}
+  data-mode={mode}
+  data-debounce-ms={debounceMs}
+  data-success-message={successMessage}
+  data-hint={hint}
+>
+  <div class={cx('krds-validated-input', className)}>
+    <div class="form-group">
+      <div class="form-tit">
+        <label for={id}>{label}</label>
+      </div>
+      <div class="form-conts">
+        <input
+          id={id}
+          class="krds-input"
+          type={type}
+          name={name}
+          value={value || undefined}
+          placeholder={placeholder}
+          disabled={disabled || undefined}
+          required={required || undefined}
+          aria-describedby={messageId}
+        />
+      </div>
+      <p id={messageId} class="form-hint">{hint}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface ValidationResult {
+    valid: boolean;
+    message?: string;
+  }
+
+  const checkRule = (rule: string, value: string): ValidationResult => {
+    if (rule === 'required') {
+      return value.trim() !== ''
+        ? { valid: true }
+        : { valid: false, message: '필수 입력 항목입니다.' };
+    }
+    const minLength = rule.match(/^min-length:(\d+)$/);
+    if (minLength) {
+      const n = Number(minLength[1]);
+      return value.length >= n
+        ? { valid: true }
+        : { valid: false, message: `${n}자 이상 입력해 주세요.` };
+    }
+    if (rule === 'email') {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+        ? { valid: true }
+        : { valid: false, message: '올바른 이메일 형식으로 입력해 주세요.' };
+    }
+    return { valid: true };
+  };
+
+  document.querySelectorAll<HTMLElement>('.krds-validated-input').forEach((root) => {
+    const input = root.querySelector<HTMLInputElement>('input.krds-input');
+    const conts = root.querySelector<HTMLElement>('.form-conts');
+    const messageEl = root.querySelector<HTMLElement>('p.form-hint, p.form-hint-invalid, p.form-hint-success');
+    if (!input || !conts || !messageEl) return;
+
+    // 설정은 비교 대상이 되는 .krds-validated-input 밖의 wrapper에 둔다
+    // (DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
+    const configRoot =
+      root.parentElement?.classList.contains('krds-validated-input-wrap')
+        ? root.parentElement
+        : root;
+    const rule = configRoot.dataset.validate ?? '';
+    const mode = configRoot.dataset.mode ?? 'focusout';
+    const debounceMs = Number(configRoot.dataset.debounceMs ?? 300);
+    const successMessage = configRoot.dataset.successMessage ?? '입력이 유효합니다.';
+
+    let debounceTimer: number | undefined;
+
+    const validate = () => {
+      const result = checkRule(rule, input.value);
+      input.setAttribute('value', input.value);
+      if (result.valid) {
+        conts.classList.remove('is-error');
+        conts.classList.add('is-success');
+        input.removeAttribute('aria-invalid');
+        messageEl.className = 'form-hint-success';
+        messageEl.textContent = successMessage;
+      } else {
+        conts.classList.remove('is-success');
+        conts.classList.add('is-error');
+        input.setAttribute('aria-invalid', 'true');
+        messageEl.className = 'form-hint-invalid';
+        messageEl.textContent = result.message ?? '';
+      }
+    };
+
+    if (mode === 'focusout' || mode === 'both') {
+      input.addEventListener('blur', validate);
+    }
+    if (mode === 'keyup' || mode === 'both') {
+      input.addEventListener('input', () => {
+        input.setAttribute('value', input.value);
+        if (debounceTimer !== undefined) window.clearTimeout(debounceTimer);
+        debounceTimer = window.setTimeout(validate, debounceMs);
+      });
+    }
+  });
+</script>

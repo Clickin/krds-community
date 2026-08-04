@@ -17,6 +17,7 @@ const config: StorybookConfig = {
       ...config.resolve,
       alias: {
         ...config.resolve?.alias,
+        "@krds-community/angular/extra": resolve("packages/angular/dist/extra.js"),
         "@krds-community/angular": resolve("packages/angular/dist/index.js"),
         "@krds-community/styles/css": resolve("packages/styles/dist/index.css"),
         "@krds-community/tokens/css": resolve("packages/tokens/dist/krds.css"),
