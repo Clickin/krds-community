@@ -88,7 +88,7 @@ const resolvedStyle = sample
   role={standalone ? 'navigation' : undefined}
   class={cx('krds-main-menu-mobile', sample && 'sample', open && 'is-open', className)}
   style={resolvedStyle}
-  aria-label={ariaLabel ?? navigationLabel}
+  aria-label={ariaLabel ?? navigationLabel ?? '전체 메뉴'}
 >
   <div class="gnb-wrap">
     <div class="gnb-header">
@@ -151,6 +151,7 @@ const resolvedStyle = sample
           class="krds-input"
           placeholder={searchPlaceholder}
           title={searchTitle}
+          aria-label={searchLabel ?? searchTitle}
           name={searchName}
           value={searchValue ?? defaultSearchValue}
         />

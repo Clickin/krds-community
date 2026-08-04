@@ -1,0 +1,31 @@
+id: errata.in-page-navigation.landmark-label
+component: in-page-navigation
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/in_page_navigation.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".in-page-navigation-list"
+    behavior: >-
+      The literal navigation landmark has no accessible name.
+correction:
+  behavior: >-
+    Name the navigation landmark with the component title.
+  attributes:
+    - selector: ".in-page-navigation-list"
+      attribute: aria-label
+      rule: "title text"
+fixtures:
+  - in-page-navigation.default
+normalization:
+  whitelist:
+    - selector: ".in-page-navigation-list"
+      attribute: aria-label
+      operation: rewrite
+      rewriteValue: "이 페이지의 구성"
+evidence:
+  rationale: >-
+    Framework adds the landmark name; attribute is a non-semantic addition vs upstream.

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -8,20 +8,16 @@ import {
   inject,
   Input,
   Output,
-} from '@angular/core';
-import {
-  FormsModule,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import type { ControlValueAccessor } from '@angular/forms';
+} from "@angular/core";
+import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
+import type { ControlValueAccessor } from "@angular/forms";
 import type {
   AccordionContractProps,
   ButtonContractProps,
   ChoiceContractProps,
   RadioContractProps,
   TextInputContractProps,
-} from '@krds-community/recipes';
+} from "@krds-community/recipes";
 
 let nextAngularId = 0;
 
@@ -31,29 +27,39 @@ function createStableId(prefix: string): string {
 }
 
 @Component({
-  selector: 'krds-button',
+  selector: "krds-button",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `<button
     [attr.type]="type"
     [disabled]="disabled"
-    [class]="'krds-btn' + (variant ? ' ' + variant : '') + (size === 'medium' ? '' : ' ' + size) + (className ? ' ' + className : '')"
+    [class]="
+      'krds-btn' +
+      (variant ? ' ' + variant : '') +
+      (size === 'medium' ? '' : ' ' + size) +
+      (className ? ' ' + className : '')
+    "
     (click)="clicked.emit($event)"
   >
-    <ng-content />
+    @if (label) {
+      {{ label }}
+    } @else {
+      <ng-content />
+    }
   </button>`,
 })
 export class KrdsButtonComponent implements ButtonContractProps {
-  @Input() variant?: 'primary' | 'secondary' | 'tertiary';
-  @Input() size: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' = 'medium';
-  @Input() type: 'button' | 'submit' | 'reset' = 'button';
+  @Input() variant?: "primary" | "secondary" | "tertiary";
+  @Input() size: "xsmall" | "small" | "medium" | "large" | "xlarge" = "medium";
+  @Input() type: "button" | "submit" | "reset" = "button";
   @Input() disabled = false;
-  @Input() className = '';
+  @Input() className = "";
+  @Input() label = "";
   @Output() clicked = new EventEmitter<MouseEvent>();
 }
 
 @Component({
-  selector: 'krds-text-input',
+  selector: "krds-text-input",
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [
@@ -104,26 +110,26 @@ export class KrdsButtonComponent implements ButtonContractProps {
   </div>`,
 })
 export class KrdsTextInputComponent implements ControlValueAccessor, TextInputContractProps {
-  @Input() id = createStableId('krds-input');
+  @Input() id = createStableId("krds-input");
   @Input() name: string | null = null;
-  @Input() type = 'text';
-  @Input() label = '';
-  @Input() hint = '';
-  @Input() placeholder = '';
-  @Input() state: 'default' | 'error' | 'success' | 'information' = 'default';
-  @Input() size?: 'small' | 'medium' | 'large';
-  @Input() className = '';
+  @Input() type = "text";
+  @Input() label = "";
+  @Input() hint = "";
+  @Input() placeholder = "";
+  @Input() state: "default" | "error" | "success" | "information" = "default";
+  @Input() size?: "small" | "medium" | "large";
+  @Input() className = "";
   @Input() required = false;
   @Input() readonly = false;
   @Input() disabled = false;
-  @Input() value = '';
+  @Input() value = "";
   private onChange: (value: string) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
   private readonly changeDetector = inject(ChangeDetectorRef, { optional: true });
 
   writeValue(value: string | null): void {
-    this.value = value ?? '';
+    this.value = value ?? "";
     this.changeDetector?.markForCheck();
   }
   registerOnChange(fn: (value: string) => void): void {
@@ -146,7 +152,7 @@ export class KrdsTextInputComponent implements ControlValueAccessor, TextInputCo
 }
 
 @Component({
-  selector: 'krds-checkbox',
+  selector: "krds-checkbox",
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [
@@ -175,11 +181,11 @@ export class KrdsTextInputComponent implements ControlValueAccessor, TextInputCo
   </div>`,
 })
 export class KrdsCheckboxComponent implements ControlValueAccessor, ChoiceContractProps {
-  @Input() id = createStableId('krds-checkbox');
+  @Input() id = createStableId("krds-checkbox");
   @Input() name: string | undefined = undefined;
-  @Input() label = '';
-  @Input() description = '';
-  @Input() size?: 'medium' | 'large';
+  @Input() label = "";
+  @Input() description = "";
+  @Input() size?: "medium" | "large";
   @Input() checked = false;
   @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
@@ -215,7 +221,7 @@ export class KrdsCheckboxComponent implements ControlValueAccessor, ChoiceContra
 }
 
 @Component({
-  selector: 'krds-radio',
+  selector: "krds-radio",
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [
@@ -245,11 +251,11 @@ export class KrdsCheckboxComponent implements ControlValueAccessor, ChoiceContra
   </div>`,
 })
 export class KrdsRadioComponent implements ControlValueAccessor, RadioContractProps {
-  @Input() id = createStableId('krds-radio');
-  @Input() name = '';
-  @Input() label = '';
-  @Input() description = '';
-  @Input() size?: 'medium' | 'large';
+  @Input() id = createStableId("krds-radio");
+  @Input() name = "";
+  @Input() label = "";
+  @Input() description = "";
+  @Input() size?: "medium" | "large";
   @Input() value?: string;
   @Input() checked = false;
   @Input() disabled = false;
@@ -276,7 +282,7 @@ export class KrdsRadioComponent implements ControlValueAccessor, RadioContractPr
   changed(): void {
     if (!this.disabled) {
       this.checked = true;
-      const value = this.value ?? 'on';
+      const value = this.value ?? "on";
       this.selected.emit(value);
       this.onChange(value);
     }
@@ -287,7 +293,7 @@ export class KrdsRadioComponent implements ControlValueAccessor, RadioContractPr
 }
 
 @Component({
-  selector: 'krds-switch',
+  selector: "krds-switch",
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [
@@ -314,10 +320,10 @@ export class KrdsRadioComponent implements ControlValueAccessor, RadioContractPr
   </div>`,
 })
 export class KrdsSwitchComponent implements ControlValueAccessor, ChoiceContractProps {
-  @Input() id = createStableId('krds-switch');
+  @Input() id = createStableId("krds-switch");
   @Input() name: string | undefined = undefined;
-  @Input() label = '';
-  @Input() size?: 'medium' | 'large';
+  @Input() label = "";
+  @Input() size?: "medium" | "large";
   @Input() checked = false;
   @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
@@ -359,7 +365,7 @@ export interface KrdsAccordionItem {
   disabled?: boolean;
 }
 @Component({
-  selector: 'krds-accordion',
+  selector: "krds-accordion",
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -394,7 +400,7 @@ export interface KrdsAccordionItem {
 })
 export class KrdsAccordionComponent implements AccordionContractProps {
   @Input() items: KrdsAccordionItem[] = [];
-  @Input() type: 'default' | 'line' = 'default';
+  @Input() type: "default" | "line" = "default";
   @Input() multiple = false;
   private _defaultOpen: string[] = [];
   openItems: string[] = [];

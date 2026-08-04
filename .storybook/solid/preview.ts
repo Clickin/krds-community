@@ -1,1 +1,1 @@
-export { default } from '../shared/preview';
+export { default } from "../shared/preview";

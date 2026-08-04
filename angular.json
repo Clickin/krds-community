@@ -33,10 +33,15 @@
             "browserTarget": "krds-storybook:build",
             "configDir": ".storybook/angular",
             "port": 6010,
-            "noOpen": true
+            "host": "0.0.0.0",
+            "compodoc": false,
+            "open": false
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

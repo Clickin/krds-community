@@ -12,6 +12,8 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 errata:
+  - errata.help-panel.disclosure-relationships
+  - errata.help-panel.empty-tab-heading
   - errata.tab.runtime-state-semantics
   - errata.help-panel.trigger-relationship
 contract:

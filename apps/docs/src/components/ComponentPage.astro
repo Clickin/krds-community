@@ -1,105 +1,19 @@
 ---
-import { findComponent, type ComponentFramework } from '../data/components';
-import { pinnedKrdsSnapshot } from '../data/provenance';
-import { withBase } from '../data/links';
-
-const { componentId } = Astro.props as { componentId: string };
-const component = findComponent(componentId);
-const frameworkLabels: Record<ComponentFramework, string> = {
-  react: 'React',
-  vue: 'Vue',
-  svelte: 'Svelte',
-  solid: 'SolidJS',
-  angular: 'Angular',
-  astro: 'Astro',
+type Props = {
+  componentId: string;
+  title?: string;
 };
-const frameworks = Object.keys(frameworkLabels) as ComponentFramework[];
-const copyGuideHref = withBase('/getting-started/copy-paste-migration/');
+
+const { componentId, title } = Astro.props;
 ---
 
-<header class="component-page-intro">
-  <p class="pattern-eyebrow">{component.category}</p>
-  <h2>{component.title}</h2>
-  <p>{component.summary}</p>
-  <p>
-    <a href={component.officialUrl} target="_blank" rel="noreferrer">공식 KRDS 컴포넌트 원문</a>
-    · 고정 HTML 스냅샷 {pinnedKrdsSnapshot.ref} · {pinnedKrdsSnapshot.retrieved} 수집
-  </p>
-</header>
+<div class="component-page" data-component={componentId}>
+  {title && <h1>{title}</h1>}
+  <slot />
+</div>
 
-<section aria-labelledby={`${component.id}-props`}>
-  <h3 id={`${component.id}-props`}>Props / Inputs</h3>
-  <table>
-    <thead><tr><th scope="col">이름</th><th scope="col">타입</th><th scope="col">설명</th></tr></thead>
-    <tbody>
-      {component.props.map((prop) => (
-        <tr><th scope="row"><code>{prop.name}</code></th><td><code>{prop.type}</code></td><td>{prop.description}</td></tr>
-      ))}
-    </tbody>
-  </table>
-</section>
-
-<section aria-labelledby={`${component.id}-events`}>
-  <h3 id={`${component.id}-events`}>Events / 상태 연결</h3>
-  <ul>{component.events.map((event) => <li>{event}</li>)}</ul>
-</section>
-
-<section aria-labelledby={`${component.id}-forms`}>
-  <h3 id={`${component.id}-forms`}>Forms / 서버 연결</h3>
-  <ul>{component.forms.map((form) => <li>{form}</li>)}</ul>
-</section>
-
-<section aria-labelledby={`${component.id}-a11y`}>
-  <h3 id={`${component.id}-a11y`}>접근성 체크리스트</h3>
-  <ul>{component.accessibility.map((item) => <li>{item}</li>)}</ul>
-</section>
-
-<section aria-labelledby={`${component.id}-usage`}>
-  <h3 id={`${component.id}-usage`}>사용 시나리오</h3>
-  <ul>{component.usage.map((item) => <li>{item}</li>)}</ul>
-</section>
-
-<section aria-labelledby={`${component.id}-copy`}>
-  <h3 id={`${component.id}-copy`}>프레임워크별 복사 가능한 예제</h3>
-  <p>
-    아래 코드는 각 패키지의 실제 public export를 import하는 최소 예제입니다. 헤더의 source metadata는 pinned
-    HTML source를 가리키며, 로컬 수정이 필요한 경우 <a href={copyGuideHref}>복사·마이그레이션 절차</a>를 먼저 확인하세요.
-  </p>
-  <div class="component-snippets">
-    {frameworks.map((framework) => {
-      const snippetId = `${component.id}-${framework}-snippet`;
-      return (
-        <article class="component-snippet" aria-labelledby={`${snippetId}-title`}>
-          <div class="component-snippet-heading">
-            <h4 id={`${snippetId}-title`}>{frameworkLabels[framework]}</h4>
-            <button type="button" data-copy-target={snippetId}>코드 복사</button>
-          </div>
-          <p><code>{component.packageNames[framework]}</code> · source: <code>{component.sourcePaths[framework]}</code></p>
-          <pre id={snippetId} tabindex="0"><code>{component.snippets[framework]}</code></pre>
-          <p>
-            <small>
-              source-version <code>{pinnedKrdsSnapshot.ref}</code> · source-hash <code>{component.sourceHashes[framework]}</code>
-            </small>
-          </p>
-        </article>
-      );
-    })}
-  </div>
-</section>
-
-<script>
-  document.querySelectorAll<HTMLButtonElement>('[data-copy-target]').forEach((button) => {
-    button.addEventListener('click', async () => {
-      const target = button.dataset.copyTarget;
-      const code = target ? document.getElementById(target)?.textContent : '';
-      if (!code) return;
-      try {
-        await navigator.clipboard.writeText(code);
-        button.textContent = '복사됨';
-        window.setTimeout(() => { button.textContent = '코드 복사'; }, 1500);
-      } catch {
-        button.textContent = '복사 실패: 코드를 직접 선택하세요';
-      }
-    });
-  });
-</script>
+<style>
+  .component-page {
+    max-width: 92rem;
+  }
+</style>

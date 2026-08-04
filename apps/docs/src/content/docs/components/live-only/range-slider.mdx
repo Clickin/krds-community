@@ -1,0 +1,1206 @@
+---
+title: 범위 슬라이더
+description: 범위 슬라이더는 사용자가 연속된 옵션 범위에서 값을 선택할 수 있도록 하는 경우 사용한다.
+category: live-only
+---
+
+import PracticeExample from "@docs/PracticeExample.astro";
+
+{/* krds-official:component_12_01 */}
+
+> 이 컴포넌트는 공식 웹사이트(2026-07-27 확인)에 있으나 고정 스냅샷 1.1.0(krds-uiux@1.1.0)에 포함되지 않습니다. 커뮤니티 구현과 conformance 결과가 없습니다.
+
+## 공식 문서
+
+범위 슬라이더는 사용자가 연속된 옵션 범위에서 값을 선택할 수 있도록 하는 경우 사용한다. 사용자가 선택한 값은 선택하는 동안 계속 보이도록 표시하여야 한다.
+
+### 구조
+
+1. **레이블** 사용자가 어떤 값을 선택해야 하는지를 안내하는 문구
+2. **슬라이더(Slider)** 핸들의 이동 경로를 보여주는 영역
+3. **핸들(Handle)** 정해진 범위 내 값을 선택하는 선택자로, 슬라이더를 따라 좌/우로 이동함
+4. **선택 값** 현재 선택된 값을 표시하는 텍스트
+5. **범위 값** 슬라이더의 최소 값과 최대 값
+
+### 용례
+
+#### 사용하기 적합한 경우
+
+- 범위가 정확도 보다 더 중요한 경우
+- 선택하여야 하는 값이 특정 범위 내에서 선택해야 한다고 알려주는 것이 더 중요한 경우
+- 상대적인 값이 정확한 값보다 더 중요한 경우
+- 볼륨이나 해상도 밝기 설정 처럼 정확한 특정 값 보다 상대적 값 지정에 중점을 둔 경우
+- 적합한 예)
+- 볼륨 설정, 해상도 설정, 선호도 조사, 모드 설정, 글자크기설정, 숫자지정 등
+
+#### 사용하기 적합하지 않은 경우
+
+- 정확한 값이 중요한 경우
+- 사용자가 특정한 수치나 단위를 입력해야 하는 경우
+- 사용자가 세밀한 조정보다는 빠른 성택을 원할 경우
+- 세밀한 조정보다는 ‘ON/OFF’, “낮음/보통/높음’처럼 명확한 단일 선택이 효율적인 경우
+
+### 사용성 가이드라인
+
+**모든 범위 슬라이더에 레이블 제공한다.**
+범위 슬라이더에 레이블이 제공되지 않으면 사용자는 어떤 값을 선택해야 하는지 알 수 없다. 레이블을 생략하고자 하는 경우에는 레이블이 없어도 사용자가 값을 선택하는 데 문제가 없다는 근거가 명확해야 한다,
+**사용자의 선택 값은 항상 인지할 수 있는 곳에 표기 한다.**
+사용자가 핸들을 이용하여 선택한 선택 값은 핸들의 위 또는 슬라이더의 끝에 배치하여 항상 사용자가 인지할 수 있게 표기하여야 한다. 플랫폼의 특성상 손가락을 이용하여 값을 선택하기 때문에 선택 값을 하단에 배치하여서는 안 된다.
+**모범 사례**
+
+<PracticeExample kind="good" title="사용자의 선택 값은 항상 인지할 수 있는 곳에 표기 한다.">
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>글자 크기</span>
+        <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+          16
+        </output>
+      </div>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>글자 크기</span>
+        <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+          16
+        </output>
+      </div>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>글자 크기</span>
+        <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+          16
+        </output>
+      </div>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>글자 크기</span>
+        <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+          16
+        </output>
+      </div>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>글자 크기</span>
+        <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+          16
+        </output>
+      </div>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>글자 크기</span>
+        <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+          16
+        </output>
+      </div>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>글자 크기</span>
+    <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+      16
+    </output>
+  </div>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+</div>
+```
+
+```vue fw=vue
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>글자 크기</span>
+    <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+      16
+    </output>
+  </div>
+<input
+  type="range"
+  min="12"
+  max="24"
+  step="1"
+  value="16"
+  aria-label="글자 크기"
+  style="width: 100%;"
+/>
+<div
+  style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;"
+>
+    <span>12</span>
+    <span>24</span>
+  </div>
+```
+
+```svelte fw=svelte
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>글자 크기</span>
+    <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+      16
+    </output>
+  </div>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>글자 크기</span>
+    <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+      16
+    </output>
+  </div>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+</div>
+```
+
+```ts fw=angular
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>글자 크기</span>
+    <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+      16
+    </output>
+  </div>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+</div>
+```
+
+```astro fw=astro
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>글자 크기</span>
+    <output aria-label="선택된 글자 크기 16" style="font-weight: 700;">
+      16
+    </output>
+  </div>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample kind="bad" title="사용자의 선택 값은 항상 인지할 수 있는 곳에 표기 한다.">
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px;">
+      <span>글자 크기</span>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%; margin-top: 8px;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+      <output
+        aria-label="선택된 글자 크기 16"
+        style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+      >
+        16
+      </output>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px;">
+      <span>글자 크기</span>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%; margin-top: 8px;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+      <output
+        aria-label="선택된 글자 크기 16"
+        style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+      >
+        16
+      </output>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px;">
+      <span>글자 크기</span>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%; margin-top: 8px;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+      <output
+        aria-label="선택된 글자 크기 16"
+        style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+      >
+        16
+      </output>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px;">
+      <span>글자 크기</span>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%; margin-top: 8px;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+      <output
+        aria-label="선택된 글자 크기 16"
+        style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+      >
+        16
+      </output>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px;">
+      <span>글자 크기</span>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%; margin-top: 8px;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+      <output
+        aria-label="선택된 글자 크기 16"
+        style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+      >
+        16
+      </output>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px;">
+      <span>글자 크기</span>
+      <input
+        type="range"
+        min="12"
+        max="24"
+        step="1"
+        value="16"
+        aria-label="글자 크기"
+        style="width: 100%; margin-top: 8px;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>12</span>
+        <span>24</span>
+      </div>
+      <output
+        aria-label="선택된 글자 크기 16"
+        style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+      >
+        16
+      </output>
+    </div>
+  </div>
+
+```tsx fw=react
+<div style="max-width: 360px; font-size: 14px;">
+  <span>글자 크기</span>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%; margin-top: 8px;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+  <output
+    aria-label="선택된 글자 크기 16"
+    style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+  >
+    16
+  </output>
+</div>
+```
+
+```vue fw=vue
+<div style="max-width: 360px; font-size: 14px;">
+  <span>글자 크기</span>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%; margin-top: 8px;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+  <output
+    aria-label="선택된 글자 크기 16"
+    style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+  >
+    16
+  </output>
+</div>
+```
+
+```svelte fw=svelte
+<div style="max-width: 360px; font-size: 14px;">
+  <span>글자 크기</span>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%; margin-top: 8px;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+  <output
+    aria-label="선택된 글자 크기 16"
+    style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+  >
+    16
+  </output>
+</div>
+```
+
+```tsx fw=solid
+<div style="max-width: 360px; font-size: 14px;">
+  <span>글자 크기</span>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%; margin-top: 8px;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+  <output
+    aria-label="선택된 글자 크기 16"
+    style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+  >
+    16
+  </output>
+</div>
+```
+
+```ts fw=angular
+<div style="max-width: 360px; font-size: 14px;">
+  <span>글자 크기</span>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%; margin-top: 8px;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+  <output
+    aria-label="선택된 글자 크기 16"
+    style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+  >
+    16
+  </output>
+</div>
+```
+
+```astro fw=astro
+<div style="max-width: 360px; font-size: 14px;">
+  <span>글자 크기</span>
+  <input
+    type="range"
+    min="12"
+    max="24"
+    step="1"
+    value="16"
+    aria-label="글자 크기"
+    style="width: 100%; margin-top: 8px;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>12</span>
+    <span>24</span>
+  </div>
+  <output
+    aria-label="선택된 글자 크기 16"
+    style="display: block; text-align: center; margin-top: 8px; font-weight: 700;"
+  >
+    16
+  </output>
+</div>
+```
+
+</PracticeExample>
+
+**핸들을 드래그할 수 있어야 한다.**
+사용자가 슬라이더 위의 핸들을 드래그하거나, 슬라이더 자체의 특정 위치를 선택하여 값을 변경할 수 있어야 한다.
+**범위 정보를 표시하여야 한다.**
+사용자에게 슬라이더 선택 값의 최소값과 최대값에 대한 정보를 제공하여야 한다
+**선택 값을 너무 세밀하게 설정하지 않는다.**
+범위 슬라이더에서는 상대적인 값이 구체적인 값보다 중요하므로 단계 속성을 너무 세밀하게 설정하지 않는다. 단계 값이너무 세밀한 경우, 사용자에게 인지적 부담을 줄 수 있으며 단계는 전체 범위의 10%~20%로 설정하는 것이 적정하다.
+**모범 사례**
+
+<PracticeExample kind="good" title="선택 값을 너무 세밀하게 설정하지 않는다.">
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="10"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="10"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="10"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="10"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="10"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="10"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="10"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```vue fw=vue
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+<input type="range" min="0" max="100" step="10" value="50" aria-label="볼륨" style="width: 100%;" />
+<div
+  style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;"
+>
+    <span>0</span>
+    <span>100</span>
+  </div>
+```
+
+```svelte fw=svelte
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="10"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="10"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```ts fw=angular
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="10"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```astro fw=astro
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="10"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample kind="bad" title="선택 값을 너무 세밀하게 설정하지 않는다.">
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span>볼륨</span>
+        <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+          50
+        </output>
+      </div>
+      <input
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        value="50"
+        aria-label="볼륨"
+        style="width: 100%;"
+      />
+      <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+        <span>0</span>
+        <span>100</span>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```vue fw=vue
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+<input type="range" min="0" max="100" step="1" value="50" aria-label="볼륨" style="width: 100%;" />
+<div
+  style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;"
+>
+    <span>0</span>
+    <span>100</span>
+  </div>
+```
+
+```svelte fw=svelte
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```ts fw=angular
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+```astro fw=astro
+<div style="max-width: 360px; font-size: 14px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <span>볼륨</span>
+    <output aria-label="선택된 볼륨 50" style="font-weight: 700;">
+      50
+    </output>
+  </div>
+  <input
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label="볼륨"
+    style="width: 100%;"
+  />
+  <div style="display: flex; justify-content: space-between; margin-top: 4px; color: #666666; font-size: 12px;">
+    <span>0</span>
+    <span>100</span>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+{/* /krds-official:component_12_01 */}

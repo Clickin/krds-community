@@ -1,31 +1,31 @@
-import { createComponent, createSignal, type Component } from 'solid-js';
-import { render } from 'solid-js/web';
-import * as Components from '@krds-community/solid';
-import type { FrameworkAdapter } from '../protocol';
+import { createComponent, createSignal, type Component } from "solid-js";
+import { render } from "solid-js/web";
+import * as Components from "@krds-community/solid";
+import type { FrameworkAdapter } from "../protocol";
 
 const coreExports = {
-  button: 'Button',
-  checkbox: 'Checkbox',
-  radio: 'Radio',
-  switch: 'Switch',
-  'text-input': 'TextInput',
-  accordion: 'Accordion',
+  button: "Button",
+  checkbox: "Checkbox",
+  radio: "Radio",
+  switch: "Switch",
+  "text-input": "TextInput",
+  accordion: "Accordion",
 } as const;
 
 type FixtureComponent = Component<Record<string, unknown>>;
 
 const toPascalCase = (componentId: string): string =>
   componentId
-    .split('-')
+    .split("-")
     .filter((part) => part.length > 0)
     .map((part) => `${part[0]!.toUpperCase()}${part.slice(1)}`)
-    .join('');
+    .join("");
 
 const resolveComponent = (componentId: string): FixtureComponent => {
   const coreExport = coreExports[componentId as keyof typeof coreExports];
   const exportName = coreExport ?? toPascalCase(componentId);
   const candidate: unknown = Reflect.get(Components, exportName);
-  if (typeof candidate !== 'function') {
+  if (typeof candidate !== "function") {
     throw new Error(`Unknown Solid component: ${componentId} (${exportName})`);
   }
   return candidate as FixtureComponent;

@@ -2,6 +2,10 @@ node_modules/
 dist/
 coverage/
 playwright-report/
+
+# Local backups and scratch artifacts
+/backup-*.sql
+/local:/
 test-results/
 .vite/
 .svelte-kit/
@@ -17,8 +21,12 @@ test-results/
 apps/conformance-viewer/public/reports/
 apps/conformance-host/public/fixtures.json
 .astro/
+.angular/
 storybook-static/
+apps/docs/public/host/
+apps/docs/public/storybook/
 .playwright-cli/
 .pnpm-store/
 /reports
 /audit-input
+/package/**/dist

@@ -1,51 +1,62 @@
-import { readdir, readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { coreComponents } from '../apps/docs/src/data/components';
-import { allPatterns } from '../apps/docs/src/data/patterns';
+import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { describe, expect, it } from "vitest";
+import { componentExamples } from "../apps/docs/src/data/example-catalog";
+import { componentNavigation } from "../apps/docs/src/data/component-meta";
+import { allPatterns } from "../apps/docs/src/data/patterns";
 
-const root = resolve(import.meta.dirname, '..');
-const docsRoot = resolve(root, 'apps/docs/src');
+const root = resolve(import.meta.dirname, "..");
+const docsRoot = resolve(root, "apps/docs/src");
 
-const internalLinkPattern = /\]\(\/(?:storybook|conformance|components|service-patterns|basic-patterns|guides|getting-started)/;
+const internalLinkPattern =
+  /\]\(\/(?:storybook|conformance|components|service-patterns|basic-patterns|guides|getting-started)/;
 
-describe('docs API and route coverage', () => {
-  it('publishes one API page for every documented core component', async () => {
-    const files = await readdir(resolve(docsRoot, 'content/docs/components'));
-    const pages = new Set(files.filter((file) => file.endsWith('.md') || file.endsWith('.mdx')));
-
-    for (const component of coreComponents) {
-      expect(pages.has(`${component.id}.md`) || pages.has(`${component.id}.mdx`)).toBe(true);
-      expect(component.props.length).toBeGreaterThan(0);
-      expect(component.events.length).toBeGreaterThan(0);
-      expect(component.forms.length).toBeGreaterThan(0);
-      expect(component.accessibility.length).toBeGreaterThan(0);
-      for (const snippet of Object.values(component.snippets)) {
-        expect(snippet).toContain('@krds-community/source-hash:');
-        expect(snippet).toContain('@krds-community/source-version:');
-        expect(snippet).toMatch(/@krds-community\/(react|vue|svelte|solid|angular|astro)/);
-      }
+describe("docs route coverage", () => {
+  it("publishes one fixture-backed page for every catalog component", () => {
+    expect(componentExamples.length).toBe(componentNavigation.length);
+    for (const component of componentExamples) {
+      expect(component.fixture.states.length).toBeGreaterThan(0);
     }
   });
 
-  it('keeps every pattern linked to an official checklist and stage', () => {
+  it("keeps every pattern linked to an official checklist and stage", () => {
     expect(allPatterns.length).toBe(18);
     for (const pattern of allPatterns) {
       expect(pattern.officialChecklist).toMatch(/^https:\/\//);
       expect(pattern.officialStageLinks.length).toBeGreaterThan(0);
-      expect(pattern.officialVersionBoundary).toContain('snapshot');
+      expect(pattern.officialVersionBoundary).toContain("snapshot");
     }
   });
 
-  it('does not emit root-relative internal links that bypass the configured base', async () => {
+  it("publishes a content page for every pattern", () => {
+    for (const pattern of allPatterns) {
+      const dir = pattern.category === "서비스 패턴" ? "service-patterns" : "basic-patterns";
+      const page = resolve(docsRoot, `content/docs/${dir}/${pattern.slug}.mdx`);
+      expect(existsSync(page), `missing pattern page: ${dir}/${pattern.slug}.mdx`).toBe(true);
+    }
+  });
+
+  it("keeps every pattern example mdx-owned: PatternReference inline, no workbench dispatch", async () => {
+    for (const pattern of allPatterns) {
+      const dir = pattern.category === "서비스 패턴" ? "service-patterns" : "basic-patterns";
+      const page = resolve(docsRoot, `content/docs/${dir}/${pattern.slug}.mdx`);
+      const content = await readFile(page, "utf8");
+      expect(content).toContain("<PatternReference patternId=");
+      expect(content).not.toContain("PatternWorkbench");
+      expect(content).not.toContain("pattern-examples");
+    }
+  });
+
+  it("does not emit root-relative internal links that bypass the configured base", async () => {
     const files = [
-      resolve(docsRoot, 'content/docs/index.md'),
-      resolve(docsRoot, 'content/docs/components/index.mdx'),
-      resolve(docsRoot, 'content/docs/service-patterns/index.md'),
-      resolve(docsRoot, 'content/docs/basic-patterns/index.md'),
-      resolve(docsRoot, 'content/docs/getting-started/installation.md'),
+      resolve(docsRoot, "content/docs/index.md"),
+      resolve(docsRoot, "content/docs/components/index.mdx"),
+      resolve(docsRoot, "content/docs/service-patterns/index.md"),
+      resolve(docsRoot, "content/docs/basic-patterns/index.md"),
+      resolve(docsRoot, "content/docs/getting-started/installation.mdx"),
     ];
-    const contents = await Promise.all(files.map((file) => readFile(file, 'utf8')));
+    const contents = await Promise.all(files.map((file) => readFile(file, "utf8")));
     expect(contents.some((content) => internalLinkPattern.test(content))).toBe(false);
   });
 });

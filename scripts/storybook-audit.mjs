@@ -1,32 +1,34 @@
-import { createServer } from 'node:http';
-import { readFile, readdir, stat } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
-import { loadManifests } from '../packages/conformance/dist/index.js';
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const storybookStaticRoot = resolve(process.env.STORYBOOK_STATIC_ROOT ?? join(root, 'storybook-static'));
-const frameworkIds = ['react', 'vue', 'svelte', 'solid', 'angular'];
+import { createServer } from "node:http";
+import { readFile, readdir, stat } from "node:fs/promises";
+import { extname, join, normalize, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { chromium } from "playwright";
+import { loadManifests } from "../packages/conformance/dist/index.js";
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const storybookStaticRoot = resolve(
+  process.env.STORYBOOK_STATIC_ROOT ?? join(root, "storybook-static"),
+);
+const frameworkIds = ["react", "vue", "svelte", "solid", "angular"];
 const packageSources = Object.fromEntries(
   frameworkIds.map((framework) => [
     framework,
     join(
       root,
-      'packages',
+      "packages",
       framework,
-      'src',
-      framework === 'svelte' ? 'index.js' : framework === 'solid' ? 'index.tsx' : 'index.ts',
+      "src",
+      framework === "svelte" ? "index.js" : framework === "solid" ? "index.tsx" : "index.ts",
     ),
   ]),
 );
 
 const pascalCase = (value) =>
   value
-    .split('-')
+    .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
+    .join("");
 
-const unquote = (value) => value.trim().replace(/^['"]|['"]$/g, '');
+const unquote = (value) => value.trim().replace(/^['"]|['"]$/g, "");
 
 const selectorTokens = (selector) => {
   const tokens = new Set();
@@ -41,30 +43,30 @@ const selectorTokens = (selector) => {
 };
 
 const parseFixtureBlocks = (text) => {
-  const fixturesText = text.split(/^fixtures:\s*$/m)[1]?.split(/^contract:\s*$/m)[0] ?? '';
+  const fixturesText = text.split(/^fixtures:\s*$/m)[1]?.split(/^contract:\s*$/m)[0] ?? "";
   const matches = [...fixturesText.matchAll(/^ {2}- id:\s*([^\s]+)\s*$/gm)];
   return matches.map((match, index) => {
     const block = fixturesText.slice(match.index, matches[index + 1]?.index ?? fixturesText.length);
     const inlineStates = block.match(/^\s+states:\s*\[([^\]]*)\]/m)?.[1];
     const states = inlineStates
       ? inlineStates
-          .split(',')
+          .split(",")
           .map((state) => state.trim())
           .filter(Boolean)
       : [...block.matchAll(/^ {6}- id:\s*([^\s]+)\s*$/gm)].map((state) => state[1]);
     return {
       id: match[1],
-      sourceSelector: unquote(block.match(/^\s+sourceSelector:\s*(.+)$/m)?.[1] ?? ''),
+      sourceSelector: unquote(block.match(/^\s+sourceSelector:\s*(.+)$/m)?.[1] ?? ""),
       mandatory: /^\s+mandatory:\s*true\s*$/m.test(block),
-      viewport: block.match(/^\s+viewport:\s*([^\s]+)\s*$/m)?.[1] ?? '',
+      viewport: block.match(/^\s+viewport:\s*([^\s]+)\s*$/m)?.[1] ?? "",
       states,
     };
   });
 };
 
 const readFixtureData = async (manifest) => {
-  const path = join(root, 'conformance', 'manifests', `${manifest.id}.yaml`);
-  const text = await readFile(path, 'utf8');
+  const path = join(root, "conformance", "manifests", `${manifest.id}.yaml`);
+  const text = await readFile(path, "utf8");
   return { text, fixtures: parseFixtureBlocks(text) };
 };
 
@@ -73,13 +75,13 @@ const assertManifestContracts = async (manifests) => {
   const sourceCache = new Map();
   const referencedSources = new Set();
   const getSource = async (path) => {
-    if (!sourceCache.has(path)) sourceCache.set(path, await readFile(path, 'utf8'));
+    if (!sourceCache.has(path)) sourceCache.set(path, await readFile(path, "utf8"));
     return sourceCache.get(path);
   };
 
   for (const manifest of manifests) {
     const { text, fixtures } = await readFixtureData(manifest);
-    if (manifest.status !== 'passing') failures.push(`${manifest.id}: status=${manifest.status}`);
+    if (manifest.status !== "passing") failures.push(`${manifest.id}: status=${manifest.status}`);
     if (manifest.schemaValid === false) {
       for (const error of manifest.validationErrors ?? []) {
         failures.push(`${manifest.id}: schema=${error}`);
@@ -122,7 +124,7 @@ const assertManifestContracts = async (manifests) => {
         failures.push(`${manifest.id}: upstream source is missing: ${relativePath}`);
       }
     }
-    const combinedSource = upstreamText.join('\n');
+    const combinedSource = upstreamText.join("\n");
     for (const fixture of fixtures) {
       const missingSelectorToken = selectorTokens(fixture.sourceSelector).find(
         (token) => !combinedSource.includes(token),
@@ -142,8 +144,8 @@ const assertManifestContracts = async (manifests) => {
       }
     }
   }
-  const officialFixtureFiles = (await readdir(join(root, 'upstream/krds-html/html/code')))
-    .filter((entry) => entry.endsWith('.html'))
+  const officialFixtureFiles = (await readdir(join(root, "upstream/krds-html/html/code")))
+    .filter((entry) => entry.endsWith(".html"))
     .map((entry) => `upstream/krds-html/html/code/${entry}`);
   for (const source of officialFixtureFiles) {
     if (!referencedSources.has(source)) {
@@ -156,37 +158,37 @@ const assertManifestContracts = async (manifests) => {
 const serveStatic = async (directory) => {
   const server = createServer(async (request, response) => {
     try {
-      const requestPath = decodeURIComponent((request.url ?? '/').split('?')[0]);
-      const relativePath = normalize(requestPath).replace(/^([.][.][\\/])+/, '');
-      const candidate = join(directory, relativePath === '/' ? 'index.html' : relativePath);
+      const requestPath = decodeURIComponent((request.url ?? "/").split("?")[0]);
+      const relativePath = normalize(requestPath).replace(/^([.][.][\\/])+/, "");
+      const candidate = join(directory, relativePath === "/" ? "index.html" : relativePath);
       const file = await stat(candidate);
-      const filePath = file.isDirectory() ? join(candidate, 'index.html') : candidate;
-      response.writeHead(200, { 'Content-Type': contentType(extname(filePath)) });
+      const filePath = file.isDirectory() ? join(candidate, "index.html") : candidate;
+      response.writeHead(200, { "Content-Type": contentType(extname(filePath)) });
       response.end(await readFile(filePath));
     } catch {
       response.writeHead(404);
-      response.end('Not found');
+      response.end("Not found");
     }
   });
-  await new Promise((resolvePromise) => server.listen(0, '127.0.0.1', resolvePromise));
+  await new Promise((resolvePromise) => server.listen(0, "127.0.0.1", resolvePromise));
   const address = server.address();
   return { server, baseUrl: `http://127.0.0.1:${address.port}` };
 };
 
 const contentType = (extension) =>
   ({
-    '.html': 'text/html; charset=utf-8',
-    '.js': 'text/javascript; charset=utf-8',
-    '.css': 'text/css; charset=utf-8',
-    '.json': 'application/json; charset=utf-8',
-    '.svg': 'image/svg+xml',
-    '.png': 'image/png',
-  })[extension] ?? 'application/octet-stream';
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+  })[extension] ?? "application/octet-stream";
 
 const findAxe = async () => {
   const candidates = [
-    join(root, 'node_modules', 'axe-core', 'axe.min.js'),
-    join(root, 'node_modules', '.pnpm', 'node_modules', 'axe-core', 'axe.min.js'),
+    join(root, "node_modules", "axe-core", "axe.min.js"),
+    join(root, "node_modules", ".pnpm", "node_modules", "axe-core", "axe.min.js"),
   ];
   for (const candidate of candidates) {
     try {
@@ -196,7 +198,7 @@ const findAxe = async () => {
       // Continue through the package-manager layouts available in CI and local workspaces.
     }
   }
-  throw new Error('axe-core is required for strict conformance checks');
+  throw new Error("axe-core is required for strict conformance checks");
 };
 
 const findInventoryStory = async (baseUrl, framework) => {
@@ -205,7 +207,7 @@ const findInventoryStory = async (baseUrl, framework) => {
   const index = await response.json();
   const entry = Object.values(index.entries).find(
     (candidate) =>
-      candidate.exportName === 'Inventory' && candidate.importPath.includes('AllComponents'),
+      candidate.exportName === "Inventory" && candidate.importPath.includes("AllComponents"),
   );
   if (!entry) throw new Error(`${framework}: full inventory story is missing`);
   return entry.id;
@@ -231,24 +233,26 @@ const checkRenderedInventories = async (manifests) => {
         fixtureFailures[framework][fixtureId] = current;
         failures.push(message);
       };
-      page.on('console', (message) => {
-        if (message.type() === 'error') consoleErrors.push(message.text());
+      page.on("console", (message) => {
+        if (message.type() === "error") consoleErrors.push(message.text());
       });
-      page.on('pageerror', (error) => consoleErrors.push(error.message));
+      page.on("pageerror", (error) => consoleErrors.push(error.message));
       const url = `${baseUrl}/${framework}/iframe.html?id=${encodeURIComponent(storyId)}&viewMode=story`;
       console.log(`Checking ${framework}: ${url}`);
       try {
-        await page.goto(url, { waitUntil: 'networkidle' });
+        await page.goto(url, { waitUntil: "networkidle" });
         await page.waitForFunction(
           () => document.querySelectorAll('[class*="krds-"]').length > 0,
           null,
           { timeout: 10_000 },
         );
-        const rootLocator = page.locator('#storybook-root');
+        // Let fonts finish loading so axe computes final colors.
+        await page.evaluate(() => document.fonts?.ready);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        const rootLocator = page.locator("#storybook-root");
         for (const fixture of fixtureContracts) {
           try {
-            const fixtureRoot =
-              fixture.sourceSelector === 'link[rel="icon"]' ? page : rootLocator;
+            const fixtureRoot = fixture.sourceSelector === 'link[rel="icon"]' ? page : rootLocator;
             const count = await fixtureRoot.locator(fixture.sourceSelector).count();
             if (count === 0) {
               markFixtureFailure(
@@ -265,7 +269,7 @@ const checkRenderedInventories = async (manifests) => {
             );
           }
         }
-        const bodyText = await page.locator('body').innerText();
+        const bodyText = await page.locator("body").innerText();
         if (/couldn't find story|failed to render|error occurred/i.test(bodyText)) {
           failures.push(`${framework}: Storybook reported a render error`);
         }
@@ -276,47 +280,47 @@ const checkRenderedInventories = async (manifests) => {
           );
         }
         const semanticFindings = await page.evaluate(() => {
-          const root = document.querySelector('#storybook-root') ?? document;
+          const root = document.querySelector("#storybook-root") ?? document;
           const findings = [];
           const nativeButtonRoles = root.querySelectorAll('button[role="button"]').length;
           if (nativeButtonRoles)
             findings.push(`${nativeButtonRoles} native buttons repeat role=button`);
 
-          for (const element of root.querySelectorAll('[aria-expanded]')) {
-            const controls = element.getAttribute('aria-controls');
+          for (const element of root.querySelectorAll("[aria-expanded]")) {
+            const controls = element.getAttribute("aria-controls");
             if (!controls || !document.getElementById(controls)) {
-              findings.push('aria-expanded is missing a valid aria-controls target');
+              findings.push("aria-expanded is missing a valid aria-controls target");
             }
           }
 
           for (const tablist of root.querySelectorAll('[role="tablist"]')) {
             const tabs = tablist.querySelectorAll('[role="tab"]');
-            if (!tabs.length) findings.push('tablist has no tab descendants');
+            if (!tabs.length) findings.push("tablist has no tab descendants");
             for (const tab of tabs) {
-              const controls = tab.getAttribute('aria-controls');
+              const controls = tab.getAttribute("aria-controls");
               if (!controls || !document.getElementById(controls)) {
-                findings.push('tab is missing a valid aria-controls target');
+                findings.push("tab is missing a valid aria-controls target");
               }
             }
           }
 
-          for (const table of root.querySelectorAll('table')) {
+          for (const table of root.querySelectorAll("table")) {
             if (table.closest('[aria-hidden="true"]')) continue;
-            if (!table.querySelector('caption') && !table.getAttribute('aria-label')) {
-              findings.push('table is missing caption or accessible name');
+            if (!table.querySelector("caption") && !table.getAttribute("aria-label")) {
+              findings.push("table is missing caption or accessible name");
             }
-            if (!table.querySelector('th')) findings.push('table is missing a header cell');
+            if (!table.querySelector("th")) findings.push("table is missing a header cell");
           }
 
-          for (const control of root.querySelectorAll('input, select, textarea')) {
-            if (control.type === 'hidden' || control.getAttribute('aria-hidden') === 'true')
+          for (const control of root.querySelectorAll("input, select, textarea")) {
+            if (control.type === "hidden" || control.getAttribute("aria-hidden") === "true")
               continue;
-            const id = control.getAttribute('id');
+            const id = control.getAttribute("id");
             const hasLabel = Boolean(
-              control.getAttribute('aria-label') ||
-              control.getAttribute('aria-labelledby') ||
+              control.getAttribute("aria-label") ||
+              control.getAttribute("aria-labelledby") ||
               (id && document.querySelector(`label[for="${CSS.escape(id)}"]`)) ||
-              control.closest('label'),
+              control.closest("label"),
             );
             if (!hasLabel) findings.push(`${control.tagName.toLowerCase()} is missing a label`);
           }
@@ -325,8 +329,8 @@ const checkRenderedInventories = async (manifests) => {
         for (const finding of semanticFindings) failures.push(`${framework}: ${finding}`);
 
         await page.evaluate(() => {
-          const root = document.querySelector('#storybook-root') ?? document.body;
-          root.setAttribute('tabindex', '-1');
+          const root = document.querySelector("#storybook-root") ?? document.body;
+          root.setAttribute("tabindex", "-1");
           root.focus();
           if (document.activeElement !== root) {
             const candidate = Array.from(
@@ -339,8 +343,8 @@ const checkRenderedInventories = async (manifests) => {
               return (
                 rect.width > 0 &&
                 rect.height > 0 &&
-                style.visibility !== 'hidden' &&
-                style.display !== 'none'
+                style.visibility !== "hidden" &&
+                style.display !== "none"
               );
             });
             candidate?.focus();
@@ -348,7 +352,7 @@ const checkRenderedInventories = async (manifests) => {
         });
         const keyboardFindings = [];
         for (let index = 0; index < 12; index += 1) {
-          await page.keyboard.press('Tab');
+          await page.keyboard.press("Tab");
           const focusState = await page.evaluate(() => {
             const active = document.activeElement;
             return {
@@ -360,7 +364,7 @@ const checkRenderedInventories = async (manifests) => {
                 ) ||
                   active.matches('[contenteditable="true"]')),
               ),
-              isVisible: Boolean(active && active.matches(':focus-visible')),
+              isVisible: Boolean(active && active.matches(":focus-visible")),
             };
           });
           if (focusState.isBody || !focusState.isFocusable || !focusState.isVisible) {
@@ -371,10 +375,11 @@ const checkRenderedInventories = async (manifests) => {
         for (const finding of keyboardFindings) failures.push(`${framework}: ${finding}`);
 
         await page.addScriptTag({ path: axePath });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         const violations = await page.evaluate(async () => {
           const result = await window.axe.run(
-            document.querySelector('#storybook-root') ?? document,
-            { resultTypes: ['violations'] },
+            document.querySelector("#storybook-root") ?? document,
+            { resultTypes: ["violations"] },
           );
           return result.violations.map((violation) => ({
             id: violation.id,
@@ -386,7 +391,7 @@ const checkRenderedInventories = async (manifests) => {
           failures.push(`${framework}: axe violations ${JSON.stringify(violations)}`);
 
         await page.setViewportSize({ width: 390, height: 844 });
-        await page.reload({ waitUntil: 'networkidle' });
+        await page.reload({ waitUntil: "networkidle" });
         const mobileOverflow = await page.evaluate(
           () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
         );
@@ -394,9 +399,9 @@ const checkRenderedInventories = async (manifests) => {
       } catch (error) {
         failures.push(`${framework}: ${error instanceof Error ? error.message : String(error)}`);
         const bodyText = await page
-          .locator('body')
+          .locator("body")
           .innerText()
-          .catch(() => '');
+          .catch(() => "");
         if (bodyText) failures.push(`${framework}: body=${bodyText.slice(0, 500)}`);
       }
       if (consoleErrors.length)
@@ -410,9 +415,8 @@ const checkRenderedInventories = async (manifests) => {
   return { failures, fixtureFailures };
 };
 
-
 const main = async () => {
-  const manifests = await loadManifests(join(root, 'conformance', 'manifests'));
+  const manifests = await loadManifests(join(root, "conformance", "manifests"));
   const manifestFailures = await assertManifestContracts(manifests);
   let runtimeFailures = [];
   try {

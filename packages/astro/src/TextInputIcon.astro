@@ -3,6 +3,7 @@ import { cx, inputRecipe } from '@krds-community/recipes';
 import type { TextInputProps } from './types';
 
 export interface Props extends TextInputProps {
+  passwordLabel?: string;
   togglePassword?: boolean;
   clearable?: boolean;
   showPasswordLabel?: string;
@@ -20,6 +21,7 @@ const {
   readonly,
   togglePassword = type === 'password',
   clearable = false,
+  passwordLabel,
   showPasswordLabel,
   hidePasswordLabel,
   clearLabel,

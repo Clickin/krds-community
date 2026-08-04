@@ -21,7 +21,7 @@ fixtures:
             target: fixture
             value: in
           - action: add-class
-            target: '.modal-back'
+            target: ".modal-back"
             value: in
           - action: remove-attribute
             target: fixture
@@ -35,7 +35,7 @@ fixtures:
             target: fixture
             value: in
           - action: add-class
-            target: '.modal-back'
+            target: ".modal-back"
             value: in
           - action: remove-attribute
             target: fixture

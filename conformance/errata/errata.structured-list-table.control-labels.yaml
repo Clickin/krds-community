@@ -1,0 +1,34 @@
+id: errata.structured-list-table.control-labels
+component: structured-list-table
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/structured_list_table.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".krds-structured-list-table select"
+    behavior: >-
+      The literal count and sort selects lack accessible names.
+correction:
+  behavior: >-
+    Add aria-label from the count and sort label props.
+  attributes:
+    - selector: ".krds-structured-list-table select"
+      attribute: aria-label
+      rule: "count or sort label text"
+fixtures:
+  - structured-list-table.default
+normalization:
+  whitelist:
+    - selector: ".krds-structured-list-table select"
+      attribute: aria-label
+      operation: omit
+    - selector: ".krds-structured-list-table input[type=checkbox]"
+      attribute: aria-label
+      operation: omit
+
+evidence:
+  rationale: >-
+    Framework adds the selects' accessible names; attributes are non-semantic additions vs upstream.

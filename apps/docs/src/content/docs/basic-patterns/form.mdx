@@ -3,6 +3,1816 @@ title: 입력 폼
 description: 입력 컨트롤로 데이터를 입력하여 서버로 전송하는 기본 패턴입니다.
 ---
 
-import PatternPage from '../../../components/PatternPage.astro';
+import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Textarea as ReactTextarea } from "@krds-community/react";
+import { Textarea as VueTextarea } from "@krds-community/vue";
+import { Textarea as SvelteTextarea } from "@krds-community/svelte";
+import { Textarea as SolidTextarea } from "@krds-community/solid";
+import { AngularTextarea } from "@docs/angular-previews.ts";
+import { Textarea as AstroTextarea } from "@krds-community/astro";
+import { Checkbox as ReactCheckbox } from "@krds-community/react";
+import { Checkbox as VueCheckbox } from "@krds-community/vue";
+import { Checkbox as SvelteCheckbox } from "@krds-community/svelte";
+import { Checkbox as SolidCheckbox } from "@krds-community/solid";
+import { AngularCheckbox } from "@docs/angular-previews.ts";
+import { Checkbox as AstroCheckbox } from "@krds-community/astro";
+import { Spinner as ReactSpinner } from "@krds-community/react";
+import { Spinner as VueSpinner } from "@krds-community/vue";
+import { Spinner as SvelteSpinner } from "@krds-community/svelte";
+import { Spinner as SolidSpinner } from "@krds-community/solid";
+import { AngularSpinner } from "@docs/angular-previews.ts";
+import { Spinner as AstroSpinner } from "@krds-community/astro";
 
-<PatternPage patternId="form" />
+<PatternReference patternId="form" />
+
+## 공식 문서
+
+입력폼은 사용자가 데이터를 입력하여 서버로 전송하는 데 사용하는 콘텐츠 섹션으로 하나 이상의 입력 컨트롤로 구성된다.
+
+### 구조
+
+1. **제목** 입력폼의 목적에 대한 설명
+2. **설명(선택)** 입력폼의 목적에 대한 부가적인 설명이나 사용자가 데이터를 입력할 때 유의해야 하는 사항 등 총체적인 안내를 제공하는 문장
+3. **콘텐츠** 데이터 입력을 위한 컴포넌트의 모음
+4. **필드셋(선택)** 서로 관련된 여러 데이터 입력 컴포넌트를 의미적으로 그룹화하는 요소
+5. **오류 메시지** 사용자의 데이터 입력에 오류가 발생했을 때 제공되는 피드백 메시지
+6. **액션 버튼** 입력폼의 데이터를 서버로 전송하거나 입력값 또는 입력 프로세스를 중단하기 위한 액션 버튼 그룹
+
+### 유형
+
+**단일 화면에서의 데이터 입력** 가장 기본적인 입력폼의 유형으로 1개 이상의 폼 콘텐츠로 구성된다. 점진적 공개법(Progressive disclosure)을 활용하면 별도의 단계 이동 없이 한 화면 내에서도 데이터 입력 과정의 복잡성을 줄일 수 있다.
+
+**모달을 활용한 데이터 입력** 매우 중요한 데이터이면서 빈번하게 입력/수정하지 않는 데이터는 모달 컴포넌트를 입력폼의 컨테이너로 활용함으로써 사용자가 데이터 입력에 집중하고 실수하지 않도록 도와줄 수 있다. 모달에서 데이터를 입력받는 경우 콘텐츠의 수, 즉 입력 관련 컴포넌트의 수를 5개 이내로 구성하는 것이 바람직하다.
+
+**단계별 데이터 입력** 입력해야 할 데이터가 복잡하거나 이로 인해 데이터의 중간 저장이 필요한 경우, 여러 화면에 입력폼을 단계별로 나누어 제공할 수 있다. 이때, 실질적인 데이터 입력은 명확한 단계로 구성되어야 하고 각 단계 내 콘텐츠는 논리적, 선형적 관계가 존재해야 한다. 또한 별도의 컴포넌트를 활용하여 단계의 완수/진행률을 표시해야 한다. 과업에 숙달된 사용자의 경우 데이터를 단계별로 입력하게 되면 효율적으로 데이터를 입력하기 어렵다. 그러므로 단계별 데이터 입력을 사용하기 전에 논리적인 구조에 따라 콘텐츠 섹션을 구분하고 적절하게 강조된 정확한 헤딩 사용, 콘텐츠 간결화를 먼저 시도해야 한다. 간단한 질문부터 점차 어려운 질문으로 사용자를 점진적으로 안내하며, 질문을 의미 있는 작은 덩어리로 나눈다.
+
+## 사용성 가이드라인
+
+### 입력 폼
+
+**콘텐츠는 가능한 한 하나의 열에 수직으로 정렬한다.**
+입력폼의 콘텐츠를 여러 열 그리드에 배치하는 경우 사용자가 콘텐츠 간 관계를 오인하기 쉬우므로 단일 열에 수직으로 정렬하는 것이 권장된다. 그러나 입력받을 데이터가 많고 입력폼 컨테이너의 너비가 충분하다면 여러 개의 열에 콘텐츠를 배치할 수 있다. 더불어 하나의 정보를 입력하기 위해 여러 개의 컴포넌트가 필요하거나 의미적으로 관련된 컴포넌트인 경우 하나의 열에 여러 컴포넌트를 수평으로 배치하는 것이 적절하다.
+
+**입력폼과 입력폼, 콘텐츠와 콘텐츠 사이에 충분한 간격을 제공한다.**
+데이터 입력을 위한 컴포넌트 또는 여러 개의 입력폼이 서로 너무 가까이 배치되면 사용자가 혼동할 수 있다.
+
+**액션 버튼은 일관된 위치에 배치하고 정렬한다.**
+액션 버튼은 입력폼의 오른쪽 하단 가장자리에 배치하는 것을 권장한다. 입력폼을 제출하는 버튼이 가장 오른쪽에 배치되어야 하며, 다음 순위 버튼이 순차적으로 제출 버튼의 왼쪽으로 배치된다. 입력폼과 관련하여 3개 이상의 동작이 필요한 경우, 3차 동작 버튼은 입력폼의 왼쪽 하단 가장자리에 배치하여 보다 명확하게 구분할 수 있다. 액션 버튼을 입력폼의 왼쪽 하단 가장자리에 배치할 경우, 중요도에 따른 버튼의 배치 순서는 오른쪽 정렬의 반대이다. 이때, 입력폼 제출 버튼은 모든 버튼 중 가장 왼쪽에 배치되어야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="액션 버튼은 일관된 위치에 배치하고 정렬한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+        <ReactButton variant="secondary" client:only="react">취소</ReactButton>
+        <ReactButton variant="primary" client:only="react">제출</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <div style="display: flex; justify-content: flex-end; gap: 8px">
+        <VueButton variant="secondary" client:only="vue">취소</VueButton>
+        <VueButton variant="primary" client:only="vue">제출</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <div style="display: flex; justify-content: flex-end; gap: 8px">
+        <SvelteButton variant="secondary" client:only="svelte">취소</SvelteButton>
+        <SvelteButton variant="primary" client:only="svelte">제출</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+        <SolidButton variant="secondary" client:only="solid-js">취소</SolidButton>
+        <SolidButton variant="primary" client:only="solid-js">제출</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style="display: flex; justify-content: flex-end; gap: 8px">
+        <AstroButton variant="secondary">취소</AstroButton>
+        <AstroButton variant="primary">제출</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; justify-content: flex-end; gap: 8px">
+        <AngularButton variant="secondary" label="취소" client:only="@analogjs/astro-angular">취소</AngularButton>
+        <AngularButton variant="primary" label="제출" client:only="@analogjs/astro-angular">제출</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+        <Button variant="secondary">취소</Button>
+        <Button variant="primary">제출</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    <div style="display: flex; justify-content: flex-end; gap: 8px">
+      <Button variant="secondary">취소</Button>
+      <Button variant="primary">제출</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end; gap: 8px">
+    <Button variant="secondary">취소</Button>
+    <Button variant="primary">제출</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+        <Button variant="secondary">취소</Button>
+        <Button variant="primary">제출</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <div style="display: flex; justify-content: flex-end; gap: 8px">
+    <krds-button variant="secondary" label="취소"></krds-button>
+    <krds-button variant="primary" label="제출"></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end; gap: 8px">
+    <Button variant="secondary">취소</Button>
+    <Button variant="primary">제출</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="액션 버튼은 일관된 위치에 배치하고 정렬한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" client:only="react">제출</ReactButton>
+      </div>
+      <ReactTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <ReactButton variant="secondary" client:only="react">취소</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" client:only="vue">제출</VueButton>
+      </div>
+      <VueTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <div style="display: flex; justify-content: flex-start">
+        <VueButton variant="secondary" client:only="vue">취소</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" client:only="svelte">제출</SvelteButton>
+      </div>
+      <SvelteTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <div style="display: flex; justify-content: flex-start">
+        <SvelteButton variant="secondary" client:only="svelte">취소</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" client:only="solid-js">제출</SolidButton>
+      </div>
+      <SolidTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <SolidButton variant="secondary" client:only="solid-js">취소</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary">제출</AstroButton>
+      </div>
+      <AstroTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style="display: flex; justify-content: flex-start">
+        <AstroButton variant="secondary">취소</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="제출" client:only="@analogjs/astro-angular">제출</AngularButton>
+      </div>
+      <AngularTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; justify-content: flex-start">
+        <AngularButton variant="secondary" label="취소" client:only="@analogjs/astro-angular">취소</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">제출</Button>
+      </div>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <Button variant="secondary">취소</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary">제출</Button>
+    </div>
+    <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    <div style="display: flex; justify-content: flex-start">
+      <Button variant="secondary">취소</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">제출</Button>
+  </div>
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-start">
+    <Button variant="secondary">취소</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">제출</Button>
+      </div>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <Button variant="secondary">취소</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <div style="display: flex; justify-content: flex-end">
+    <krds-button variant="primary" label="제출"></krds-button>
+  </div>
+  <krds-text-input name="name" label="이름" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <div style="display: flex; justify-content: flex-start">
+    <krds-button variant="secondary" label="취소"></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">제출</Button>
+  </div>
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-start">
+    <Button variant="secondary">취소</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**비활성화 상태의 콜투액션 버튼 사용을 고려한다.**
+입력폼의 모든 필수 입력 항목에 데이터가 입력되기 전까지 입력폼 제출 버튼 또는 다음 단계로의 이동 버튼을 비활성화하면 버튼을 누르기 전에 입력폼 제출 요건이 갖추어지지 않았음을 사용자가 직관적으로 인지할 수 있다. 사용자가 입력폼을 제출할 때는 중복 제출을 방지하기 위해 제출 버튼을 비활성화한다. 입력폼 처리에 시간이 걸릴 경우 피드백 메시지 및 인디케이터(예 - 스피너)를 사용하여 처리 중임을 안내하는 것이 바람직하다.
+
+**모범 사례 1**
+
+<PracticeExample
+  kind="good"
+  title="비활성화 상태의 콜투액션 버튼 사용을 고려한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" disabled client:only="react">제출</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" disabled client:only="vue">제출</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" disabled client:only="svelte">제출</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" disabled client:only="solid-js">제출</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary" disabled>제출</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="제출" disabled client:only="@analogjs/astro-angular">제출</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary" disabled>
+          제출
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary" disabled>제출</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary" disabled>제출</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary" disabled>
+          제출
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <div style="display: flex; justify-content: flex-end">
+    <krds-button variant="primary" label="제출" disabled></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary" disabled>제출</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 2**
+
+<PracticeExample
+  kind="good"
+  title="비활성화 상태의 콜투액션 버튼 사용을 고려한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름" defaultValue="홍길동" client:only="react" />
+      <ReactTextInput name="email" label="이메일" defaultValue="hong@example.com" client:only="react" />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+        <ReactSpinner label="처리 중" client:only="react" />
+        <ReactButton variant="primary" disabled client:only="react">제출</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름" model-value="홍길동" client:only="vue" />
+      <VueTextInput name="email" label="이메일" model-value="hong@example.com" client:only="vue" />
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+        <VueSpinner label="처리 중" client:only="vue" />
+        <VueButton variant="primary" disabled client:only="vue">제출</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름" value="홍길동" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일" value="hong@example.com" client:only="svelte" />
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+        <SvelteSpinner label="처리 중" client:only="svelte" />
+        <SvelteButton variant="primary" disabled client:only="svelte">제출</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름" value="홍길동" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일" value="hong@example.com" client:only="solid-js" />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+        <SolidSpinner label="처리 중" client:only="solid-js" />
+        <SolidButton variant="primary" disabled client:only="solid-js">제출</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름" value="홍길동" />
+      <AstroTextInput name="email" label="이메일" value="hong@example.com" />
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+        <AstroSpinner label="처리 중" />
+        <AstroButton variant="primary" disabled>제출</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름" value="홍길동" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일" value="hong@example.com" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+        <AngularSpinner label="처리 중" client:only="@analogjs/astro-angular" />
+        <AngularButton variant="primary" label="제출" disabled client:only="@analogjs/astro-angular">제출</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, Spinner, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" defaultValue="홍길동" />
+      <TextInput name="email" label="이메일" defaultValue="hong@example.com" />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+        <Spinner label="처리 중" />
+        <Button variant="primary" disabled>
+          제출
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, Spinner, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름" model-value="홍길동" />
+    <TextInput name="email" label="이메일" model-value="hong@example.com" />
+    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+      <Spinner label="처리 중" />
+      <Button variant="primary" disabled>제출</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, Spinner, TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" value="홍길동" />
+  <TextInput name="email" label="이메일" value="hong@example.com" />
+  <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+    <Spinner label="처리 중" />
+    <Button variant="primary" disabled>제출</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, Spinner, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" value="홍길동" />
+      <TextInput name="email" label="이메일" value="hong@example.com" />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+        <Spinner label="처리 중" />
+        <Button variant="primary" disabled>
+          제출
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsSpinnerComponent, KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름" value="홍길동"></krds-text-input>
+  <krds-text-input name="email" label="이메일" value="hong@example.com"></krds-text-input>
+  <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+    <krds-spinner label="처리 중"></krds-spinner>
+    <krds-button variant="primary" label="제출" disabled></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, Spinner, TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" value="홍길동" />
+  <TextInput name="email" label="이메일" value="hong@example.com" />
+  <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px">
+    <Spinner label="처리 중" />
+    <Button variant="primary" disabled>제출</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**입력 필드 주변에 레이블과 설명을 제공한다.**
+입력 필드의 용도와 관련 도움말을 쉽게 활용할 수 있도록 근접한 위치에 정보를 제공한다.
+
+**입력값의 단위를 표시한다.**
+레이블과 별개로 '개', '부수' 등의 데이터 입력 단위를 표시하여 사용자의 입력 오류를 줄인다.
+
+**필수 입력 항목과 선택 입력 항목을 명확하게 구분한다.**
+입력폼 콘텐츠에서 필수 입력과 선택 입력 항목은 명확하게 구분해야 한다. 입력 항목을 명확하게 구분하되 사용자의 데이터 입력 과업을 방해하지 않도록 항목을 시각적으로 구분하는 데서 발생하는 시각적 노이즈와 혼동을 최소화하는 것이 중요하다. 입력 항목을 구분하는 방식을 선택할 때는 전체 입력 항목 대비 필수 입력 항목 수, 선택 입력 항목 수를 고려해야 한다. 대부분의 항목이 필수인 경우 선택 입력 항목만 표시하고, 대부분의 필드가 선택 사항인 경우 필수 필드 레이블만 표시한다.
+
+**모범 사례 1**
+
+<PracticeExample
+  kind="good"
+  title="필수 입력 항목과 선택 입력 항목을 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 2**
+
+<PracticeExample
+  kind="good"
+  title="필수 입력 항목과 선택 입력 항목을 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름 *" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일" placeholder="이메일을 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 3**
+
+<PracticeExample
+  kind="good"
+  title="필수 입력 항목과 선택 입력 항목을 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+      <AstroTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+    <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="phone" label="연락처" placeholder="연락처를 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
+**필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다.**
+입력 항목을 구분하기 위해 사용된 패턴은 동일한 유형의 입력폼 또는 전체 웹사이트에서 일관되어야 한다. 입력 항목을 구분하는 데 다음과 같은 방식을 활용할 수 있다.
+
+- 필수 또는 선택 입력 항목 레이블에 텍스트로 '필수', '선택' 표시
+- 필수 입력 항목을 별표를 사용하여 표시
+
+**모범 사례 1**
+
+<PracticeExample
+  kind="good"
+  title="필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+      <AstroTextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+    <TextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 (필수)" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 (선택)" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처 (필수)" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 2**
+
+<PracticeExample
+  kind="good"
+  title="필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <AstroTextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+    <TextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="name" label="이름 *" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처 *" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 3**
+
+<PracticeExample
+  kind="good"
+  title="필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <p style={{ margin: 0, fontSize: "14px" }}>* 표시는 필수 입력 항목입니다.</p>
+      <ReactTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" client:only="react" />
+      <ReactTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+      <VueTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" client:only="vue" />
+      <VueTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+      <SvelteTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" client:only="svelte" />
+      <SvelteTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <p style={{ margin: 0, fontSize: "14px" }}>* 표시는 필수 입력 항목입니다.</p>
+      <SolidTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" client:only="solid-js" />
+      <SolidTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+      <AstroTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <AstroTextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" />
+      <AstroTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+      <AngularTextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <p style={{ margin: 0, fontSize: 14 }}>* 표시는 필수 입력 항목입니다.</p>
+      <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+    <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+    <TextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" />
+    <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+  <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <p style={{ margin: 0, fontSize: 14 }}>* 표시는 필수 입력 항목입니다.</p>
+      <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+      <TextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" />
+      <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+  <krds-text-input name="name" label="이름 *" placeholder="이름을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="email" label="이메일 *" placeholder="이메일을 입력해 주세요"></krds-text-input>
+  <krds-text-input name="phone" label="연락처" placeholder="연락처를 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <p style="margin: 0; font-size: 14px">* 표시는 필수 입력 항목입니다.</p>
+  <TextInput name="name" label="이름 *" placeholder="이름을 입력해 주세요" />
+  <TextInput name="email" label="이메일 *" placeholder="이메일을 입력해 주세요" />
+  <TextInput name="phone" label="연락처" placeholder="연락처를 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
+**사용자로부터 최소한의 데이터만 입력받는다.**
+반드시 필요한 정보만을 사용자가 입력하도록 콘텐츠를 간결화하고 입력 항목을 신중하게 도출해야 한다.
+
+**사용자가 자주 입력하는 데이터에 자동 완성 기능을 제공하는 방안을 고려한다.**
+정보 입력에 필요한 사용자의 인지적, 신체적 노력을 최소화할 수 있도록 사용자가 기존에 입력한 데이터를 최대한 활용하는 것이 바람직하다. 사용자가 서비스에 로그인한 상태라면 회원 정보에 저장된 데이터를 자동으로 호출하는 방안을 활용할 수 있다. 활용 가능한 개인화 정보가 없더라도 직전에 입력한 정보를 그대로 사용하는 옵션을 제공하거나 사용자 에이전트(웹 브라우저)에서 저장 및 관리하고 있는 사용자의 기존 입력 데이터 정보가 자동으로 입력될 수 있도록 autocomplete 속성을 활용할 수 있다.
+
+**사용자가 잘못 입력/선택한 값을 자동으로 삭제하지 않는다.**
+사용자가 어떤 값을 잘못 입력했는지 문제를 확인하고 필요한 내용을 수정할 수 있도록, 입력값을 자동으로 삭제하지 않는다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="사용자가 잘못 입력/선택한 값을 자동으로 삭제하지 않는다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="email" label="이메일" type="email" defaultValue="hong@example" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="email" label="이메일" type="email" model-value="hong@example" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="email" label="이메일" type="email" value="hong@example" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="email" label="이메일" type="email" value="hong@example" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="email" label="이메일" type="email" value="hong@example" state="error" hint="올바른 이메일 형식으로 입력해 주세요." />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="email" label="이메일" type="email" value="hong@example" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput
+        name="email"
+        label="이메일"
+        type="email"
+        defaultValue="hong@example"
+        state="error"
+        hint="올바른 이메일 형식으로 입력해 주세요."
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput
+      name="email"
+      label="이메일"
+      type="email"
+      model-value="hong@example"
+      state="error"
+      hint="올바른 이메일 형식으로 입력해 주세요."
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput
+    name="email"
+    label="이메일"
+    type="email"
+    value="hong@example"
+    state="error"
+    hint="올바른 이메일 형식으로 입력해 주세요."
+  />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput
+        name="email"
+        label="이메일"
+        type="email"
+        value="hong@example"
+        state="error"
+        hint="올바른 이메일 형식으로 입력해 주세요."
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input
+    name="email"
+    label="이메일"
+    type="email"
+    value="hong@example"
+    state="error"
+    hint="올바른 이메일 형식으로 입력해 주세요."
+  ></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput
+    name="email"
+    label="이메일"
+    type="email"
+    value="hong@example"
+    state="error"
+    hint="올바른 이메일 형식으로 입력해 주세요."
+  />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="사용자가 잘못 입력/선택한 값을 자동으로 삭제하지 않는다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="email" label="이메일" type="email" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="email" label="이메일" type="email" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="email" label="이메일" type="email" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="email" label="이메일" type="email" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="email" label="이메일" type="email" state="error" hint="올바른 이메일 형식으로 입력해 주세요." />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="email" label="이메일" type="email" state="error" hint="올바른 이메일 형식으로 입력해 주세요." client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput
+        name="email"
+        label="이메일"
+        type="email"
+        state="error"
+        hint="올바른 이메일 형식으로 입력해 주세요."
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput
+      name="email"
+      label="이메일"
+      type="email"
+      state="error"
+      hint="올바른 이메일 형식으로 입력해 주세요."
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput
+    name="email"
+    label="이메일"
+    type="email"
+    state="error"
+    hint="올바른 이메일 형식으로 입력해 주세요."
+  />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput
+        name="email"
+        label="이메일"
+        type="email"
+        state="error"
+        hint="올바른 이메일 형식으로 입력해 주세요."
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input
+    name="email"
+    label="이메일"
+    type="email"
+    state="error"
+    hint="올바른 이메일 형식으로 입력해 주세요."
+  ></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput
+    name="email"
+    label="이메일"
+    type="email"
+    state="error"
+    hint="올바른 이메일 형식으로 입력해 주세요."
+  />
+</div>
+```
+
+</PracticeExample>

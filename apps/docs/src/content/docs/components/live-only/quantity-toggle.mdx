@@ -1,0 +1,560 @@
+---
+title: 수량토글
+description: 수량 토글은 사용자가 수량 옵션을 늘리거나 줄이는 데 사용되며, 한정된 범위 내에서 수량 선택을 위해 사용한다.
+category: live-only
+---
+
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+
+{/* krds-official:component_12_04 */}
+
+> 이 컴포넌트는 공식 웹사이트(2026-07-27 확인)에 있으나 고정 스냅샷 1.1.0(krds-uiux@1.1.0)에 포함되지 않습니다. 커뮤니티 구현과 conformance 결과가 없습니다.
+
+## 공식 문서
+
+수량 토글은 사용자가 수량 옵션을 늘리거나 줄이는 데 사용되며, 한정된 범위 내에서 수량 선택을 위해 사용한다. 사용자가 조절한 수량 값은 시각적으로 화면에 반영되어야 하며, 최소 또는 최대 값에 도달하는 경우 증감 버튼을 비활성화 하여야 한다.
+
+### 구조
+
+1. **레이블** 사용자가 어떤 값을 선택해야 하는지를 안내하는 문구
+2. **버튼** 수량 필드의 값을 증가, 감소 시키는 역할의 버튼
+3. **수량 필드** 현재 선택된 값을 표시하는 텍스트
+
+### 용례
+
+#### 사용하기 적합한 경우
+
+- 사용자들이 선택하는 일반적인 값이 정해져 있는 경우
+- 증명서 발급 수, 관람 인원 수 등과 같이 일반적으로 선택되는 값이 대부분의 사용자가 선택하는 값이거나 그 값을 크게 벗어나지 않는 경우 사용이 적합하다.
+- 사용자가 최소한의 선택으로 목표 값을 선택할 수 있는 경우
+
+#### 사용하기 적합하지 않은 경우
+
+- 사용자가 선택할 수 있는 값이 다양한 경우
+- ‘나이’와 같이 사용자가 선택할 수 있는 값의 범위가 넓고 다양한 경우 사용하기 적합하지 않다.
+
+### 사용성 가이드라인
+
+**모든 수량 토글에 레이블을 제공한다.**
+수량 토글에 레이블이 제공되지 않으면 사용자는 어떤 수량 값을 선택해야 하는지 알 수 없다. 레이블을 생략하고자 하는 경우에는 레이블이 없어도 사용자가 값을 선택하는데 문제가 없다는 근거가 명확해야 한다.
+**키보드 입력 없이 수량 값 선택을 위해 사용한다.**
+키보드를 사용하여 수량 값 입력 시 발생할 수 있는 오류를 최소화 하고, 기본값의 최소한의 조정을 목표 값을 지적하는데 적합합니다.
+**수량 필드에 현재 값을 항상 표시하여 사용한다.**
+사용자가 증가, 감소 버튼을 클릭할 때 값이 얼마나 증가하거나 감소 하는지 알 수 있도록 수량 필드에 현재 값을 항상 표시하여 제공해야 합니다. 수량필드의 기본 값은 사용자가 가장 자주 선택하는 값으로 제공하는 것 적합합니다.
+**선택 수량의 범위를 제한해야 한다.**
+선택 수량에 제한을 설정할 때 버튼 상태를 비활성화로 변경하여 즉시 피드백을 제공해야 하며, 선택 수량은 기준 값을 포함하여 총 11단계 이내 범위를 제한하여 구현한다. 너무 많은 선택 값을 제공해야 하는 경우 수량 토글 보다는 텍스트 입력 필드를 적용하는 것이 적합합니다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="선택 수량의 범위를 제한해야 한다."
+>
+  <div slot="react">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <ReactTextInput label="관람 인원" defaultValue="1" readOnly hint="최대 5명" client:only="react" />
+      <ReactButton variant="secondary" size="medium" aria-label="수량 감소" disabled="true" client:only="react">−</ReactButton>
+      <ReactButton variant="secondary" size="medium" aria-label="수량 증가" client:only="react">+</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <VueTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" client:only="vue" />
+      <VueButton variant="secondary" size="medium" aria-label="수량 감소" disabled="true" client:only="vue">−</VueButton>
+      <VueButton variant="secondary" size="medium" aria-label="수량 증가" client:only="vue">+</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SvelteTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" client:only="svelte" />
+      <SvelteButton variant="secondary" size="medium" aria-label="수량 감소" disabled="true" client:only="svelte">−</SvelteButton>
+      <SvelteButton variant="secondary" size="medium" aria-label="수량 증가" client:only="svelte">+</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SolidTextInput label="관람 인원" value="1" readOnly hint="최대 5명" client:only="solid-js" />
+      <SolidButton variant="secondary" size="medium" aria-label="수량 감소" disabled="true" client:only="solid-js">−</SolidButton>
+      <SolidButton variant="secondary" size="medium" aria-label="수량 증가" client:only="solid-js">+</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AstroTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" />
+      <AstroButton variant="secondary" size="medium" aria-label="수량 감소" disabled="true">−</AstroButton>
+      <AstroButton variant="secondary" size="medium" aria-label="수량 증가">+</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AngularTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" client:only="@analogjs/astro-angular" />
+      <AngularButton variant="secondary" size="medium" aria-label="수량 감소" disabled="true" label="−" client:only="@analogjs/astro-angular">−</AngularButton>
+      <AngularButton variant="secondary" size="medium" aria-label="수량 증가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <ReactTextInput label="관람 인원" defaultValue="1" readOnly hint="최대 5명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소" disabled="true">
+    −
+  </Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <VueTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소" disabled="true">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SvelteTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소" disabled="true">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SolidTextInput label="관람 인원" value="1" readOnly hint="최대 5명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소" disabled="true">
+    −
+  </Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from '@krds-community/angular';
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <krds-text-input label="관람 인원" value="1" readonly="true" hint="최대 5명" />
+  <krds-button variant="secondary" size="medium" aria-label="수량 감소" disabled="true">−</krds-button>
+  <krds-button variant="secondary" size="medium" aria-label="수량 증가">+</krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from '@krds-community/astro';
+---
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <AstroTextInput label="관람 인원" value="1" readonly="true" hint="최대 5명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소" disabled="true">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="선택 수량의 범위를 제한해야 한다."
+>
+  <div slot="react">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <ReactTextInput label="관람 인원" defaultValue="1" readOnly hint="최대 999명" client:only="react" />
+      <ReactButton variant="secondary" size="medium" aria-label="수량 감소" client:only="react">−</ReactButton>
+      <ReactButton variant="secondary" size="medium" aria-label="수량 증가" client:only="react">+</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <VueTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" client:only="vue" />
+      <VueButton variant="secondary" size="medium" aria-label="수량 감소" client:only="vue">−</VueButton>
+      <VueButton variant="secondary" size="medium" aria-label="수량 증가" client:only="vue">+</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SvelteTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" client:only="svelte" />
+      <SvelteButton variant="secondary" size="medium" aria-label="수량 감소" client:only="svelte">−</SvelteButton>
+      <SvelteButton variant="secondary" size="medium" aria-label="수량 증가" client:only="svelte">+</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SolidTextInput label="관람 인원" value="1" readOnly hint="최대 999명" client:only="solid-js" />
+      <SolidButton variant="secondary" size="medium" aria-label="수량 감소" client:only="solid-js">−</SolidButton>
+      <SolidButton variant="secondary" size="medium" aria-label="수량 증가" client:only="solid-js">+</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AstroTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" />
+      <AstroButton variant="secondary" size="medium" aria-label="수량 감소">−</AstroButton>
+      <AstroButton variant="secondary" size="medium" aria-label="수량 증가">+</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AngularTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" client:only="@analogjs/astro-angular" />
+      <AngularButton variant="secondary" size="medium" aria-label="수량 감소" label="−" client:only="@analogjs/astro-angular">−</AngularButton>
+      <AngularButton variant="secondary" size="medium" aria-label="수량 증가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <ReactTextInput label="관람 인원" defaultValue="1" readOnly hint="최대 999명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">
+    −
+  </Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <VueTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SvelteTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SolidTextInput label="관람 인원" value="1" readOnly hint="최대 999명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">
+    −
+  </Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from '@krds-community/angular';
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <krds-text-input label="관람 인원" value="1" readonly="true" hint="최대 999명" />
+  <krds-button variant="secondary" size="medium" aria-label="수량 감소">−</krds-button>
+  <krds-button variant="secondary" size="medium" aria-label="수량 증가">+</krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from '@krds-community/astro';
+---
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <AstroTextInput label="관람 인원" value="1" readonly="true" hint="최대 999명" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+</PracticeExample>
+
+**수량 조정 버튼의 크기를 너무 작게 표시하지 않는다.**
+수량 값을 조정하는 증가, 감소 버튼을 모아서 배치하거나, 너무 작게 제공하는 경우 사용자는 속도를 늦추고 신중하게 움직여 잘못 클릭하는 경우를 발생할 수 있다. 수량 조정 버튼은 항상 입력 필드를 가운데 두고 분리하여 배치하는 것이 적합하다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="수량 조정 버튼의 크기를 너무 작게 표시하지 않는다."
+>
+  <div slot="react">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <ReactTextInput label="수량" defaultValue="2" readOnly client:only="react" />
+      <ReactButton variant="secondary" size="medium" aria-label="수량 감소" client:only="react">−</ReactButton>
+      <ReactButton variant="secondary" size="medium" aria-label="수량 증가" client:only="react">+</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <VueTextInput label="수량" value="2" readonly="true" client:only="vue" />
+      <VueButton variant="secondary" size="medium" aria-label="수량 감소" client:only="vue">−</VueButton>
+      <VueButton variant="secondary" size="medium" aria-label="수량 증가" client:only="vue">+</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SvelteTextInput label="수량" value="2" readonly="true" client:only="svelte" />
+      <SvelteButton variant="secondary" size="medium" aria-label="수량 감소" client:only="svelte">−</SvelteButton>
+      <SvelteButton variant="secondary" size="medium" aria-label="수량 증가" client:only="svelte">+</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SolidTextInput label="수량" value="2" readOnly client:only="solid-js" />
+      <SolidButton variant="secondary" size="medium" aria-label="수량 감소" client:only="solid-js">−</SolidButton>
+      <SolidButton variant="secondary" size="medium" aria-label="수량 증가" client:only="solid-js">+</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AstroTextInput label="수량" value="2" readonly="true" />
+      <AstroButton variant="secondary" size="medium" aria-label="수량 감소">−</AstroButton>
+      <AstroButton variant="secondary" size="medium" aria-label="수량 증가">+</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AngularTextInput label="수량" value="2" readonly="true" client:only="@analogjs/astro-angular" />
+      <AngularButton variant="secondary" size="medium" aria-label="수량 감소" label="−" client:only="@analogjs/astro-angular">−</AngularButton>
+      <AngularButton variant="secondary" size="medium" aria-label="수량 증가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <ReactTextInput label="수량" defaultValue="2" readOnly />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">
+    −
+  </Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <VueTextInput label="수량" value="2" readonly="true" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SvelteTextInput label="수량" value="2" readonly="true" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SolidTextInput label="수량" value="2" readOnly />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">
+    −
+  </Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from '@krds-community/angular';
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <krds-text-input label="수량" value="2" readonly="true" />
+  <krds-button variant="secondary" size="medium" aria-label="수량 감소">−</krds-button>
+  <krds-button variant="secondary" size="medium" aria-label="수량 증가">+</krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from '@krds-community/astro';
+---
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <AstroTextInput label="수량" value="2" readonly="true" />
+  <Button variant="secondary" size="medium" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="medium" aria-label="수량 증가">+</Button>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="수량 조정 버튼의 크기를 너무 작게 표시하지 않는다."
+>
+  <div slot="react">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <ReactTextInput label="수량" defaultValue="2" readOnly client:only="react" />
+      <ReactButton variant="secondary" size="small" aria-label="수량 감소" client:only="react">−</ReactButton>
+      <ReactButton variant="secondary" size="small" aria-label="수량 증가" client:only="react">+</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <VueTextInput label="수량" value="2" readonly="true" client:only="vue" />
+      <VueButton variant="secondary" size="small" aria-label="수량 감소" client:only="vue">−</VueButton>
+      <VueButton variant="secondary" size="small" aria-label="수량 증가" client:only="vue">+</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SvelteTextInput label="수량" value="2" readonly="true" client:only="svelte" />
+      <SvelteButton variant="secondary" size="small" aria-label="수량 감소" client:only="svelte">−</SvelteButton>
+      <SvelteButton variant="secondary" size="small" aria-label="수량 증가" client:only="svelte">+</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <SolidTextInput label="수량" value="2" readOnly client:only="solid-js" />
+      <SolidButton variant="secondary" size="small" aria-label="수량 감소" client:only="solid-js">−</SolidButton>
+      <SolidButton variant="secondary" size="small" aria-label="수량 증가" client:only="solid-js">+</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AstroTextInput label="수량" value="2" readonly="true" />
+      <AstroButton variant="secondary" size="small" aria-label="수량 감소">−</AstroButton>
+      <AstroButton variant="secondary" size="small" aria-label="수량 증가">+</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+      <AngularTextInput label="수량" value="2" readonly="true" client:only="@analogjs/astro-angular" />
+      <AngularButton variant="secondary" size="small" aria-label="수량 감소" label="−" client:only="@analogjs/astro-angular">−</AngularButton>
+      <AngularButton variant="secondary" size="small" aria-label="수량 증가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <ReactTextInput label="수량" defaultValue="2" readOnly />
+  <Button variant="secondary" size="small" aria-label="수량 감소">
+    −
+  </Button>
+  <Button variant="secondary" size="small" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <VueTextInput label="수량" value="2" readonly="true" />
+  <Button variant="secondary" size="small" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="small" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SvelteTextInput label="수량" value="2" readonly="true" />
+  <Button variant="secondary" size="small" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="small" aria-label="수량 증가">+</Button>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <SolidTextInput label="수량" value="2" readOnly />
+  <Button variant="secondary" size="small" aria-label="수량 감소">
+    −
+  </Button>
+  <Button variant="secondary" size="small" aria-label="수량 증가">
+    +
+  </Button>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from '@krds-community/angular';
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <krds-text-input label="수량" value="2" readonly="true" />
+  <krds-button variant="secondary" size="small" aria-label="수량 감소">−</krds-button>
+  <krds-button variant="secondary" size="small" aria-label="수량 증가">+</krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from '@krds-community/astro';
+---
+
+<div style="display: flex; align-items: flex-end; gap: 8px; max-width: 360px;">
+  <AstroTextInput label="수량" value="2" readonly="true" />
+  <Button variant="secondary" size="small" aria-label="수량 감소">−</Button>
+  <Button variant="secondary" size="small" aria-label="수량 증가">+</Button>
+</div>
+```
+
+</PracticeExample>
+
+{/* /krds-official:component_12_04 */}

@@ -1,0 +1,31 @@
+id: errata.select-sorting.control-label
+component: select-sorting
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/select_sorting.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - "select.krds-form-select-sort"
+    behavior: >-
+      The literal sorting select exposes only a title, which is not a sufficient accessible name.
+correction:
+  behavior: >-
+    Add aria-label from the component label so the select has an accessible name.
+  attributes:
+    - selector: "select.krds-form-select-sort"
+      attribute: aria-label
+      rule: "label text"
+fixtures:
+  - select-sorting.default
+normalization:
+  whitelist:
+    - selector: "select.krds-form-select-sort"
+      attribute: aria-label
+      operation: rewrite
+      rewriteValue: "선택"
+evidence:
+  rationale: >-
+    Framework adds the select's accessible name; attribute is a non-semantic addition vs upstream.

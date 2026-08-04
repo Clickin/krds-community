@@ -1,0 +1,30 @@
+id: errata.help-panel.empty-tab-heading
+component: help-panel
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/help_panel.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".tab-conts > h3"
+    behavior: >-
+      The literal panel always renders an sr-only heading even when its text is empty, producing an empty heading.
+correction:
+  behavior: >-
+    Omit the sr-only heading when the panel title is empty.
+  attributes:
+    - selector: ".tab-conts > h3"
+      attribute: sr-only-heading
+      rule: "omit when heading text is empty"
+fixtures:
+  - help-panel.default
+  - tutorial-panel.default
+normalization:
+  whitelist:
+    - selector: ".tab-conts > h3"
+      ignoreElement: true
+evidence:
+  rationale: >-
+    The framework omits the empty heading; the upstream heading is dropped from comparison so both sides agree.

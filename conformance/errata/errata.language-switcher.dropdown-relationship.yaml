@@ -1,0 +1,38 @@
+id: errata.language-switcher.dropdown-relationship
+component: language-switcher
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/language_switcher.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".krds-language > .drop-btn"
+      - ".krds-language > .drop-menu"
+    behavior: >-
+      The literal trigger button exposes a disclosure toggle without wiring the controlled menu.
+correction:
+  behavior: >-
+    Give the drop-down menu a stable id and reference it from the trigger's aria-controls so the expanded state names its target.
+  attributes:
+    - selector: ".krds-language > .drop-btn"
+      attribute: aria-controls
+      rule: "references: .krds-language > .drop-menu[id]"
+    - selector: ".krds-language > .drop-menu"
+      attribute: id
+      rule: "stable generated id for the aria-controls target"
+fixtures:
+  - language-switcher.default
+  - language-switcher-page.default
+normalization:
+  whitelist:
+    - selector: ".krds-language > .drop-btn"
+      attribute: aria-controls
+      operation: omit
+    - selector: ".krds-language > .drop-menu"
+      attribute: id
+      operation: omit
+evidence:
+  rationale: >-
+    The framework adds the id/aria-controls pairing to expose the disclosure relationship; the attributes are non-semantic additions compared against the literal upstream markup.

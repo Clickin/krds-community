@@ -1,0 +1,98 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import EditLink from 'virtual:starlight/components/EditLink';
+import LastUpdated from 'virtual:starlight/components/LastUpdated';
+import Pagination from 'virtual:starlight/components/Pagination';
+import config from 'virtual:starlight/user-config';
+
+
+const copyright =
+	'KRDS 공식 마크업·CSS·디자인 리소스는 공공누리 제1유형(출처표시)에 따라 이용하며, 출처는 KRDS 디자인시스템 홈페이지(https://www.krds.go.kr)입니다. KRDS Community의 프레임워크 구현 코드는 Apache-2.0 라이선스로 배포됩니다.';
+---
+
+<footer class="sl-flex">
+	<div class="meta sl-flex">
+		<EditLink />
+		<LastUpdated />
+	</div>
+	<Pagination />
+
+	{
+		config.credits && (
+			<a class="kudos sl-flex" href="https://starlight.astro.build">
+				<Icon name={'starlight'} /> {Astro.locals.t('builtWithStarlight.label')}
+			</a>
+		)
+	}
+</footer>
+<footer class="docs-krds-footer-compact">
+	<div class="inner">
+		<p class="f-copy">{copyright}</p>
+		<div class="krds-identifier">
+			<span class="ban-txt">KRDS Community — KRDS 프레임워크 네이티브 구현을 다루는 비공식 커뮤니티 문서입니다.</span>
+		</div>
+	</div>
+</footer>
+
+<style>
+	@layer starlight.core {
+		footer.sl-flex {
+			flex-direction: column;
+			gap: 1.5rem;
+		}
+		.meta {
+			gap: 0.75rem 3rem;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			margin-top: 3rem;
+			font-size: var(--sl-text-sm);
+			color: var(--sl-color-gray-3);
+		}
+		.meta > :global(p:only-child) {
+			margin-inline-start: auto;
+		}
+
+		.kudos {
+			align-items: center;
+			gap: 0.5em;
+			margin: 1.5rem auto;
+			font-size: var(--sl-text-xs);
+			text-decoration: none;
+			color: var(--sl-color-gray-3);
+		}
+		.kudos:hover {
+			color: var(--sl-color-white);
+		}
+	}
+
+	@layer starlight.components {
+		.kudos :global(svg) {
+			color: var(--sl-color-orange);
+		}
+	}
+
+	/* Compact footer replacing the full KrdsFooter. */
+	.docs-krds-footer-compact {
+		margin-top: 2rem;
+		padding: 1.5rem 0;
+		border-top: 1px solid var(--sl-color-gray-5);
+		font-size: var(--sl-text-xs);
+		color: var(--sl-color-gray-3);
+	}
+	.docs-krds-footer-compact .inner {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.docs-krds-footer-compact .f-copy {
+		margin: 0;
+	}
+	.docs-krds-footer-compact .krds-identifier {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.docs-krds-footer-compact .ban-txt {
+		font-size: var(--sl-text-xs);
+	}
+</style>

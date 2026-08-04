@@ -6,14 +6,14 @@ import {
   type ChangeEvent,
   type InputHTMLAttributes,
   type ReactNode,
-} from 'react';
+} from "react";
 import {
   accordionRecipe,
   buttonRecipe,
   choiceRecipe,
   cx,
   switchRecipe,
-} from '@krds-community/recipes';
+} from "@krds-community/recipes";
 import type {
   AccordionContractProps,
   AccordionItemContract,
@@ -21,76 +21,58 @@ import type {
   ChoiceContractProps,
   RadioContractProps,
   TextInputContractProps,
-} from '@krds-community/recipes';
+} from "@krds-community/recipes";
 function joinAriaIds(...ids: Array<string | undefined>) {
-  const unique = new Set(
-    ids.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []),
-  );
-  return unique.size ? Array.from(unique).join(' ') : undefined;
+  const unique = new Set(ids.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []));
+  return unique.size ? Array.from(unique).join(" ") : undefined;
 }
 
 export interface ButtonProps
-  extends ButtonContractProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {}
+  extends ButtonContractProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> {}
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant, size, className, type = 'button', disabled, ...props },
+  { variant, size, className, type = "button", disabled, ...props },
   ref,
 ) {
   const recipe = buttonRecipe({ variant, size, disabled, className });
   return (
-    <button
-      {...props}
-      ref={ref}
-      type={type}
-      disabled={disabled}
-      className={recipe.className}
-    />
+    <button {...props} ref={ref} type={type} disabled={disabled} className={recipe.className} />
   );
 });
 
 export interface TextInputProps
   extends
-    Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'disabled'>,
-    Omit<TextInputContractProps, 'label' | 'hint'> {
+    Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "value" | "disabled">,
+    Omit<TextInputContractProps, "label" | "hint"> {
   label?: ReactNode;
   hint?: ReactNode;
 }
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
-  {
-    label,
-    hint,
-    state = 'default',
-    size,
-    id: providedId,
-    className,
-    readonly,
-    readOnly,
-    ...props
-  },
+  { label, hint, state = "default", size, id: providedId, className, readonly, readOnly, ...props },
   ref,
 ) {
   const generatedId = useId();
   const id = providedId ?? `krds-input-${generatedId}`;
   const hintId = hint ? `${id}-hint` : undefined;
   const hintClassName =
-    state === 'default'
-      ? 'form-hint'
-      : state === 'error'
-        ? 'form-hint-invalid'
+    state === "default"
+      ? "form-hint"
+      : state === "error"
+        ? "form-hint-invalid"
         : `form-hint-${state}`;
   return (
     <div className="form-group">
       <div className="form-tit">
         <label htmlFor={id}>{label}</label>
       </div>
-      <div className={cx('form-conts', state === 'default' ? undefined : `is-${state}`)}>
+      <div className={cx("form-conts", state === "default" ? undefined : `is-${state}`)}>
         <input
           {...props}
           id={id}
           ref={ref}
           readOnly={readonly ?? readOnly}
-          className={cx('krds-input', size, className)}
-          aria-invalid={state === 'error' ? 'true' : props['aria-invalid']}
-          aria-describedby={joinAriaIds(props['aria-describedby'], hintId)}
+          className={cx("krds-input", size, className)}
+          aria-invalid={state === "error" ? "true" : props["aria-invalid"]}
+          aria-describedby={joinAriaIds(props["aria-describedby"], hintId)}
         />
       </div>
       {hint ? (
@@ -104,8 +86,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(function T
 
 export interface CheckboxProps
   extends
-    Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled'>,
-    Omit<ChoiceContractProps, 'label' | 'description'> {
+    Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "disabled">,
+    Omit<ChoiceContractProps, "label" | "description"> {
   label: ReactNode;
   description?: ReactNode;
 }
@@ -124,7 +106,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         ref={ref}
         id={id}
         type="checkbox"
-        aria-describedby={joinAriaIds(props['aria-describedby'], descriptionId)}
+        aria-describedby={joinAriaIds(props["aria-describedby"], descriptionId)}
       />
       <label htmlFor={id}>{label}</label>
       {description ? (
@@ -140,8 +122,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
 
 export interface RadioProps
   extends
-    Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled' | 'value'>,
-    Omit<RadioContractProps, 'label' | 'description' | 'value'> {
+    Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "disabled" | "value">,
+    Omit<RadioContractProps, "label" | "description" | "value"> {
   label: ReactNode;
   value?: string;
   description?: ReactNode;
@@ -162,7 +144,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
         id={id}
         type="radio"
         value={value}
-        aria-describedby={joinAriaIds(props['aria-describedby'], descriptionId)}
+        aria-describedby={joinAriaIds(props["aria-describedby"], descriptionId)}
       />
       <label htmlFor={id}>{label}</label>
       {description ? (
@@ -178,8 +160,8 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
 
 export interface SwitchProps
   extends
-    Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled'>,
-    Omit<ChoiceContractProps, 'label' | 'description'> {
+    Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "disabled">,
+    Omit<ChoiceContractProps, "label" | "description"> {
   label: ReactNode;
   description?: ReactNode;
 }
@@ -198,7 +180,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
         ref={ref}
         id={id}
         type="checkbox"
-        aria-describedby={joinAriaIds(props['aria-describedby'], descriptionId)}
+        aria-describedby={joinAriaIds(props["aria-describedby"], descriptionId)}
       />
       <label htmlFor={id}>
         <span className="switch-toggle">
@@ -215,11 +197,11 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
   );
 });
 
-export interface AccordionItemData extends Omit<AccordionItemContract, 'title' | 'content'> {
+export interface AccordionItemData extends Omit<AccordionItemContract, "title" | "content"> {
   title: ReactNode;
   content: ReactNode;
 }
-export interface AccordionProps extends Omit<AccordionContractProps, 'items'> {
+export interface AccordionProps extends Omit<AccordionContractProps, "items"> {
   items: AccordionItemData[];
   defaultOpen?: string[];
   open?: string[];
@@ -228,7 +210,7 @@ export interface AccordionProps extends Omit<AccordionContractProps, 'items'> {
 }
 export function Accordion({
   items,
-  type = 'default',
+  type = "default",
   multiple = false,
   defaultOpen = [],
   open: controlledOpen,
@@ -258,11 +240,11 @@ export function Accordion({
         const headerId = `${accordionId}-header-${index}-${item.id}`;
         const panelId = `${accordionId}-panel-${index}-${item.id}`;
         return (
-          <div className={cx('accordion-item', open && 'active')} key={headerId}>
+          <div className={cx("accordion-item", open && "active")} key={headerId}>
             <h5 className="accordion-header">
               <button
                 type="button"
-                className={cx('btn-accordion', open && 'active')}
+                className={cx("btn-accordion", open && "active")}
                 id={headerId}
                 aria-expanded={open}
                 aria-controls={panelId}
@@ -274,7 +256,7 @@ export function Accordion({
             </h5>
             <div
               id={panelId}
-              className={cx('accordion-collapse', 'collapse', open && 'show')}
+              className={cx("accordion-collapse", "collapse", open && "show")}
               role="region"
               aria-labelledby={headerId}
               hidden={!open}
@@ -288,7 +270,7 @@ export function Accordion({
   );
 }
 
-export function AccordionLine(props: Omit<AccordionProps, 'type'>) {
+export function AccordionLine(props: Omit<AccordionProps, "type">) {
   return <Accordion {...props} type="line" />;
 }
 export const RadioButton = Radio;

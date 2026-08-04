@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.select-sorting.control-label
 contract:
   semanticElement: native-element
   accessibleRole: combobox

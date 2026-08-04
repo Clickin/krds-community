@@ -5,7 +5,11 @@
     "jsxImportSource": "react",
     "allowJs": true,
     "checkJs": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@docs/*": ["./src/components/*"]
+    }
   },
-  "include": [".astro/types.d.ts", "**/*"]
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "public/host", "public/storybook"]
 }

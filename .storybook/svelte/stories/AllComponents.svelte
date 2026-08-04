@@ -1,6 +1,7 @@
 <script lang="ts">
   import * as Components from '@krds-community/svelte';
   import { Accordion, Button, Checkbox, Radio, Switch, TextInput } from '@krds-community/svelte';
+  import { ACCORDION_ITEMS, ACCORDION_ITEM_SINGLE, ACCORDION_LINE_ITEMS, BUTTON_TEXT, CHECKBOX_LABEL_DEFAULT, CHECKBOX_LABEL_LARGE, RADIO_LABEL_DEFAULT, RADIO_LABEL_LARGE, TEXT_INPUT_PROPS, MODAL_PROPS } from '../../shared/story-props';
 
   const names = [
     'Badge', 'BadgeNumber', 'BadgeSize', 'Breadcrumb', 'ButtonHierarchy', 'ButtonIcon', 'ButtonSize', 'ButtonText', 'ButtonWithIcon',
@@ -51,6 +52,7 @@
     { id: 'line-one', title: '라인 첫 항목', content: '라인 첫 항목 내용' },
     { id: 'line-two', title: '라인 두 번째 항목', content: '라인 두 번째 내용' },
   ];
+  const accordionItem = ACCORDION_ITEM_SINGLE;
   const alertItems = [
     { id: 'alert-one', tone: 'info', badgeLabel: '안내', message: '서비스 안내입니다.', linkLabel: '자세히 보기', href: '/notice' },
     { id: 'alert-two', tone: 'warning', badgeLabel: '주의', message: '확인이 필요한 안내입니다.', linkLabel: '확인하기', href: '/notice/important' },
@@ -245,17 +247,17 @@
   <Button variant="primary">기본 계층 버튼</Button>
   <Button variant="secondary">보조 계층 버튼</Button>
   <Button variant="tertiary">취소 계층 버튼</Button>
-  <TextInput label="기본 텍스트" hint="도움말" />
+  <TextInput label={TEXT_INPUT_PROPS.label} hint="도움말" />
   <TextInput id="svelte-text-input-error" label="오류 입력" hint="오류 메시지" state="error" />
   <TextInput id="svelte-text-input-success" label="성공 입력" hint="사용할 수 있습니다." state="success" />
   <TextInput id="svelte-text-input-information" label="안내 입력" hint="입력 안내입니다." state="information" />
-  <Checkbox label="체크박스" name="check" />
-  <Checkbox label="큰 체크박스" name="check-large" size="large" />
-  <Radio label="라디오" name="radio" value="one" />
-  <Radio label="큰 라디오" name="radio-large" value="large" size="large" />
+  <Checkbox label={CHECKBOX_LABEL_DEFAULT} name="check" />
+  <Checkbox label={CHECKBOX_LABEL_LARGE} name="check-large" size="large" />
+  <Radio label={RADIO_LABEL_DEFAULT} name="radio" value="one" />
+  <Radio label={RADIO_LABEL_LARGE} name="radio-large" value="large" size="large" />
   <Switch label="스위치" name="switch" />
   <Switch label="큰 스위치" name="switch-large" size="large" />
-  <Accordion items={[{ id: 'one', title: '아코디언', content: '내용' }]} />
+  <Accordion items={[accordionItem]} />
   <svelte:component this={Components.AccordionLine} kind="accordion-line" items={accordionLineItems} />
   <svelte:component
     this={Components.Carousel}
@@ -330,7 +332,7 @@
   <div class="krds-table-wrap">
     <svelte:component this={Components.Table} kind="table" {...common} columns={common.columns} rows={common.rows} />
   </div>
-  <svelte:component this={Components.Modal} kind="modal" open={false} role="dialog" title="모달 제목" description="모달 설명" cancelLabel="취소" confirmLabel="확인" closeLabel="닫기" />
+  <svelte:component this={Components.Modal} kind="modal" open={false} role="dialog" title={MODAL_PROPS.title} description="모달 설명" cancelLabel="취소" confirmLabel="확인" closeLabel="닫기" />
   <svelte:component this={Components.ModalSample} kind="modal-sample" open={false} role="dialog" title="샘플 모달 제목" description="샘플 모달 설명" cancelLabel="취소" confirmLabel="확인" closeLabel="닫기" />
   {#each names as name}
     {@const Component = Components[name as keyof typeof Components] as any}

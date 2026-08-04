@@ -1,10 +1,10 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  base: '/apps/conformance-host-astro/dist',
+  base: "/apps/conformance-host-astro/dist",
   build: {
-    format: 'directory',
+    format: "directory",
   },
-  output: 'static',
-  trailingSlash: 'always',
+  output: "static",
+  trailingSlash: "always",
 });

@@ -1,5 +1,12 @@
-/* @krds-community/tailwind — Tailwind CSS v4 theme entrypoint. */
-@import '@krds-community/tokens/css';
+/* @krds-community/tailwind — Tailwind CSS v4 theme entrypoint.
+ *
+ * KRDS component CSS (@krds-community/styles/css) ships wrapped in
+ * `@layer components`, so any Tailwind utility (e.g. `bg-red-500`,
+ * `text-blue-500`, `bg-[#ff00aa]`) overrides component styling — components
+ * are not locked to the built-in variants. `!important`-guarded upstream
+ * rules (focus outline, icon colors) keep winning over utilities.
+ */
+@import "@krds-community/tokens/css";
 
 @theme inline {
   --color-krds-primary: var(--krds-tailwind-color-primary);

@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.resize.dropdown-relationship
 contract:
   semanticElement: button-and-list
   accessibleRole: button

@@ -1,4 +1,4 @@
-import type { Locator } from 'playwright';
+import type { Locator } from "playwright";
 
 export type VisualCaptureContext = {
   origin?: { x: number; y: number };
@@ -11,7 +11,7 @@ export declare const captureVisualSignature: (
 ) => Promise<unknown>;
 export declare const captureCanonicalScreenshot: (
   locator: Locator,
-  options?: Parameters<Locator['screenshot']>[0],
+  options?: Parameters<Locator["screenshot"]>[0],
   context?: VisualCaptureContext,
 ) => Promise<Buffer>;
 export declare const comparePixels: (

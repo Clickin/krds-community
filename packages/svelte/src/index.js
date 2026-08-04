@@ -1,102 +1,118 @@
-import Additional from './Additional.svelte';
-import Accordion from './Accordion.svelte';
-const createAdditional = (kind) => {
-  return (anchor, props = {}) => {
+import Accordion from "./Accordion.svelte";
+export { Accordion };
+const withProps =
+  (component, forcedProps) =>
+  (anchor, props = {}) => {
     const presetProps = Object.create(Object.getPrototypeOf(props));
     Object.defineProperties(presetProps, Object.getOwnPropertyDescriptors(props));
-    Object.defineProperty(presetProps, 'kind', {
-      configurable: true,
-      enumerable: true,
-      value: kind,
-      writable: true,
-    });
-    return Additional(anchor, presetProps);
+    for (const [key, value] of Object.entries(forcedProps)) {
+      Object.defineProperty(presetProps, key, {
+        configurable: true,
+        enumerable: true,
+        value,
+        writable: true,
+      });
+    }
+    return component(anchor, presetProps);
   };
-};
+export const AccordionLine = withProps(Accordion, { kind: "accordion-line" });
+export { default as Button } from "./Button.svelte";
+export { default as Checkbox } from "./Checkbox.svelte";
+export { default as Radio } from "./Radio.svelte";
+export { default as Switch } from "./Switch.svelte";
+export { default as TextInput } from "./TextInput.svelte";
+export { default as TextInputSize } from "./TextInput.svelte";
+export { default as TextInputState } from "./TextInput.svelte";
 
-export { Accordion };
-export const AccordionLine = (anchor, props = {}) => {
-  const presetProps = Object.create(Object.getPrototypeOf(props));
-  Object.defineProperties(presetProps, Object.getOwnPropertyDescriptors(props));
-  Object.defineProperty(presetProps, 'kind', {
-    configurable: true,
-    enumerable: true,
-    value: 'accordion-line',
-    writable: true,
-  });
-  return Accordion(anchor, presetProps);
-};
-export { default as Button } from './Button.svelte';
-export { default as Checkbox } from './Checkbox.svelte';
-export { default as Radio } from './Radio.svelte';
-export { default as Switch } from './Switch.svelte';
-export { default as TextInput } from './TextInput.svelte';
-export { default as TextInputSize } from './TextInput.svelte';
-export { default as TextInputState } from './TextInput.svelte';
-export const Badge = createAdditional('badge');
-export const BadgeNumber = createAdditional('badge-number');
-export const BadgeSize = createAdditional('badge-size');
-export const Breadcrumb = createAdditional('breadcrumb');
-export const ButtonHierarchy = createAdditional('button-hierarchy');
-export const ButtonIcon = createAdditional('button-icon');
-export const ButtonSize = createAdditional('button-size');
-export const ButtonText = createAdditional('button-text');
-export const ButtonWithIcon = createAdditional('button-with-icon');
-export const Calendar = createAdditional('calendar');
-export const CalendarRange = createAdditional('calendar-range');
-export const Carousel = createAdditional('carousel');
-export const CarouselBanner = createAdditional('carousel-banner');
-export const CheckboxChip = createAdditional('checkbox-chip');
-export const CheckboxSize = createAdditional('checkbox-size');
-export const CoachMark = createAdditional('coach-mark');
-export const ContextualHelp = createAdditional('contextual-help');
-export const CriticalAlerts = createAdditional('critical-alerts');
-export const DateInput = createAdditional('date-input');
-export const Disclosure = createAdditional('disclosure');
-export const Favicon = createAdditional('favicon');
-export const FileUpload = createAdditional('file-upload');
-export const Footer = createAdditional('footer');
-export const Header = createAdditional('header');
-export const HelpPanel = createAdditional('help-panel');
-export const Identifier = createAdditional('identifier');
-export const InPageNavigation = createAdditional('in-page-navigation');
-export const LanguageSwitcher = createAdditional('language-switcher');
-export const LanguageSwitcherPage = createAdditional('language-switcher-page');
-export const Link = createAdditional('link');
-export const MainMenuMobile = createAdditional('main-menu-mobile');
-export const MainMenuPc = createAdditional('main-menu-pc');
-export const Masthead = createAdditional('masthead');
-export const Modal = createAdditional('modal');
-export const ModalSample = createAdditional('modal-sample');
-export const Pagination = createAdditional('pagination');
-export const RadioButton = createAdditional('radio-button');
-export const RadioChip = createAdditional('radio-chip');
-export const RadioSize = createAdditional('radio-size');
-export const Resize = createAdditional('resize');
-export const Select = createAdditional('select');
-export const SelectSize = createAdditional('select-size');
-export const SelectSorting = createAdditional('select-sorting');
-export const SelectState = createAdditional('select-state');
-export const SideNavigation = createAdditional('side-navigation');
-export const SkipLink = createAdditional('skip-link');
-export const Spinner = createAdditional('spinner');
-export const StepIndicator = createAdditional('step-indicator');
-export const StructuredList = createAdditional('structured-list');
-export const StructuredListTable = createAdditional('structured-list-table');
-export const Tab = createAdditional('tab');
-export const Table = createAdditional('table');
-export const Tag = createAdditional('tag');
-export const TagLink = createAdditional('tag-link');
-export const Textarea = createAdditional('textarea');
-export const TextInputIcon = createAdditional('text-input-icon');
-export const TextList = createAdditional('text-list');
-export const TextListOrdered = createAdditional('text-list-ordered');
-export const ToggleSwitch = createAdditional('toggle-switch');
-export const ToggleSwitchSize = createAdditional('toggle-switch-size');
-export const Tooltip = createAdditional('tooltip');
-export const TooltipBox = createAdditional('tooltip-box');
-export const TooltipVertical = createAdditional('tooltip-vertical');
-export const Tts = createAdditional('tts');
-export const TtsIcon = createAdditional('tts-icon');
-export const TtsSize = createAdditional('tts-size');
-export const TutorialPanel = createAdditional('tutorial-panel');
+import Badge from "./Badge.svelte";
+export { Badge };
+export const BadgeNumber = withProps(Badge, { number: true });
+export const BadgeSize = withProps(Badge, {});
+
+export { default as Breadcrumb } from "./Breadcrumb.svelte";
+export { default as ButtonHierarchy } from "./ButtonHierarchy.svelte";
+export { default as ButtonIcon } from "./ButtonIcon.svelte";
+export { default as ButtonSize } from "./ButtonSize.svelte";
+export { default as ButtonText } from "./ButtonText.svelte";
+export { default as ButtonWithIcon } from "./ButtonWithIcon.svelte";
+
+import Calendar from "./Calendar.svelte";
+export { Calendar };
+export const CalendarRange = withProps(Calendar, { kind: "calendar-range" });
+export { default as DateInput } from "./DateInput.svelte";
+
+import Carousel from "./Carousel.svelte";
+export { Carousel };
+export const CarouselBanner = withProps(Carousel, { kind: "banner" });
+
+export { default as CheckboxChip } from "./CheckboxChip.svelte";
+export { default as CheckboxSize } from "./CheckboxSize.svelte";
+export { default as CoachMark } from "./CoachMark.svelte";
+export { default as ContextualHelp } from "./ContextualHelp.svelte";
+export { default as CriticalAlerts } from "./CriticalAlerts.svelte";
+export { default as Disclosure } from "./Disclosure.svelte";
+export { default as Favicon } from "./Favicon.svelte";
+export { default as FileUpload } from "./FileUpload.svelte";
+export { default as Footer } from "./Footer.svelte";
+export { default as Header } from "./Header.svelte";
+export { default as HelpPanel } from "./HelpPanel.svelte";
+export { default as Identifier } from "./Identifier.svelte";
+export { default as InPageNavigation } from "./InPageNavigation.svelte";
+
+import LanguageSwitcher from "./LanguageSwitcher.svelte";
+export { LanguageSwitcher };
+export const LanguageSwitcherPage = withProps(LanguageSwitcher, { kind: "page" });
+
+export { default as Link } from "./Link.svelte";
+export { default as MainMenuMobile } from "./MainMenuMobile.svelte";
+export { default as MainMenuPc } from "./MainMenuPc.svelte";
+export { default as Masthead } from "./Masthead.svelte";
+
+import Modal from "./Modal.svelte";
+export { Modal };
+export const ModalSample = Modal;
+
+export { default as Pagination } from "./Pagination.svelte";
+export { default as RadioButton } from "./RadioButton.svelte";
+export { default as RadioChip } from "./RadioChip.svelte";
+export { default as RadioSize } from "./RadioSize.svelte";
+export { default as Resize } from "./Resize.svelte";
+
+import Select from "./Select.svelte";
+export { Select };
+export const SelectSize = Select;
+export const SelectState = Select;
+
+export { default as SelectSorting } from "./SelectSorting.svelte";
+export { default as SideNavigation } from "./SideNavigation.svelte";
+export { default as SkipLink } from "./SkipLink.svelte";
+export { default as Spinner } from "./Spinner.svelte";
+export { default as StepIndicator } from "./StepIndicator.svelte";
+export { default as StructuredList } from "./StructuredList.svelte";
+export { default as StructuredListTable } from "./StructuredListTable.svelte";
+export { default as Tab } from "./Tab.svelte";
+export { default as Table } from "./Table.svelte";
+export { default as Tag } from "./Tag.svelte";
+export { default as TagLink } from "./TagLink.svelte";
+export { default as Textarea } from "./Textarea.svelte";
+export { default as TextInputIcon } from "./TextInputIcon.svelte";
+export { default as TextList } from "./TextList.svelte";
+export { default as TextListOrdered } from "./TextListOrdered.svelte";
+
+import ToggleSwitch from "./ToggleSwitch.svelte";
+export { ToggleSwitch };
+export const ToggleSwitchSize = ToggleSwitch;
+
+import Tooltip from "./Tooltip.svelte";
+export { Tooltip };
+export const TooltipBox = withProps(Tooltip, { kind: "box" });
+export const TooltipVertical = withProps(Tooltip, { kind: "vertical" });
+
+import Tts from "./Tts.svelte";
+import TtsIcon from "./TtsIcon.svelte";
+import TtsSize from "./TtsSize.svelte";
+export { Tts };
+export { TtsIcon, TtsSize };
+
+import TutorialPanel from "./TutorialPanel.svelte";
+export { TutorialPanel };

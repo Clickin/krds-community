@@ -3,6 +3,1132 @@ title: 상세 정보 확인
 description: 목록에서 진입한 사용자가 예상한 정보를 명확하게 확인하는 기본 패턴입니다.
 ---
 
-import PatternPage from '../../../components/PatternPage.astro';
+import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { Link as ReactLink } from "@krds-community/react";
+import { Link as VueLink } from "@krds-community/vue";
+import { Link as SvelteLink } from "@krds-community/svelte";
+import { Link as SolidLink } from "@krds-community/solid";
+import { AngularLink } from "@docs/angular-previews.ts";
+import { Link as AstroLink } from "@krds-community/astro";
+import { TextList as ReactTextList } from "@krds-community/react";
+import { TextList as VueTextList } from "@krds-community/vue";
+import { TextList as SvelteTextList } from "@krds-community/svelte";
+import { TextList as SolidTextList } from "@krds-community/solid";
+import { AngularTextList } from "@docs/angular-previews.ts";
+import { TextList as AstroTextList } from "@krds-community/astro";
+import { InPageNavigation as ReactInPageNavigation } from "@krds-community/react";
+import { InPageNavigation as VueInPageNavigation } from "@krds-community/vue";
+import { InPageNavigation as SvelteInPageNavigation } from "@krds-community/svelte";
+import { InPageNavigation as SolidInPageNavigation } from "@krds-community/solid";
+import { AngularInPageNavigation } from "@docs/angular-previews.ts";
+import { InPageNavigation as AstroInPageNavigation } from "@krds-community/astro";
 
-<PatternPage patternId="detail" />
+<PatternReference patternId="detail" />
+
+## 공식 문서
+
+### 구조
+
+1. **제목** 본문 전체에 대한 제목
+2. **요약 정보** 본문의 주요 내용을 요약하여 설명하는 2~3줄의 텍스트
+3. **상세 정보** 상세 정보를 전달하기 위한 콘텐츠 섹션으로 구성된 본문
+4. **부가 정보** 본문에 대한 이해를 돕기 위해 제공되는 콘텐츠 섹션으로 구성됨
+5. **콘텐츠 변경 이력** 정보의 업로드일, 변경일, 변경된 내용에 대한 로그 기록
+6. **콘텐츠 내 탐색** 본문의 콘텐츠 섹션의 구조를 파악하고 원하는 섹션으로 이동할 수 있도록 도와주는 탐색 수단
+7. **액션 버튼** 정보와 관련된 기능을 실행하는 버튼 또는 관련 화면으로 이동할 수 있는 링크
+
+### 유형
+
+**단일 화면** 모든 상세 정보를 하나의 화면에 제공하고 주요 단락을 콘텐츠 탐색 내비게이션을 활용하여 이동한다. 불가피하게 탭을 사용해야 하는 상황을 제외하고 상세 정보는 기본적으로 단일 화면 레이아웃으로 제공되는 것이 바람직하다.
+
+**탭** 단일 화면에서 콘텐츠를 소구하기에 콘텐츠 내용이 지나치게 복잡하거나 콘텐츠 섹션 간 성격이 달라 사용자가 섹션의 내용을 비교해가며 파악하지 않아도 될 때 사용하기 적합한 레이아웃이다.
+
+## 사용성 가이드라인
+
+### 상세 정보 확인
+
+**콘텐츠의 작성자, 출처, 저작권을 표시한다.**
+모든 상세 콘텐츠에 작성자, 출처, 저작권 정보를 표시하여 사용자가 신뢰를 가지고 정보를 이용할 수 있도록 해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="콘텐츠의 작성자, 출처, 저작권을 표시한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: "14px" }}>
+        작성자: 정보서비스팀 · 출처: <ReactLink href="#" client:only="react">정부서비스</ReactLink> · 저작권: © 2025
+      </p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">
+        작성자: 정보서비스팀 · 출처: <VueLink href="#" client:only="vue">정부서비스</VueLink> · 저작권: © 2025
+      </p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">
+        작성자: 정보서비스팀 · 출처: <SvelteLink href="#" client:only="svelte">정부서비스</SvelteLink> · 저작권: © 2025
+      </p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: "14px" }}>
+        작성자: 정보서비스팀 · 출처: <SolidLink href="#" client:only="solid-js">정부서비스</SolidLink> · 저작권: © 2025
+      </p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">
+        작성자: 정보서비스팀 · 출처: <AstroLink href="#">정부서비스</AstroLink> · 저작권: © 2025
+      </p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">
+        작성자: 정보서비스팀 · 출처: <AngularLink href="#" label="정부서비스" client:only="@analogjs/astro-angular"></AngularLink> · 저작권: © 2025
+      </p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Link } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: 14 }}>
+        작성자: 정보서비스팀 · 출처: <Link href="#">정부서비스</Link> · 저작권: © 2025
+      </p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Link } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+    <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+    <p style="margin: 0; font-size: 14px">
+      작성자: 정보서비스팀 · 출처: <Link href="#">정부서비스</Link> · 저작권: © 2025
+    </p>
+    <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Link } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <p style="margin: 0; font-size: 14px">
+    작성자: 정보서비스팀 · 출처: <Link href="#">정부서비스</Link> · 저작권: © 2025
+  </p>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+</div>
+```
+
+```tsx fw=solid
+import { Link } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: 14 }}>
+        작성자: 정보서비스팀 · 출처: <Link href="#">정부서비스</Link> · 저작권: © 2025
+      </p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsLinkComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <p style="margin: 0; font-size: 14px">
+    작성자: 정보서비스팀 · 출처: <krds-link href="#" label="정부서비스"></krds-link> · 저작권: © 2025
+  </p>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+</div>
+```
+
+```astro fw=astro
+---
+import { Link } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <p style="margin: 0; font-size: 14px">
+    작성자: 정보서비스팀 · 출처: <Link href="#">정부서비스</Link> · 저작권: © 2025
+  </p>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+</div>
+```
+
+</PracticeExample>
+
+**정보 등록, 변경 일자와 변경 내역을 제공한다.**
+정보가 업로드된 최초 날짜부터 시작하여 모든 변경 내역의 반영 일자와 변경 내역을 헤딩 근처와 본문 마지막에 제공해야 한다. 이를 통해 디지털 정부서비스가 지속적으로 관리되고 있음을 사용자가 인지할 수 있다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="정보 등록, 변경 일자와 변경 내역을 제공한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: "14px" }}>등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      <div style={{ marginTop: "8px" }}>
+        <strong>변경 내역</strong>
+        <ReactTextList items={["2025-06-18 지원 대상 요건 일부 개정", "2025-04-10 신청 기간 연장 안내 추가", "2025-03-02 최초 등록"]}  client:only="react"/>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      <div style="margin-top: 8px">
+        <strong>변경 내역</strong>
+        <VueTextList items={['2025-06-18 지원 대상 요건 일부 개정', '2025-04-10 신청 기간 연장 안내 추가', '2025-03-02 최초 등록']}  client:only="vue"/>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      <div style="margin-top: 8px">
+        <strong>변경 내역</strong>
+        <SvelteTextList items={["2025-06-18 지원 대상 요건 일부 개정", "2025-04-10 신청 기간 연장 안내 추가", "2025-03-02 최초 등록"]}  client:only="svelte"/>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: "14px" }}>등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      <div style={{ marginTop: "8px" }}>
+        <strong>변경 내역</strong>
+        <SolidTextList items={["2025-06-18 지원 대상 요건 일부 개정", "2025-04-10 신청 기간 연장 안내 추가", "2025-03-02 최초 등록"]}  client:only="solid-js"/>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      <div style="margin-top: 8px">
+        <strong>변경 내역</strong>
+        <AstroTextList items={["2025-06-18 지원 대상 요건 일부 개정", "2025-04-10 신청 기간 연장 안내 추가", "2025-03-02 최초 등록"]} />
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      <div style="margin-top: 8px">
+        <strong>변경 내역</strong>
+        <AngularTextList items={['2025-06-18 지원 대상 요건 일부 개정', '2025-04-10 신청 기간 연장 안내 추가', '2025-03-02 최초 등록']} client:only="@analogjs/astro-angular"></AngularTextList>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextList } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: 14 }}>등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      <div style={{ marginTop: 8 }}>
+        <strong>변경 내역</strong>
+        <TextList
+          items={[
+            "2025-06-18 지원 대상 요건 일부 개정",
+            "2025-04-10 신청 기간 연장 안내 추가",
+            "2025-03-02 최초 등록",
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextList } from "@krds-community/vue";
+const changes = [
+  "2025-06-18 지원 대상 요건 일부 개정",
+  "2025-04-10 신청 기간 연장 안내 추가",
+  "2025-03-02 최초 등록",
+];
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+    <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+    <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+    <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    <div style="margin-top: 8px">
+      <strong>변경 내역</strong>
+      <TextList :items="changes" />
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextList } from "@krds-community/svelte";
+const changes = [
+  "2025-06-18 지원 대상 요건 일부 개정",
+  "2025-04-10 신청 기간 연장 안내 추가",
+  "2025-03-02 최초 등록",
+];
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  <div style="margin-top: 8px">
+    <strong>변경 내역</strong>
+    <TextList items={changes} />
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { TextList } from "@krds-community/solid";
+
+export function Example() {
+  const changes = [
+    "2025-06-18 지원 대상 요건 일부 개정",
+    "2025-04-10 신청 기간 연장 안내 추가",
+    "2025-03-02 최초 등록",
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <p style={{ margin: 0, fontSize: 14 }}>등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      <div style={{ marginTop: 8 }}>
+        <strong>변경 내역</strong>
+        <TextList items={changes} />
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextListComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  <div style="margin-top: 8px">
+    <strong>변경 내역</strong>
+    <krds-text-list [items]="['2025-06-18 지원 대상 요건 일부 개정', '2025-04-10 신청 기간 연장 안내 추가', '2025-03-02 최초 등록']"></krds-text-list>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextList } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <p style="margin: 0; font-size: 14px">등록일: 2025-03-02 · 변경일: 2025-06-18</p>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  <div style="margin-top: 8px">
+    <strong>변경 내역</strong>
+    <TextList items={["2025-06-18 지원 대상 요건 일부 개정", "2025-04-10 신청 기간 연장 안내 추가", "2025-03-02 최초 등록"]} />
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**제목은 다른 요소들과 구분되도록 표현한다.**
+제목은 웹사이트에서의 현재 사용자 위치를 알려주고, 본문을 읽기 전에 간략한 내용을 파악할 수 있게 도와준다. 따라서 각 콘텐츠의 제목은 다른 요소와 명확하게 구분되어 표현되어야 한다.
+
+**콘텐츠 요소들 사이의 계층구조를 명확하게 구분한다.**
+요소들 간 계층구조를 명확하게 구분하면, 사용자는 중요한 정보를 더욱 빠르게 처리할 수 있다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="콘텐츠 요소들 사이의 계층구조를 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <h4 style={{ margin: 0 }}>신청 개요</h4>
+      <p style={{ margin: 0 }}>지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style={{ margin: 0 }}>지원 대상</h5>
+      <p style={{ margin: 0 }}>만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style={{ margin: 0 }}>신청 방법</h5>
+      <p style={{ margin: 0 }}>온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">신청 개요</h4>
+      <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style="margin: 0">지원 대상</h5>
+      <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style="margin: 0">신청 방법</h5>
+      <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">신청 개요</h4>
+      <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style="margin: 0">지원 대상</h5>
+      <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style="margin: 0">신청 방법</h5>
+      <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <h4 style={{ margin: 0 }}>신청 개요</h4>
+      <p style={{ margin: 0 }}>지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style={{ margin: 0 }}>지원 대상</h5>
+      <p style={{ margin: 0 }}>만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style={{ margin: 0 }}>신청 방법</h5>
+      <p style={{ margin: 0 }}>온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">신청 개요</h4>
+      <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style="margin: 0">지원 대상</h5>
+      <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style="margin: 0">신청 방법</h5>
+      <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <h4 style="margin: 0">신청 개요</h4>
+      <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style="margin: 0">지원 대상</h5>
+      <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style="margin: 0">신청 방법</h5>
+      <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+
+```tsx fw=react
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <h4 style={{ margin: 0 }}>신청 개요</h4>
+      <p style={{ margin: 0 }}>지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style={{ margin: 0 }}>지원 대상</h5>
+      <p style={{ margin: 0 }}>만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style={{ margin: 0 }}>신청 방법</h5>
+      <p style={{ margin: 0 }}>온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<template>
+  <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+    <h4 style="margin: 0">신청 개요</h4>
+    <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+    <h5 style="margin: 0">지원 대상</h5>
+    <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+    <h5 style="margin: 0">신청 방법</h5>
+    <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">신청 개요</h4>
+  <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+  <h5 style="margin: 0">지원 대상</h5>
+  <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+  <h5 style="margin: 0">신청 방법</h5>
+  <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+</div>
+```
+
+```tsx fw=solid
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <h4 style={{ margin: 0 }}>신청 개요</h4>
+      <p style={{ margin: 0 }}>지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <h5 style={{ margin: 0 }}>지원 대상</h5>
+      <p style={{ margin: 0 }}>만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <h5 style={{ margin: 0 }}>신청 방법</h5>
+      <p style={{ margin: 0 }}>온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+// template
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">신청 개요</h4>
+  <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+  <h5 style="margin: 0">지원 대상</h5>
+  <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+  <h5 style="margin: 0">신청 방법</h5>
+  <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+</div>
+```
+
+```astro fw=astro
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <h4 style="margin: 0">신청 개요</h4>
+  <p style="margin: 0">지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+  <h5 style="margin: 0">지원 대상</h5>
+  <p style="margin: 0">만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+  <h5 style="margin: 0">신청 방법</h5>
+  <p style="margin: 0">온라인 신청 또는 방문 신청이 가능합니다.</p>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="콘텐츠 요소들 사이의 계층구조를 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <p style={{ margin: 0, fontWeight: 700 }}>신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <p style={{ margin: 0 }}>지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style={{ margin: 0 }}>신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+      <p style={{ margin: 0, fontWeight: 700 }}>신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <p style={{ margin: 0 }}>지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style={{ margin: 0 }}>신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+      <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+      <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  </div>
+
+```tsx fw=react
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <p style={{ margin: 0, fontWeight: 700 }}>
+        신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.
+      </p>
+      <p style={{ margin: 0 }}>지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style={{ margin: 0 }}>신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<template>
+  <div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+    <p style="margin: 0; font-weight: 700">
+      신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.
+    </p>
+    <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+    <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+  <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+  <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+</div>
+```
+
+```tsx fw=solid
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 560 }}>
+      <p style={{ margin: 0, fontWeight: 700 }}>
+        신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.
+      </p>
+      <p style={{ margin: 0 }}>지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+      <p style={{ margin: 0 }}>신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+// template
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+  <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+  <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+</div>
+```
+
+```astro fw=astro
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 560px">
+  <p style="margin: 0; font-weight: 700">신청 개요 지원 대상과 신청 방법에 대한 요약 설명입니다.</p>
+  <p style="margin: 0">지원 대상 만 19세 이상 국민 누구나 신청할 수 있습니다.</p>
+  <p style="margin: 0">신청 방법 온라인 신청 또는 방문 신청이 가능합니다.</p>
+</div>
+```
+
+</PracticeExample>
+
+**문단과 문장은 최대한 간단명료하게 구성한다.**
+사용자의 이해를 촉진할 수 있도록, 문단을 구성하는 문장, 문장을 구성하는 단어를 가능한 한 간단명료하게 사용해야 한다.
+
+**핵심 주제는 첫 문단, 첫 문장에 포함시킨다.**
+핵심 주제를 문단이나 문장의 첫 부분에 배치하면 다음에 어떤 내용이 나올 것인지를 충분히 예측할 수 있으므로 내용을 조직화하고 이해하기 쉽다.
+
+**인포그래픽, 사진, 동영상 등의 콘텐츠를 적절하게 활용한다.**
+시각적 정보를 활용하면 텍스트에만 의존하는 것보다 말하고자 하는 바를 효과적으로 전달할 수 있으며 사용자의 흥미를 유발한다.
+
+**외부 서비스로 이동하거나 새 창을 실행하는 액션 버튼에 명확한 시각적 단서를 제공한다.**
+새 창 열림 아이콘을 표시하여 사용자가 원하지 않는 상황에서 현재의 이용 맥락을 벗어나지 않도록 한다.
+
+**화면 너비가 충분한 경우 콘텐츠 내 탐색을 표시하고 본문 우측의 일관된 위치에 고정하여 제공한다.**
+콘텐츠의 목차로 작동하여 사용자가 화면의 구조를 훑어볼 수 있으며, 콘텐츠 내 탐색에서 특정 항목을 클릭하면 연결된 섹션으로 스크롤 되므로 원하는 콘텐츠로 빠르게 이동할 수 있다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="화면 너비가 충분한 경우 콘텐츠 내 탐색을 표시하고 본문 우측의 일관된 위치에 고정하여 제공한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", gap: "16px", maxWidth: "720px" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
+        <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+        <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style={{ width: "200px", flexShrink: 0 }}>
+        <ReactInPageNavigation
+          title="페이지 내 탐색"
+          items={[
+            { id: "intro", label: "신청 개요", href: "#intro" },
+            { id: "target", label: "지원 대상", href: "#target" },
+            { id: "howto", label: "신청 방법", href: "#howto" },
+          ]}
+          client:only="react"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; gap: 16px; max-width: 720px">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+        <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+        <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style="width: 200px; flex-shrink: 0">
+        <VueInPageNavigation
+          title="페이지 내 탐색"
+          items={[{ id: 'intro', label: '신청 개요', href: '#intro' }, { id: 'target', label: '지원 대상', href: '#target' }, { id: 'howto', label: '신청 방법', href: '#howto' }]}
+          client:only="vue"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; gap: 16px; max-width: 720px">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+        <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+        <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style="width: 200px; flex-shrink: 0">
+        <SvelteInPageNavigation
+          title="페이지 내 탐색"
+          items={[{ id: "intro", label: "신청 개요", href: "#intro" }, { id: "target", label: "지원 대상", href: "#target" }, { id: "howto", label: "신청 방법", href: "#howto" }]}
+          client:only="svelte"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", gap: "16px", maxWidth: "720px" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px" }}>
+        <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+        <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style={{ width: "200px", flexShrink: 0 }}>
+        <SolidInPageNavigation
+          title="페이지 내 탐색"
+          items={[
+            { id: "intro", label: "신청 개요", href: "#intro" },
+            { id: "target", label: "지원 대상", href: "#target" },
+            { id: "howto", label: "신청 방법", href: "#howto" },
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; gap: 16px; max-width: 720px">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+        <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+        <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style="width: 200px; flex-shrink: 0">
+        <AstroInPageNavigation
+          title="페이지 내 탐색"
+          items={[
+            { id: "intro", label: "신청 개요", href: "#intro" },
+            { id: "target", label: "지원 대상", href: "#target" },
+            { id: "howto", label: "신청 방법", href: "#howto" },
+          ]}
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; gap: 16px; max-width: 720px">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+        <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+        <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style="width: 200px; flex-shrink: 0">
+        <AngularInPageNavigation
+          title="페이지 내 탐색"
+          items={[{ id: 'intro', label: '신청 개요', href: '#intro' }, { id: 'target', label: '지원 대상', href: '#target' }, { id: 'howto', label: '신청 방법', href: '#howto' }]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { InPageNavigation } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: 16, maxWidth: 720 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+        <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+        <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style={{ width: 200, flexShrink: 0 }}>
+        <InPageNavigation
+          title="페이지 내 탐색"
+          items={[
+            { id: "intro", label: "신청 개요", href: "#intro" },
+            { id: "target", label: "지원 대상", href: "#target" },
+            { id: "howto", label: "신청 방법", href: "#howto" },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { InPageNavigation } from "@krds-community/vue";
+const items = [
+  { id: "intro", label: "신청 개요", href: "#intro" },
+  { id: "target", label: "지원 대상", href: "#target" },
+  { id: "howto", label: "신청 방법", href: "#howto" },
+];
+</script>
+
+<template>
+  <div style="display: flex; gap: 16px; max-width: 720px">
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+    <div style="width: 200px; flex-shrink: 0">
+      <InPageNavigation title="페이지 내 탐색" :items="items" />
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { InPageNavigation } from "@krds-community/svelte";
+const items = [
+  { id: "intro", label: "신청 개요", href: "#intro" },
+  { id: "target", label: "지원 대상", href: "#target" },
+  { id: "howto", label: "신청 방법", href: "#howto" },
+];
+</script>
+
+<div style="display: flex; gap: 16px; max-width: 720px">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+    <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+    <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  </div>
+  <div style="width: 200px; flex-shrink: 0">
+    <InPageNavigation title="페이지 내 탐색" items={items} />
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { InPageNavigation } from "@krds-community/solid";
+
+export function Example() {
+  const items = [
+    { id: "intro", label: "신청 개요", href: "#intro" },
+    { id: "target", label: "지원 대상", href: "#target" },
+    { id: "howto", label: "신청 방법", href: "#howto" },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 16, maxWidth: 720 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+        <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+        <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+      </div>
+      <div style={{ width: 200, flexShrink: 0 }}>
+        <InPageNavigation title="페이지 내 탐색" items={items} />
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsInPageNavigationComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; gap: 16px; max-width: 720px">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+    <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+    <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  </div>
+  <div style="width: 200px; flex-shrink: 0">
+    <krds-in-page-navigation
+      title="페이지 내 탐색"
+      [items]="[{ id: 'intro', label: '신청 개요', href: '#intro' }, { id: 'target', label: '지원 대상', href: '#target' }, { id: 'howto', label: '신청 방법', href: '#howto' }]"
+    ></krds-in-page-navigation>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { InPageNavigation } from "@krds-community/astro";
+---
+
+<div style="display: flex; gap: 16px; max-width: 720px">
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+    <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+    <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  </div>
+  <div style="width: 200px; flex-shrink: 0">
+    <InPageNavigation
+      title="페이지 내 탐색"
+      items={[
+        { id: "intro", label: "신청 개요", href: "#intro" },
+        { id: "target", label: "지원 대상", href: "#target" },
+        { id: "howto", label: "신청 방법", href: "#howto" },
+      ]}
+    />
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**모바일에서 콘텐츠 내 탐색은 제목과 본문 사이에 배치한다.**
+화면 너비가 충분하지 않을 때, 콘텐츠 내 탐색은 특정 위치에 고정하지 않고 제목과 본문 사이에 배치한다. 본문의 구조가 복잡하여 콘텐츠 내 탐색의 길이가 길어질 경우, 디스클로저와 같은 확장 가능한 섹션으로 콘텐츠 내 탐색을 제공할 수 있다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="모바일에서 콘텐츠 내 탐색은 제목과 본문 사이에 배치한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "360px" }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <ReactInPageNavigation
+        title="페이지 내 탐색"
+        items={[
+          { id: "intro", label: "신청 개요", href: "#intro" },
+          { id: "target", label: "지원 대상", href: "#target" },
+          { id: "howto", label: "신청 방법", href: "#howto" },
+        ]}
+        client:only="react"
+      />
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <VueInPageNavigation
+        title="페이지 내 탐색"
+        items={[{ id: 'intro', label: '신청 개요', href: '#intro' }, { id: 'target', label: '지원 대상', href: '#target' }, { id: 'howto', label: '신청 방법', href: '#howto' }]}
+        client:only="vue"
+      />
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <SvelteInPageNavigation
+        title="페이지 내 탐색"
+        items={[{ id: "intro", label: "신청 개요", href: "#intro" }, { id: "target", label: "지원 대상", href: "#target" }, { id: "howto", label: "신청 방법", href: "#howto" }]}
+        client:only="svelte"
+      />
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "360px" }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <SolidInPageNavigation
+        title="페이지 내 탐색"
+        items={[
+          { id: "intro", label: "신청 개요", href: "#intro" },
+          { id: "target", label: "지원 대상", href: "#target" },
+          { id: "howto", label: "신청 방법", href: "#howto" },
+        ]}
+        client:only="solid-js"
+      />
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <AstroInPageNavigation
+        title="페이지 내 탐색"
+        items={[
+          { id: "intro", label: "신청 개요", href: "#intro" },
+          { id: "target", label: "지원 대상", href: "#target" },
+          { id: "howto", label: "신청 방법", href: "#howto" },
+        ]}
+      />
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+      <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+      <AngularInPageNavigation
+        title="페이지 내 탐색"
+        items={[{ id: 'intro', label: '신청 개요', href: '#intro' }, { id: 'target', label: '지원 대상', href: '#target' }, { id: 'howto', label: '신청 방법', href: '#howto' }]}
+        client:only="@analogjs/astro-angular"
+      />
+      <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  </div>
+
+```tsx fw=react
+import { InPageNavigation } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 360 }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <InPageNavigation
+        title="페이지 내 탐색"
+        items={[
+          { id: "intro", label: "신청 개요", href: "#intro" },
+          { id: "target", label: "지원 대상", href: "#target" },
+          { id: "howto", label: "신청 방법", href: "#howto" },
+        ]}
+      />
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { InPageNavigation } from "@krds-community/vue";
+const items = [
+  { id: "intro", label: "신청 개요", href: "#intro" },
+  { id: "target", label: "지원 대상", href: "#target" },
+  { id: "howto", label: "신청 방법", href: "#howto" },
+];
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+    <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+    <InPageNavigation title="페이지 내 탐색" :items="items" />
+    <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { InPageNavigation } from "@krds-community/svelte";
+const items = [
+  { id: "intro", label: "신청 개요", href: "#intro" },
+  { id: "target", label: "지원 대상", href: "#target" },
+  { id: "howto", label: "신청 방법", href: "#howto" },
+];
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <InPageNavigation title="페이지 내 탐색" items={items} />
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+</div>
+```
+
+```tsx fw=solid
+import { InPageNavigation } from "@krds-community/solid";
+
+export function Example() {
+  const items = [
+    { id: "intro", label: "신청 개요", href: "#intro" },
+    { id: "target", label: "지원 대상", href: "#target" },
+    { id: "howto", label: "신청 방법", href: "#howto" },
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, maxWidth: 360 }}>
+      <h4 style={{ margin: 0 }}>2025년도 정부 지원 사업 안내</h4>
+      <InPageNavigation title="페이지 내 탐색" items={items} />
+      <p style={{ margin: 0 }}>본문 내용이 시작되는 영역입니다.</p>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsInPageNavigationComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <krds-in-page-navigation
+    title="페이지 내 탐색"
+    [items]="[{ id: 'intro', label: '신청 개요', href: '#intro' }, { id: 'target', label: '지원 대상', href: '#target' }, { id: 'howto', label: '신청 방법', href: '#howto' }]"
+  ></krds-in-page-navigation>
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+</div>
+```
+
+```astro fw=astro
+---
+import { InPageNavigation } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 360px">
+  <h4 style="margin: 0">2025년도 정부 지원 사업 안내</h4>
+  <InPageNavigation
+    title="페이지 내 탐색"
+    items={[
+      { id: "intro", label: "신청 개요", href: "#intro" },
+      { id: "target", label: "지원 대상", href: "#target" },
+      { id: "howto", label: "신청 방법", href: "#howto" },
+    ]}
+  />
+  <p style="margin: 0">본문 내용이 시작되는 영역입니다.</p>
+</div>
+```
+
+</PracticeExample>

@@ -1,13 +1,13 @@
 export type KrdsTone =
-  | 'primary'
-  | 'secondary'
-  | 'gray'
-  | 'point'
-  | 'danger'
-  | 'warning'
-  | 'success'
-  | 'information'
-  | 'disabled';
+  | "primary"
+  | "secondary"
+  | "gray"
+  | "point"
+  | "danger"
+  | "warning"
+  | "success"
+  | "information"
+  | "disabled";
 
 export type KrdsOption = { value: string; label: string; disabled?: boolean };
 export type KrdsNavItem = {
@@ -30,7 +30,7 @@ export type KrdsListItem = {
   badge?: string;
 };
 export type KrdsCarouselSlide = { id: string; title: string; description?: string; href?: string };
-export type KrdsPaginationItem = number | 'ellipsis';
+export type KrdsPaginationItem = number | "ellipsis";
 
 /** Framework-neutral data and state props. Framework event/ref/children props stay local. */
 export interface KrdsAdditionalProps {
@@ -41,7 +41,7 @@ export interface KrdsAdditionalProps {
   description?: string;
   hint?: string;
   tone?: KrdsTone;
-  appearance?: 'outline' | 'solid' | 'light';
+  appearance?: "outline" | "solid" | "light";
   size?: string;
   number?: boolean;
   href?: string;

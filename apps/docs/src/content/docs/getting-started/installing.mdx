@@ -1,0 +1,50 @@
+---
+title: 설치 방법
+description: KRDS Community 패키지를 프로젝트에 설치하고 설정하는 자세한 방법입니다.
+---
+
+import FrameworkCodeTabs from "@docs/FrameworkCodeTabs.astro";
+
+각 프레임워크 패키지는 해당 프레임워크의 네이티브 컴포넌트를 제공합니다. 공통 계약은 `@krds-community/recipes`, canonical token 값은 `@krds-community/tokens`에서 생성되며, 기초 스타일은 선택적으로 `@krds-community/styles`에서 가져옵니다.
+
+```sh
+pnpm add @krds-community/<framework> @krds-community/styles
+```
+
+`<framework>`를 `react`, `vue`, `svelte`, `solid`, `angular`, `astro` 중 선택합니다. 각 프레임워크 패키지 이름은 같고 `@krds-community/` 접두사 뒤에 프레임워크 이름만 바뀝니다.
+
+이미 Astro 프로젝트를 사용 중이라면 `astro` 패키지가 이미 설치되어 있으므로 `@krds-community/astro`와 `@krds-community/styles`만 추가하면 됩니다.
+
+| 프레임워크 | 패키지                    |
+| ---------- | ------------------------- |
+| React      | `@krds-community/react`   |
+| Vue        | `@krds-community/vue`     |
+| Svelte     | `@krds-community/svelte`  |
+| SolidJS    | `@krds-community/solid`   |
+| Angular    | `@krds-community/angular` |
+| Astro      | `@krds-community/astro`   |
+
+## Tailwind CSS
+
+`@krds-community/tailwind`는 KRDS 디자인 토큰을 Tailwind CSS v4 테마 변수에 연결하는 선택적 통합 패키지입니다. 다음과 같은 Tailwind 유틸리티 클래스를 사용할 수 있게 해줍니다:
+
+- `bg-krds-primary`, `text-krds-primary-strong`
+- `bg-krds-secondary`, `bg-krds-danger`
+- `rounded-krds`, `font-krds`
+
+프로젝트에서 Tailwind CSS를 사용 중이라면:
+
+```sh
+pnpm add tailwindcss @krds-community/tailwind
+```
+
+CSS 진입점에서 `@import "tailwindcss"` 다음에 `@krds-community/tailwind/css`를 import합니다:
+
+```css
+@import "tailwindcss";
+@import "@krds-community/tailwind/css";
+```
+
+프로젝트에서 Tailwind CSS를 사용하지 않는다면 `@krds-community/tailwind`는 필요하지 않습니다. `.krds-*` BEM 클래스는 `@krds-community/styles`만으로도 정상 작동합니다.
+
+> **참고:** `@krds-community/tailwind`는 테마 브리지일 뿐 컴포넌트 스타일을 포함하지 않습니다. 컴포넌트 스타일은 `@krds-community/styles`에 있습니다. 또한 `krds component copy` 명령어는 Tailwind 유틸리티가 아닌 `.krds-*` BEM 클래스를 사용하는 코드 조각을 생성합니다. `@krds-community/tailwind`는 Tailwind CSS 유틸리티를 KRDS 컴포넌트와 함께 사용하려는 경우에만 필요합니다.

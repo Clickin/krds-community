@@ -1,0 +1,56 @@
+---
+title: KRDS CLI
+description: "@krds-community/krds-cli로 개별 컴포넌트 소스를 프로젝트에 복사하는 방법입니다."
+---
+
+`@krds-community/krds-cli`를 사용하면 개별 컴포넌트의 소스 코드를 프로젝트에 직접 복사할 수 있습니다. (shadcn/ui 방식에서 영감을 받았습니다.) 복사된 코드는 프로젝트의 일부가 되므로 자유롭게 수정할 수 있지만, 원본 패키지와 자동으로 동기화되지 않습니다.
+
+CLI를 설치하거나 직접 실행합니다:
+
+```sh
+# 전역 설치
+pnpm add -D @krds-community/krds-cli
+
+# 또는 직접 실행
+pnpm dlx @krds-community/krds-cli
+```
+
+사용 가능한 컴포넌트 목록을 확인합니다:
+
+```sh
+pnpm krds component list
+```
+
+컴포넌트를 복사합니다:
+
+```sh
+pnpm krds component copy button --framework react --out src/components/Button.tsx
+```
+
+클립보드에서 붙여넣거나 파일에서 컴포넌트 소스를 가져옵니다:
+
+```sh
+pnpm krds component paste --clipboard --out src/components/Button.tsx
+pnpm krds component paste --from button.tsx
+```
+
+사용 가능한 옵션:
+
+- `--framework <framework>` — 대상 프레임워크 (react, vue, svelte, solid, angular, astro) — list/copy
+- `--out <file>` — 출력을 stdout 대신 파일로 작성 — copy/paste
+- `--clipboard` — (copy) 클립보드에 쓰거나 (paste) 클립보드에서 읽기
+- `--as <name>` — 메타데이터와 스니펫의 컴포넌트 이름 덮어쓰기
+- `--force` — 소스 해시가 다른 파일을 덮어쓰기
+- `--from <file>` — paste 소스 파일 (--clipboard 대체)
+- `-h, --help` — 도움말 표시
+- `-v, --version` — 패키지 버전 출력
+
+복사된 코드는 `.krds-*` BEM 클래스를 사용하므로, 프로젝트 진입점에서 `@krds-community/styles/css`를 import해야 스타일이 적용됩니다. CLI는 npm 의존성을 자동으로 설치하지 않으므로, 필요한 패키지를 직접 설치하세요:
+
+```sh
+pnpm add @krds-community/styles @krds-community/recipes
+```
+
+이미 [빠른 시작](../installation/)의 설치 단계에서 패키지를 추가했다면 `@krds-community/styles`는 이미 설치되어 있습니다.
+
+복사한 컴포넌트를 최신 버전으로 업데이트하거나 변경 사항을 확인하는 방법은 [복사-붙여넣기 마이그레이션](../copy-paste-migration/) 페이지를 참고하세요.

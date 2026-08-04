@@ -6,6 +6,9 @@ catalogMode: strict
 
 catalog:
   # Keep only repository-wide build and test tool versions centralized.
+  "@astrojs/react": https://pkg.pr.new/@astrojs/react@ae356b5
+  "@astrojs/starlight": 0.41.5
+  postcss: ^8.5.23
   typescript: 6.0.3
   vite: 8.1.5
   vitest: 4.1.10
@@ -15,3 +18,10 @@ allowBuilds:
   esbuild: true
   lmdb: set this to true or false
   msgpackr-extract: set this to true or false
+
+minimumReleaseAgeExclude:
+  - "@astrojs/starlight@0.41.5"
+  - "@analogjs/astro-angular@2.7.0-beta.7"
+  - "@analogjs/vite-plugin-angular@2.7.0-beta.7"
+  - "@astrojs/internal-helpers@0.10.2"
+  - "@astrojs/react@6.0.2"

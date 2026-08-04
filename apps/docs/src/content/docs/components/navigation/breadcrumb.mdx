@@ -1,0 +1,659 @@
+---
+title: 브레드크럼
+description: KRDS 브레드크럼 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: navigation
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Breadcrumb as ReactBreadcrumb } from "@krds-community/react";
+import { Breadcrumb as VueBreadcrumb } from "@krds-community/vue";
+import { Breadcrumb as SvelteBreadcrumb } from "@krds-community/svelte";
+import { Breadcrumb as SolidBreadcrumb } from "@krds-community/solid";
+import { AngularBreadcrumb } from "@docs/angular-previews.ts";
+import { Breadcrumb as AstroBreadcrumb } from "@krds-community/astro";
+
+<FrameworkPreview title="브레드크럼">
+  <ReactBreadcrumb slot="react" aria-label="경로" client:only="react" />
+  <VueBreadcrumb slot="vue" aria-label="경로" client:only="vue" />
+  <SvelteBreadcrumb slot="svelte" aria-label="경로" client:only="svelte" />
+  <SolidBreadcrumb slot="solid" aria-label="경로" client:only="solid-js" />
+  <AngularBreadcrumb slot="angular" aria-label="경로" client:only="@analogjs/astro-angular" />
+  <AstroBreadcrumb slot="astro" aria-label="경로" />
+
+```tsx fw=react
+import { Breadcrumb } from "@krds-community/react";
+
+export function Example() {
+  return <Breadcrumb aria-label="경로"></Breadcrumb>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Breadcrumb } from "@krds-community/vue";
+</script>
+
+<template>
+  <Breadcrumb aria-label="경로"></Breadcrumb>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Breadcrumb } from '@krds-community/svelte';
+</script>
+
+<Breadcrumb aria-label="경로"></Breadcrumb>
+```
+
+```tsx fw=solid
+import { Breadcrumb } from "@krds-community/solid";
+
+export function Example() {
+  return <Breadcrumb aria-label="경로"></Breadcrumb>;
+}
+```
+
+```ts fw=angular
+import { KrdsBreadcrumbComponent } from '@krds-community/angular';
+
+// template
+<krds-breadcrumb aria-label="경로"></krds-breadcrumb>
+```
+
+```astro fw=astro
+---
+import { Breadcrumb } from '@krds-community/astro';
+---
+
+<Breadcrumb aria-label="경로"></Breadcrumb>
+```
+
+</FrameworkPreview>
+
+{/* krds-official:component_03_03 */}
+
+## 공식 문서
+
+브레드크럼은 탐색 계층 구조를 표시하여 사용자가 현재 위치를 파악하고 계층 구조의 수준을 이동할 수 있게 해준다. 브레드크럼을 통해 사용자는 탐색 중인 화면의 상위 수준 화면으로 이동할 수 있다.
+
+### 구조
+
+1. **경로**
+
+- a.** 홈 아이콘과 레이블** 브레드크럼 목록의 첫 번째 항목으로 메인 화면으로 이동하는 링크로 작동함
+- b.** 상위 구조** 탐색 중인 화면의 상위 수준의 정보 구조를 표시하는 텍스트로 연결 가능한 페이지가 존재하는 경우 링크로 작동함
+
+2. **말줄임표**
+   페이지 링크 표시 개수를 초과하는 경우 축약된 경로가 있음을 안내하기 위해 제공됨. 말줄임표는 항상 홈 아이콘 링크 다음 요소로 제공됨
+3. **구분자**
+   브레드크럼 항목을 구분하기 위한 구분 기호. 화면 간의 시각적 계층 구조를 나타냄
+
+### 용례
+
+#### 사용하기 적합하지 않은 경우
+
+- 탐색 계층 구조가 1수준인 사이트
+- 탐색 구조의 깊이가 2단계인 사이트에는 탐색 경로가 존재하지 않으며, 메인 메뉴와 메뉴의 활성화 상태 인디케이터 정보를 통해 탐색 위치를 파악할 수 있으므로 탐색 수단으로 브레드크럼을 제공할 필요가 없다.
+- 메인 또는 랜딩 페이지
+- 메인 페이지나 랜딩 페이지는 정보 구조의 최상위 수준이므로 브레드크럼을 사용하지 않는 것이 적절하다.
+- 진행 상황 표시
+- 진행 상황을 표시하고자 하는 경우에는 단계 식별자나 진행 상황 표시기를 사용해야 한다.
+
+### 사용성 가이드라인
+
+**브레드크럼 목록의 가장 첫 번째 항목으로 메인 화면 링크를 제공한다.**
+브레드크럼 목록의 가장 첫 번째 항목은 메인 화면 링크여야하며, 실제 사용자가 방문한 웹사이트의 메인 화면으로 연결되어야 한다.
+**브레드크럼 목록의 가장 마지막 항목으로 현재 화면의 상위 화면 링크를 제공한다.**
+본문 상단에 명확한 본문 제목이 제공되고 있는 경우, 브레드크럼의 마지막 항목으로 현재 화면의 경로를 생략하고 상위 화면을 경로로 제공할 수 있다. 이때 브레드크럼과 본문 제목 사이에 다른 요소가 존재해서는 안 된다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="브레드크럼 목록의 가장 마지막 항목으로 현재 화면의 상위 화면 링크를 제공한다."
+>
+  <div slot="react">
+    <ReactBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroBreadcrumb
+      aria-label="경로"
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "components", label: "컴포넌트", href: "/components" },
+        { id: "navigation", label: "내비게이션", href: "/components/navigation" },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularBreadcrumb
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "components", label: "컴포넌트", href: "/components" },
+        { id: "navigation", label: "내비게이션", href: "/components/navigation" },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="브레드크럼 목록의 가장 마지막 항목으로 현재 화면의 상위 화면 링크를 제공한다."
+>
+  <div slot="react">
+    <ReactBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroBreadcrumb
+      aria-label="경로"
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "components", label: "컴포넌트", href: "/components" },
+        { id: "breadcrumb", label: "브레드크럼", href: "#" },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularBreadcrumb
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "components", label: "컴포넌트", href: "/components" },
+        { id: "breadcrumb", label: "브레드크럼", href: "#" },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+</PracticeExample>
+
+**상위 화면으로 연결되는 링크가 없는 경우에도 항상 현재 화면의 전체 정보 계층 구조를 표시한다.**
+연결될 수 있는 상위 화면이 없는 경우에는 해당 텍스트가 링크로 작동하지 않도록 하고 링크를 변별하기 위한 밑줄, 마우스오버(Mouseover) 효과를 제거한다.
+**브레드크럼 텍스트 경로가 링크임을 인지할 수 있는 시각적 단서를 제공한다.**
+텍스트 아래에 명도 대비 기준을 충족하는 밑줄을 제공하고 마우스오버(Mouseover) 효과를 적용하여 링크로 작동함을 사용자가 명확하게 인지할 수 있도록 해야 한다.
+**브레드크럼은 단일 행으로 제공한다.**
+브레드크럼이 여러 줄로 제공되면 탐색 경로의 계층 구조를 적절하게 보여줄 수 없다. 화면 너비가 충분한 경우 브레드크럼은 메인 화면 링크를 포함하여 최대 4개의 링크를 표시한다. 경로가 5개 이상인 경우, 메인 화면 링크 다음 수준의 계층 구조를 말줄임표로 축약함으로써
+브레드크럼이 한 줄로 구성되도록 한다. 만약 4개 이내의 경로만 표시하고 있음에도 줄바꿈이 발생하는 경우 가장 마지막 링크를 축약할 수 있다.
+**모범 사례**
+
+<PracticeExample kind="good" title="브레드크럼은 단일 행으로 제공한다.">
+  <div slot="react">
+    <ReactBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "컴포넌트", href: "/components" },
+        { label: "내비게이션", href: "/components/navigation" },
+        { label: "브레드크럼" },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroBreadcrumb
+      aria-label="경로"
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "components", label: "컴포넌트", href: "/components" },
+        { id: "navigation", label: "내비게이션", href: "/components/navigation" },
+        { id: "breadcrumb", label: "브레드크럼", href: "#" },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularBreadcrumb
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "components", label: "컴포넌트", href: "/components" },
+        { id: "navigation", label: "내비게이션", href: "/components/navigation" },
+        { id: "breadcrumb", label: "브레드크럼", href: "#" },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample kind="bad" title="브레드크럼은 단일 행으로 제공한다.">
+  <div slot="react">
+    <div style="max-width: 24rem">
+      <ReactBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "컴포넌트", href: "/components" },
+          { label: "폼", href: "/components/form" },
+          { label: "입력", href: "/components/input" },
+          { label: "텍스트 입력", href: "/components/text-input" },
+          { label: "텍스트 입력 상태", href: "/components/text-input-state" },
+        ]}
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 24rem">
+      <VueBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "컴포넌트", href: "/components" },
+          { label: "폼", href: "/components/form" },
+          { label: "입력", href: "/components/input" },
+          { label: "텍스트 입력", href: "/components/text-input" },
+          { label: "텍스트 입력 상태", href: "/components/text-input-state" },
+        ]}
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 24rem">
+      <SvelteBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "컴포넌트", href: "/components" },
+          { label: "폼", href: "/components/form" },
+          { label: "입력", href: "/components/input" },
+          { label: "텍스트 입력", href: "/components/text-input" },
+          { label: "텍스트 입력 상태", href: "/components/text-input-state" },
+        ]}
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 24rem">
+      <SolidBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "컴포넌트", href: "/components" },
+          { label: "폼", href: "/components/form" },
+          { label: "입력", href: "/components/input" },
+          { label: "텍스트 입력", href: "/components/text-input" },
+          { label: "텍스트 입력 상태", href: "/components/text-input-state" },
+        ]}
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 24rem">
+      <AstroBreadcrumb
+        aria-label="경로"
+        items={[
+          { id: "home", label: "홈", href: "/" },
+          { id: "components", label: "컴포넌트", href: "/components" },
+          { id: "form", label: "폼", href: "/components/form" },
+          { id: "input", label: "입력", href: "/components/input" },
+          { id: "text-input", label: "텍스트 입력", href: "/components/text-input" },
+          {
+            id: "text-input-state",
+            label: "텍스트 입력 상태",
+            href: "/components/text-input-state",
+          },
+        ]}
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 24rem">
+      <AngularBreadcrumb
+        items={[
+          { id: "home", label: "홈", href: "/" },
+          { id: "components", label: "컴포넌트", href: "/components" },
+          { id: "form", label: "폼", href: "/components/form" },
+          { id: "input", label: "입력", href: "/components/input" },
+          { id: "text-input", label: "텍스트 입력", href: "/components/text-input" },
+          {
+            id: "text-input-state",
+            label: "텍스트 입력 상태",
+            href: "/components/text-input-state",
+          },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+</PracticeExample>
+
+**브레드크럼은 항상 본문 제목의 왼쪽 상단에 표시한다.**
+브레드크럼을 제목 상단에 배치함으로써 브레드크럼의 가장 마지막 경로 텍스트와 현재 화면의 제목 텍스트가 탐색 경로로 자연스럽게 이어질 수 있다. 또한 모든 화면에서 일관성 있는 영역에 배치되므로 탐색 경로를 보다 효과적으로 인지할 수 있다.
+**브레드크럼 경로 링크 간 간격을 충분히 제공한다.**
+다양한 화면 크기를 고려하여 클릭 또는 터치 가능한 충분한 영역을 제공하고 인접한 경로 링크를 실수로 실행하지 않도록 적절한 간격을 제공해야 한다.
+**브레드크럼이 메인 메뉴나 사이드 메뉴를 대체해서는 안 된다.**
+브레드크럼은 탐색 중인 화면의 상위 경로로 이동하는 데 사용되는 탐색 수단으로서 메인 메뉴와 사이드 메뉴를 대체하여 사용할 수 없다. 또한 브레드크럼 형태의 내비게이션에 메인 메뉴나 사이드 메뉴 역할과 기능을 동시에 제공하는 경우 사용자가 혼동할 수 있으므로 혼용하여 사용하지
+않는 것이 적절하다.
+**피해야 할 사례**
+
+<PracticeExample kind="bad" title="브레드크럼이 메인 메뉴나 사이드 메뉴를 대체해서는 안 된다.">
+  <div slot="react">
+    <ReactBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "소개", href: "/about" },
+        { label: "서비스", href: "/services" },
+        { label: "제품", href: "/products" },
+        { label: "가이드", href: "/guide" },
+        { label: "지원", href: "/support" },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "소개", href: "/about" },
+        { label: "서비스", href: "/services" },
+        { label: "제품", href: "/products" },
+        { label: "가이드", href: "/guide" },
+        { label: "지원", href: "/support" },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "소개", href: "/about" },
+        { label: "서비스", href: "/services" },
+        { label: "제품", href: "/products" },
+        { label: "가이드", href: "/guide" },
+        { label: "지원", href: "/support" },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidBreadcrumb
+      aria-label="경로"
+      items={[
+        { label: "홈", href: "/" },
+        { label: "소개", href: "/about" },
+        { label: "서비스", href: "/services" },
+        { label: "제품", href: "/products" },
+        { label: "가이드", href: "/guide" },
+        { label: "지원", href: "/support" },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroBreadcrumb
+      aria-label="경로"
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "about", label: "소개", href: "/about" },
+        { id: "services", label: "서비스", href: "/services" },
+        { id: "products", label: "제품", href: "/products" },
+        { id: "guide", label: "가이드", href: "/guide" },
+        { id: "support", label: "지원", href: "/support" },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularBreadcrumb
+      items={[
+        { id: "home", label: "홈", href: "/" },
+        { id: "about", label: "소개", href: "/about" },
+        { id: "services", label: "서비스", href: "/services" },
+        { id: "products", label: "제품", href: "/products" },
+        { id: "guide", label: "가이드", href: "/guide" },
+        { id: "support", label: "지원", href: "/support" },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+</PracticeExample>
+
+### 플랫폼에 대한 고려 사항
+
+**화면 너비가 충분하지 않은 경우 첫 번째 경로와 마지막 경로만 표시한다.**
+첫 번째 경로는 메인 화면 링크, 마지막 링크는 현재 화면의 상위 화면 링크로 일관성 있게 제공한다. 이때, 첫 번째 경로와 마지막 경로 사이에 말줄임표를 제공함으로써 탐색 경로가 축약되어 있음을 사용자가 인지할 수 있도록 해야 한다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="화면 너비가 충분하지 않은 경우 첫 번째 경로와 마지막 경로만 표시한다."
+>
+  <div slot="react">
+    <div style="max-width: 16rem">
+      <ReactBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "…" },
+          { label: "내비게이션", href: "/components/navigation" },
+        ]}
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 16rem">
+      <VueBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "…" },
+          { label: "내비게이션", href: "/components/navigation" },
+        ]}
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 16rem">
+      <SvelteBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "…" },
+          { label: "내비게이션", href: "/components/navigation" },
+        ]}
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 16rem">
+      <SolidBreadcrumb
+        aria-label="경로"
+        items={[
+          { label: "홈", href: "/" },
+          { label: "…" },
+          { label: "내비게이션", href: "/components/navigation" },
+        ]}
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 16rem">
+      <AstroBreadcrumb
+        aria-label="경로"
+        items={[
+          { id: "home", label: "홈", href: "/" },
+          { id: "ellipsis", label: "…", href: "#" },
+          { id: "navigation", label: "내비게이션", href: "/components/navigation" },
+        ]}
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 16rem">
+      <AngularBreadcrumb
+        items={[
+          { id: "home", label: "홈", href: "/" },
+          { id: "ellipsis", label: "…", href: "#" },
+          { id: "navigation", label: "내비게이션", href: "/components/navigation" },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+</PracticeExample>
+
+### 접근성 가이드라인
+
+**경로 목록을 \<nav\> 구획으로 감싸고 적절한 구획 제목을 제공한다.**
+브레드크럼 목록을 \<nav\> 구획으로 감싸고 구획 태그에 aria-label="브레드크럼"으로 구획 제목을 제공함으로써 스크린 리더로 구획을 빠르게 탐색하고 정보 역할을 인지할 수 있도록 해야 한다.
+
+- KWCAG 2.2 제목 제공
+- WCAG 2.1 Info and Relationships (A)
+  **순서 있는 목록을 사용한다.**
+  목록과 항목을 \<ol\>, \<li\>로 마크업하여 스크린 리더에서 계층 구조와 깊이를 빠르게 탐지할 수 있도록 제공한다.
+- KWCAG 2.2 제목 제공
+- WCAG 2.1 Info and Relationships (A)
+  **구분자는 배경과 3:1 이상의 명도 대비를 갖도록 표현한다.**
+  구분자는 경로 항목 간 계층 구조가 존재함을 시각적으로 안내하는 정보이기 때문에 인접한 배경과 최소 3:1 이상의 명도 대비를 가져야 한다.
+- KWCAG 2.2 텍스트 콘텐츠의 명도 대비
+- WCAG 2.1 Non-text Contrast (AA)
+  **스크린 리더에서 구분자 정보가 탐지되지 않도록 한다.**
+  \<ol\>, \<li\> 구조를 통해 계층 구조 정보를 파악할 수 있으므로 정보가 중복되지 않도록 스크린 리더에서 숨겨야 한다.
+- WCAG 2.1 Non-text Content (A)
+
+### 상호작용 가이드라인
+
+#### 탐색
+
+| 구분             | 설명                                                                    |
+| ---------------- | ----------------------------------------------------------------------- |
+| Tab, Shift + Tab | Tab 키와 Shift + Tab 키를 누르면 브레드크럼 링크를 순차적으로 탐색한다. |
+
+#### 관련 페이지로 이동
+
+| 구분  | 설명                                                                    |
+| ----- | ----------------------------------------------------------------------- |
+| Click | 링크인 경로 텍스트를 Click 하면 연결된 페이지로 이동한다.               |
+| Enter | 링크에 초점이 있는 상태에서 Enter 키를 누르면 연결된 페이지로 이동한다. |
+
+{/* /krds-official:component_03_03 */}

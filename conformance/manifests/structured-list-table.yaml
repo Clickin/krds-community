@@ -12,6 +12,7 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 errata:
+  - errata.structured-list-table.control-labels
   - errata.structured-list-table.checkbox-names
   - errata.structured-list-table.invalid-disabled-pagination-href
 contract:

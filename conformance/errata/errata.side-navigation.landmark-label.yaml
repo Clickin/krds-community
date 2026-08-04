@@ -1,0 +1,30 @@
+id: errata.side-navigation.landmark-label
+component: side-navigation
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/side_navigation.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - "nav.krds-side-navigation"
+    behavior: >-
+      The literal side navigation landmark has no accessible name.
+correction:
+  behavior: >-
+    Name the navigation landmark with the component title.
+  attributes:
+    - selector: "nav.krds-side-navigation"
+      attribute: aria-label
+      rule: "title text"
+fixtures:
+  - side-navigation.default
+normalization:
+  whitelist:
+    - selector: "nav.krds-side-navigation"
+      attribute: aria-label
+      operation: omit
+evidence:
+  rationale: >-
+    Framework adds the landmark name; attribute is a non-semantic addition vs upstream.

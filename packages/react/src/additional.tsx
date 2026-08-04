@@ -22,7 +22,7 @@ import {
   type TableHTMLAttributes,
   type TextareaHTMLAttributes,
   type MouseEventHandler,
-} from 'react';
+} from "react";
 import {
   cx,
   selectRecipe,
@@ -37,115 +37,99 @@ import {
   type KrdsTableColumn,
   type KrdsTabItem,
   type KrdsTone,
-} from '@krds-community/recipes';
-import {
-  Button,
-  Checkbox,
-  Radio,
-  Switch as BaseSwitch,
-  TextInput,
-} from './components.js';
+} from "@krds-community/recipes";
+import { Button, Checkbox, Radio, Switch as BaseSwitch, TextInput } from "./components.js";
 
 function joinAriaIds(...ids: Array<string | undefined>) {
-  const unique = new Set(
-    ids.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []),
-  );
-  return unique.size ? Array.from(unique).join(' ') : undefined;
+  const unique = new Set(ids.flatMap((value) => value?.split(/\s+/).filter(Boolean) ?? []));
+  return unique.size ? Array.from(unique).join(" ") : undefined;
 }
 
 function SvgIcon({ name }: { name: string }) {
-  return <i className={cx('svg-icon', name)} />;
+  return <i className={cx("svg-icon", name)} />;
 }
 
-function inlineSpacedText(
-  value: ReactNode,
-  leading: boolean,
-  trailing: boolean,
-): ReactNode {
-  if (
-    typeof value === 'string' ||
-    typeof value === 'number' ||
-    typeof value === 'bigint'
-  ) {
-    return `${leading ? ' ' : ''}${value}${trailing ? ' ' : ''}`;
+function inlineSpacedText(value: ReactNode, leading: boolean, trailing: boolean): ReactNode {
+  if (typeof value === "string" || typeof value === "number" || typeof value === "bigint") {
+    return `${leading ? " " : ""}${value}${trailing ? " " : ""}`;
   }
   return (
     <>
-      {leading ? ' ' : null}
+      {leading ? " " : null}
       {value}
-      {trailing ? ' ' : null}
+      {trailing ? " " : null}
     </>
   );
 }
 
 type CommonProps = Omit<
   KrdsAdditionalProps,
-  | 'label'
-  | 'title'
-  | 'description'
-  | 'hint'
-  | 'message'
-  | 'size'
-  | 'value'
-  | 'modelValue'
-  | 'className'
-  | 'disabled'
+  | "label"
+  | "title"
+  | "description"
+  | "hint"
+  | "message"
+  | "size"
+  | "value"
+  | "modelValue"
+  | "className"
+  | "disabled"
 >;
 type NativeCommonProps = Omit<
   CommonProps,
-  | 'id'
-  | 'name'
-  | 'required'
-  | 'readonly'
-  | 'open'
-  | 'checked'
-  | 'selected'
-  | 'rows'
-  | 'columns'
-  | 'items'
-  | 'panels'
-  | 'steps'
-  | 'tabs'
-  | 'options'
-  | 'slides'
-  | 'links'
+  | "id"
+  | "name"
+  | "required"
+  | "readonly"
+  | "open"
+  | "checked"
+  | "selected"
+  | "rows"
+  | "columns"
+  | "items"
+  | "panels"
+  | "steps"
+  | "tabs"
+  | "options"
+  | "slides"
+  | "links"
 >;
 type BoxProps = CommonProps & { className?: string; children?: ReactNode };
 type LabelProps = { label?: ReactNode; hint?: ReactNode };
 
 const toneClass: Record<KrdsTone, string> = {
-  primary: 'primary',
-  secondary: 'secondary',
-  gray: 'gray',
-  point: 'point',
-  danger: 'danger',
-  warning: 'warning',
-  success: 'success',
-  information: 'information',
-  disabled: 'disabled',
+  primary: "primary",
+  secondary: "secondary",
+  gray: "gray",
+  point: "point",
+  danger: "danger",
+  warning: "warning",
+  success: "success",
+  information: "information",
+  disabled: "disabled",
 };
 const outlineToneClass: Record<KrdsTone, string> = {
-  primary: 'outline-primary',
-  secondary: 'outline-secondary',
-  gray: 'outline-gray',
-  point: 'outline-point',
-  danger: 'outline-danger',
-  warning: 'outline-warning',
-  success: 'outline-success',
-  information: 'outline-information',
-  disabled: 'outline-disabled',
+  primary: "outline-primary",
+  secondary: "outline-secondary",
+  gray: "outline-gray",
+  point: "outline-point",
+  danger: "outline-danger",
+  warning: "outline-warning",
+  success: "outline-success",
+  information: "outline-information",
+  disabled: "outline-disabled",
 };
 
 export interface BadgeProps extends BoxProps {
   tone?: KrdsTone;
-  appearance?: 'outline' | 'solid' | 'light';
-  size?: 'small' | 'medium' | 'large';
+  appearance?: "outline" | "solid" | "light";
+  size?: "small" | "medium" | "large";
   number?: boolean;
   label?: ReactNode;
 }
 export function Badge({
-  tone = 'primary',
-  appearance = 'outline',
+  tone = "primary",
+  appearance = "outline",
   size,
   number,
   label,
@@ -153,18 +137,18 @@ export function Badge({
   className,
 }: BadgeProps) {
   const appearanceClass =
-    appearance === 'outline'
+    appearance === "outline"
       ? outlineToneClass[tone]
-      : appearance === 'light'
+      : appearance === "light"
         ? `bg-light-${toneClass[tone]}`
         : `bg-${toneClass[tone]}`;
   return (
-    <span className={cx('krds-badge', appearanceClass, size, number && 'number', className)}>
+    <span className={cx("krds-badge", appearanceClass, size, number && "number", className)}>
       {children ?? label}
     </span>
   );
 }
-export const BadgeNumber = (props: Omit<BadgeProps, 'number'>) => <Badge {...props} number />;
+export const BadgeNumber = (props: Omit<BadgeProps, "number">) => <Badge {...props} number />;
 export const BadgeSize = Badge;
 
 export interface BreadcrumbProps extends NativeCommonProps, HTMLAttributes<HTMLElement> {
@@ -172,14 +156,7 @@ export interface BreadcrumbProps extends NativeCommonProps, HTMLAttributes<HTMLE
   label?: string;
 }
 export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Breadcrumb(
-  {
-    items = [],
-    label = '현재 경로',
-    id: providedId,
-    className,
-    'aria-label': ariaLabel,
-    ...props
-  },
+  { items = [], label = "현재 경로", id: providedId, className, "aria-label": ariaLabel, ...props },
   ref,
 ) {
   const generatedId = useId();
@@ -188,13 +165,13 @@ export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Brea
       {...props}
       ref={ref}
       id={providedId ?? `krds-breadcrumb-${generatedId}`}
-      className={cx('krds-breadcrumb-wrap', className)}
+      className={cx("krds-breadcrumb-wrap", className)}
       aria-label={ariaLabel ?? label}
     >
       <ol className="breadcrumb">
         {items.map((item, index) => (
-          <li className={index === 0 ? 'home' : undefined} key={item.id ?? item.label}>
-            <a className="txt" href={item.href ?? '#'}>
+          <li className={index === 0 ? "home" : undefined} key={item.id ?? item.label}>
+            <a className="txt" href={item.href ?? "#"}>
               {item.label}
             </a>
           </li>
@@ -208,7 +185,7 @@ export interface ButtonIconProps
   extends NativeCommonProps, ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
   icon?: ReactNode;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
 }
 export const ButtonIcon = forwardRef<HTMLButtonElement, ButtonIconProps>(function ButtonIcon(
   { label, icon, size, className, children, ...props },
@@ -218,8 +195,8 @@ export const ButtonIcon = forwardRef<HTMLButtonElement, ButtonIconProps>(functio
     <button
       {...props}
       ref={ref}
-      type={props.type ?? 'button'}
-      className={cx('krds-btn', 'icon', size, className)}
+      type={props.type ?? "button"}
+      className={cx("krds-btn", "icon", size, className)}
     >
       {children ?? (
         <>
@@ -238,7 +215,7 @@ export function ButtonText({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button {...props} type={props.type ?? 'button'} className={cx('krds-btn', 'text', className)}>
+    <button {...props} type={props.type ?? "button"} className={cx("krds-btn", "text", className)}>
       {children}
     </button>
   );
@@ -251,8 +228,8 @@ export const ButtonWithIcon = forwardRef<
     <button
       {...props}
       ref={ref}
-      type={props.type ?? 'button'}
-      className={cx('krds-btn', className)}
+      type={props.type ?? "button"}
+      className={cx("krds-btn", className)}
     >
       {children}
       {icon ?? <SvgIcon name="ico-sch" />}
@@ -260,8 +237,10 @@ export const ButtonWithIcon = forwardRef<
   );
 });
 
-export interface CalendarProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'onSelect'> {
+export interface CalendarProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onChange" | "onSelect"
+> {
   label?: ReactNode;
   hint?: ReactNode;
   year?: number;
@@ -286,6 +265,7 @@ export interface CalendarProps
   value?: string;
   defaultValue?: string;
   calendarLabel?: string;
+  calendarOpenLabel?: string;
   previousMonthLabel?: ReactNode;
   nextMonthLabel?: ReactNode;
   yearSelectLabel?: string;
@@ -304,365 +284,363 @@ export interface CalendarProps
   onCancel?: () => void;
   onConfirm?: () => void;
 }
-const CalendarSurface = forwardRef<
-  HTMLDivElement,
-  CalendarProps & { single: boolean }
->(function CalendarSurface(
-  {
-    single,
-    label: _label,
-    hint: _hint,
-    year: controlledYear,
-    displayYear: controlledDisplayYear,
-    selectedYear: controlledSelectedYear,
-    defaultYear = new Date().getFullYear(),
-    month: controlledMonth,
-    displayMonth: controlledDisplayMonth,
-    selectedMonth: controlledSelectedMonth,
-    defaultMonth = new Date().getMonth() + 1,
-    years,
-    disabledYears = [],
-    disabledMonths = [],
-    leadingDays: providedLeadingDays,
-    previousMonthDayCount: providedPreviousMonthDayCount,
-    dayCount: providedDayCount,
-    rangeStartDay,
-    rangeEndDay,
-    todayDay,
-    eventDays = [],
-    disabledDays = [],
-    value: controlledValue,
-    defaultValue = '',
-    calendarLabel,
-    previousMonthLabel,
-    nextMonthLabel,
-    yearSelectLabel,
-    monthSelectLabel,
-    weekdays = [],
-    todayLabel,
-    cancelLabel,
-    confirmLabel,
-    eventLabel,
-    onValueChange,
-    onChange,
-    onYearChange,
-    onMonthChange,
-    onPreviousMonth,
-    onNextMonth,
-    onCancel,
-    onConfirm,
-    className,
-    ...props
-  },
-  ref,
-) {
-  const generatedId = useId();
-  const yearListId = `krds-calendar-year-${generatedId}`;
-  const monthListId = `krds-calendar-month-${generatedId}`;
-  const [uncontrolledDisplayYear, setUncontrolledDisplayYear] = useState(
-    controlledDisplayYear ?? controlledYear ?? defaultYear,
-  );
-  const [uncontrolledDisplayMonth, setUncontrolledDisplayMonth] = useState(
-    controlledDisplayMonth ?? controlledMonth ?? defaultMonth,
-  );
-  const [uncontrolledSelectedYear, setUncontrolledSelectedYear] = useState(
-    controlledSelectedYear ?? controlledYear ?? defaultYear,
-  );
-  const [uncontrolledSelectedMonth, setUncontrolledSelectedMonth] = useState(
-    controlledSelectedMonth ?? controlledMonth ?? defaultMonth,
-  );
-  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
-  const [yearOpen, setYearOpen] = useState(false);
-  const [monthOpen, setMonthOpen] = useState(false);
-  const displayYear = controlledDisplayYear ?? uncontrolledDisplayYear;
-  const displayMonth = controlledDisplayMonth ?? uncontrolledDisplayMonth;
-  const selectedYear = controlledSelectedYear ?? controlledYear ?? uncontrolledSelectedYear;
-  const selectedMonth = controlledSelectedMonth ?? controlledMonth ?? uncontrolledSelectedMonth;
-  const value = controlledValue ?? uncontrolledValue;
-  const availableYears = years ?? [selectedYear];
-  const leadingDays =
-    providedLeadingDays ?? new Date(displayYear, displayMonth - 1, 1).getDay();
-  const previousMonthDayCount =
-    providedPreviousMonthDayCount ?? new Date(displayYear, displayMonth - 1, 0).getDate();
-  const dayCount = providedDayCount ?? new Date(displayYear, displayMonth, 0).getDate();
-  const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
-  const pad = (part: number) => String(part).padStart(2, '0');
-  const chooseYear = (next: number) => {
-    if (controlledDisplayYear === undefined) setUncontrolledDisplayYear(next);
-    if (controlledSelectedYear === undefined && controlledYear === undefined) {
-      setUncontrolledSelectedYear(next);
-    }
-    setYearOpen(false);
-    onYearChange?.(next);
-  };
-  const chooseMonth = (next: number) => {
-    if (controlledDisplayMonth === undefined) setUncontrolledDisplayMonth(next);
-    if (controlledSelectedMonth === undefined && controlledMonth === undefined) {
-      setUncontrolledSelectedMonth(next);
-    }
-    setMonthOpen(false);
-    onMonthChange?.(next);
-  };
-  const cells = Array.from({ length: totalCells }, (_, index) => {
-    const offset = index - leadingDays + 1;
-    if (offset < 1) {
-      const day = previousMonthDayCount + offset;
-      const month = displayMonth === 1 ? 12 : displayMonth - 1;
-      const year = displayMonth === 1 ? displayYear - 1 : displayYear;
-      return { day, month, year, offMonth: 'old' as const };
-    }
-    if (offset > dayCount) {
-      const day = offset - dayCount;
-      const month = displayMonth === 12 ? 1 : displayMonth + 1;
-      const year = displayMonth === 12 ? displayYear + 1 : displayYear;
-      return { day, month, year, offMonth: 'new' as const };
-    }
-    return { day: offset, month: displayMonth, year: displayYear, offMonth: undefined };
-  });
-  return (
-    <div {...props} ref={ref} className={cx('krds-calendar-area', className)}>
-      <div
-        className={cx('calendar-wrap', 'bottom', single && 'single')}
-        aria-label={calendarLabel}
-        tabIndex={0}
-      >
-        <div className="calendar-head">
-          <button type="button" className="btn-cal-move prev" onClick={onPreviousMonth}>
-            <span className="sr-only">{previousMonthLabel}</span>
-          </button>
-          <div className="calendar-switch-wrap">
-            <div className="calendar-drop-down">
-              <button
-                type="button"
-                className="btn-cal-switch year"
-                aria-label={yearSelectLabel}
-                aria-controls={yearListId}
-                aria-expanded={yearOpen}
-                aria-haspopup="listbox"
-                role="combobox"
-                onClick={() => setYearOpen((open) => !open)}
-              >
-                {`${displayYear}년`}
-              </button>
-              <div className="calendar-select calendar-year-wrap">
-                <ul className="sel year" id={yearListId} role="listbox">
-                  {availableYears.map((year) => (
-                    <li role="none" key={year}>
-                      <button
-                        type="button"
-                        role="option"
-                        className={year === selectedYear ? 'active' : undefined}
-                        aria-selected={year === selectedYear}
-                        disabled={disabledYears.includes(year)}
-                        onClick={() => chooseYear(year)}
-                      >
-                        {`${year}년`}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="calendar-drop-down">
-              <button
-                type="button"
-                className="btn-cal-switch month"
-                aria-label={monthSelectLabel}
-                aria-controls={monthListId}
-                aria-expanded={monthOpen}
-                aria-haspopup="listbox"
-                role="combobox"
-                onClick={() => setMonthOpen((open) => !open)}
-              >
-                {`${pad(displayMonth)}월`}
-              </button>
-              <div className="calendar-select calendar-mon-wrap">
-                <ul className="sel month" id={monthListId} role="listbox">
-                  {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
-                    <li role="none" key={month}>
-                      <button
-                        type="button"
-                        role="option"
-                        className={month === selectedMonth ? 'active' : undefined}
-                        aria-selected={month === selectedMonth}
-                        disabled={disabledMonths.includes(month)}
-                        onClick={() => chooseMonth(month)}
-                      >
-                        {`${pad(month)}월`}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-          <button type="button" className="btn-cal-move next" onClick={onNextMonth}>
-            <span className="sr-only">{nextMonthLabel}</span>
-          </button>
-        </div>
-        <div className="calendar-body">
-          <div className="calendar-table-wrap">
-            <table className="calendar-tbl">
-              <caption>{`${displayYear}년 ${pad(displayMonth)}월`}</caption>
-              <thead>
-                <tr>
-                  {weekdays.map((weekday, index) => (
-                    <th key={index}>{weekday}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {Array.from({ length: Math.ceil(cells.length / 7) }, (_, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {cells.slice(rowIndex * 7, rowIndex * 7 + 7).map((cell, columnIndex) => {
-                      const currentMonth = cell.offMonth === undefined;
-                      const period =
-                        currentMonth &&
-                        rangeStartDay !== undefined &&
-                        rangeEndDay !== undefined &&
-                        cell.day >= rangeStartDay &&
-                        cell.day <= rangeEndDay;
-                      const start = period && cell.day === rangeStartDay;
-                      const end = period && cell.day === rangeEndDay;
-                      const today = currentMonth && cell.day === todayDay;
-                      const event = currentMonth && eventDays.includes(cell.day);
-                      const disabled = currentMonth && disabledDays.includes(cell.day);
-                      const date = `${cell.year}.${pad(cell.month)}.${pad(cell.day)}`;
-                      const selected = value === date;
-                      const offMonth = cell.offMonth !== undefined;
-                      return (
-                        <td
-                          className={
-                            cx(
-                              cell.offMonth,
-                              columnIndex === 0 && 'day-off',
-                              period && 'period',
-                              start && 'start',
-                              end && 'end',
-                              today && 'today',
-                              event && 'day-event',
-                              disabled && 'disabled',
-                              selected && !period && 'period start end',
-                            ) || undefined
-                          }
-                          data-date={date}
-                          key={date}
+const CalendarSurface = forwardRef<HTMLDivElement, CalendarProps & { single: boolean }>(
+  function CalendarSurface(
+    {
+      single,
+      label: _label,
+      hint: _hint,
+      year: controlledYear,
+      displayYear: controlledDisplayYear,
+      selectedYear: controlledSelectedYear,
+      defaultYear = new Date().getFullYear(),
+      month: controlledMonth,
+      displayMonth: controlledDisplayMonth,
+      selectedMonth: controlledSelectedMonth,
+      defaultMonth = new Date().getMonth() + 1,
+      years,
+      disabledYears = [],
+      disabledMonths = [],
+      leadingDays: providedLeadingDays,
+      previousMonthDayCount: providedPreviousMonthDayCount,
+      dayCount: providedDayCount,
+      rangeStartDay,
+      rangeEndDay,
+      todayDay,
+      eventDays = [],
+      disabledDays = [],
+      value: controlledValue,
+      defaultValue = "",
+      calendarLabel,
+      calendarOpenLabel: _calendarOpenLabel,
+      previousMonthLabel,
+      nextMonthLabel,
+      yearSelectLabel,
+      monthSelectLabel,
+      weekdays = [],
+      todayLabel,
+      cancelLabel,
+      confirmLabel,
+      eventLabel,
+      onValueChange,
+      onChange,
+      onYearChange,
+      onMonthChange,
+      onPreviousMonth,
+      onNextMonth,
+      onCancel,
+      onConfirm,
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const generatedId = useId();
+    const yearListId = `krds-calendar-year-${generatedId}`;
+    const monthListId = `krds-calendar-month-${generatedId}`;
+    const [uncontrolledDisplayYear, setUncontrolledDisplayYear] = useState(
+      controlledDisplayYear ?? controlledYear ?? defaultYear,
+    );
+    const [uncontrolledDisplayMonth, setUncontrolledDisplayMonth] = useState(
+      controlledDisplayMonth ?? controlledMonth ?? defaultMonth,
+    );
+    const [uncontrolledSelectedYear, setUncontrolledSelectedYear] = useState(
+      controlledSelectedYear ?? controlledYear ?? defaultYear,
+    );
+    const [uncontrolledSelectedMonth, setUncontrolledSelectedMonth] = useState(
+      controlledSelectedMonth ?? controlledMonth ?? defaultMonth,
+    );
+    const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+    const [yearOpen, setYearOpen] = useState(false);
+    const [monthOpen, setMonthOpen] = useState(false);
+    const displayYear = controlledDisplayYear ?? uncontrolledDisplayYear;
+    const displayMonth = controlledDisplayMonth ?? uncontrolledDisplayMonth;
+    const selectedYear = controlledSelectedYear ?? controlledYear ?? uncontrolledSelectedYear;
+    const selectedMonth = controlledSelectedMonth ?? controlledMonth ?? uncontrolledSelectedMonth;
+    const value = controlledValue ?? uncontrolledValue;
+    const availableYears = years ?? [selectedYear];
+    const leadingDays = providedLeadingDays ?? new Date(displayYear, displayMonth - 1, 1).getDay();
+    const previousMonthDayCount =
+      providedPreviousMonthDayCount ?? new Date(displayYear, displayMonth - 1, 0).getDate();
+    const dayCount = providedDayCount ?? new Date(displayYear, displayMonth, 0).getDate();
+    const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
+    const pad = (part: number) => String(part).padStart(2, "0");
+    const chooseYear = (next: number) => {
+      if (controlledDisplayYear === undefined) setUncontrolledDisplayYear(next);
+      if (controlledSelectedYear === undefined && controlledYear === undefined) {
+        setUncontrolledSelectedYear(next);
+      }
+      setYearOpen(false);
+      onYearChange?.(next);
+    };
+    const chooseMonth = (next: number) => {
+      if (controlledDisplayMonth === undefined) setUncontrolledDisplayMonth(next);
+      if (controlledSelectedMonth === undefined && controlledMonth === undefined) {
+        setUncontrolledSelectedMonth(next);
+      }
+      setMonthOpen(false);
+      onMonthChange?.(next);
+    };
+    const cells = Array.from({ length: totalCells }, (_, index) => {
+      const offset = index - leadingDays + 1;
+      if (offset < 1) {
+        const day = previousMonthDayCount + offset;
+        const month = displayMonth === 1 ? 12 : displayMonth - 1;
+        const year = displayMonth === 1 ? displayYear - 1 : displayYear;
+        return { day, month, year, offMonth: "old" as const };
+      }
+      if (offset > dayCount) {
+        const day = offset - dayCount;
+        const month = displayMonth === 12 ? 1 : displayMonth + 1;
+        const year = displayMonth === 12 ? displayYear + 1 : displayYear;
+        return { day, month, year, offMonth: "new" as const };
+      }
+      return { day: offset, month: displayMonth, year: displayYear, offMonth: undefined };
+    });
+    return (
+      <div {...props} ref={ref} className={cx("krds-calendar-area", className)}>
+        <div
+          className={cx("calendar-wrap", "bottom", single && "single")}
+          aria-label={calendarLabel}
+          tabIndex={0}
+        >
+          <div className="calendar-head">
+            <button type="button" className="btn-cal-move prev" onClick={onPreviousMonth}>
+              <span className="sr-only">{previousMonthLabel}</span>
+            </button>
+            <div className="calendar-switch-wrap">
+              <div className="calendar-drop-down">
+                <button
+                  type="button"
+                  className="btn-cal-switch year"
+                  aria-label={yearSelectLabel}
+                  aria-controls={yearListId}
+                  aria-expanded={yearOpen}
+                  aria-haspopup="listbox"
+                  role="combobox"
+                  onClick={() => setYearOpen((open) => !open)}
+                >
+                  {`${displayYear}년`}
+                </button>
+                <div className="calendar-select calendar-year-wrap">
+                  <ul className="sel year" id={yearListId} role="listbox">
+                    {availableYears.map((year) => (
+                      <li role="none" key={year}>
+                        <button
+                          type="button"
+                          role="option"
+                          className={year === selectedYear ? "active" : undefined}
+                          aria-selected={year === selectedYear}
+                          disabled={disabledYears.includes(year)}
+                          onClick={() => chooseYear(year)}
                         >
-                          <button
-                            type="button"
-                            className="btn-set-date"
-                            disabled={offMonth || disabled}
-                            ref={
-                              offMonth
-                                ? (node) => node?.setAttribute('disabled', 'true')
-                                : undefined
-                            }
-                            aria-pressed={period || selected ? true : undefined}
-                            aria-label={
-                              today
-                                ? `${cell.day} ${todayLabel ?? ''}`.trim()
-                                : event
-                                  ? `${cell.day} ${eventLabel ?? ''}`.trim()
-                                  : undefined
-                            }
-                            onClick={() => {
-                              if (controlledValue === undefined) setUncontrolledValue(date);
-                              onValueChange?.(date);
-                              onChange?.(date);
-                            }}
-                          >
-                            <span>{cell.day}</span>
-                          </button>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          {`${year}년`}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="calendar-drop-down">
+                <button
+                  type="button"
+                  className="btn-cal-switch month"
+                  aria-label={monthSelectLabel}
+                  aria-controls={monthListId}
+                  aria-expanded={monthOpen}
+                  aria-haspopup="listbox"
+                  role="combobox"
+                  onClick={() => setMonthOpen((open) => !open)}
+                >
+                  {`${pad(displayMonth)}월`}
+                </button>
+                <div className="calendar-select calendar-mon-wrap">
+                  <ul className="sel month" id={monthListId} role="listbox">
+                    {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
+                      <li role="none" key={month}>
+                        <button
+                          type="button"
+                          role="option"
+                          className={month === selectedMonth ? "active" : undefined}
+                          aria-selected={month === selectedMonth}
+                          disabled={disabledMonths.includes(month)}
+                          onClick={() => chooseMonth(month)}
+                        >
+                          {`${pad(month)}월`}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <button type="button" className="btn-cal-move next" onClick={onNextMonth}>
+              <span className="sr-only">{nextMonthLabel}</span>
+            </button>
           </div>
-        </div>
-        <div className="calendar-footer">
-          <div className="calendar-btn-wrap">
-            <button type="button" className="krds-btn small text" id="get-today">
-              {todayLabel}
-            </button>
-            <button type="button" className="krds-btn small tertiary" onClick={onCancel}>
-              {cancelLabel}
-            </button>
-            <button type="button" className="krds-btn small primary" onClick={onConfirm}>
-              {confirmLabel}
-            </button>
+          <div className="calendar-body">
+            <div className="calendar-table-wrap">
+              <table className="calendar-tbl">
+                <caption>{`${displayYear}년 ${pad(displayMonth)}월`}</caption>
+                <thead>
+                  <tr>
+                    {weekdays.map((weekday, index) => (
+                      <th key={index}>{weekday}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.from({ length: Math.ceil(cells.length / 7) }, (_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {cells.slice(rowIndex * 7, rowIndex * 7 + 7).map((cell, columnIndex) => {
+                        const currentMonth = cell.offMonth === undefined;
+                        const period =
+                          currentMonth &&
+                          rangeStartDay !== undefined &&
+                          rangeEndDay !== undefined &&
+                          cell.day >= rangeStartDay &&
+                          cell.day <= rangeEndDay;
+                        const start = period && cell.day === rangeStartDay;
+                        const end = period && cell.day === rangeEndDay;
+                        const today = currentMonth && cell.day === todayDay;
+                        const event = currentMonth && eventDays.includes(cell.day);
+                        const disabled = currentMonth && disabledDays.includes(cell.day);
+                        const date = `${cell.year}.${pad(cell.month)}.${pad(cell.day)}`;
+                        const selected = value === date;
+                        const offMonth = cell.offMonth !== undefined;
+                        return (
+                          <td
+                            className={
+                              cx(
+                                cell.offMonth,
+                                columnIndex === 0 && "day-off",
+                                period && "period",
+                                start && "start",
+                                end && "end",
+                                today && "today",
+                                event && "day-event",
+                                disabled && "disabled",
+                                selected && !period && "period start end",
+                              ) || undefined
+                            }
+                            data-date={date}
+                            key={date}
+                          >
+                            <button
+                              type="button"
+                              className="btn-set-date"
+                              disabled={offMonth || disabled}
+                              ref={
+                                offMonth
+                                  ? (node) => node?.setAttribute("disabled", "true")
+                                  : undefined
+                              }
+                              aria-pressed={period || selected ? true : undefined}
+                              aria-label={
+                                today
+                                  ? `${cell.day} ${todayLabel ?? ""}`.trim()
+                                  : event
+                                    ? `${cell.day} ${eventLabel ?? ""}`.trim()
+                                    : undefined
+                              }
+                              onClick={() => {
+                                if (controlledValue === undefined) setUncontrolledValue(date);
+                                onValueChange?.(date);
+                                onChange?.(date);
+                              }}
+                            >
+                              <span>{cell.day}</span>
+                            </button>
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className="calendar-footer">
+            <div className="calendar-btn-wrap">
+              <button type="button" className="krds-btn small text" id="get-today">
+                {todayLabel}
+              </button>
+              <button type="button" className="krds-btn small tertiary" onClick={onCancel}>
+                {cancelLabel}
+              </button>
+              <button type="button" className="krds-btn small primary" onClick={onConfirm}>
+                {confirmLabel}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(props, ref) {
   return <CalendarSurface {...props} ref={ref} single />;
 });
-export interface CalendarRangeProps
-  extends Omit<CalendarProps, 'value' | 'defaultValue' | 'onValueChange' | 'onChange'> {
+export interface CalendarRangeProps extends Omit<
+  CalendarProps,
+  "value" | "defaultValue" | "onValueChange" | "onChange"
+> {
   start?: string;
   end?: string;
   defaultStart?: string;
   defaultEnd?: string;
   onChange?: (range: { start: string; end: string }) => void;
 }
-export const CalendarRange = forwardRef<HTMLDivElement, CalendarRangeProps>(
-  function CalendarRange(
-    {
-      start,
-      end,
-      defaultStart = '',
-      defaultEnd = '',
-      onChange,
-      rangeStartDay,
-      rangeEndDay,
-      ...props
-    },
-    ref,
-  ) {
-    const [uncontrolledRange, setUncontrolledRange] = useState({
-      start: defaultStart,
-      end: defaultEnd,
-    });
-    const range = {
-      start: start ?? uncontrolledRange.start,
-      end: end ?? uncontrolledRange.end,
-    };
-    const update = (date: string) => {
-      const next =
-        !range.start || range.end
-          ? { start: date, end: '' }
-          : { start: range.start, end: date };
-      if (start === undefined || end === undefined) setUncontrolledRange(next);
-      onChange?.(next);
-    };
-    return (
-      <CalendarSurface
-        {...props}
-        ref={ref}
-        single={false}
-        {...(rangeStartDay === undefined ? {} : { rangeStartDay })}
-        {...(rangeEndDay === undefined ? {} : { rangeEndDay })}
-        onValueChange={update}
-      />
-    );
+export const CalendarRange = forwardRef<HTMLDivElement, CalendarRangeProps>(function CalendarRange(
+  {
+    start,
+    end,
+    defaultStart = "",
+    defaultEnd = "",
+    onChange,
+    rangeStartDay,
+    rangeEndDay,
+    ...props
   },
-);
+  ref,
+) {
+  const [uncontrolledRange, setUncontrolledRange] = useState({
+    start: defaultStart,
+    end: defaultEnd,
+  });
+  const range = {
+    start: start ?? uncontrolledRange.start,
+    end: end ?? uncontrolledRange.end,
+  };
+  const update = (date: string) => {
+    const next =
+      !range.start || range.end ? { start: date, end: "" } : { start: range.start, end: date };
+    if (start === undefined || end === undefined) setUncontrolledRange(next);
+    onChange?.(next);
+  };
+  return (
+    <CalendarSurface
+      {...props}
+      ref={ref}
+      single={false}
+      {...(rangeStartDay === undefined ? {} : { rangeStartDay })}
+      {...(rangeEndDay === undefined ? {} : { rangeEndDay })}
+      onValueChange={update}
+    />
+  );
+});
 export const DateInput = forwardRef<HTMLDivElement, CalendarProps>(function DateInput(props, ref) {
   const inputId = `krds-date-${useId()}`;
   const {
     label,
     hint,
     value,
+    calendarOpenLabel = "달력 열기",
     className,
     ...calendarProps
   } = props;
   return (
-    <div ref={ref} className={cx('form-group', className)}>
+    <div ref={ref} className={cx("form-group", className)}>
       <div className="form-tit">
         <label htmlFor={inputId}>{label}</label>
       </div>
@@ -677,11 +655,11 @@ export const DateInput = forwardRef<HTMLDivElement, CalendarProps>(function Date
               value={value || undefined}
             />
             <button type="button" className="krds-btn medium icon form-btn-datepicker">
-              <span className="sr-only">달력 열기</span>
+              <span className="sr-only">{calendarOpenLabel}</span>
               <SvgIcon name="ico-calendar" />
             </button>
           </div>
-          <CalendarSurface {...calendarProps} value={value ?? ''} single={false} />
+          <CalendarSurface {...calendarProps} value={value ?? ""} single={false} />
         </div>
       </div>
       {hint ? <p className="form-hint">{hint}</p> : null}
@@ -752,7 +730,7 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
     return () => window.clearInterval(timer);
   }, [autoPlay, interval, move, slides.length]);
   return (
-    <div ref={ref} className={cx('main-vban-wrap', 'bg', className)}>
+    <div ref={ref} className={cx("main-vban-wrap", "bg", className)}>
       <div className="inner">
         <div className="vb-swiper">
           <div className="swiper">
@@ -769,7 +747,7 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
                         {slide.description} <br className="w-hide" />
                         {slide.description}
                       </p>
-                      <a href={slide.href ?? '#'} className="krds-btn primary">
+                      <a href={slide.href ?? "#"} className="krds-btn primary">
                         {actionLabel}
                       </a>
                     </div>
@@ -830,7 +808,7 @@ export const CarouselBanner = forwardRef<HTMLDivElement, CarouselProps>(function
     onPlayingChange?.(next);
   };
   return (
-    <div ref={ref} className={cx('main-d-ban-swiper', className)}>
+    <div ref={ref} className={cx("main-d-ban-swiper", className)}>
       <div className="swiper">
         <ul className="swiper-wrapper">
           {slides.map((slide) => (
@@ -849,18 +827,10 @@ export const CarouselBanner = forwardRef<HTMLDivElement, CarouselProps>(function
       <div className="swiper-indicator">
         <div className="swiper-pagination" />
         <div className="swiper-controller">
-          <button
-            type="button"
-            className="swiper-button-play"
-            onClick={() => updatePlaying(true)}
-          >
+          <button type="button" className="swiper-button-play" onClick={() => updatePlaying(true)}>
             <span className="sr-only">{playLabel}</span>
           </button>
-          <button
-            type="button"
-            className="swiper-button-stop"
-            onClick={() => updatePlaying(false)}
-          >
+          <button type="button" className="swiper-button-stop" onClick={() => updatePlaying(false)}>
             <span className="sr-only">{stopLabel}</span>
           </button>
         </div>
@@ -881,10 +851,10 @@ export const CarouselBanner = forwardRef<HTMLDivElement, CarouselProps>(function
 });
 
 export interface ChoiceChipProps
-  extends NativeCommonProps, Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+  extends NativeCommonProps, Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "size"> {
   label?: ReactNode;
-  type?: 'checkbox' | 'radio';
-  size?: 'small' | 'medium' | 'large';
+  type?: "checkbox" | "radio";
+  size?: "small" | "medium" | "large";
 }
 export const CheckboxChip = forwardRef<HTMLInputElement, ChoiceChipProps>(function CheckboxChip(
   { label, size, className, id: providedId, ...props },
@@ -893,7 +863,7 @@ export const CheckboxChip = forwardRef<HTMLInputElement, ChoiceChipProps>(functi
   const generatedId = useId();
   const id = providedId ?? `krds-checkbox-chip-${generatedId}`;
   return (
-    <div className={cx('krds-form-chip', size, className)}>
+    <div className={cx("krds-form-chip", size, className)}>
       <input {...props} ref={ref} id={id} type="checkbox" className="checkbox" />
       <label className="krds-form-chip-outline" htmlFor={id}>
         {label}
@@ -908,7 +878,7 @@ export const RadioChip = forwardRef<HTMLInputElement, ChoiceChipProps>(function 
   const generatedId = useId();
   const id = providedId ?? `krds-radio-chip-${generatedId}`;
   return (
-    <div className={cx('krds-form-chip', size, className)}>
+    <div className={cx("krds-form-chip", size, className)}>
       <input {...props} ref={ref} id={id} type="radio" className="radio" />
       <label className="krds-form-chip-outline" htmlFor={id}>
         {label}
@@ -927,7 +897,6 @@ export function RadioSize(props: ComponentProps<typeof Radio>) {
     </div>
   );
 }
-
 export interface CoachMarkProps extends BoxProps {
   title?: string;
   step?: string;
@@ -936,6 +905,8 @@ export interface CoachMarkProps extends BoxProps {
   contentTitle?: ReactNode;
   currentStep?: ReactNode;
   totalSteps?: ReactNode;
+  currentStepLabel?: string;
+  totalStepsLabel?: string;
   stopLabel?: ReactNode;
   nextLabel?: ReactNode;
   onNext?: () => void;
@@ -943,12 +914,14 @@ export interface CoachMarkProps extends BoxProps {
 }
 export function CoachMark({
   title,
-  step = '1 / 1',
+  step = "1 / 1",
   stepTitle,
   description,
   contentTitle,
   currentStep,
   totalSteps,
+  currentStepLabel = "현재 단계",
+  totalStepsLabel = "총 단계",
   stopLabel,
   nextLabel,
   onNext,
@@ -956,18 +929,18 @@ export function CoachMark({
   children,
   className,
 }: CoachMarkProps) {
-  const [stepCurrent = '', stepTotal = ''] = step.split('/').map((part) => part.trim());
+  const [stepCurrent = "", stepTotal = ""] = step.split("/").map((part) => part.trim());
   return (
-    <div className={cx('txt-box', 'bg-white', 'bg-white', 'krds-coach-mark', className)}>
+    <div className={cx("txt-box", "bg-white", "bg-white", "krds-coach-mark", className)}>
       <div className="coach-balloon">
         <h5 className="sr-only">{title}</h5>
         <h6 className="coach-tit">{stepTitle}</h6>
         <p className="desc">{description}</p>
         <div className="coach-controls">
           <div className="num">
-            <span className="sr-only">현재 단계</span>
+            <span className="sr-only">{currentStepLabel}</span>
             <strong>{currentStep ?? stepCurrent}</strong>
-            <span className="sr-only">총 단계</span>
+            <span className="sr-only">{totalStepsLabel}</span>
             <span>{totalSteps ?? stepTotal}</span>
           </div>
           <div className="btn-wrap">
@@ -987,9 +960,17 @@ export function CoachMark({
   );
 }
 
-export interface ContextualHelpProps extends Omit<BoxProps, 'position' | 'open'> {
+export interface ContextualHelpProps extends Omit<BoxProps, "position" | "open"> {
   label?: string;
-  position?: 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  position?:
+    | "top"
+    | "bottom"
+    | "left"
+    | "right"
+    | "top-left"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right";
   caption?: ReactNode;
   title?: ReactNode;
   linkLabel?: ReactNode;
@@ -1001,11 +982,11 @@ export interface ContextualHelpProps extends Omit<BoxProps, 'position' | 'open'>
 }
 export function ContextualHelp({
   label,
-  position = 'top-left',
+  position = "top-left",
   caption,
   title,
   linkLabel,
-  href = '#',
+  href = "#",
   closeLabel,
   open: controlledOpen,
   defaultOpen = false,
@@ -1023,7 +1004,7 @@ export function ContextualHelp({
     onOpenChange?.(next);
   };
   return (
-    <div className={cx('krds-contextual-help', ...position.split('-'), className)}>
+    <div className={cx("krds-contextual-help", ...position.split("-"), className)}>
       <p className="tooltip-txt">{caption}</p>
       <div className="tooltip-action">
         <button
@@ -1040,7 +1021,7 @@ export function ContextualHelp({
           id={popoverId}
           className="tooltip-popover"
           role="tooltip"
-          style={open ? { display: 'block', width: '360px' } : undefined}
+          style={open ? { display: "block", width: "360px" } : undefined}
         >
           <h4 className="tooltip-title">{title}</h4>
           <div className="tooltip-contents">
@@ -1071,49 +1052,47 @@ export interface CriticalAlertItem {
   id?: string;
   badge?: ReactNode;
   badgeLabel?: ReactNode;
-  tone?: 'danger' | 'ok' | 'info';
+  tone?: "danger" | "ok" | "info";
   message?: ReactNode;
   title?: ReactNode;
   text?: ReactNode;
   href?: string;
   linkLabel?: ReactNode;
 }
-export interface CriticalAlertsProps extends Omit<BoxProps, 'items'> {
+export interface CriticalAlertsProps extends Omit<BoxProps, "items"> {
   items?: Array<string | CriticalAlertItem>;
 }
 export function CriticalAlerts({ items = [], className }: CriticalAlertsProps) {
   return (
     <div className="main-urgent-wrap" role="alert">
-      <ul className={cx('krds-critical-alerts', className)}>
-      {items.map((rawItem, index) => {
-        const item: CriticalAlertItem =
-          typeof rawItem === 'string' ? { message: rawItem } : rawItem;
-        const badgeTone =
-          item.tone ??
-          (item.badge === 'danger' || item.badge === 'ok' || item.badge === 'info'
-            ? item.badge
-            : undefined);
-        const badgeLabel =
-          item.badgeLabel ?? (item.badge === badgeTone ? undefined : item.badge);
-        const message = item.message ?? item.text ?? item.title;
-        return (
-          <li key={item.id ?? index}>
-            <div className="critical-ban">
-              {badgeLabel ? (
-                <span className={cx('critical-badge', badgeTone)}>{badgeLabel}</span>
-              ) : null}
-              <p className="critical-txt">{message}</p>
-              {item.linkLabel ? (
-                <a href={item.href ?? '#'} className="krds-btn medium link basic">
-                  <span className="m-hide">{item.linkLabel}</span>
-                  {' '}
-                  <SvgIcon name="ico-angle right" />
-                </a>
-              ) : null}
-            </div>
-          </li>
-        );
-      })}
+      <ul className={cx("krds-critical-alerts", className)}>
+        {items.map((rawItem, index) => {
+          const item: CriticalAlertItem =
+            typeof rawItem === "string" ? { message: rawItem } : rawItem;
+          const badgeTone =
+            item.tone ??
+            (item.badge === "danger" || item.badge === "ok" || item.badge === "info"
+              ? item.badge
+              : undefined);
+          const badgeLabel = item.badgeLabel ?? (item.badge === badgeTone ? undefined : item.badge);
+          const message = item.message ?? item.text ?? item.title;
+          return (
+            <li key={item.id ?? index}>
+              <div className="critical-ban">
+                {badgeLabel ? (
+                  <span className={cx("critical-badge", badgeTone)}>{badgeLabel}</span>
+                ) : null}
+                <p className="critical-txt">{message}</p>
+                {item.linkLabel ? (
+                  <a href={item.href ?? "#"} className="krds-btn medium link basic">
+                    <span className="m-hide">{item.linkLabel}</span>{" "}
+                    <SvgIcon name="ico-angle right" />
+                  </a>
+                ) : null}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -1121,8 +1100,8 @@ export function CriticalAlerts({ items = [], className }: CriticalAlertsProps) {
 
 export interface DisclosureProps
   extends
-    Omit<BoxProps, 'id' | 'items' | 'open'>,
-    Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title' | 'onToggle' | 'className'> {
+    Omit<BoxProps, "id" | "items" | "open">,
+    Omit<HTMLAttributes<HTMLDivElement>, "children" | "title" | "onToggle" | "className"> {
   title: ReactNode;
   items?: ReactNode[];
   open?: boolean;
@@ -1147,7 +1126,7 @@ export function Disclosure({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = controlledOpen ?? uncontrolledOpen;
   return (
-    <div {...props} className={cx('krds-disclosure', 'conts-expand-area', className)}>
+    <div {...props} className={cx("krds-disclosure", "conts-expand-area", className)}>
       <button
         id={`${panelId}-trigger`}
         type="button"
@@ -1189,8 +1168,10 @@ export function Disclosure({
   );
 }
 
-export interface FaviconProps
-  extends Omit<LinkHTMLAttributes<HTMLLinkElement>, 'href' | 'rel' | 'size' | 'sizes' | 'type'> {
+export interface FaviconProps extends Omit<
+  LinkHTMLAttributes<HTMLLinkElement>,
+  "href" | "rel" | "size" | "sizes" | "type"
+> {
   href?: string;
   size?: string;
   sizes?: string;
@@ -1200,22 +1181,13 @@ export const Favicon = forwardRef<HTMLLinkElement, FaviconProps>(function Favico
   { href, size, sizes, type, ...props },
   ref,
 ) {
-  return (
-    <link
-      {...props}
-      ref={ref}
-      rel="icon"
-      href={href}
-      sizes={sizes ?? size}
-      type={type}
-    />
-  );
+  return <link {...props} ref={ref} rel="icon" href={href} sizes={sizes ?? size} type={type} />;
 });
 
 export interface FileUploadItem {
   id: string;
   name: ReactNode;
-  status?: 'uploading' | 'complete' | 'deletable' | 'error' | 'downloadable';
+  status?: "uploading" | "complete" | "deletable" | "error" | "downloadable";
   statusLabel?: ReactNode;
   deleteLabel?: ReactNode;
   errors?: ReactNode[];
@@ -1223,8 +1195,9 @@ export interface FileUploadItem {
   previewLabel?: ReactNode;
 }
 export interface FileUploadProps
-  extends NativeCommonProps,
-    Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'className' | 'title'> {
+  extends
+    NativeCommonProps,
+    Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "className" | "title"> {
   title?: ReactNode;
   description?: ReactNode;
   prompt?: ReactNode;
@@ -1275,9 +1248,7 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
   const inputRef = useRef<HTMLInputElement>(null);
   useImperativeHandle(ref, () => inputRef.current as HTMLInputElement, []);
   const countSuffixText =
-    typeof countSuffix === 'string' || typeof countSuffix === 'number'
-      ? String(countSuffix)
-      : '';
+    typeof countSuffix === "string" || typeof countSuffix === "number" ? String(countSuffix) : "";
   const change = (event: ChangeEvent<HTMLInputElement>) => {
     const next = Array.from(event.currentTarget.files ?? []);
     setSelectedFiles(next.map((file, index) => ({ id: `${index}`, name: file.name })));
@@ -1285,7 +1256,7 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
     onChange?.(event);
   };
   return (
-    <div className={cx('krds-file-upload', 'line', className)}>
+    <div className={cx("krds-file-upload", "line", className)}>
       <div className="file-head">
         <h3 className="tit">{title}</h3>
         <div>
@@ -1313,21 +1284,21 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
             {`${currentCount ?? files.length}${countSuffixText}`}
             {countSuffixText ? null : countSuffix}
           </span>
-          {` / ${maxCount ?? ''}${countSuffixText}`}
+          {` / ${maxCount ?? ""}${countSuffixText}`}
           {countSuffixText ? null : countSuffix}
         </div>
         <ul className="upload-list">
           {files.map((file) => (
-            <li className={file.status === 'error' ? 'is-error' : undefined} key={file.id}>
-              <div className={cx('file-info', file.status === 'downloadable' && 'm-column')}>
+            <li className={file.status === "error" ? "is-error" : undefined} key={file.id}>
+              <div className={cx("file-info", file.status === "downloadable" && "m-column")}>
                 <div className="file-name">{file.name}</div>
                 <div className="btn-wrap">
-                  {file.status === 'uploading' ? (
+                  {file.status === "uploading" ? (
                     <span className="krds-spinner" role="status">
                       <span className="sr-only">{file.statusLabel}</span>
                     </span>
                   ) : null}
-                  {file.status === 'complete' ? (
+                  {file.status === "complete" ? (
                     <span className="complete ico-invalid">
                       <em className="sr-only">{file.statusLabel}</em>
                     </span>
@@ -1338,9 +1309,7 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
                       className="krds-btn medium text"
                       onClick={() => onDelete?.(file)}
                     >
-                      {file.deleteLabel}
-                      {' '}
-                      <SvgIcon name="ico-delete-fill" />
+                      {file.deleteLabel} <SvgIcon name="ico-delete-fill" />
                     </button>
                   ) : null}
                   {file.downloadLabel ? (
@@ -1349,9 +1318,7 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
                       className="krds-btn medium text"
                       onClick={() => onDownload?.(file)}
                     >
-                      {file.downloadLabel}
-                      {' '}
-                      <SvgIcon name="ico-down" />
+                      {file.downloadLabel} <SvgIcon name="ico-down" />
                     </button>
                   ) : null}
                   {file.previewLabel ? (
@@ -1360,9 +1327,7 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
                       className="krds-btn medium text"
                       onClick={() => onPreview?.(file)}
                     >
-                      {file.previewLabel}
-                      {' '}
-                      <SvgIcon name="ico-angle right" />
+                      {file.previewLabel} <SvgIcon name="ico-angle right" />
                     </button>
                   ) : null}
                 </div>
@@ -1381,11 +1346,7 @@ export const FileUpload = forwardRef<HTMLInputElement, FileUploadProps>(function
           ))}
         </ul>
         <div className="upload-delete-btn">
-          <button
-            type="button"
-            className="krds-btn xsmall tertiary"
-            onClick={onDeleteAll}
-          >
+          <button type="button" className="krds-btn xsmall tertiary" onClick={onDeleteAll}>
             {deleteAllLabel}
             <SvgIcon name="ico-angle right" />
           </button>
@@ -1404,8 +1365,7 @@ export interface FooterLink {
   icon?: string;
   emphasis?: boolean;
 }
-export interface FooterProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'title'> {
+export interface FooterProps extends Omit<HTMLAttributes<HTMLElement>, "children" | "title"> {
   relatedSites?: FooterLink[];
   logoLabel?: ReactNode;
   address?: ReactNode;
@@ -1431,7 +1391,7 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
     organization,
     description,
     onRelatedSite,
-    id = 'krds-footer',
+    id = "krds-footer",
     className,
     ...props
   },
@@ -1474,22 +1434,20 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
             <div className="link-go">
               {links.map((item) => (
                 <a
-                  href={item.href ?? '#'}
+                  href={item.href ?? "#"}
                   className="krds-btn medium text"
                   target={item.target}
                   title={item.title}
                   key={item.id ?? String(item.label)}
                 >
-                  {item.label}
-                  {' '}
-                  <SvgIcon name="ico-angle right" />
+                  {item.label} <SvgIcon name="ico-angle right" />
                 </a>
               ))}
             </div>
             <div className="link-sns">
               {socialLinks.map((item) => (
                 <a
-                  href={item.href ?? '#'}
+                  href={item.href ?? "#"}
                   className="krds-btn xlarge icon border"
                   target={item.target}
                   title={item.title}
@@ -1507,8 +1465,8 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
             <div className="f-menu">
               {policyLinks.map((item) => (
                 <a
-                  href={item.href ?? '#'}
-                  className={item.emphasis ? 'point' : undefined}
+                  href={item.href ?? "#"}
+                  className={item.emphasis ? "point" : undefined}
                   key={item.id ?? String(item.label)}
                 >
                   {item.label}
@@ -1529,12 +1487,12 @@ export const Footer = forwardRef<HTMLElement, FooterProps>(function Footer(
   );
 });
 
-export interface HeaderUtilitySubItem extends Omit<MainMenuItem, 'children'> {
+export interface HeaderUtilitySubItem extends Omit<MainMenuItem, "children"> {
   className?: string;
   selected?: boolean;
 }
-export interface HeaderUtilityItem extends Omit<MainMenuItem, 'children'> {
-  kind: 'link' | 'dropdown' | 'resize';
+export interface HeaderUtilityItem extends Omit<MainMenuItem, "children"> {
+  kind: "link" | "dropdown" | "resize";
   items?: HeaderUtilitySubItem[];
   selectedLabel?: ReactNode;
   resetLabel?: ReactNode;
@@ -1575,7 +1533,7 @@ export interface HeaderMobileMenu {
   onPrevious?: () => void;
   onClose?: () => void;
 }
-export interface HeaderProps extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'title'> {
+export interface HeaderProps extends Omit<HTMLAttributes<HTMLElement>, "children" | "title"> {
   children?: ReactNode;
   title?: ReactNode;
   utilityItems?: HeaderUtilityItem[];
@@ -1608,10 +1566,10 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
     if (item.open === undefined) setUncontrolledOpen(next);
     item.onOpenChange?.(next);
   };
-  if (item.kind === 'link') {
+  if (item.kind === "link") {
     return (
       <a
-        href={item.href ?? '#'}
+        href={item.href ?? "#"}
         className="krds-btn small text"
         target={item.target}
         title={item.title}
@@ -1622,10 +1580,10 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
     );
   }
   return (
-    <div className={cx('krds-drop-wrap', item.kind === 'resize' && 'krds-resize')}>
+    <div className={cx("krds-drop-wrap", item.kind === "resize" && "krds-resize")}>
       <button
         type="button"
-        className={cx('krds-btn', 'small', 'text', 'drop-btn', open && 'active')}
+        className={cx("krds-btn", "small", "text", "drop-btn", open && "active")}
         aria-expanded={open}
         onClick={() => setMenuOpen(!open)}
       >
@@ -1640,10 +1598,10 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
               const selected = selectedId === entryId;
               return (
                 <li key={entryId}>
-                  {item.kind === 'resize' ? (
+                  {item.kind === "resize" ? (
                     <button
                       type="button"
-                      className={cx('item-link', entry.className, selected && 'active')}
+                      className={cx("item-link", entry.className, selected && "active")}
                       disabled={entry.disabled}
                       onClick={() => {
                         if (controlledSelectedId === undefined) setUncontrolledSelectedId(entryId);
@@ -1652,14 +1610,12 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
                       }}
                     >
                       {entry.label}
-                      <span className="sr-only">
-                        {selected ? item.selectedLabel : null}
-                      </span>
+                      <span className="sr-only">{selected ? item.selectedLabel : null}</span>
                     </button>
                   ) : (
                     <a
-                      href={entry.href ?? '#'}
-                      className={cx('item-link', entry.className, selected && 'active')}
+                      href={entry.href ?? "#"}
+                      className={cx("item-link", entry.className, selected && "active")}
                       target={entry.target}
                       title={entry.title}
                       aria-disabled={entry.disabled || undefined}
@@ -1671,16 +1627,14 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
                       }}
                     >
                       {entry.label}
-                      <span className="sr-only">
-                        {selected ? item.selectedLabel : null}
-                      </span>
+                      <span className="sr-only">{selected ? item.selectedLabel : null}</span>
                     </a>
                   )}
                 </li>
               );
             })}
           </ul>
-          {item.kind === 'resize' ? (
+          {item.kind === "resize" ? (
             <div className="drop-bottom">
               <button
                 type="button"
@@ -1693,9 +1647,7 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
                   setMenuOpen(false);
                 }}
               >
-                <SvgIcon name="ico-reset" />
-                {' '}
-                {item.resetLabel}
+                <SvgIcon name="ico-reset" /> {item.resetLabel}
               </button>
             </div>
           ) : null}
@@ -1707,7 +1659,7 @@ function HeaderUtilityMenu({ item }: { item: HeaderUtilityItem }) {
 
 export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
   {
-    id = 'krds-header',
+    id = "krds-header",
     children: _children,
     title: _title,
     utilityItems = [],
@@ -1740,7 +1692,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
   const mobileOpen = controlledMobileOpen ?? uncontrolledMobileOpen;
   const myMenuOpen = myMenu?.open ?? uncontrolledMyMenuOpen;
   const menuItems = desktopItems ?? nav ?? links ?? [];
-  const mobileId = mobileMenu?.id ?? 'mobile-nav';
+  const mobileId = mobileMenu?.id ?? "mobile-nav";
   const setMobileOpen = (next: boolean) => {
     if (controlledMobileOpen === undefined) setUncontrolledMobileOpen(next);
     onMobileOpenChange?.(next);
@@ -1783,7 +1735,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
                   <div className="krds-drop-wrap my-drop">
                     <button
                       type="button"
-                      className={cx('btn-navi', 'my', 'drop-btn', myMenuOpen && 'active')}
+                      className={cx("btn-navi", "my", "drop-btn", myMenuOpen && "active")}
                       aria-expanded={myMenuOpen}
                       onClick={() => setMyMenuOpen(!myMenuOpen)}
                     >
@@ -1810,7 +1762,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
                         <ul className="drop-list">
                           {myMenu.items?.map((item, index) => (
                             <li key={item.id ?? index}>
-                              <a href={item.href ?? '#'} className="item-link">
+                              <a href={item.href ?? "#"} className="item-link">
                                 {item.label}
                                 <span className="sr-only" />
                               </a>
@@ -1823,9 +1775,7 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
                             className="krds-btn medium text"
                             onClick={myMenu.onLogout}
                           >
-                            <SvgIcon name="ico-logout" />
-                            {' '}
-                            {myMenu.logoutLabel}
+                            <SvgIcon name="ico-logout" /> {myMenu.logoutLabel}
                           </button>
                         </div>
                       </div>
@@ -1853,46 +1803,34 @@ export const Header = forwardRef<HTMLElement, HeaderProps>(function Header(
       {mobileMenu ? (
         <MainMenuMobile
           id={mobileId}
-          style={{ display: mobileOpen ? 'block' : 'none' }}
+          style={{ display: mobileOpen ? "block" : "none" }}
           {...(mobileMenu.utilityItems !== undefined
             ? { utilityItems: mobileMenu.utilityItems }
             : {})}
-          {...(mobileMenu.loginLabel !== undefined
-            ? { loginLabel: mobileMenu.loginLabel }
-            : {})}
+          {...(mobileMenu.loginLabel !== undefined ? { loginLabel: mobileMenu.loginLabel } : {})}
           {...(mobileMenu.serviceItems !== undefined
             ? { serviceItems: mobileMenu.serviceItems }
             : {})}
           {...(mobileMenu.searchPlaceholder !== undefined
             ? { searchPlaceholder: mobileMenu.searchPlaceholder }
             : {})}
-          {...(mobileMenu.searchTitle !== undefined
-            ? { searchTitle: mobileMenu.searchTitle }
-            : {})}
-          {...(mobileMenu.searchLabel !== undefined
-            ? { searchLabel: mobileMenu.searchLabel }
-            : {})}
+          {...(mobileMenu.searchTitle !== undefined ? { searchTitle: mobileMenu.searchTitle } : {})}
+          {...(mobileMenu.searchLabel !== undefined ? { searchLabel: mobileMenu.searchLabel } : {})}
           {...(mobileMenu.items !== undefined ? { items: mobileMenu.items } : {})}
-          {...(mobileMenu.bottomItems !== undefined
-            ? { bottomItems: mobileMenu.bottomItems }
-            : {})}
+          {...(mobileMenu.bottomItems !== undefined ? { bottomItems: mobileMenu.bottomItems } : {})}
           {...(mobileMenu.previousLabel !== undefined
             ? { previousLabel: mobileMenu.previousLabel }
             : {})}
-          {...(mobileMenu.closeLabel !== undefined
-            ? { closeLabel: mobileMenu.closeLabel }
-            : {})}
+          {...(mobileMenu.closeLabel !== undefined ? { closeLabel: mobileMenu.closeLabel } : {})}
           sample={false}
           standalone={false}
           bottomSize="medium"
-          {...(mobileOpen ? { className: 'is-open' } : {})}
+          {...(mobileOpen ? { className: "is-open" } : {})}
           {...(mobileMenu.onSearchChange !== undefined
             ? { onSearchChange: mobileMenu.onSearchChange }
             : {})}
           {...(mobileMenu.onSearch !== undefined ? { onSearch: mobileMenu.onSearch } : {})}
-          {...(mobileMenu.onPrevious !== undefined
-            ? { onPrevious: mobileMenu.onPrevious }
-            : {})}
+          {...(mobileMenu.onPrevious !== undefined ? { onPrevious: mobileMenu.onPrevious } : {})}
           onClose={() => {
             mobileMenu.onClose?.();
             setMobileOpen(false);
@@ -1933,8 +1871,10 @@ export interface HelpPanelTask {
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
-export interface HelpPanelProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title' | 'onChange'> {
+export interface HelpPanelProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children" | "title" | "onChange"
+> {
   children?: ReactNode;
   open?: boolean;
   defaultOpen?: boolean;
@@ -1960,17 +1900,11 @@ export interface HelpPanelProps
   onStop?: () => void;
 }
 
-function HelpTaskDisclosure({
-  task,
-  panelId,
-}: {
-  task: HelpPanelTask;
-  panelId: string;
-}) {
+function HelpTaskDisclosure({ task, panelId }: { task: HelpPanelTask; panelId: string }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(task.defaultOpen ?? false);
   const open = task.open ?? uncontrolledOpen;
   return (
-    <div className={cx('krds-disclosure', 'conts-expand-area', open && 'active')}>
+    <div className={cx("krds-disclosure", "conts-expand-area", open && "active")}>
       <button
         type="button"
         className="btn-conts-expand"
@@ -1988,7 +1922,9 @@ function HelpTaskDisclosure({
         <div className="expand-in">
           <ul className="krds-info-list decimal" role="list">
             {task.steps.map((step, index) => (
-              <li role="listitem" key={index}>{step}</li>
+              <li role="listitem" key={index}>
+                {step}
+              </li>
             ))}
           </ul>
         </div>
@@ -1997,230 +1933,230 @@ function HelpTaskDisclosure({
   );
 }
 
-const HelpPanelSurface = forwardRef<
-  HTMLDivElement,
-  HelpPanelProps & { tutorialDefault?: boolean }
->(function HelpPanelSurface(
-  {
-    tutorialDefault = false,
-    children,
-    open: controlledOpen,
-    defaultOpen = false,
-    activeTab: controlledActiveTab,
-    defaultActiveTab,
-    tabs = [],
-    label,
-    title,
-    selectedLabel,
-    helpTitle,
-    helpDescription,
-    downloadLinks = [],
-    relatedGroups = [],
-    tutorialTitle,
-    tutorialBackTitle,
-    backTitle,
-    externalTitle,
-    tasks = [],
-    stopLabel,
-    collapseLabel,
-    onOpenChange,
-    onActiveTabChange,
-    onStop,
-    className,
-    ...props
-  },
-  ref,
-) {
-  const generatedId = useId();
-  const initialTab =
-    defaultActiveTab ??
-    (tutorialDefault
-      ? (tabs.find((tab) => tab.value === 'tutorial')?.value ??
-        tabs.find((tab) => tab.value === 'tutorial')?.id)
-      : undefined) ??
-    tabs[0]?.value ??
-    tabs[0]?.id ??
-    '';
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const [uncontrolledActiveTab, setUncontrolledActiveTab] = useState(initialTab);
-  const open = controlledOpen ?? uncontrolledOpen;
-  const activeTab = controlledActiveTab ?? uncontrolledActiveTab;
-  const setOpen = (next: boolean) => {
-    if (controlledOpen === undefined) setUncontrolledOpen(next);
-    onOpenChange?.(next);
-  };
-  const setActiveTab = (next: string) => {
-    if (controlledActiveTab === undefined) setUncontrolledActiveTab(next);
-    onActiveTabChange?.(next);
-  };
-  return (
-    <div {...props} ref={ref} className={cx('krds-help-panel', open && 'expand', className)}>
-      <div className="help-panel-wrap" tabIndex={open ? 0 : undefined}>
-        <div className="help-conts-area">
-          <div className="krds-tab-area layer">
-            <div className="tab line">
-              <ul role="tablist">
-                {tabs.map((tab) => {
+const HelpPanelSurface = forwardRef<HTMLDivElement, HelpPanelProps & { tutorialDefault?: boolean }>(
+  function HelpPanelSurface(
+    {
+      tutorialDefault = false,
+      children,
+      open: controlledOpen,
+      defaultOpen = false,
+      activeTab: controlledActiveTab,
+      defaultActiveTab,
+      tabs = [],
+      label,
+      title,
+      selectedLabel,
+      helpTitle,
+      helpDescription,
+      downloadLinks = [],
+      relatedGroups = [],
+      tutorialTitle,
+      tutorialBackTitle,
+      backTitle,
+      externalTitle,
+      tasks = [],
+      stopLabel,
+      collapseLabel,
+      onOpenChange,
+      onActiveTabChange,
+      onStop,
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const generatedId = useId();
+    const initialTab =
+      defaultActiveTab ??
+      (tutorialDefault
+        ? (tabs.find((tab) => tab.value === "tutorial")?.value ??
+          tabs.find((tab) => tab.value === "tutorial")?.id)
+        : undefined) ??
+      tabs[0]?.value ??
+      tabs[0]?.id ??
+      "";
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+    const [uncontrolledActiveTab, setUncontrolledActiveTab] = useState(initialTab);
+    const open = controlledOpen ?? uncontrolledOpen;
+    const activeTab = controlledActiveTab ?? uncontrolledActiveTab;
+    const setOpen = (next: boolean) => {
+      if (controlledOpen === undefined) setUncontrolledOpen(next);
+      onOpenChange?.(next);
+    };
+    const setActiveTab = (next: string) => {
+      if (controlledActiveTab === undefined) setUncontrolledActiveTab(next);
+      onActiveTabChange?.(next);
+    };
+    return (
+      <div {...props} ref={ref} className={cx("krds-help-panel", open && "expand", className)}>
+        <div className="help-panel-wrap" tabIndex={open ? 0 : undefined}>
+          <div className="help-conts-area">
+            <div className="krds-tab-area layer">
+              <div className="tab line">
+                <ul role="tablist">
+                  {tabs.map((tab) => {
+                    const tabValue = tab.value ?? tab.id;
+                    const active = tabValue === activeTab;
+                    return (
+                      <li
+                        className={active ? "active" : undefined}
+                        role="presentation"
+                        key={tab.id}
+                      >
+                        <button
+                          id={tab.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={active}
+                          aria-controls={tab.panelId}
+                          tabIndex={active ? 0 : -1}
+                          className="btn-tab"
+                          disabled={tab.disabled}
+                          onClick={() => {
+                            if (!tab.disabled) setActiveTab(tabValue);
+                          }}
+                        >
+                          {tab.label}
+                          {active && selectedLabel ? (
+                            <i className="sr-only created"> {selectedLabel}</i>
+                          ) : null}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="tab-conts-wrap">
+                {tabs.map((tab, tabIndex) => {
                   const tabValue = tab.value ?? tab.id;
                   const active = tabValue === activeTab;
+                  const helpTab =
+                    tabValue === "help" || (tabIndex === 0 && tabValue !== "tutorial");
                   return (
-                    <li
-                      className={active ? 'active' : undefined}
-                      role="presentation"
-                      key={tab.id}
+                    <section
+                      id={tab.panelId}
+                      role="tabpanel"
+                      aria-labelledby={tab.id}
+                      hidden={!active}
+                      className={cx("tab-conts", active && "active")}
+                      key={tab.panelId}
                     >
-                      <button
-                        id={tab.id}
-                        type="button"
-                        role="tab"
-                        aria-selected={active}
-                        aria-controls={tab.panelId}
-                        tabIndex={active ? 0 : -1}
-                        className="btn-tab"
-                        disabled={tab.disabled}
-                        onClick={() => {
-                          if (!tab.disabled) setActiveTab(tabValue);
-                        }}
-                      >
-                        {tab.label}
-                        {active && selectedLabel ? (
-                          <i className="sr-only created"> {selectedLabel}</i>
-                        ) : null}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            <div className="tab-conts-wrap">
-              {tabs.map((tab, tabIndex) => {
-                const tabValue = tab.value ?? tab.id;
-                const active = tabValue === activeTab;
-                const helpTab = tabValue === 'help' || (tabIndex === 0 && tabValue !== 'tutorial');
-                return (
-                  <section
-                    id={tab.panelId}
-                    role="tabpanel"
-                    aria-labelledby={tab.id}
-                    hidden={!active}
-                    className={cx('tab-conts', active && 'active')}
-                    key={tab.panelId}
-                  >
-                    <h3 className="sr-only">{tab.label}</h3>
-                    <div className="help-conts-area-inner">
-                      {helpTab ? (
-                        <>
-                          <div className="conts-area help-conts">
-                            <div className="conts-wrap">
-                              <h4 className="help-title">
-                                {inlineSpacedText(helpTitle, false, true)}
-                                <span className="krds-btn medium icon">
-                                  <span className="sr-only">{label ?? title}</span>
-                                  <SvgIcon name="ico-help" />
-                                </span>
-                              </h4>
-                              <div className="conts-desc">
-                                <p>{helpDescription ?? children}</p>
+                      <h3 className="sr-only">{tab.label}</h3>
+                      <div className="help-conts-area-inner">
+                        {helpTab ? (
+                          <>
+                            <div className="conts-area help-conts">
+                              <div className="conts-wrap">
+                                <h4 className="help-title">
+                                  {inlineSpacedText(helpTitle, false, true)}
+                                  <span className="krds-btn medium icon">
+                                    <span className="sr-only">{label ?? title}</span>
+                                    <SvgIcon name="ico-help" />
+                                  </span>
+                                </h4>
+                                <div className="conts-desc">
+                                  <p>{helpDescription ?? children}</p>
+                                </div>
+                                <ul className="link-list">
+                                  {downloadLinks.map((link, index) => (
+                                    <li key={link.id ?? index}>
+                                      <a
+                                        href={link.href ?? "#"}
+                                        target={link.target}
+                                        title={link.title ?? externalTitle}
+                                        className="krds-btn xsmall link basic"
+                                      >
+                                        {inlineSpacedText(link.label, false, true)}
+                                        <SvgIcon name="ico-go" />
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
-                              <ul className="link-list">
-                                {downloadLinks.map((link, index) => (
-                                  <li key={link.id ?? index}>
-                                    <a
-                                      href={link.href ?? '#'}
-                                      target={link.target}
-                                      title={link.title ?? externalTitle}
-                                      className="krds-btn xsmall link basic"
-                                    >
-                                      {inlineSpacedText(link.label, false, true)}
-                                      <SvgIcon name="ico-go" />
-                                    </a>
+                            </div>
+                            <div className="conts-area related-service">
+                              {relatedGroups.map((group, groupIndex) => (
+                                <div className="conts-wrap" key={group.id ?? groupIndex}>
+                                  <h4 className="help-title">{group.title}</h4>
+                                  <ul className="link-list">
+                                    {group.links.map((link, linkIndex) => {
+                                      const icon = link.icon
+                                        ? link.icon.startsWith("ico-")
+                                          ? link.icon
+                                          : `ico-${link.icon}`
+                                        : undefined;
+                                      return (
+                                        <li key={link.id ?? linkIndex}>
+                                          <a
+                                            href={link.href ?? "#"}
+                                            className="krds-btn xsmall link basic"
+                                          >
+                                            {icon ? <SvgIcon name={icon} /> : null}
+                                            {inlineSpacedText(link.label, Boolean(icon), !icon)}
+                                            {!icon ? <SvgIcon name="ico-angle right" /> : null}
+                                          </a>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="conts-area">
+                              <h4 className="help-title">
+                                <a href="#;" title={tutorialBackTitle ?? backTitle}>
+                                  {tutorialTitle}
+                                </a>
+                              </h4>
+                              <ul className="coach-help-process">
+                                {tasks.map((task, taskIndex) => (
+                                  <li key={task.id ?? taskIndex}>
+                                    <h4 className={cx("tit", task.current && "current")}>
+                                      {task.title}
+                                    </h4>
+                                    <HelpTaskDisclosure
+                                      task={task}
+                                      panelId={`krds-help-task-${generatedId}-${taskIndex}`}
+                                    />
                                   </li>
                                 ))}
                               </ul>
                             </div>
-                          </div>
-                          <div className="conts-area related-service">
-                            {relatedGroups.map((group, groupIndex) => (
-                              <div className="conts-wrap" key={group.id ?? groupIndex}>
-                                <h4 className="help-title">{group.title}</h4>
-                                <ul className="link-list">
-                                  {group.links.map((link, linkIndex) => {
-                                    const icon = link.icon
-                                      ? link.icon.startsWith('ico-')
-                                        ? link.icon
-                                        : `ico-${link.icon}`
-                                      : undefined;
-                                    return (
-                                      <li key={link.id ?? linkIndex}>
-                                        <a
-                                          href={link.href ?? '#'}
-                                          className="krds-btn xsmall link basic"
-                                        >
-                                          {icon ? <SvgIcon name={icon} /> : null}
-                                          {inlineSpacedText(link.label, Boolean(icon), !icon)}
-                                          {!icon ? <SvgIcon name="ico-angle right" /> : null}
-                                        </a>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="conts-area">
-                            <h4 className="help-title">
-                              <a href="#;" title={tutorialBackTitle ?? backTitle}>
-                                {tutorialTitle}
-                              </a>
-                            </h4>
-                            <ul className="coach-help-process">
-                              {tasks.map((task, taskIndex) => (
-                                <li key={task.id ?? taskIndex}>
-                                  <h4 className={cx('tit', task.current && 'current')}>
-                                    {task.title}
-                                  </h4>
-                                  <HelpTaskDisclosure
-                                    task={task}
-                                    panelId={`krds-help-task-${generatedId}-${taskIndex}`}
-                                  />
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div className="help-panel-action">
-                            <button
-                              type="button"
-                              className="krds-btn medium secondary coach-btn-stop"
-                              onClick={onStop}
-                            >
-                              {stopLabel}
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </section>
-                );
-              })}
+                            <div className="help-panel-action">
+                              <button
+                                type="button"
+                                className="krds-btn medium secondary coach-btn-stop"
+                                onClick={onStop}
+                              >
+                                {stopLabel}
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
             </div>
+            <button
+              type="button"
+              className="krds-btn small tertiary btn-help-panel fold"
+              onClick={() => setOpen(false)}
+            >
+              <span className="sr-only">{label ?? title}</span>
+              {inlineSpacedText(collapseLabel, true, true)}
+              <SvgIcon name="ico-angle right" />
+            </button>
           </div>
-          <button
-            type="button"
-            className="krds-btn small tertiary btn-help-panel fold"
-            onClick={() => setOpen(false)}
-          >
-            <span className="sr-only">{label ?? title}</span>
-            {inlineSpacedText(collapseLabel, true, true)}
-            <SvgIcon name="ico-angle right" />
-          </button>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 export const HelpPanel = forwardRef<HTMLDivElement, HelpPanelProps>(function HelpPanel(props, ref) {
   return <HelpPanelSurface {...props} ref={ref} />;
@@ -2236,17 +2172,11 @@ export interface IdentifierProps extends BoxProps {
   description?: string;
 }
 export const Identifier = forwardRef<HTMLDivElement, IdentifierProps>(function Identifier(
-  {
-    organization = 'KRDS - Korea Design System',
-    description,
-    className,
-    children,
-    ...props
-  },
+  { organization = "KRDS - Korea Design System", description, className, children, ...props },
   ref,
 ) {
   return (
-    <div {...props} ref={ref} className={cx('krds-identifier', className)}>
+    <div {...props} ref={ref} className={cx("krds-identifier", className)}>
       <span className="logo">
         <span className="sr-only">{organization}</span>
       </span>
@@ -2276,7 +2206,7 @@ export function InPageNavigation({
 }: InPageNavigationProps) {
   return (
     <div className="krds-in-page-navigation-type">
-      <div className={cx('krds-in-page-navigation-area', className)}>
+      <div className={cx("krds-in-page-navigation-area", className)}>
         <div className="in-page-navigation-header">
           <p className="quick-caption">{title}</p>
           <p className="quick-title">{pageTitle}</p>
@@ -2285,7 +2215,7 @@ export function InPageNavigation({
           <ul>
             {items.map((item) => (
               <li key={item.id ?? item.label}>
-                <a className={item.current ? 'active' : undefined} href={item.href ?? '#'}>
+                <a className={item.current ? "active" : undefined} href={item.href ?? "#"}>
                   {item.label}
                 </a>
               </li>
@@ -2312,8 +2242,10 @@ export interface LanguageOption extends KrdsOption {
   title?: string;
   external?: boolean;
 }
-export interface LanguageSwitcherProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onChange'> {
+export interface LanguageSwitcherProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "children" | "onChange"
+> {
   languages?: LanguageOption[];
   options?: LanguageOption[];
   value?: string;
@@ -2329,115 +2261,104 @@ export interface LanguageSwitcherProps
   onChange?: (value: string) => void;
   onOpenChange?: (open: boolean) => void;
 }
-const LanguageMenu = forwardRef<
-  HTMLDivElement,
-  LanguageSwitcherProps & { page: boolean }
->(function LanguageMenu(
-  {
-    page,
-    languages,
-    options,
-    value,
-    selected,
-    defaultValue,
-    open: controlledOpen,
-    defaultOpen = false,
-    label,
-    currentLabel,
-    selectedLabel,
-    externalTitle,
-    text,
-    onChange,
-    onOpenChange,
-    className,
-    ...props
-  },
-  ref,
-) {
-  const items = languages?.length ? languages : (options ?? []);
-  const controlledValue = value ?? selected;
-  const valueControlled = value !== undefined || selected !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState(
-    defaultValue ?? items[0]?.value ?? '',
-  );
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const selectedValue = controlledValue ?? uncontrolledValue;
-  const open = controlledOpen ?? uncontrolledOpen;
-  const setOpen = (next: boolean) => {
-    if (controlledOpen === undefined) setUncontrolledOpen(next);
-    onOpenChange?.(next);
-  };
-  const select = (next: string) => {
-    if (!valueControlled) setUncontrolledValue(next);
-    onChange?.(next);
-    setOpen(false);
-    triggerRef.current?.focus();
-  };
-  const current = items.find((language) => language.value === selectedValue);
-  const links = page
-    ? items.filter((language) => language.value !== selectedValue)
-    : items;
-  return (
-    <div
-      {...props}
-      ref={ref}
-      className={cx('krds-drop-wrap', 'krds-language', className)}
-    >
-      <button
-        ref={triggerRef}
-        type="button"
-        className={cx('krds-btn', 'small', 'text', 'drop-btn', open && 'active')}
-        aria-expanded={open}
-        onClick={() => setOpen(!open)}
-      >
-        <SvgIcon name="ico-global" />
-        {' '}
-        {label}
-        {' '}
-        <SvgIcon name="ico-toggle" />
-      </button>
-      <div className="drop-menu">
-        <div className="drop-in">
-          {page ? (
-            <div className="drop-top">
-              <p className="current-laguage">
-                <span>{currentLabel}</span>
-                <strong>{current?.label}</strong>
-              </p>
-            </div>
-          ) : null}
-          <ul className="drop-list">
-            {links.map((language) => {
-              const external = page || language.external || language.target === '_blank';
-              const active = !page && selectedValue === language.value;
-              return (
-                <li key={language.value}>
-                  <a
-                    href={language.href ?? '#'}
-                    className={cx('item-link', active && 'active')}
-                    lang={language.lang ?? language.value}
-                    target={language.target ?? (external ? '_blank' : undefined)}
-                    title={language.title ?? (external ? externalTitle ?? text : undefined)}
-                    aria-disabled={language.disabled || undefined}
-                    onClick={(event) => {
-                      event.preventDefault();
-                      if (!language.disabled) select(language.value);
-                    }}
-                  >
-                    {language.label}
-                    {page ? <SvgIcon name="ico-go" /> : null}
-                    <span className="sr-only">{active ? selectedLabel : null}</span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+const LanguageMenu = forwardRef<HTMLDivElement, LanguageSwitcherProps & { page: boolean }>(
+  function LanguageMenu(
+    {
+      page,
+      languages,
+      options,
+      value,
+      selected,
+      defaultValue,
+      open: controlledOpen,
+      defaultOpen = false,
+      label,
+      currentLabel,
+      selectedLabel,
+      externalTitle,
+      text,
+      onChange,
+      onOpenChange,
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const items = languages?.length ? languages : (options ?? []);
+    const controlledValue = value ?? selected;
+    const valueControlled = value !== undefined || selected !== undefined;
+    const [uncontrolledValue, setUncontrolledValue] = useState(
+      defaultValue ?? items[0]?.value ?? "",
+    );
+    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const selectedValue = controlledValue ?? uncontrolledValue;
+    const open = controlledOpen ?? uncontrolledOpen;
+    const setOpen = (next: boolean) => {
+      if (controlledOpen === undefined) setUncontrolledOpen(next);
+      onOpenChange?.(next);
+    };
+    const select = (next: string) => {
+      if (!valueControlled) setUncontrolledValue(next);
+      onChange?.(next);
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+    const current = items.find((language) => language.value === selectedValue);
+    const links = page ? items.filter((language) => language.value !== selectedValue) : items;
+    return (
+      <div {...props} ref={ref} className={cx("krds-drop-wrap", "krds-language", className)}>
+        <button
+          ref={triggerRef}
+          type="button"
+          className={cx("krds-btn", "small", "text", "drop-btn", open && "active")}
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          <SvgIcon name="ico-global" /> {label} <SvgIcon name="ico-toggle" />
+        </button>
+        <div className="drop-menu">
+          <div className="drop-in">
+            {page ? (
+              <div className="drop-top">
+                <p className="current-laguage">
+                  <span>{currentLabel}</span>
+                  <strong>{current?.label}</strong>
+                </p>
+              </div>
+            ) : null}
+            <ul className="drop-list">
+              {links.map((language) => {
+                const external = page || language.external || language.target === "_blank";
+                const active = !page && selectedValue === language.value;
+                return (
+                  <li key={language.value}>
+                    <a
+                      href={language.href ?? "#"}
+                      className={cx("item-link", active && "active")}
+                      lang={language.lang ?? language.value}
+                      target={language.target ?? (external ? "_blank" : undefined)}
+                      title={language.title ?? (external ? (externalTitle ?? text) : undefined)}
+                      aria-disabled={language.disabled || undefined}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        if (!language.disabled) select(language.value);
+                      }}
+                    >
+                      {language.label}
+                      {page ? <SvgIcon name="ico-go" /> : null}
+                      <span className="sr-only">{active ? selectedLabel : null}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 export const LanguageSwitcher = forwardRef<HTMLDivElement, LanguageSwitcherProps>(
   function LanguageSwitcher(props, ref) {
     return <LanguageMenu {...props} ref={ref} page={false} />;
@@ -2454,7 +2375,17 @@ export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   label?: ReactNode;
 }
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  { external = false, label: _label, children, className, href = '#', target, rel, title, ...props },
+  {
+    external = false,
+    label: _label,
+    children,
+    className,
+    href = "#",
+    target,
+    rel,
+    title,
+    ...props
+  },
   ref,
 ) {
   return (
@@ -2462,14 +2393,13 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
       {...props}
       ref={ref}
       href={href}
-      className={cx('krds-btn', 'small', 'link', className)}
-      target={external ? '_blank' : target}
+      className={cx("krds-btn", "small", "link", className)}
+      target={external ? "_blank" : target}
       rel={rel}
-      title={external ? (title ?? '새 창 열림') : title}
+      title={external ? (title ?? "새 창 열림") : title}
     >
-      <span className="underline">{children}</span>
-      {' '}
-      <SvgIcon name={external ? 'ico-go' : 'ico-angle right'} />
+      <span className="underline">{children}</span>{" "}
+      <SvgIcon name={external ? "ico-go" : "ico-angle right"} />
     </a>
   );
 });
@@ -2485,7 +2415,7 @@ interface MainMenuBanner {
   badge?: ReactNode;
   label?: ReactNode;
 }
-export interface MainMenuItem extends Omit<KrdsNavItem, 'children' | 'title'> {
+export interface MainMenuItem extends Omit<KrdsNavItem, "children" | "title"> {
   active?: boolean;
   button?: boolean;
   target?: string;
@@ -2499,9 +2429,7 @@ export interface MainMenuItem extends Omit<KrdsNavItem, 'children' | 'title'> {
 function MainMenuBannerView({ banner }: { banner?: MainMenuBanner }) {
   return banner ? (
     <div className="gnb-sub-banner">
-      {banner.badge ? (
-        <span className="krds-badge bg-secondary">{banner.badge}</span>
-      ) : null}
+      {banner.badge ? <span className="krds-badge bg-secondary">{banner.badge}</span> : null}
       {banner.label ? (
         <button type="button" className="krds-btn medium text">
           {banner.label}
@@ -2511,8 +2439,7 @@ function MainMenuBannerView({ banner }: { banner?: MainMenuBanner }) {
     </div>
   ) : null;
 }
-export interface MainMenuPcProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
+export interface MainMenuPcProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
   items?: MainMenuItem[];
   menuLabel?: string;
   sample?: boolean;
@@ -2525,7 +2452,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
     sample = true,
     className,
     onItemChange,
-    'aria-label': ariaLabel,
+    "aria-label": ariaLabel,
     ...props
   },
   ref,
@@ -2569,7 +2496,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
               <li key={index}>
                 <h3 className="tit">
                   <a
-                    href={description.href ?? '#'}
+                    href={description.href ?? "#"}
                     target={description.target}
                     title={description.externalTitle}
                   >
@@ -2577,9 +2504,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
                     {description.target ? <SvgIcon name="ico-go" /> : null}
                   </a>
                 </h3>
-                {description.description ? (
-                  <p className="txt">{description.description}</p>
-                ) : null}
+                {description.description ? <p className="txt">{description.description}</p> : null}
               </li>
             ))}
           </ul>
@@ -2605,7 +2530,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
       {...props}
       ref={ref}
       aria-label={ariaLabel}
-      className={cx('krds-main-menu', sample && 'sample', className)}
+      className={cx("krds-main-menu", sample && "sample", className)}
     >
       <div className="inner">
         <ul className="gnb-menu" aria-label={sample ? undefined : menuLabel}>
@@ -2642,7 +2567,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
               <li key={item.id ?? item.label}>
                 <button
                   type="button"
-                  className={cx('gnb-main-trigger', topOpen && 'active')}
+                  className={cx("gnb-main-trigger", topOpen && "active")}
                   data-trigger="gnb"
                   aria-controls={sample ? undefined : mainPanelId}
                   aria-expanded={sample ? undefined : topOpen}
@@ -2657,9 +2582,9 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
                 </button>
                 <div
                   id={sample ? undefined : mainPanelId}
-                  className={cx('gnb-toggle-wrap', topOpen && 'is-open')}
+                  className={cx("gnb-toggle-wrap", topOpen && "is-open")}
                 >
-                  <div className="gnb-main-list" data-has-submenu={single ? undefined : 'true'}>
+                  <div className="gnb-main-list" data-has-submenu={single ? undefined : "true"}>
                     {single ? (
                       <div className="gnb-sub-list single-list between">
                         {renderSubContent(item)}
@@ -2673,9 +2598,9 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
                                 <a
                                   href={subItem.href}
                                   className={cx(
-                                    'gnb-sub-trigger',
-                                    'is-link',
-                                    subItem.target && 'external-link',
+                                    "gnb-sub-trigger",
+                                    "is-link",
+                                    subItem.target && "external-link",
                                   )}
                                   data-trigger="gnb"
                                   target={subItem.target}
@@ -2692,7 +2617,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
                             <li key={subItem.id ?? subItem.label}>
                               <button
                                 type="button"
-                                className={cx('gnb-sub-trigger', subOpen && 'active')}
+                                className={cx("gnb-sub-trigger", subOpen && "active")}
                                 data-trigger="gnb"
                                 aria-controls={sample ? undefined : subPanelId}
                                 aria-expanded={sample ? undefined : subOpen}
@@ -2710,9 +2635,9 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
                               <div
                                 id={sample ? undefined : subPanelId}
                                 className={cx(
-                                  'gnb-sub-list',
-                                  subOpen && 'active',
-                                  subIndex > 0 && 'between',
+                                  "gnb-sub-list",
+                                  subOpen && "active",
+                                  subIndex > 0 && "between",
                                 )}
                               >
                                 {renderSubContent(subItem)}
@@ -2732,8 +2657,7 @@ export const MainMenuPc = forwardRef<HTMLElement, MainMenuPcProps>(function Main
     </nav>
   );
 });
-export interface MainMenuMobileProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface MainMenuMobileProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   utilityItems?: MainMenuItem[];
   loginLabel?: ReactNode;
   serviceItems?: MainMenuItem[];
@@ -2746,7 +2670,7 @@ export interface MainMenuMobileProps
   bottomItems?: MainMenuItem[];
   previousLabel?: ReactNode;
   closeLabel?: ReactNode;
-  bottomSize?: 'small' | 'medium';
+  bottomSize?: "small" | "medium";
   sample?: boolean;
   standalone?: boolean;
   onSearchChange?: (value: string) => void;
@@ -2764,19 +2688,19 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
       searchTitle,
       searchLabel,
       searchValue: controlledSearchValue,
-      defaultSearchValue = '',
+      defaultSearchValue = "",
       items = [],
       bottomItems = [],
       previousLabel,
       closeLabel,
-      bottomSize = 'small',
+      bottomSize = "small",
       sample = true,
       standalone = true,
       onSearchChange,
       onSearch,
       onPrevious,
       onClose,
-      id = 'mobile-nav',
+      id = "mobile-nav",
       role,
       style,
       className,
@@ -2784,19 +2708,18 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
     },
     ref,
   ) {
-    const [uncontrolledSearchValue, setUncontrolledSearchValue] =
-      useState(defaultSearchValue);
+    const [uncontrolledSearchValue, setUncontrolledSearchValue] = useState(defaultSearchValue);
     const searchValue = controlledSearchValue ?? uncontrolledSearchValue;
     return (
       <div
         {...props}
         ref={ref}
         id={id}
-        role={standalone ? (role ?? 'navigation') : role}
-        className={cx('krds-main-menu-mobile', sample && 'sample', className)}
+        role={standalone ? (role ?? "navigation") : role}
+        className={cx("krds-main-menu-mobile", sample && "sample", className)}
         style={
           standalone
-            ? { display: 'block', position: 'static', visibility: 'visible', ...style }
+            ? { display: "block", position: "static", visibility: "visible", ...style }
             : style
         }
       >
@@ -2815,14 +2738,12 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
             </div>
             <div className="gnb-login">
               <button type="button" className="krds-btn large text">
-                <SvgIcon name="ico-log" />
-                {' '}
-                {loginLabel}
+                <SvgIcon name="ico-log" /> {loginLabel}
               </button>
             </div>
             <div className="gnb-service-menu">
               {serviceItems.map((item) => (
-                <a href={item.href ?? '#'} className="link" key={item.id ?? item.label}>
+                <a href={item.href ?? "#"} className="link" key={item.id ?? item.label}>
                   {item.label}
                 </a>
               ))}
@@ -2858,17 +2779,14 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
           <div className="gnb-body">
             <div className="gnb-menu">
               <div className="menu-wrap">
-                <ul role={standalone ? undefined : 'tablist'}>
+                <ul role={standalone ? undefined : "tablist"}>
                   {items.map((item, index) => (
-                    <li role={standalone ? undefined : 'none'} key={item.id ?? item.label}>
+                    <li role={standalone ? undefined : "none"} key={item.id ?? item.label}>
                       <a
                         id={standalone ? undefined : `tab-${index}`}
                         href={`#${item.id}`}
-                        className={cx(
-                          'gnb-main-trigger',
-                          !standalone && index === 0 && 'active',
-                        )}
-                        role={standalone ? undefined : 'tab'}
+                        className={cx("gnb-main-trigger", !standalone && index === 0 && "active")}
+                        role={standalone ? undefined : "tab"}
                         aria-selected={standalone ? undefined : index === 0}
                         aria-controls={standalone ? undefined : item.id}
                       >
@@ -2883,7 +2801,7 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
                   <div
                     className="gnb-sub-list"
                     id={item.id}
-                    role={standalone ? undefined : 'tabpanel'}
+                    role={standalone ? undefined : "tabpanel"}
                     aria-labelledby={standalone ? undefined : `tab-${index}`}
                     key={item.id ?? item.label}
                   >
@@ -2892,10 +2810,10 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
                       {item.children?.map((second) => (
                         <li key={second.id ?? second.label}>
                           <a
-                            href={second.href ?? '#'}
+                            href={second.href ?? "#"}
                             className={cx(
-                              'gnb-sub-trigger',
-                              second.children?.length && 'has-depth3',
+                              "gnb-sub-trigger",
+                              second.children?.length && "has-depth3",
                             )}
                             aria-expanded={
                               standalone || !second.children?.length ? undefined : false
@@ -2909,10 +2827,10 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
                                 {second.children.map((third) => (
                                   <li key={third.id ?? third.label}>
                                     <a
-                                      href={third.href ?? '#'}
+                                      href={third.href ?? "#"}
                                       className={cx(
-                                        'depth3-trigger',
-                                        third.children?.length && 'has-depth4',
+                                        "depth3-trigger",
+                                        third.children?.length && "has-depth4",
                                       )}
                                     >
                                       {third.label}
@@ -2942,7 +2860,7 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
                                           <ul className="depth4-ul">
                                             {third.children.map((fourth) => (
                                               <li key={fourth.id ?? fourth.label}>
-                                                <a href={fourth.href ?? '#'}>{fourth.label}</a>
+                                                <a href={fourth.href ?? "#"}>{fourth.label}</a>
                                               </li>
                                             ))}
                                           </ul>
@@ -2964,25 +2882,18 @@ export const MainMenuMobile = forwardRef<HTMLDivElement, MainMenuMobileProps>(
             <div className="gnb-bottom">
               {bottomItems.map((item, index) => (
                 <a
-                  href={item.href ?? '#'}
-                  className={cx('krds-btn', bottomSize, 'text')}
+                  href={item.href ?? "#"}
+                  className={cx("krds-btn", bottomSize, "text")}
                   target={item.target}
                   title={item.title}
                   key={item.id ?? index}
                 >
-                  {item.label}
-                  {' '}
-                  <SvgIcon name={item.target ? 'ico-go' : 'ico-angle right'} />
+                  {item.label} <SvgIcon name={item.target ? "ico-go" : "ico-angle right"} />
                 </a>
               ))}
             </div>
           </div>
-          <button
-            type="button"
-            className="krds-btn medium icon"
-            id="close-nav"
-            onClick={onClose}
-          >
+          <button type="button" className="krds-btn medium icon" id="close-nav" onClick={onClose}>
             <span className="sr-only">{closeLabel}</span>
             <SvgIcon name="ico-popup-close" />
           </button>
@@ -2996,7 +2907,7 @@ export interface MastheadProps extends BoxProps {
   message?: ReactNode;
 }
 export const Masthead = forwardRef<HTMLDivElement, MastheadProps>(function Masthead(
-  { id = 'krds-masthead', message, className, ...props },
+  { id = "krds-masthead", message, className, ...props },
   ref,
 ) {
   return (
@@ -3012,8 +2923,10 @@ export const Masthead = forwardRef<HTMLDivElement, MastheadProps>(function Masth
   );
 });
 
-export interface ModalProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'title' | 'onKeyDown'> {
+export interface ModalProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "children" | "title" | "onKeyDown"
+> {
   children?: ReactNode;
   open?: boolean;
   defaultOpen?: boolean;
@@ -3028,7 +2941,7 @@ export interface ModalProps
   onCancel?: (event: ReactKeyboardEvent<HTMLElement>) => void;
   onCancelAction?: () => void;
   onConfirm?: () => void;
-  onKeyDown?: HTMLAttributes<HTMLElement>['onKeyDown'];
+  onKeyDown?: HTMLAttributes<HTMLElement>["onKeyDown"];
 }
 export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
   {
@@ -3050,7 +2963,7 @@ export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
     className,
     onKeyDown,
     onMouseDown,
-    'aria-labelledby': ariaLabelledBy,
+    "aria-labelledby": ariaLabelledBy,
     ...props
   },
   ref,
@@ -3111,7 +3024,7 @@ export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
       {...props}
       ref={modalRef}
       id={dialogId}
-      className={cx('krds-modal', 'fade', open && 'in', open && 'shown', className)}
+      className={cx("krds-modal", "fade", open && "in", open && "shown", className)}
       role="dialog"
       aria-labelledby={joinAriaIds(ariaLabelledBy, titleId)}
       onMouseDown={(event) => {
@@ -3127,7 +3040,7 @@ export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
       onKeyDown={(event) => {
         onKeyDown?.(event);
         if (event.defaultPrevented) return;
-        if (event.key === 'Escape' || event.key === 'Esc') {
+        if (event.key === "Escape" || event.key === "Esc") {
           onCancel?.(event);
           if (!event.defaultPrevented) {
             event.preventDefault();
@@ -3135,13 +3048,18 @@ export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
           }
           return;
         }
-        if (event.key !== 'Tab' || !open) return;
+        if (event.key !== "Tab" || !open) return;
         const focusables = focusableElements();
         if (focusables.length === 0) return;
         const first = focusables[0];
         const last = focusables[focusables.length - 1];
         const activeElement = modalRef.current?.ownerDocument.activeElement;
-        if (event.shiftKey && (activeElement === first || !activeElement || !contentRef.current?.contains(activeElement))) {
+        if (
+          event.shiftKey &&
+          (activeElement === first ||
+            !activeElement ||
+            !contentRef.current?.contains(activeElement))
+        ) {
           event.preventDefault();
           last?.focus();
         } else if (!event.shiftKey && activeElement === last) {
@@ -3166,7 +3084,7 @@ export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
                       {index < items.length - 1 ? <br /> : null}
                     </Fragment>
                   ))
-                : children ?? description}
+                : (children ?? description)}
             </div>
           </div>
           <div className="modal-btn btn-wrap">
@@ -3201,13 +3119,13 @@ export const Modal = forwardRef<HTMLElement, ModalProps>(function Modal(
           </button>
         </div>
       </div>
-      <div className={cx('modal-back', open && 'in')} />
+      <div className={cx("modal-back", open && "in")} />
     </section>
   );
 });
 export const ModalSample = Modal;
 
-export interface PaginationProps extends Omit<CommonProps, 'items'> {
+export interface PaginationProps extends Omit<CommonProps, "items"> {
   items?: KrdsPaginationItem[];
   current?: number;
   previousDisabled?: boolean;
@@ -3224,10 +3142,11 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(function P
     items = [1, 2, 3, 4, 5],
     current = 1,
     previousDisabled = current <= 1,
-    nextDisabled = current >= Math.max(...items.filter((item): item is number => item !== 'ellipsis')),
-    previousLabel = '이전',
-    nextLabel = '다음',
-    navigationLabel = '페이지 이동',
+    nextDisabled = current >=
+      Math.max(...items.filter((item): item is number => item !== "ellipsis")),
+    previousLabel = "이전",
+    nextLabel = "다음",
+    navigationLabel = "페이지 이동",
     onPageChange,
     className,
   },
@@ -3235,7 +3154,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(function P
 ) {
   const pageLink = (page: number) => (
     <a
-      className={cx('page-link', page === current && 'active')}
+      className={cx("page-link", page === current && "active")}
       href="#"
       onClick={(event) => {
         event.preventDefault();
@@ -3250,12 +3169,12 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(function P
   return (
     <div
       ref={ref}
-      className={cx('krds-pagination', className)}
+      className={cx("krds-pagination", className)}
       role="navigation"
       aria-label={navigationLabel}
     >
       {previousDisabled ? (
-        <span {...{ href: '#' }} className="page-navi prev disabled">
+        <span {...{ href: "#" }} className="page-navi prev disabled">
           {previousLabel}
         </span>
       ) : (
@@ -3272,7 +3191,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(function P
       )}
       <div className="page-links">
         {items.map((item, index) =>
-          item === 'ellipsis' ? (
+          item === "ellipsis" ? (
             <span className="page-link link-dot" key={`ellipsis-${index}`} />
           ) : (
             pageLink(item)
@@ -3280,7 +3199,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(function P
         )}
       </div>
       {nextDisabled ? (
-        <span {...{ href: '#' }} className="page-navi next disabled">
+        <span {...{ href: "#" }} className="page-navi next disabled">
           {nextLabel}
         </span>
       ) : (
@@ -3299,8 +3218,7 @@ export const Pagination = forwardRef<HTMLDivElement, PaginationProps>(function P
   );
 });
 
-export interface ResizeProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onChange'> {
+export interface ResizeProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onChange"> {
   label?: ReactNode;
   options?: KrdsOption[];
   value?: string;
@@ -3335,7 +3253,7 @@ export const Resize = forwardRef<HTMLDivElement, ResizeProps>(function Resize(
 ) {
   const controlledValue = value ?? selected;
   const valueControlled = value !== undefined || selected !== undefined;
-  const resetValue = defaultValue ?? options[0]?.value ?? '';
+  const resetValue = defaultValue ?? options[0]?.value ?? "";
   const [uncontrolledValue, setUncontrolledValue] = useState(resetValue);
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -3355,19 +3273,17 @@ export const Resize = forwardRef<HTMLDivElement, ResizeProps>(function Resize(
     <div
       {...props}
       ref={ref}
-      className={cx('krds-drop-wrap', 'krds-resize', className)}
+      className={cx("krds-drop-wrap", "krds-resize", className)}
       data-adjust="scale"
     >
       <button
         ref={triggerRef}
         type="button"
-        className={cx('krds-btn', 'small', 'text', 'drop-btn', open && 'active')}
+        className={cx("krds-btn", "small", "text", "drop-btn", open && "active")}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
-        {label}
-        {' '}
-        <SvgIcon name="ico-toggle" />
+        {label} <SvgIcon name="ico-toggle" />
       </button>
       <div className="drop-menu">
         <div className="drop-in">
@@ -3378,7 +3294,7 @@ export const Resize = forwardRef<HTMLDivElement, ResizeProps>(function Resize(
                 <li key={option.value}>
                   <button
                     type="button"
-                    className={cx('item-link', option.value, active && 'active')}
+                    className={cx("item-link", option.value, active && "active")}
                     data-adjust-scale={option.value}
                     disabled={option.disabled}
                     onClick={() => select(option.value)}
@@ -3400,9 +3316,7 @@ export const Resize = forwardRef<HTMLDivElement, ResizeProps>(function Resize(
                 onReset?.();
               }}
             >
-              <SvgIcon name="ico-reset" />
-              {' '}
-              {resetLabel}
+              <SvgIcon name="ico-reset" /> {resetLabel}
             </button>
           </div>
         </div>
@@ -3417,42 +3331,42 @@ export interface SelectOption extends KrdsOption {
 export interface SelectProps
   extends
     NativeCommonProps,
-    Omit<SelectHTMLAttributes<HTMLSelectElement>, 'className' | 'size'>,
+    Omit<SelectHTMLAttributes<HTMLSelectElement>, "className" | "size">,
     LabelProps {
   options?: SelectOption[];
-  state?: 'default' | 'error' | 'complete';
-  size?: 'small' | 'medium' | 'large';
-  variant?: 'default' | 'size' | 'state' | 'sorting';
+  state?: "default" | "error" | "complete";
+  size?: "small" | "medium" | "large";
+  variant?: "default" | "size" | "state" | "sorting";
   className?: string;
 }
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
   {
     options = [],
-    label = '선택',
+    label = "선택",
     hint,
     id: providedId,
-    state = 'default',
+    state = "default",
     size,
-    variant = 'default',
+    variant = "default",
     className,
     children,
-    title = '선택',
-    'aria-describedby': ariaDescribedBy,
-    'aria-invalid': ariaInvalid,
+    title = "선택",
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid,
     ...props
   },
   ref,
 ) {
   const generatedId = useId();
   const id = providedId ?? `krds-select-${generatedId}`;
-  const hintId = variant !== 'sorting' && hint ? `${id}-hint` : undefined;
+  const hintId = variant !== "sorting" && hint ? `${id}-hint` : undefined;
   const selectClasses = selectRecipe(
-    variant === 'sorting'
-      ? { variant: 'sorting', state: state === 'error' ? 'error' : 'default' }
+    variant === "sorting"
+      ? { variant: "sorting", state: state === "error" ? "error" : "default" }
       : {
           variant,
-          size: variant === 'size' ? size : undefined,
-          state: state === 'error' ? 'error' : 'default',
+          size: variant === "size" ? size : undefined,
+          state: state === "error" ? "error" : "default",
         },
   );
   const control = (
@@ -3462,21 +3376,21 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       id={id}
       className={cx(selectClasses.control, className)}
       title={title}
-      aria-invalid={state === 'error' ? 'true' : ariaInvalid}
+      aria-invalid={state === "error" ? "true" : ariaInvalid}
       aria-describedby={
-        variant === 'sorting' ? ariaDescribedBy : joinAriaIds(ariaDescribedBy, hintId)
+        variant === "sorting" ? ariaDescribedBy : joinAriaIds(ariaDescribedBy, hintId)
       }
     >
       {children ??
         options.map((option, index) => {
-          const selected = option.selected ?? (variant === 'size' && index === 0);
+          const selected = option.selected ?? (variant === "size" && index === 0);
           return (
             <option
               key={`${option.value}-${index}`}
               ref={(node) => {
                 if (!node) return;
-                if (selected) node.setAttribute('selected', '');
-                else node.removeAttribute('selected');
+                if (selected) node.setAttribute("selected", "");
+                else node.removeAttribute("selected");
               }}
               value={option.value}
               disabled={option.disabled}
@@ -3489,7 +3403,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     </select>
   );
 
-  if (variant === 'sorting') return control;
+  if (variant === "sorting") return control;
 
   return (
     <div className="form-group">
@@ -3498,40 +3412,40 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
       </div>
       <div className="form-conts">{control}</div>
       {hint ? (
-        <p id={hintId} className={state === 'error' ? 'form-hint-invalid' : 'form-hint'}>
+        <p id={hintId} className={state === "error" ? "form-hint-invalid" : "form-hint"}>
           {hint}
         </p>
       ) : null}
     </div>
   );
 });
-export const SelectSize = forwardRef<HTMLSelectElement, SelectProps>(function SelectSize(
-  props,
-  ref,
-) {
-  return <Select {...props} ref={ref} variant="size" size={props.size ?? 'large'} />;
-});
-export const SelectState = forwardRef<HTMLSelectElement, SelectProps>(function SelectState(
-  props,
-  ref,
-) {
-  return <Select {...props} ref={ref} variant="state" state={props.state ?? 'error'} />;
-});
+export const SelectSize = forwardRef<HTMLSelectElement, SelectProps>(
+  function SelectSize(props, ref) {
+    return <Select {...props} ref={ref} variant="size" size={props.size ?? "large"} />;
+  },
+);
+export const SelectState = forwardRef<HTMLSelectElement, SelectProps>(
+  function SelectState(props, ref) {
+    return <Select {...props} ref={ref} variant="state" state={props.state ?? "error"} />;
+  },
+);
 export const SelectSorting = forwardRef<
   HTMLSelectElement,
-  Omit<SelectProps, 'label'> & { label?: string }
+  Omit<SelectProps, "label"> & { label?: string }
 >(function SelectSorting(props, ref) {
   return <Select {...props} ref={ref} variant="sorting" />;
 });
 
-export interface SideNavigationItem extends Omit<KrdsNavItem, 'children'> {
+export interface SideNavigationItem extends Omit<KrdsNavItem, "children"> {
   description?: ReactNode;
   title?: ReactNode;
   target?: string;
   children?: SideNavigationItem[];
 }
-export interface SideNavigationProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'title'> {
+export interface SideNavigationProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "children" | "title"
+> {
   items?: SideNavigationItem[];
   links?: SideNavigationItem[];
   title?: ReactNode;
@@ -3540,13 +3454,7 @@ export interface SideNavigationProps
   onExpandedChange?: (ids: string[]) => void;
 }
 
-function SideNavigationPopup({
-  item,
-  panelId,
-}: {
-  item: SideNavigationItem;
-  panelId: string;
-}) {
+function SideNavigationPopup({ item, panelId }: { item: SideNavigationItem; panelId: string }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const titleRef = useRef<HTMLButtonElement>(null);
@@ -3572,7 +3480,7 @@ function SideNavigationPopup({
       <div
         ref={panelRef}
         id={panelId}
-        className={cx('lnb-submenu-lv2', open && 'active')}
+        className={cx("lnb-submenu-lv2", open && "active")}
         role="menu"
         onBlur={(event) => {
           if (!panelRef.current?.contains(event.relatedTarget as Node)) {
@@ -3596,10 +3504,10 @@ function SideNavigationPopup({
           {item.children?.map((leaf, index) => (
             <li role="none" key={leaf.id ?? index}>
               <a
-                href={leaf.href ?? '#'}
+                href={leaf.href ?? "#"}
                 className="lnb-btn"
                 role="menuitem"
-                aria-current={leaf.current ? 'page' : undefined}
+                aria-current={leaf.current ? "page" : undefined}
                 target={leaf.target}
                 title={leaf.title as string | undefined}
               >
@@ -3613,113 +3521,111 @@ function SideNavigationPopup({
   );
 }
 
-export const SideNavigation = forwardRef<HTMLElement, SideNavigationProps>(
-  function SideNavigation(
-    {
-      items,
-      links,
-      title,
-      expandedItems: controlledExpandedItems,
-      defaultExpandedItems,
-      onExpandedChange,
-      className,
-      ...props
-    },
-    ref,
-  ) {
-    const navigationItems = items?.length ? items : (links ?? []);
-    const generatedId = useId();
-    const [uncontrolledExpandedItems, setUncontrolledExpandedItems] = useState(
-      defaultExpandedItems ??
-        navigationItems
-          .filter(
-            (item) =>
-              item.current ||
-              item.children?.some(
-                (child) => child.current || child.children?.some((leaf) => leaf.current),
-              ),
-          )
-          .map((item, index) => item.id ?? String(index)),
-    );
-    const expandedItems = controlledExpandedItems ?? uncontrolledExpandedItems;
-    const setExpandedItems = (next: string[]) => {
-      if (controlledExpandedItems === undefined) setUncontrolledExpandedItems(next);
-      onExpandedChange?.(next);
-    };
-    return (
-      <nav {...props} ref={ref} className={cx('krds-side-navigation', className)}>
-        <h2 className="lnb-tit">{title}</h2>
-        <ul className="lnb-list" role="menubar">
-          {navigationItems.map((item, topIndex) => {
-            const itemId = item.id ?? String(topIndex);
-            const submenuId = `krds-side-${generatedId}-${topIndex}`;
-            const expanded = expandedItems.includes(itemId);
-            return (
-              <li className={cx('lnb-item', expanded && 'active')} role="none" key={itemId}>
-                <button
-                  type="button"
-                  className={cx('lnb-btn', 'lnb-toggle', expanded && 'active')}
-                  role="menuitem"
-                  aria-controls={submenuId}
-                  aria-expanded={expanded}
-                  disabled={item.disabled}
-                  onClick={() =>
-                    setExpandedItems(
-                      expanded
-                        ? expandedItems.filter((id) => id !== itemId)
-                        : [...expandedItems, itemId],
-                    )
-                  }
-                >
-                  {item.label}
-                </button>
-                <div className="lnb-submenu">
-                  <ul id={submenuId} role="menu">
-                    {item.children?.map((child, childIndex) =>
-                      child.children?.length ? (
-                        <SideNavigationPopup
-                          item={child}
-                          panelId={`${submenuId}-${childIndex}`}
-                          key={child.id ?? childIndex}
-                        />
-                      ) : (
-                        <li
-                          className={cx('lnb-subitem', child.current && 'active')}
-                          role="none"
-                          key={child.id ?? childIndex}
-                        >
-                          <a
-                            href={child.href ?? '#'}
-                            className="lnb-btn lnb-link"
-                            role="menuitem"
-                            aria-current={child.current ? 'page' : undefined}
-                            target={child.target}
-                            title={child.title as string | undefined}
-                          >
-                            {child.label}
-                          </a>
-                        </li>
-                      ),
-                    )}
-                  </ul>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    );
+export const SideNavigation = forwardRef<HTMLElement, SideNavigationProps>(function SideNavigation(
+  {
+    items,
+    links,
+    title,
+    expandedItems: controlledExpandedItems,
+    defaultExpandedItems,
+    onExpandedChange,
+    className,
+    ...props
   },
-);
+  ref,
+) {
+  const navigationItems = items?.length ? items : (links ?? []);
+  const generatedId = useId();
+  const [uncontrolledExpandedItems, setUncontrolledExpandedItems] = useState(
+    defaultExpandedItems ??
+      navigationItems
+        .filter(
+          (item) =>
+            item.current ||
+            item.children?.some(
+              (child) => child.current || child.children?.some((leaf) => leaf.current),
+            ),
+        )
+        .map((item, index) => item.id ?? String(index)),
+  );
+  const expandedItems = controlledExpandedItems ?? uncontrolledExpandedItems;
+  const setExpandedItems = (next: string[]) => {
+    if (controlledExpandedItems === undefined) setUncontrolledExpandedItems(next);
+    onExpandedChange?.(next);
+  };
+  return (
+    <nav {...props} ref={ref} className={cx("krds-side-navigation", className)}>
+      <h2 className="lnb-tit">{title}</h2>
+      <ul className="lnb-list" role="menubar">
+        {navigationItems.map((item, topIndex) => {
+          const itemId = item.id ?? String(topIndex);
+          const submenuId = `krds-side-${generatedId}-${topIndex}`;
+          const expanded = expandedItems.includes(itemId);
+          return (
+            <li className={cx("lnb-item", expanded && "active")} role="none" key={itemId}>
+              <button
+                type="button"
+                className={cx("lnb-btn", "lnb-toggle", expanded && "active")}
+                role="menuitem"
+                aria-controls={submenuId}
+                aria-expanded={expanded}
+                disabled={item.disabled}
+                onClick={() =>
+                  setExpandedItems(
+                    expanded
+                      ? expandedItems.filter((id) => id !== itemId)
+                      : [...expandedItems, itemId],
+                  )
+                }
+              >
+                {item.label}
+              </button>
+              <div className="lnb-submenu">
+                <ul id={submenuId} role="menu">
+                  {item.children?.map((child, childIndex) =>
+                    child.children?.length ? (
+                      <SideNavigationPopup
+                        item={child}
+                        panelId={`${submenuId}-${childIndex}`}
+                        key={child.id ?? childIndex}
+                      />
+                    ) : (
+                      <li
+                        className={cx("lnb-subitem", child.current && "active")}
+                        role="none"
+                        key={child.id ?? childIndex}
+                      >
+                        <a
+                          href={child.href ?? "#"}
+                          className="lnb-btn lnb-link"
+                          role="menuitem"
+                          aria-current={child.current ? "page" : undefined}
+                          target={child.target}
+                          title={child.title as string | undefined}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+});
 export const SkipLink = forwardRef<
   HTMLAnchorElement,
   AnchorHTMLAttributes<HTMLAnchorElement> & { label?: ReactNode }
 >(function SkipLink(
-  { href = '#main', label: _label, children = '본문 바로가기', className, id, ...props },
+  { href = "#main", label: _label, children = "본문 바로가기", className, id, ...props },
   ref,
 ) {
   return (
-    <div id={id ?? 'krds-skip-link'} className={className}>
+    <div id={id ?? "krds-skip-link"} className={className}>
       <a {...props} ref={ref} href={href}>
         {children}
       </a>
@@ -3728,23 +3634,21 @@ export const SkipLink = forwardRef<
 });
 export const Spinner = forwardRef<
   HTMLDivElement,
-  HTMLAttributes<HTMLDivElement> & { label?: string }
->(function Spinner({ label = '처리 중', className, ...props }, ref) {
+  HTMLAttributes<HTMLDivElement> & { label?: string; inputLabel?: string; placeholder?: string }
+>(function Spinner(
+  { label = "처리 중", inputLabel = "Label", placeholder = "placeholder", className, ...props },
+  ref,
+) {
   const inputId = `krds-spinner-input-${useId()}`;
   return (
     <div className="form-group">
       <div className="form-tit">
-        <label htmlFor={inputId}>Label</label>
+        <label htmlFor={inputId}>{inputLabel}</label>
       </div>
       <div className="form-conts">
         <div className="form-spinner">
-          <input
-            type="text"
-            id={inputId}
-            className="krds-input"
-            placeholder="placeholder"
-          />
-          <div {...props} ref={ref} className={cx('krds-spinner', className)} role="status">
+          <input type="text" id={inputId} className="krds-input" placeholder={placeholder} />
+          <div {...props} ref={ref} className={cx("krds-spinner", className)} role="status">
             <span className="sr-only">{label}</span>
           </div>
         </div>
@@ -3755,8 +3659,8 @@ export const Spinner = forwardRef<
 export function StepIndicator({
   steps,
   current = 0,
-  label = '단계',
-  message = '현재단계',
+  label = "단계",
+  message = "현재단계",
   className,
 }: {
   steps: KrdsStep[];
@@ -3767,18 +3671,18 @@ export function StepIndicator({
 }) {
   const currentIndex = current;
   return (
-    <ol className={cx('krds-step-wrap', className)}>
+    <ol className={cx("krds-step-wrap", className)}>
       {steps.map((step, index) => (
         <li
           className={
-            cx(index < currentIndex && 'done', index === currentIndex && 'active') || undefined
+            cx(index < currentIndex && "done", index === currentIndex && "active") || undefined
           }
           key={step.id}
         >
           <span>
             {index === currentIndex ? <em className="sr-only">{message}</em> : null}
             <i className="step">
-              {typeof label === 'string' || typeof label === 'number' ? (
+              {typeof label === "string" || typeof label === "number" ? (
                 `${index + 1}${label}`
               ) : (
                 <>
@@ -3795,13 +3699,12 @@ export function StepIndicator({
   );
 }
 
-export interface StructuredListItem extends Omit<KrdsListItem, 'title' | 'description'> {
+export interface StructuredListItem extends Omit<KrdsListItem, "title" | "description"> {
   title: ReactNode;
   description?: ReactNode;
   badgeClass?: string;
 }
-export interface StructuredListProps
-  extends Omit<HTMLAttributes<HTMLUListElement>, 'children'> {
+export interface StructuredListProps extends Omit<HTMLAttributes<HTMLUListElement>, "children"> {
   items: StructuredListItem[];
   dateLabel?: ReactNode;
   dateValue?: ReactNode;
@@ -3830,21 +3733,17 @@ export const StructuredList = forwardRef<HTMLUListElement, StructuredListProps>(
     ref,
   ) {
     return (
-      <ul
-        {...props}
-        ref={ref}
-        className={cx('krds-structured-list', 'type-full', className)}
-      >
+      <ul {...props} ref={ref} className={cx("krds-structured-list", "type-full", className)}>
         {items.map((item) => (
           <li className="structured-item" key={item.id}>
             <div className="in">
               <div className="card-top">
                 {item.badge ? (
-                  <span className={cx('krds-badge', item.badgeClass)}>{item.badge}</span>
+                  <span className={cx("krds-badge", item.badgeClass)}>{item.badge}</span>
                 ) : null}
               </div>
               <div className="card-body">
-                <a href={item.href ?? '#'} className="c-text">
+                <a href={item.href ?? "#"} className="c-text">
                   <p className="c-tit">
                     <span className="span">{item.title}</span>
                   </p>
@@ -3856,9 +3755,9 @@ export const StructuredList = forwardRef<HTMLUListElement, StructuredListProps>(
                 </a>
                 <div className="c-btn">
                   <a
-                    href={item.href ?? '#'}
+                    href={item.href ?? "#"}
                     className="krds-btn secondary"
-                    title={typeof item.title === 'string' ? item.title : undefined}
+                    title={typeof item.title === "string" ? item.title : undefined}
                   >
                     {actionLabel}
                   </a>
@@ -3875,22 +3774,18 @@ export const StructuredList = forwardRef<HTMLUListElement, StructuredListProps>(
                 <button
                   type="button"
                   className="krds-btn medium text"
-                  title={typeof item.title === 'string' ? item.title : undefined}
+                  title={typeof item.title === "string" ? item.title : undefined}
                   onClick={() => onShare?.(item)}
                 >
-                  <SvgIcon name="ico-share" />
-                  {' '}
-                  {shareLabel}
+                  <SvgIcon name="ico-share" /> {shareLabel}
                 </button>
                 <button
                   type="button"
                   className="krds-btn medium text"
-                  title={typeof item.title === 'string' ? item.title : undefined}
+                  title={typeof item.title === "string" ? item.title : undefined}
                   onClick={() => onFavorite?.(item)}
                 >
-                  <SvgIcon name="ico-like" />
-                  {' '}
-                  {favoriteLabel}
+                  <SvgIcon name="ico-like" /> {favoriteLabel}
                 </button>
               </div>
             </div>
@@ -3910,8 +3805,10 @@ export interface DataTableColumn extends KrdsTableColumn {
   width?: string;
   visuallyHidden?: boolean;
 }
-export interface StructuredListTableRow
-  extends Record<string, string | number | boolean | undefined> {
+export interface StructuredListTableRow extends Record<
+  string,
+  string | number | boolean | undefined
+> {
   id: string;
   selected?: boolean;
   selectionLabel?: string;
@@ -3930,7 +3827,7 @@ export interface StructuredListTableProps {
   sortValue?: string;
   pagination?: {
     current: number;
-    items: Array<number | 'ellipsis'>;
+    items: Array<number | "ellipsis">;
     previousDisabled?: boolean;
     previousLabel?: ReactNode;
     nextLabel?: ReactNode;
@@ -3946,7 +3843,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
       rows,
       caption,
       className: _className,
-      selectAllLabel = '전체선택',
+      selectAllLabel = "전체선택",
       actions = [],
       countLabel,
       countOptions = [],
@@ -3983,13 +3880,10 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
       onSelectionChange?.([...next]);
     };
     const pageItems = pagination?.items ?? [];
-    const pageMax = Math.max(
-      1,
-      ...pageItems.filter((item): item is number => item !== 'ellipsis'),
-    );
+    const pageMax = Math.max(1, ...pageItems.filter((item): item is number => item !== "ellipsis"));
     const pageLink = (page: number) => (
       <a
-        className={cx('page-link', page === pagination?.current && 'active')}
+        className={cx("page-link", page === pagination?.current && "active")}
         href="#"
         onClick={(event) => event.preventDefault()}
         key={page}
@@ -4001,7 +3895,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
       </a>
     );
     return (
-      <div ref={ref} className={cx('krds-structured-list-table', _className || 'sample')}>
+      <div ref={ref} className={cx("krds-structured-list-table", _className || "sample")}>
         <div className="search-list-top">
           <div className="sch-left">
             <div className="krds-check-area">
@@ -4020,9 +3914,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
               {actions.map((action, index) => (
                 <li key={action.id ?? index}>
                   <button type="button" className="krds-btn medium text">
-                    <SvgIcon name={`ico-${action.icon ?? 'down'}`} />
-                    {' '}
-                    {action.label}
+                    <SvgIcon name={`ico-${action.icon ?? "down"}`} /> {action.label}
                   </button>
                 </li>
               ))}
@@ -4032,12 +3924,8 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
             <li>
               <strong className="sort-label">
                 <label htmlFor={countId}>{countLabel}</label>
-              </strong>
-              {' '}
-              <select
-                className="krds-form-select-sort"
-                id={countId}
-              >
+              </strong>{" "}
+              <select className="krds-form-select-sort" id={countId}>
                 {countOptions.map((option) => (
                   <option key={option}>{option}</option>
                 ))}
@@ -4050,20 +3938,14 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
               <div className="w-sort-btn">
                 {sortOptions.map((option) => (
                   <Fragment key={option}>
-                    <button
-                      type="button"
-                      className={option === sortValue ? 'active' : undefined}
-                    >
+                    <button type="button" className={option === sortValue ? "active" : undefined}>
                       {option}
-                    </button>{' '}
+                    </button>{" "}
                   </Fragment>
                 ))}
               </div>
               <div className="m-sort-btn">
-                <select
-                  className="krds-form-select-sort"
-                  id={sortId}
-                >
+                <select className="krds-form-select-sort" id={sortId}>
                   {sortOptions.map((option) => (
                     <option key={option}>{option}</option>
                   ))}
@@ -4098,7 +3980,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
               {rows.map((row) => (
                 <tr key={row.id}>
                   {columns.map((column, columnIndex) => {
-                    if (column.key === 'selected') {
+                    if (column.key === "selected") {
                       const inputId = `krds-table-${generatedId}-${row.id}`;
                       return (
                         <th scope="row" key={column.key}>
@@ -4116,7 +3998,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
                         </th>
                       );
                     }
-                    if (column.key === 'download') {
+                    if (column.key === "download") {
                       return (
                         <td key={column.key}>
                           <button
@@ -4124,9 +4006,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
                             className="krds-btn medium text"
                             onClick={() => onDownload?.(row)}
                           >
-                            <SvgIcon name="ico-down" />
-                            {' '}
-                            {String(row[column.key] ?? '')}
+                            <SvgIcon name="ico-down" /> {String(row[column.key] ?? "")}
                           </button>
                         </td>
                       );
@@ -4134,11 +4014,11 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
                     if (columnIndex === 0) {
                       return (
                         <th scope="row" key={column.key}>
-                          {String(row[column.key] ?? '')}
+                          {String(row[column.key] ?? "")}
                         </th>
                       );
                     }
-                    return <td key={column.key}>{String(row[column.key] ?? '')}</td>;
+                    return <td key={column.key}>{String(row[column.key] ?? "")}</td>;
                   })}
                 </tr>
               ))}
@@ -4148,7 +4028,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
         {pagination ? (
           <div className="krds-pagination">
             {pagination.previousDisabled ? (
-              <span {...{ href: '#' }} className="page-navi prev disabled">
+              <span {...{ href: "#" }} className="page-navi prev disabled">
                 {pagination.previousLabel}
               </span>
             ) : (
@@ -4158,7 +4038,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
             )}
             <div className="page-links">
               {pageItems.map((item, index) =>
-                item === 'ellipsis' ? (
+                item === "ellipsis" ? (
                   <span className="page-link link-dot" key={`ellipsis-${index}`} />
                 ) : (
                   pageLink(item)
@@ -4166,7 +4046,7 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
               )}
             </div>
             {pagination.current >= pageMax ? (
-              <span {...{ href: '#' }} className="page-navi next disabled">
+              <span {...{ href: "#" }} className="page-navi next disabled">
                 {pagination.nextLabel}
               </span>
             ) : (
@@ -4181,14 +4061,13 @@ export const StructuredListTable = forwardRef<HTMLDivElement, StructuredListTabl
   },
 );
 
-export interface TabItem extends Omit<KrdsTabItem, 'label'> {
+export interface TabItem extends Omit<KrdsTabItem, "label"> {
   label: ReactNode;
   tabId?: string;
   panelId?: string;
   quickNav?: boolean;
 }
-export interface TabProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onChange'> {
+export interface TabProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onChange"> {
   tabs: TabItem[];
   panels: Record<string, ReactNode>;
   defaultTab?: string;
@@ -4223,16 +4102,14 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
   const selectedControlled = value !== undefined || selected !== undefined;
   const firstEnabled = tabs.find((tab) => !tab.disabled);
   const requestedDefault = defaultValue ?? defaultTab;
-  const initialSelected =
-    tabs.some((tab) => tab.id === requestedDefault && !tab.disabled)
-      ? (requestedDefault ?? '')
-      : (firstEnabled?.id ?? '');
+  const initialSelected = tabs.some((tab) => tab.id === requestedDefault && !tab.disabled)
+    ? (requestedDefault ?? "")
+    : (firstEnabled?.id ?? "");
   const [uncontrolledSelected, setUncontrolledSelected] = useState(initialSelected);
   const requestedSelected = controlledSelected ?? uncontrolledSelected;
-  const activeTab =
-    tabs.some((tab) => tab.id === requestedSelected && !tab.disabled)
-      ? requestedSelected
-      : (firstEnabled?.id ?? '');
+  const activeTab = tabs.some((tab) => tab.id === requestedSelected && !tab.disabled)
+    ? requestedSelected
+    : (firstEnabled?.id ?? "");
   const tabClasses = tabRecipe({ full });
   const enabledTabs = tabs.filter((tab) => !tab.disabled);
   const selectTab = (id: string) => {
@@ -4252,11 +4129,7 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
             const active = activeTab === tab.id;
             const itemClass = tabRecipe({ full, active }).item;
             return (
-              <li
-                role="presentation"
-                className={itemClass || undefined}
-                key={tab.id}
-              >
+              <li role="presentation" className={itemClass || undefined} key={tab.id}>
                 <button
                   id={tabId}
                   type="button"
@@ -4268,18 +4141,16 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
                   disabled={tab.disabled}
                   onClick={() => selectTab(tab.id)}
                   onKeyDown={(event) => {
-                    if (
-                      !['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)
-                    ) {
+                    if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) {
                       return;
                     }
                     const currentIndex = enabledTabs.findIndex((item) => item.id === tab.id);
                     const nextIndex =
-                      event.key === 'Home'
+                      event.key === "Home"
                         ? 0
-                        : event.key === 'End'
+                        : event.key === "End"
                           ? enabledTabs.length - 1
-                          : event.key === 'ArrowRight'
+                          : event.key === "ArrowRight"
                             ? (currentIndex + 1) % enabledTabs.length
                             : (currentIndex - 1 + enabledTabs.length) % enabledTabs.length;
                     const nextTab = enabledTabs[nextIndex];
@@ -4291,9 +4162,7 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
                   }}
                 >
                   {tab.label}
-                  {active && message ? (
-                    <i className="sr-only created"> {message}</i>
-                  ) : null}
+                  {active && message ? <i className="sr-only created"> {message}</i> : null}
                 </button>
               </li>
             );
@@ -4309,7 +4178,7 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
               id={panelId}
               aria-labelledby={tabId}
               role="tabpanel"
-              className={cx('tab-conts', activeTab === tab.id && 'active')}
+              className={cx("tab-conts", activeTab === tab.id && "active")}
               hidden={activeTab !== tab.id}
               data-quick-nav={tab.quickNav ?? false}
               key={tab.id}
@@ -4324,7 +4193,7 @@ export const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
   );
 });
 
-export interface TableProps extends Omit<TableHTMLAttributes<HTMLTableElement>, 'children'> {
+export interface TableProps extends Omit<TableHTMLAttributes<HTMLTableElement>, "children"> {
   columns: DataTableColumn[];
   rows: Array<Record<string, ReactNode>>;
   caption?: ReactNode;
@@ -4335,42 +4204,42 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
 ) {
   return (
     <div className="krds-table-wrap">
-    <table {...props} ref={ref} className={cx('tbl', 'col', 'data', className)}>
-      <caption>{caption}</caption>
-      <colgroup>
-        {columns.map((column) => (
-          <col style={column.width ? { width: column.width } : undefined} key={column.key} />
-        ))}
-      </colgroup>
-      <thead>
-        <tr>
+      <table {...props} ref={ref} className={cx("tbl", "col", "data", className)}>
+        <caption>{caption}</caption>
+        <colgroup>
           {columns.map((column) => (
-            <th scope="col" key={column.key}>
-              {column.visuallyHidden ? (
-                <span className="sr-only">{column.label}</span>
-              ) : (
-                column.label
-              )}
-            </th>
+            <col style={column.width ? { width: column.width } : undefined} key={column.key} />
           ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, index) => (
-          <tr key={index}>
-            {columns.map((column, columnIndex) =>
-              columnIndex === 0 ? (
-                <th scope="row" key={column.key}>
-                  {row[column.key]}
-                </th>
-              ) : (
-                <td key={column.key}>{row[column.key]}</td>
-              ),
-            )}
+        </colgroup>
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th scope="col" key={column.key}>
+                {column.visuallyHidden ? (
+                  <span className="sr-only">{column.label}</span>
+                ) : (
+                  column.label
+                )}
+              </th>
+            ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={index}>
+              {columns.map((column, columnIndex) =>
+                columnIndex === 0 ? (
+                  <th scope="row" key={column.key}>
+                    {row[column.key]}
+                  </th>
+                ) : (
+                  <td key={column.key}>{row[column.key]}</td>
+                ),
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 });
@@ -4390,7 +4259,7 @@ export function Tag({
 }) {
   return (
     <div className="krds-tag-wrap large">
-      <span className={cx('krds-btn-tag', tone && `bg-${toneClass[tone]}`, className)}>
+      <span className={cx("krds-btn-tag", tone && `bg-${toneClass[tone]}`, className)}>
         {label}
         {removable ? (
           <button type="button" className="btn-delete" onClick={onRemove}>
@@ -4404,10 +4273,10 @@ export function Tag({
 export const TagLink = forwardRef<
   HTMLAnchorElement,
   AnchorHTMLAttributes<HTMLAnchorElement> & { label?: ReactNode }
->(function TagLink({ href = '#', label, children, className, ...props }, ref) {
+>(function TagLink({ href = "#", label, children, className, ...props }, ref) {
   return (
     <div className="krds-tag-wrap large">
-      <a {...props} ref={ref} href={href} className={cx('krds-btn-tag', 'link', className)}>
+      <a {...props} ref={ref} href={href} className={cx("krds-btn-tag", "link", className)}>
         {children ?? label}
       </a>
     </div>
@@ -4416,19 +4285,19 @@ export const TagLink = forwardRef<
 
 export interface TextareaProps
   extends
-    Omit<NativeCommonProps, 'rows'>,
-    Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'size' | 'className'>,
+    Omit<NativeCommonProps, "rows">,
+    Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "size" | "className">,
     LabelProps {
   maxLength?: number;
   className?: string;
 }
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
   {
-    label = '내용',
+    label = "내용",
     hint,
     id: providedId,
     className,
-    'aria-describedby': ariaDescribedBy,
+    "aria-describedby": ariaDescribedBy,
     ...props
   },
   ref,
@@ -4442,7 +4311,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         {...props}
         ref={ref}
         id={id}
-        className={cx('krds-input', className)}
+        className={cx("krds-input", className)}
         aria-describedby={ariaDescribedBy}
       />
       <label htmlFor={id}>{label}</label>
@@ -4450,9 +4319,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
     </>
   );
 });
-export interface TextInputIconProps extends Omit<ComponentProps<typeof TextInput>, 'ref'> {
+export interface TextInputIconProps extends Omit<ComponentProps<typeof TextInput>, "ref"> {
   icon?: ReactNode;
   error?: ReactNode;
+  passwordLabel?: ReactNode;
 }
 export const TextInputIcon = forwardRef<HTMLInputElement, TextInputIconProps>(
   function TextInputIcon(
@@ -4467,7 +4337,8 @@ export const TextInputIcon = forwardRef<HTMLInputElement, TextInputIconProps>(
       readOnly,
       id: providedId,
       className,
-      'aria-describedby': ariaDescribedBy,
+      passwordLabel = "입력한 비밀번호 보기",
+      "aria-describedby": ariaDescribedBy,
       ...props
     },
     ref,
@@ -4486,11 +4357,11 @@ export const TextInputIcon = forwardRef<HTMLInputElement, TextInputIconProps>(
             ref={ref}
             id={id}
             readOnly={readonly ?? readOnly}
-            className={cx('krds-input', size, className)}
+            className={cx("krds-input", size, className)}
             aria-describedby={joinAriaIds(ariaDescribedBy, hintId)}
           />
           <button type="button" className="krds-btn medium icon">
-            <span className="sr-only">입력한 비밀번호 보기</span>
+            <span className="sr-only">{passwordLabel}</span>
             {icon ?? <SvgIcon name="ico-pw-visible" />}
           </button>
         </div>
@@ -4503,8 +4374,7 @@ export const TextInputIcon = forwardRef<HTMLInputElement, TextInputIconProps>(
     );
   },
 );
-export interface TextInputStateProps
-  extends Omit<ComponentProps<typeof TextInput>, 'ref'> {
+export interface TextInputStateProps extends Omit<ComponentProps<typeof TextInput>, "ref"> {
   error?: ReactNode;
 }
 export const TextInputState = forwardRef<HTMLInputElement, TextInputStateProps>(
@@ -4513,14 +4383,14 @@ export const TextInputState = forwardRef<HTMLInputElement, TextInputStateProps>(
       label,
       hint,
       error,
-      state = 'error',
+      state = "error",
       size,
       readonly,
       readOnly,
       id: providedId,
       className,
-      'aria-describedby': ariaDescribedBy,
-      'aria-invalid': ariaInvalid,
+      "aria-describedby": ariaDescribedBy,
+      "aria-invalid": ariaInvalid,
       ...props
     },
     ref,
@@ -4534,14 +4404,14 @@ export const TextInputState = forwardRef<HTMLInputElement, TextInputStateProps>(
         <div className="form-tit">
           <label htmlFor={id}>{label}</label>
         </div>
-        <div className={cx('form-conts', state !== 'default' && `is-${state}`)}>
+        <div className={cx("form-conts", state !== "default" && `is-${state}`)}>
           <input
             {...props}
             ref={ref}
             id={id}
             readOnly={readonly ?? readOnly}
-            className={cx('krds-input', size, className)}
-            aria-invalid={state === 'error' ? 'true' : ariaInvalid}
+            className={cx("krds-input", size, className)}
+            aria-invalid={state === "error" ? "true" : ariaInvalid}
             aria-describedby={joinAriaIds(ariaDescribedBy, messageId)}
           />
         </div>
@@ -4549,10 +4419,10 @@ export const TextInputState = forwardRef<HTMLInputElement, TextInputStateProps>(
           <p
             id={messageId}
             className={
-              state === 'error'
-                ? 'form-hint-invalid'
-                : state === 'default'
-                  ? 'form-hint'
+              state === "error"
+                ? "form-hint-invalid"
+                : state === "default"
+                  ? "form-hint"
                   : `form-hint-${state}`
             }
           >
@@ -4573,16 +4443,16 @@ type StructuredTextListItem = {
 export type TextListItem = ReactNode | StructuredTextListItem;
 
 function isTextListReactNode(item: TextListItem): item is ReactNode {
-  if (item === null || typeof item !== 'object' || isValidElement(item)) {
+  if (item === null || typeof item !== "object" || isValidElement(item)) {
     return true;
   }
   if (Symbol.iterator in item) {
     return true;
   }
-  if ('then' in item && typeof item.then === 'function') {
+  if ("then" in item && typeof item.then === "function") {
     return true;
   }
-  return '$$typeof' in item;
+  return "$$typeof" in item;
 }
 function TextListItems({
   items,
@@ -4593,10 +4463,14 @@ function TextListItems({
   ordered: boolean;
   depth: number;
 }) {
-  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
   return items.map((item, index) => {
     if (isTextListReactNode(item)) {
-      return <li role="listitem" key={index}>{item}</li>;
+      return (
+        <li role="listitem" key={index}>
+          {item}
+        </li>
+      );
     }
     const content = item.label ?? item.title;
     const marker = ordered
@@ -4607,14 +4481,14 @@ function TextListItems({
             ? `${alphabet[index] ?? index + 1}. `
             : String.fromCodePoint(0x2460 + index)))
       : null;
-    const NestedList = ordered ? 'ol' : 'ul';
-    const nestedClass = ordered ? 'ordered' : depth === 0 ? 'dash' : 'hollow';
+    const NestedList = ordered ? "ol" : "ul";
+    const nestedClass = ordered ? "ordered" : depth === 0 ? "dash" : "hollow";
     return (
       <li role="listitem" key={item.id ?? index}>
         {marker !== null ? <span className="num">{marker}</span> : null}
         {content}
         {item.children?.length ? (
-          <NestedList role="list" className={cx('krds-info-list', nestedClass)}>
+          <NestedList role="list" className={cx("krds-info-list", nestedClass)}>
             <TextListItems items={item.children} ordered={ordered} depth={depth + 1} />
           </NestedList>
         ) : null}
@@ -4631,34 +4505,34 @@ export function TextList({
   ordered?: boolean;
   className?: string;
 }) {
-  const List = ordered ? 'ol' : 'ul';
+  const List = ordered ? "ol" : "ul";
   return (
-    <List role="list" className={cx('krds-info-list', ordered ? 'ordered' : 'decimal', className)}>
+    <List role="list" className={cx("krds-info-list", ordered ? "ordered" : "decimal", className)}>
       <TextListItems items={items} ordered={ordered} depth={0} />
     </List>
   );
 }
-export const TextListOrdered = (props: Omit<ComponentProps<typeof TextList>, 'ordered'>) => (
+export const TextListOrdered = (props: Omit<ComponentProps<typeof TextList>, "ordered">) => (
   <TextList {...props} ordered />
 );
 
 export interface TooltipProps extends NativeCommonProps, ButtonHTMLAttributes<HTMLButtonElement> {
   label?: ReactNode;
   message?: ReactNode;
-  placement?: 'horizontal' | 'vertical' | 'box';
+  placement?: "horizontal" | "vertical" | "box";
 }
 export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tooltip(
   {
     label,
     message,
-    placement = 'horizontal',
+    placement = "horizontal",
     children,
     className,
     onFocus,
     onBlur,
     onMouseEnter,
     onMouseLeave,
-    'aria-labelledby': ariaLabelledBy,
+    "aria-labelledby": ariaLabelledBy,
     ...props
   },
   ref,
@@ -4688,46 +4562,46 @@ export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tool
     let top: number;
     let left: number;
 
-    popover.classList.remove('top', 'bottom', 'left', 'right');
-    if (placement === 'horizontal') {
+    popover.classList.remove("top", "bottom", "left", "right");
+    if (placement === "horizontal") {
       top = triggerTop + (triggerHeight - tooltipHeight) / 2;
       if (triggerRight > window.innerWidth / 2) {
         left = triggerLeft - tooltipWidth - gap;
-        popover.classList.add('right');
+        popover.classList.add("right");
       } else {
         left = triggerRight + gap;
       }
     } else {
       if (triggerTop + triggerHeight > window.innerHeight / 2) {
         top = triggerTop - tooltipHeight - gap;
-        popover.classList.add('top');
+        popover.classList.add("top");
       } else {
         top = triggerTop + triggerHeight + gap;
-        popover.classList.add('bottom');
+        popover.classList.add("bottom");
       }
 
       if (triggerRight > window.innerWidth / 2) {
         left = triggerRight - tooltipWidth;
-        popover.classList.add('right');
+        popover.classList.add("right");
         if (window.innerWidth - triggerRight > tooltipWidth / 2) {
           left = triggerLeft + (triggerWidth - tooltipWidth) / 2;
-          popover.classList.remove('right');
+          popover.classList.remove("right");
         }
       } else {
         left = triggerLeft + (triggerWidth - tooltipWidth) / 2;
         if (left < 0) {
           left = triggerLeft;
-          popover.classList.add('left');
+          popover.classList.add("left");
         }
       }
     }
 
     popover.style.top = `${top}px`;
-    popover.style.left = window.innerWidth <= 420 ? '50%' : `${left}px`;
+    popover.style.left = window.innerWidth <= 420 ? "50%" : `${left}px`;
     return () => {
-      popover.style.removeProperty('top');
-      popover.style.removeProperty('left');
-      popover.classList.remove('top', 'bottom', 'left', 'right');
+      popover.style.removeProperty("top");
+      popover.style.removeProperty("left");
+      popover.classList.remove("top", "bottom", "left", "right");
     };
   }, [placement, visible]);
   return (
@@ -4735,16 +4609,16 @@ export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tool
       <button
         {...props}
         ref={triggerRef}
-        type={props.type ?? 'button'}
+        type={props.type ?? "button"}
         className={cx(
-          'krds-btn',
-          'small',
-          'text',
-          'krds-tooltip',
-          placement === 'horizontal' ? undefined : `tooltip-${placement}`,
+          "krds-btn",
+          "small",
+          "text",
+          "krds-tooltip",
+          placement === "horizontal" ? undefined : `tooltip-${placement}`,
           className,
         )}
-        data-tooltip={typeof message === 'string' ? message : undefined}
+        data-tooltip={typeof message === "string" ? message : undefined}
         aria-labelledby={joinAriaIds(ariaLabelledBy, tooltipId)}
         onFocus={(event) => {
           onFocus?.(event);
@@ -4771,11 +4645,11 @@ export const Tooltip = forwardRef<HTMLButtonElement, TooltipProps>(function Tool
         id={tooltipId}
         role="tooltip"
         className={cx(
-          'krds-tooltip-popover',
-          visible && 'active',
-          visible && placement !== 'horizontal' && `tooltip-${placement}`,
+          "krds-tooltip-popover",
+          visible && "active",
+          visible && placement !== "horizontal" && `tooltip-${placement}`,
         )}
-        aria-hidden={visible ? 'false' : 'true'}
+        aria-hidden={visible ? "false" : "true"}
       >
         <span className="sr-only">{label ?? children}</span>
         {message}
@@ -4794,7 +4668,7 @@ export interface TtsProps extends NativeCommonProps, ButtonHTMLAttributes<HTMLBu
   label?: ReactNode;
   text?: string;
   iconOnly?: boolean;
-  size?: 'xsmall' | 'small' | 'medium' | 'large';
+  size?: "xsmall" | "small" | "medium" | "large";
   playing?: boolean;
   defaultPlaying?: boolean;
   onPlayingChange?: (playing: boolean) => void;
@@ -4804,7 +4678,7 @@ export const Tts = forwardRef<HTMLButtonElement, TtsProps>(function Tts(
     label: _label,
     text,
     iconOnly = false,
-    size = 'medium',
+    size = "medium",
     playing: controlledPlaying,
     defaultPlaying = false,
     onPlayingChange,
@@ -4821,8 +4695,8 @@ export const Tts = forwardRef<HTMLButtonElement, TtsProps>(function Tts(
     <button
       {...props}
       ref={ref}
-      type={props.type ?? 'button'}
-      className={cx('krds-tts', size, playing && 'play', className)}
+      type={props.type ?? "button"}
+      className={cx("krds-tts", size, playing && "play", className)}
       onClick={(event) => {
         const next = !playing;
         if (controlledPlaying === undefined) setUncontrolledPlaying(next);
@@ -4831,11 +4705,11 @@ export const Tts = forwardRef<HTMLButtonElement, TtsProps>(function Tts(
       }}
     >
       <span className="krds-tts-icon" aria-hidden="true">
-        <SvgIcon name={playing ? 'ico-stop' : 'ico-volume'} />
+        <SvgIcon name={playing ? "ico-stop" : "ico-volume"} />
       </span>
       {iconOnly ? null : (
         <>
-          {' '}
+          {" "}
           <span className="krds-tts-text">{children ?? text}</span>
         </>
       )}
@@ -4846,7 +4720,7 @@ export const TtsIcon = forwardRef<HTMLButtonElement, TtsProps>(function TtsIcon(
   return <Tts {...props} ref={ref} iconOnly />;
 });
 export const TtsSize = forwardRef<HTMLButtonElement, TtsProps>(function TtsSize(props, ref) {
-  return <Tts {...props} ref={ref} size={props.size ?? 'xsmall'} />;
+  return <Tts {...props} ref={ref} size={props.size ?? "xsmall"} />;
 });
 
 export const ToggleSwitch = BaseSwitch;

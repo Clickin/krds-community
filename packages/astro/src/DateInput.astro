@@ -28,6 +28,7 @@ export interface Props extends Omit<
   inputAttributes?: Omit<HTMLAttributes<'input'>, 'class:list' | 'id' | 'name' | 'placeholder' | 'type' | 'value'>;
   rootClass?: string;
   class?: string;
+  calendarOpenLabel?: string;
 }
 
 const {
@@ -72,6 +73,7 @@ const {
   confirmLabel,
   eventLabel,
   openCalendarLabel = '달력 열기',
+  calendarOpenLabel,
   open = false,
   calendarId: providedCalendarId,
   calendarClass,

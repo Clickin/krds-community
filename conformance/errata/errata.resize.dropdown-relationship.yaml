@@ -1,0 +1,37 @@
+id: errata.resize.dropdown-relationship
+component: resize
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/resize.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".krds-resize > .drop-btn"
+      - ".krds-resize > .drop-menu"
+    behavior: >-
+      The literal trigger button exposes a disclosure toggle without wiring the controlled menu.
+correction:
+  behavior: >-
+    Give the drop-down menu a stable id and reference it from the trigger's aria-controls so the expanded state names its target.
+  attributes:
+    - selector: ".krds-resize > .drop-btn"
+      attribute: aria-controls
+      rule: "references: .krds-resize > .drop-menu[id]"
+    - selector: ".krds-resize > .drop-menu"
+      attribute: id
+      rule: "stable generated id for the aria-controls target"
+fixtures:
+  - resize.default
+normalization:
+  whitelist:
+    - selector: ".krds-resize > .drop-btn"
+      attribute: aria-controls
+      operation: omit
+    - selector: ".krds-resize > .drop-menu"
+      attribute: id
+      operation: omit
+evidence:
+  rationale: >-
+    Same disclosure-wiring addition as language-switcher; attributes are non-semantic additions vs upstream.

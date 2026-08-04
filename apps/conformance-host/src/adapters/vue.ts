@@ -1,31 +1,28 @@
-import * as Components from '@krds-community/vue';
-import { createApp, h, nextTick, shallowReactive, type Component } from 'vue';
-import type { FrameworkAdapter } from '../protocol';
+import * as Components from "@krds-community/vue";
+import { createApp, h, nextTick, shallowReactive, type Component } from "vue";
+import type { FrameworkAdapter } from "../protocol";
 
 const CORE_EXPORTS: Readonly<Record<string, string>> = {
-  button: 'Button',
-  checkbox: 'Checkbox',
-  radio: 'Radio',
-  switch: 'Switch',
-  'text-input': 'TextInput',
-  accordion: 'Accordion',
+  button: "Button",
+  checkbox: "Checkbox",
+  radio: "Radio",
+  switch: "Switch",
+  "text-input": "TextInput",
+  accordion: "Accordion",
 };
 
 const toPascalCase = (componentId: string): string =>
   componentId
-    .split('-')
+    .split("-")
     .filter(Boolean)
     .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
-    .join('');
+    .join("");
 
 const resolveComponent = (componentId: string): Component => {
   const exportName = CORE_EXPORTS[componentId] ?? toPascalCase(componentId);
   const component: unknown = Components[exportName as keyof typeof Components];
 
-  if (
-    component === null ||
-    (typeof component !== 'object' && typeof component !== 'function')
-  ) {
+  if (component === null || (typeof component !== "object" && typeof component !== "function")) {
     throw new Error(`Unknown Vue component: ${componentId}`);
   }
 

@@ -1,138 +1,125 @@
-import './styles.css';
+import "./styles.css";
 
-export {
-  Accordion,
-  AccordionLine,
-  Button,
-  Checkbox,
-  Radio,
-  RadioButton,
-  Switch,
-  TextInput,
-  TextInputSize,
-} from './components.js';
+export { Accordion } from "./components/Accordion.js";
+export type { AccordionItemData, AccordionProps } from "./components/Accordion.js";
+export { AccordionLine } from "./components/AccordionLine.js";
+export { Badge, BadgeNumber, BadgeSize } from "./components/Badge.js";
+export type { BadgeProps } from "./components/Badge.js";
+export { Breadcrumb } from "./components/Breadcrumb.js";
+export type { BreadcrumbProps } from "./components/Breadcrumb.js";
+export { Button } from "./components/Button.js";
+export type { ButtonProps } from "./components/Button.js";
+export { ButtonHierarchy, ButtonSize } from "./components/ButtonHierarchy.js";
+export { ButtonIcon } from "./components/ButtonIcon.js";
+export type { ButtonIconProps } from "./components/ButtonIcon.js";
+export { ButtonText } from "./components/ButtonText.js";
+export { ButtonWithIcon } from "./components/ButtonWithIcon.js";
+export { Calendar } from "./components/Calendar.js";
+export type { CalendarProps } from "./components/Calendar.js";
+export { CalendarRange } from "./components/CalendarRange.js";
+export type { CalendarRangeProps } from "./components/CalendarRange.js";
+export { Carousel } from "./components/Carousel.js";
+export type { CarouselProps } from "./components/Carousel.js";
+export { CarouselBanner } from "./components/CarouselBanner.js";
+export { Checkbox } from "./components/Checkbox.js";
+export type { CheckboxProps } from "./components/Checkbox.js";
+export { CheckboxChip } from "./components/CheckboxChip.js";
+export type { ChoiceChipProps } from "./components/CheckboxChip.js";
+export { CheckboxSize } from "./components/CheckboxSize.js";
+export { CoachMark } from "./components/CoachMark.js";
+export type { CoachMarkProps } from "./components/CoachMark.js";
+export { ContextualHelp } from "./components/ContextualHelp.js";
+export type { ContextualHelpProps } from "./components/ContextualHelp.js";
+export { CriticalAlerts } from "./components/CriticalAlerts.js";
+export type { CriticalAlertsProps } from "./components/CriticalAlerts.js";
+export { DateInput } from "./components/DateInput.js";
+export { Disclosure } from "./components/Disclosure.js";
+export type { DisclosureProps } from "./components/Disclosure.js";
+export { Favicon } from "./components/Favicon.js";
+export type { FaviconProps } from "./components/Favicon.js";
+export { FileUpload } from "./components/FileUpload.js";
+export type { FileUploadProps } from "./components/FileUpload.js";
+export { Footer } from "./components/Footer.js";
+export type { FooterProps } from "./components/Footer.js";
+export { Header } from "./components/Header.js";
 export type {
-  AccordionItemData,
-  AccordionProps,
-  ButtonProps,
-  CheckboxProps,
-  InputChange,
-  RadioProps,
-  SwitchProps,
-  TextInputProps,
-} from './components.js';
-export {
-  Badge,
-  BadgeNumber,
-  BadgeSize,
-  Breadcrumb,
-  ButtonHierarchy,
-  ButtonIcon,
-  ButtonSize,
-  ButtonText,
-  ButtonWithIcon,
-  Calendar,
-  CalendarRange,
-  Carousel,
-  CarouselBanner,
-  CheckboxChip,
-  CheckboxSize,
-  CoachMark,
-  ContextualHelp,
-  CriticalAlerts,
-  DateInput,
-  Disclosure,
-  Favicon,
-  FileUpload,
-  Footer,
-  Header,
-  HelpPanel,
-  Identifier,
-  InPageNavigation,
-  LanguageSwitcher,
-  LanguageSwitcherPage,
-  Link,
-  MainMenuMobile,
-  MainMenuPc,
-  Masthead,
-  Modal,
-  ModalSample,
-  Pagination,
-  RadioChip,
-  RadioSize,
-  Resize,
-  Select,
-  SelectSize,
-  SelectSorting,
-  SelectState,
-  SideNavigation,
-  SkipLink,
-  Spinner,
-  StepIndicator,
-  StructuredList,
-  StructuredListTable,
-  Tab,
-  Table,
-  Tag,
-  TagLink,
-  Textarea,
-  TextInputIcon,
-  TextInputState,
-  TextList,
-  TextListOrdered,
-  ToggleSwitch,
-  ToggleSwitchSize,
-  Tooltip,
-  TooltipBox,
-  TooltipVertical,
-  Tts,
-  TtsIcon,
-  TtsSize,
-  TutorialPanel,
-} from './additional.js';
-export type {
-  BadgeProps,
-  BreadcrumbProps,
-  ButtonIconProps,
-  CalendarProps,
-  CalendarRangeProps,
-  CarouselProps,
-  ChoiceChipProps,
-  CoachMarkProps,
-  ContextualHelpProps,
-  CriticalAlertsProps,
-  DisclosureProps,
-  FaviconProps,
-  FileUploadProps,
-  FooterProps,
   HeaderMobileMenu,
   HeaderMyMenu,
   HeaderProps,
   HeaderUtilityItem,
   HeaderUtilitySubItem,
+} from "./components/Header.js";
+export { HelpPanel } from "./components/HelpPanel.js";
+export type {
   HelpPanelLink,
   HelpPanelProps,
   HelpPanelRelatedGroup,
   HelpPanelTab,
   HelpPanelTask,
-  IdentifierProps,
-  InPageNavigationProps,
-  LanguageOption,
-  LanguageSwitcherProps,
-  LinkProps,
-  MainMenuItem,
-  MainMenuMobileProps,
-  MainMenuPcProps,
-  MastheadProps,
-  ModalProps,
-  PaginationProps,
-  ResizeProps,
-  SelectProps,
-  SideNavigationItem,
-  SideNavigationProps,
-  TabProps,
-  TabItem,
-  TextareaProps,
-  TooltipProps,
-  TtsProps,
-} from './additional.js';
+} from "./components/HelpPanel.js";
+export { Identifier } from "./components/Identifier.js";
+export type { IdentifierProps } from "./components/Identifier.js";
+export type { InputChange } from "./components/types.js";
+export { InPageNavigation } from "./components/InPageNavigation.js";
+export type { InPageNavigationProps } from "./components/InPageNavigation.js";
+export { LanguageSwitcher } from "./components/LanguageSwitcher.js";
+export type { LanguageOption, LanguageSwitcherProps } from "./components/LanguageSwitcher.js";
+export { LanguageSwitcherPage } from "./components/LanguageSwitcherPage.js";
+export { Link } from "./components/Link.js";
+export type { LinkProps } from "./components/Link.js";
+export { MainMenuMobile } from "./components/MainMenuMobile.js";
+export type { MainMenuMobileProps } from "./components/MainMenuMobile.js";
+export { MainMenuPc } from "./components/MainMenuPc.js";
+export type { MainMenuItem, MainMenuPcProps } from "./components/MainMenuPc.js";
+export { Masthead } from "./components/Masthead.js";
+export type { MastheadProps } from "./components/Masthead.js";
+export { Modal, ModalSample } from "./components/Modal.js";
+export type { ModalProps } from "./components/Modal.js";
+export { Pagination } from "./components/Pagination.js";
+export type { PaginationProps } from "./components/Pagination.js";
+export { Radio } from "./components/Radio.js";
+export type { RadioProps } from "./components/Radio.js";
+export { RadioButton } from "./components/RadioButton.js";
+export { RadioChip } from "./components/RadioChip.js";
+export { RadioSize } from "./components/RadioSize.js";
+export { Resize } from "./components/Resize.js";
+export type { ResizeProps } from "./components/Resize.js";
+export { Select } from "./components/Select.js";
+export type { SelectProps } from "./components/Select.js";
+export { SelectSize } from "./components/SelectSize.js";
+export { SelectSorting } from "./components/SelectSorting.js";
+export { SelectState } from "./components/SelectState.js";
+export { SideNavigation } from "./components/SideNavigation.js";
+export type { SideNavigationItem, SideNavigationProps } from "./components/SideNavigation.js";
+export { SkipLink } from "./components/SkipLink.js";
+export { Spinner } from "./components/Spinner.js";
+export { StepIndicator } from "./components/StepIndicator.js";
+export { StructuredList } from "./components/StructuredList.js";
+export { StructuredListTable } from "./components/StructuredListTable.js";
+export { Switch } from "./components/Switch.js";
+export type { SwitchProps } from "./components/Switch.js";
+export { Tab } from "./components/Tab.js";
+export type { TabItem, TabProps } from "./components/Tab.js";
+export { Table } from "./components/Table.js";
+export { Tag } from "./components/Tag.js";
+export { TagLink } from "./components/TagLink.js";
+export { Textarea } from "./components/Textarea.js";
+export type { TextareaProps } from "./components/Textarea.js";
+export { TextInput } from "./components/TextInput.js";
+export type { TextInputProps } from "./components/TextInput.js";
+export { TextInputIcon } from "./components/TextInputIcon.js";
+export { TextInputSize } from "./components/TextInputSize.js";
+export { TextInputState } from "./components/TextInputState.js";
+export { TextList } from "./components/TextList.js";
+export { TextListOrdered } from "./components/TextListOrdered.js";
+export { ToggleSwitch } from "./components/ToggleSwitch.js";
+export { ToggleSwitchSize } from "./components/ToggleSwitchSize.js";
+export { Tooltip } from "./components/Tooltip.js";
+export type { TooltipProps } from "./components/Tooltip.js";
+export { TooltipBox } from "./components/TooltipBox.js";
+export { TooltipVertical } from "./components/TooltipVertical.js";
+export { Tts } from "./components/Tts.js";
+export type { TtsProps } from "./components/Tts.js";
+export { TtsIcon } from "./components/TtsIcon.js";
+export { TtsSize } from "./components/TtsSize.js";
+export { TutorialPanel } from "./components/TutorialPanel.js";

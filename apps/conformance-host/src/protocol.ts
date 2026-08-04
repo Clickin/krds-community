@@ -1,6 +1,6 @@
-export type Framework = 'react' | 'vue' | 'svelte' | 'solid' | 'angular' | 'astro';
+export type Framework = "react" | "vue" | "svelte" | "solid" | "angular" | "astro";
 
-export type FixtureLayoutContext = 'content-inner' | 'viewport-height';
+export type FixtureLayoutContext = "content-inner" | "viewport-height";
 
 export interface FixtureAction {
   action: string;
@@ -44,12 +44,12 @@ export interface FixtureDefinition {
 
 export const fixtureRootAttributes = ({
   layoutContext,
-}: Pick<FixtureDefinition, 'layoutContext'>) => {
-  if (layoutContext === 'content-inner') {
-    return { class: 'inner', 'data-layout-context': layoutContext } as const;
+}: Pick<FixtureDefinition, "layoutContext">) => {
+  if (layoutContext === "content-inner") {
+    return { class: "inner", "data-layout-context": layoutContext } as const;
   }
-  if (layoutContext === 'viewport-height') {
-    return { 'data-layout-context': layoutContext } as const;
+  if (layoutContext === "viewport-height") {
+    return { "data-layout-context": layoutContext } as const;
   }
   return {};
 };
@@ -89,8 +89,8 @@ export interface ConformanceRuntime {
   ready: boolean;
   framework: Framework;
   fixture: FixtureDefinition;
-  upstream: FixtureCatalog['upstream'];
-  rootSelector: '#fixture-root';
+  upstream: FixtureCatalog["upstream"];
+  rootSelector: "#fixture-root";
   stateId?: string;
   setState(stateId: string): Promise<FixtureAction[]>;
   reset(): Promise<void>;

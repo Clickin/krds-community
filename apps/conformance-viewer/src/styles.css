@@ -32,8 +32,8 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(90deg, transparent 49.9%, rgb(23 32 28 / 4%) 50%, transparent 50.1%) 0 0 /
-      3rem 3rem,
+    linear-gradient(90deg, transparent 49.9%, rgb(23 32 28 / 4%) 50%, transparent 50.1%) 0 0 / 3rem
+      3rem,
     var(--paper);
 }
 

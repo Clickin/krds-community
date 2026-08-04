@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "files": [
     "dist",
+    "src",
     "LICENSE",
     "NOTICE"
   ],
@@ -12,7 +13,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./src/index.tsx"
     }
   },
   "scripts": {

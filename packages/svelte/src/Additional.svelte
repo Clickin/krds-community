@@ -26,6 +26,9 @@
       state?: string;
       error?: string;
       placeholder?: string;
+      calendarOpenLabel?: string;
+      inputLabel?: string;
+      passwordLabel?: string;
       type?: string;
       target?: string;
       rel?: string;
@@ -186,7 +189,7 @@
     appearance = 'outline',
     size = '',
     number = false,
-    href = '#',
+    href = './',
     message = '도움말',
     position = 'top',
     open = $bindable<boolean | undefined>(),
@@ -301,6 +304,9 @@
     previousMonthDayCount = 0,
     dayCount = 31,
     calendarLabel = '',
+    calendarOpenLabel = '달력 열기',
+    inputLabel = 'Label',
+    passwordLabel = '입력한 비밀번호 보기',
     previousMonthLabel = '',
     nextMonthLabel = '',
     yearSelectLabel = '',
@@ -656,6 +662,9 @@
     sync(value);
     return { update: sync };
   };
+  const focusable = (node: HTMLElement) => {
+    node.tabIndex = 0;
+  };
 </script>
 
 {#if kind === 'badge' || kind === 'badge-number' || kind === 'badge-size'}
@@ -736,16 +745,17 @@
               oninput={setValue}
             />
             <button class="krds-btn medium icon form-btn-datepicker" type="button">
-              <span class="sr-only">달력 열기</span>
+              <span class="sr-only">{calendarOpenLabel}</span>
               <i class="svg-icon ico-calendar"></i>
             </button>
           </div>
         {/if}
         <div class="krds-calendar-area">
           <div
+            use:focusable
             class={`bottom calendar-wrap ${kind === 'calendar' ? 'single' : ''}`}
+            role="application"
             aria-label={calendarLabel}
-            tabindex="0"
           >
             <div class="calendar-head">
               <button class="btn-cal-move prev" type="button">
@@ -1093,8 +1103,8 @@
       <p class="desc">{description}</p>
       <div class="coach-controls">
         <div class="num">
-          <span class="sr-only">현재 단계</span><strong>{currentStep || step.split('/')[0]}</strong>
-          <span class="sr-only">총 단계</span><span>{totalSteps || step.split('/')[1]}</span>
+          <span class="sr-only">{currentStepLabel}</span><strong>{currentStep || step.split('/')[0]}</strong>
+          <span class="sr-only">{totalStepsLabel}</span><span>{totalSteps || step.split('/')[1]}</span>
         </div>
         <div class="btn-wrap">
           <button class="krds-btn small text" type="button" onclick={toggleOpen}>{stopLabel}</button>
@@ -1343,7 +1353,7 @@
         <div class="inner">
           <div class="header-utility">
             <ul class="utility-list">
-              {#each utilityItems as item}
+              {#each utilityItems as item, index}
                 <li>
                   {#if fieldOf(item, 'kind') === 'link'}
                     <a
@@ -1359,10 +1369,15 @@
                       class="krds-drop-wrap"
                       class:krds-resize={fieldOf(item, 'kind') === 'resize'}
                     >
-                      <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
+                      <button
+                        type="button"
+                        class="krds-btn small text drop-btn"
+                        aria-expanded="false"
+                        aria-controls={`${id}-utility-${index}`}
+                      >
                         {labelOf(item)} <i class="svg-icon ico-toggle"></i>
                       </button>
-                      <div class="drop-menu">
+                      <div class="drop-menu" id={`${id}-utility-${index}`}>
                         <div class="drop-in">
                           <ul class="drop-list">
                             {#each listOf(item, 'items') as option}
@@ -1410,8 +1425,13 @@
               <a href={loginHref} class="btn-navi login">{loginLabel}</a>
               <button type="button" class="btn-navi join">{joinLabel}</button>
               <div class="krds-drop-wrap my-drop">
-                <button type="button" class="btn-navi my drop-btn" aria-expanded="false">{fieldOf(myMenuData, 'label')}</button>
-                <div class="drop-menu">
+                <button
+                  type="button"
+                  class="btn-navi my drop-btn"
+                  aria-expanded="false"
+                  aria-controls={`${id}-my-drop`}
+                >{fieldOf(myMenuData, 'label')}</button>
+                <div class="drop-menu" id={`${id}-my-drop`}>
                   <div class="drop-in">
                     <div class="drop-top">
                       <p class="my-name">{fieldOf(myMenuData, 'userName')}</p>
@@ -1446,7 +1466,7 @@
           </div>
         </div>
       </div>
-      <nav class="krds-main-menu">
+      <nav class="krds-main-menu" aria-label={menuLabel || undefined}>
         <div class="inner">
           <ul class="gnb-menu" aria-label={menuLabel || undefined}>
             {#each headerItems as item, topIndex}
@@ -1638,6 +1658,7 @@
               class="krds-input"
               placeholder={fieldOf(mobileData, 'searchPlaceholder')}
               title={fieldOf(mobileData, 'searchTitle')}
+              aria-label={fieldOf(mobileData, 'searchLabel') || fieldOf(mobileData, 'searchTitle') || undefined}
             />
             <button type="button" class="krds-btn medium icon ico-search">
               <span class="sr-only">{fieldOf(mobileData, 'searchLabel')}</span>
@@ -1674,16 +1695,17 @@
                 >
                   <h2 class="sub-title">{labelOf(item)}</h2>
                   <ul>
-                    {#each childrenOf(item) as child}
+                    {#each childrenOf(item) as child, childIndex}
                       <li>
                         <a
                           href={hrefOf(child)}
                           class="gnb-sub-trigger"
                           class:has-depth3={childrenOf(child).length > 0}
                           aria-expanded={childrenOf(child).length > 0 ? 'false' : undefined}
+                          aria-controls={childrenOf(child).length > 0 ? `${id}-mobile-depth3-${itemIndex}-${childIndex}` : undefined}
                         >{labelOf(child)}</a>
                         {#if childrenOf(child).length}
-                          <div class="depth3-wrap">
+                          <div class="depth3-wrap" id={`${id}-mobile-depth3-${itemIndex}-${childIndex}`}>
                             <ul>
                               {#each childrenOf(child) as depthThree}
                                 <li>
@@ -1820,16 +1842,17 @@
               >
                 <h2 class="sub-title">{labelOf(item)}</h2>
                 <ul>
-                  {#each childrenOf(item) as child}
+                  {#each childrenOf(item) as child, childIndex}
                     <li>
                       <a
                         href={hrefOf(child)}
                         class="gnb-sub-trigger"
                         class:has-depth3={childrenOf(child).length > 0}
                         aria-expanded={!sample && childrenOf(child).length > 0 ? 'false' : undefined}
+                        aria-controls={!sample && childrenOf(child).length > 0 ? `${id}-depth3-${itemIndex}-${childIndex}` : undefined}
                       >{labelOf(child)}</a>
                       {#if childrenOf(child).length}
-                        <div class="depth3-wrap">
+                        <div class="depth3-wrap" id={!sample ? `${id}-depth3-${itemIndex}-${childIndex}` : undefined}>
                           <ul>
                             {#each childrenOf(child) as depthThree}
                               <li>
@@ -2070,7 +2093,7 @@
     class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`}
     hidden={!isOpen}
   >
-    <div class="help-panel-wrap" tabindex={isOpen ? 0 : undefined}>
+    <div use:focusable class="help-panel-wrap">
       <div class="help-conts-area">
         <div class="krds-tab-area layer">
           <div class="tab line">
@@ -2101,7 +2124,7 @@
           <div class="tab-conts-wrap">
             {#each tabs as tab, index}
               {@const tabName = index === 0 ? 'help' : 'tutorial'}
-              <section
+              <div
                 id={fieldOf(tab, 'panelId')}
                 role="tabpanel"
                 aria-labelledby={tab.id}
@@ -2109,7 +2132,7 @@
                 class:active={activeTab === tabName}
                 hidden={activeTab !== tabName}
               >
-                <h3 class="sr-only">{tab.label}</h3>
+                {#if tab.label}<h3 class="sr-only">{tab.label}</h3>{/if}
                 <div class="help-conts-area-inner">
                   {#if tabName === 'help'}
                     <div class="conts-area help-conts">
@@ -2173,6 +2196,7 @@
                               <button
                                 type="button"
                                 class="btn-conts-expand"
+                                aria-label={fieldOf(task, 'summary') || fieldOf(task, 'title') || undefined}
                                 aria-controls={`${id}-help-disclosure-${taskIndex}`}
                                 aria-expanded="false"
                               >
@@ -2203,7 +2227,7 @@
                     </div>
                   {/if}
                 </div>
-              </section>
+              </div>
             {/each}
           </div>
         </div>
@@ -2220,7 +2244,7 @@
   </div>
 {:else if kind === 'identifier'}
   <div {...rest} class={`krds-identifier ${rootClass}`}>
-    <span class="logo"><span class="sr-only">KRDS - Korea Design System</span></span>
+    <span class="logo"><span class="sr-only">{organization || 'KRDS - Korea Design System'}</span></span>
     <span class="ban-txt">{description || organization || title}</span>
   </div>
 {:else if kind === 'in-page-navigation'}
@@ -2249,9 +2273,10 @@
       class="krds-btn small text drop-btn"
       type="button"
       aria-expanded={isOpen}
+      aria-controls={`${id}-menu`}
       onclick={toggleOpen}
     ><i class="svg-icon ico-global"></i>{' '}{label}{' '}<i class="svg-icon ico-toggle"></i></button>
-    <div class="drop-menu">
+    <div class="drop-menu" id={`${id}-menu`}>
       <div class="drop-in">
         {#if kind === 'language-switcher-page'}
           <div class="drop-top">
@@ -2358,10 +2383,10 @@
     aria-label={navigationLabel}
   >
     {#if previousDisabled || (current ?? 1) <= 1}
-      <span class="page-navi prev disabled" href="#">{previousLabel}</span>
+      <span class="page-navi prev disabled">{previousLabel}</span>
     {:else}
       <a
-        href="#"
+        href={href}
         class="page-navi prev"
         onclick={(event) => {
           event.preventDefault();
@@ -2376,7 +2401,7 @@
         {:else}
           {@const page = Number(labelOf(item))}
           <a
-            href="#"
+            href={href}
             class="page-link"
             class:active={page === (current ?? 1)}
             onclick={(event) => {
@@ -2391,7 +2416,7 @@
       {/each}
     </div>
     <a
-      href="#"
+      href={href}
       class="page-navi next"
       onclick={(event) => {
         event.preventDefault();
@@ -2405,11 +2430,12 @@
       type="button"
       class="krds-btn small text drop-btn"
       aria-expanded={isOpen}
+      aria-controls={`${id}-menu`}
       onclick={toggleOpen}
     >
       {label} <i class="svg-icon ico-toggle"></i>
     </button>
-    <div class="drop-menu">
+    <div class="drop-menu" id={`${id}-menu`}>
       <div class="drop-in">
         <ul class="drop-list">
           {#each (options.length ? options : zoomOptions) as option}
@@ -2563,11 +2589,11 @@
 {:else if kind === 'spinner'}
   <div class="form-group">
     <div class="form-tit">
-      <label for={`${id}-input`}>Label</label>
+      <label for={`${id}-input`}>{inputLabel}</label>
     </div>
     <div class="form-conts">
       <div class="form-spinner">
-        <input type="text" id={`${id}-input`} class="krds-input" placeholder="placeholder" />
+        <input type="text" id={`${id}-input`} class="krds-input" {placeholder} />
         <div {...rest} class={`krds-spinner ${rootClass}`} role="status">
           <span class="sr-only">{label}</span>
         </div>
@@ -2722,7 +2748,7 @@
       {#if pagination}
         <div class="krds-pagination">
           {#if flagOf(pagination, 'previousDisabled')}
-            <span class="page-navi prev disabled" href="#">{fieldOf(pagination, 'previousLabel')}</span>
+            <span class="page-navi prev disabled">{fieldOf(pagination, 'previousLabel')}</span>
           {:else}
             <a class="page-navi prev" href={href}>{fieldOf(pagination, 'previousLabel')}</a>
           {/if}
@@ -2803,14 +2829,17 @@
     </div>
     <div class="tab-conts-wrap">
   {#each tabs as tab}
-      <section
+      <div
         role="tabpanel"
         id={`${id}-panel-${tab.id}`}
         aria-labelledby={`${id}-tab-${tab.id}`}
         data-quick-nav="false"
         class={`tab-conts ${active === tab.id ? 'active' : ''}`}
         hidden={active !== tab.id}
-      ><h3 class="sr-only">{panelTitle || '탭 영역 타이틀'}</h3>{panels[tab.id] ?? (tab.id === active ? description : '')}</section>
+      >
+        <h3 class="sr-only">{panelTitle || '탭 영역 타이틀'}</h3>
+        {panels[tab.id] ?? (tab.id === active ? description : '')}
+      </div>
   {/each}
     </div>
   </div>
@@ -2875,7 +2904,7 @@
         oninput={setValue}
       />
       <button type="button" class="krds-btn medium icon">
-        <span class="sr-only">입력한 비밀번호 보기</span>
+        <span class="sr-only">{passwordLabel}</span>
         <i class="svg-icon ico-pw-visible"></i>
       </button>
     </div>
@@ -2950,6 +2979,7 @@
     {...rest}
     type="button"
     class={`krds-tts ${size || 'medium'} ${rootClass}`}
+    aria-label={kind === 'tts-icon' ? label : undefined}
     onclick={(event) => setChecked(!checkedValue, event, 'click')}
   >
     <span class="krds-tts-icon" aria-hidden="true"><i class="ico-volume svg-icon"></i></span>

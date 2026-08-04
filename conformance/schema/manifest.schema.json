@@ -57,19 +57,13 @@
           "layoutContext": { "enum": ["content-inner", "viewport-height"] },
           "mandatory": { "type": "boolean" },
           "viewport": {
-            "oneOf": [
-              { "enum": ["mobile", "tablet", "desktop"] },
-              { "$ref": "#/$defs/viewport" }
-            ]
+            "oneOf": [{ "enum": ["mobile", "tablet", "desktop"] }, { "$ref": "#/$defs/viewport" }]
           },
           "states": {
             "type": "array",
             "minItems": 1,
             "items": {
-              "oneOf": [
-                { "type": "string", "minLength": 1 },
-                { "$ref": "#/$defs/fixtureState" }
-              ]
+              "oneOf": [{ "type": "string", "minLength": 1 }, { "$ref": "#/$defs/fixtureState" }]
             }
           },
           "props": { "type": "object" },

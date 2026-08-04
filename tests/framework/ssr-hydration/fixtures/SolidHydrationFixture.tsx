@@ -1,30 +1,25 @@
-import { createSignal } from 'solid-js';
-import {
-  Accordion,
-  Checkbox,
-  Tab,
-  TextInput,
-} from '../../../../packages/solid/src/index.tsx';
+import { createSignal } from "solid-js";
+import { Accordion, Checkbox, Tab, TextInput } from "../../../../packages/solid/src/index.tsx";
 
 const accordionItems = [
-  { id: 'first', title: 'First section', content: 'First section content' },
-  { id: 'second', title: 'Second section', content: 'Second section content' },
+  { id: "first", title: "First section", content: "First section content" },
+  { id: "second", title: "Second section", content: "Second section content" },
 ];
 const tabs = [
-  { id: 'first', label: 'First tab' },
-  { id: 'second', label: 'Second tab' },
+  { id: "first", label: "First tab" },
+  { id: "second", label: "Second tab" },
 ];
 
 export function SolidHydrationFixture() {
-  const [value, setValue] = createSignal('server value');
+  const [value, setValue] = createSignal("server value");
   const [accepted, setAccepted] = createSignal(false);
-  const [submitted, setSubmitted] = createSignal('');
+  const [submitted, setSubmitted] = createSignal("");
 
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        setSubmitted(new FormData(event.currentTarget).get('query')?.toString() ?? '');
+        setSubmitted(new FormData(event.currentTarget).get("query")?.toString() ?? "");
       }}
     >
       <TextInput
@@ -42,11 +37,11 @@ export function SolidHydrationFixture() {
         checked={accepted()}
         onChange={(event) => setAccepted(event.currentTarget.checked)}
       />
-      <Accordion items={accordionItems} defaultOpen={['first']} />
+      <Accordion items={accordionItems} defaultOpen={["first"]} />
       <Tab
         id="solid-tabs"
         tabs={tabs}
-        panels={{ first: 'First panel', second: 'Second panel' }}
+        panels={{ first: "First panel", second: "Second panel" }}
         message="Selected"
       />
       <output data-testid="value-length">{value().length}</output>

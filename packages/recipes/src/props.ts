@@ -1,4 +1,4 @@
-import type { ButtonSize, ButtonVariant, ChoiceSize, InputState } from './index.js';
+import type { ButtonSize, ButtonVariant, ChoiceSize, InputState } from "./index.js";
 
 /** Pure TypeScript contracts shared by adapters; framework event and ref types stay local. */
 export interface ButtonContractProps {
@@ -10,7 +10,7 @@ export interface ButtonContractProps {
 export interface TextInputContractProps {
   value?: string | number | undefined;
   state?: InputState | undefined;
-  size?: 'small' | 'medium' | 'large' | undefined;
+  size?: "small" | "medium" | "large" | undefined;
   label?: string | undefined;
   hint?: string | undefined;
   disabled?: boolean | undefined;
@@ -40,6 +40,6 @@ export interface AccordionItemContract {
 
 export interface AccordionContractProps {
   items: AccordionItemContract[];
-  type?: 'default' | 'line';
+  type?: "default" | "line";
   multiple?: boolean;
 }

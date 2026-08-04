@@ -38,14 +38,14 @@ status를 성공으로 바꾸어 읽지 않습니다.
 아래의 “지원”은 framework-native source package와 public export 경로가 있다는
 뜻입니다. 특정 버전의 모든 fixture가 통과한다는 뜻은 아닙니다.
 
-| 프레임워크 | 패키지 source | peer dependency 기준 | 사용 예제 | Runtime 결과 |
-| --- | --- | --- | --- | --- |
-| React | [`@krds-community/react`](packages/react) | React `>=18.3.0` | [React 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=react#failures) |
-| Vue | [`@krds-community/vue`](packages/vue) | Vue `>=3.5.0` | [Vue 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=vue#failures) |
-| Svelte | [`@krds-community/svelte`](packages/svelte) | Svelte `>=5.20.0` | [Svelte 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=svelte#failures) |
-| SolidJS | [`@krds-community/solid`](packages/solid) | SolidJS `>=1.8.0` | [SolidJS 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=solid#failures) |
-| Angular | [`@krds-community/angular`](packages/angular) | Angular core/common/forms `>=20.0.0` | [Angular 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=angular#failures) |
-| Astro | [`@krds-community/astro`](packages/astro) | Astro `>=5.0.0` | [Astro 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=astro#failures) |
+| 프레임워크 | 패키지 source                                 | peer dependency 기준                 | 사용 예제                                                                           | Runtime 결과                                                                                                           |
+| ---------- | --------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| React      | [`@krds-community/react`](packages/react)     | React `>=18.3.0`                     | [React 예제](https://krds-community.github.io/krds-community/framework-examples/)   | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=react#failures)   |
+| Vue        | [`@krds-community/vue`](packages/vue)         | Vue `>=3.5.0`                        | [Vue 예제](https://krds-community.github.io/krds-community/framework-examples/)     | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=vue#failures)     |
+| Svelte     | [`@krds-community/svelte`](packages/svelte)   | Svelte `>=5.20.0`                    | [Svelte 예제](https://krds-community.github.io/krds-community/framework-examples/)  | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=svelte#failures)  |
+| SolidJS    | [`@krds-community/solid`](packages/solid)     | SolidJS `>=1.8.0`                    | [SolidJS 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=solid#failures)   |
+| Angular    | [`@krds-community/angular`](packages/angular) | Angular core/common/forms `>=20.0.0` | [Angular 예제](https://krds-community.github.io/krds-community/framework-examples/) | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=angular#failures) |
+| Astro      | [`@krds-community/astro`](packages/astro)     | Astro `>=5.0.0`                      | [Astro 예제](https://krds-community.github.io/krds-community/framework-examples/)   | [실패·provenance 보기](https://krds-community.github.io/krds-community/conformance-report/?framework=astro#failures)   |
 
 각 package의 실제 공개 API 기준은 해당 `src/index.*`입니다. 문서 예제와 source가
 다르면 public export와 현재 runtime report를 우선 확인하고 issue로 알려 주세요.
@@ -61,8 +61,8 @@ pnpm add @krds-community/react @krds-community/styles
 ```
 
 ```tsx
-import '@krds-community/styles';
-import { Button } from '@krds-community/react';
+import "@krds-community/styles";
+import { Button } from "@krds-community/react";
 
 export function SaveButton() {
   return <Button type="submit">저장</Button>;

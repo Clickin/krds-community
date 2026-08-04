@@ -36,9 +36,10 @@
     "upstream:sync": "node scripts/upstream.mjs sync",
     "upstream:diff": "node scripts/upstream.mjs diff",
     "upstream:extract": "node scripts/upstream.mjs extract",
+    "docs:previews": "node apps/docs/scripts/prepare-previews.mjs",
     "docs:dev": "pnpm --dir apps/docs dev",
-    "docs:build": "pnpm --filter @krds-community/docs build",
-    "pages:build": "pnpm docs:build && pnpm storybook:build && pnpm --filter @krds-community/conformance-viewer build && node scripts/pages.mjs",
+    "docs:build": "pnpm docs:previews && pnpm --filter @krds-community/docs build",
+    "pages:build": "pnpm docs:build && pnpm --filter @krds-community/conformance-viewer build && node scripts/pages.mjs",
     "storybook": "node scripts/storybook.mjs dev",
     "storybook:build": "node scripts/storybook.mjs build"
   },

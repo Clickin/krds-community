@@ -12,13 +12,13 @@
     {
       "id": "accordion",
       "source": "upstream/krds-html/html/code/accordion.html",
-      "fixtureCount": 2,
+      "fixtureCount": 10,
       "status": "mapped"
     },
     {
       "id": "accordion-line",
       "source": "upstream/krds-html/html/code/accordion_line.html",
-      "fixtureCount": 3,
+      "fixtureCount": 11,
       "status": "mapped"
     },
     {
@@ -84,13 +84,13 @@
     {
       "id": "calendar",
       "source": "upstream/krds-html/html/code/calendar.html",
-      "fixtureCount": 1,
+      "fixtureCount": 3,
       "status": "mapped"
     },
     {
       "id": "calendar-range",
       "source": "upstream/krds-html/html/code/calendar_range.html",
-      "fixtureCount": 1,
+      "fixtureCount": 3,
       "status": "mapped"
     },
     {
@@ -114,7 +114,7 @@
     {
       "id": "checkbox-chip",
       "source": "upstream/krds-html/html/code/checkbox_chip.html",
-      "fixtureCount": 1,
+      "fixtureCount": 2,
       "status": "mapped"
     },
     {
@@ -144,7 +144,7 @@
     {
       "id": "date-input",
       "source": "upstream/krds-html/html/code/date_input.html",
-      "fixtureCount": 1,
+      "fixtureCount": 3,
       "status": "mapped"
     },
     {
@@ -234,7 +234,7 @@
     {
       "id": "modal",
       "source": "upstream/krds-html/html/code/modal.html",
-      "fixtureCount": 1,
+      "fixtureCount": 3,
       "status": "mapped"
     },
     {
@@ -252,7 +252,7 @@
     {
       "id": "radio-button",
       "source": "upstream/krds-html/html/code/radio_button.html",
-      "fixtureCount": 3,
+      "fixtureCount": 1,
       "status": "mapped"
     },
     {
@@ -264,7 +264,7 @@
     {
       "id": "radio-size",
       "source": "upstream/krds-html/html/code/radio_size.html",
-      "fixtureCount": 3,
+      "fixtureCount": 2,
       "status": "mapped"
     },
     {
@@ -402,13 +402,13 @@
     {
       "id": "toggle-switch",
       "source": "upstream/krds-html/html/code/toggle_switch.html",
-      "fixtureCount": 3,
+      "fixtureCount": 2,
       "status": "mapped"
     },
     {
       "id": "toggle-switch-size",
       "source": "upstream/krds-html/html/code/toggle_switch_size.html",
-      "fixtureCount": 3,
+      "fixtureCount": 2,
       "status": "mapped"
     },
     {

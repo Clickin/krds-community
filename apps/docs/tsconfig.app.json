@@ -29,5 +29,5 @@
     "allowJs": false
   },
   "files": [],
-  "include": ["src/components/angular/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

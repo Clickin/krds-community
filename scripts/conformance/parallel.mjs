@@ -1,24 +1,16 @@
-import { spawn } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { isDeepStrictEqual } from 'node:util';
+import { spawn } from "node:child_process";
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { isDeepStrictEqual } from "node:util";
 
-const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
-const runtimePath = resolve(repositoryRoot, 'scripts/conformance/runtime.mjs');
-const frameworkIds = ['react', 'vue', 'svelte', 'solid', 'angular', 'astro'];
-const requiredFixtureCount = 85;
-const requiredEvidenceCount = 510;
-const requiredChecks = [
-  'render',
-  'dom',
-  'accessibility',
-  'behavior',
-  'form',
-  'visual',
-  'contract',
-];
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const runtimePath = resolve(repositoryRoot, "scripts/conformance/runtime.mjs");
+const frameworkIds = ["react", "vue", "svelte", "solid", "angular", "astro"];
+const requiredFixtureCount = 82;
+const requiredEvidenceCount = 492;
+const requiredChecks = ["render", "dom", "accessibility", "behavior", "form", "visual", "contract"];
 if (requiredFixtureCount * frameworkIds.length !== requiredEvidenceCount) {
   throw new Error(
     `Strict runtime requires exactly ${requiredEvidenceCount} executable framework fixtures`,
@@ -30,13 +22,13 @@ let saveDiffs = false;
 
 for (let index = 0; index < arguments_.length; index += 1) {
   const argument = arguments_[index];
-  if (argument === '--save-diffs') {
+  if (argument === "--save-diffs") {
     saveDiffs = true;
     continue;
   }
-  if (argument === '--output') {
+  if (argument === "--output") {
     const value = arguments_[index + 1];
-    if (!value || value.startsWith('--')) throw new Error('--output requires a file path');
+    if (!value || value.startsWith("--")) throw new Error("--output requires a file path");
     outputArgument = value;
     index += 1;
     continue;
@@ -46,25 +38,16 @@ for (let index = 0; index < arguments_.length; index += 1) {
   );
 }
 
-const outputPath = resolve(
-  repositoryRoot,
-  outputArgument ?? 'reports/conformance-runtime.json',
-);
+const outputPath = resolve(repositoryRoot, outputArgument ?? "reports/conformance-runtime.json");
 const temporaryOutputPath = `${outputPath}.${process.pid}.tmp`;
 const runStartedAt = Date.now();
-await Promise.all([
-  rm(outputPath, { force: true }),
-  rm(temporaryOutputPath, { force: true }),
-]);
+await Promise.all([rm(outputPath, { force: true }), rm(temporaryOutputPath, { force: true })]);
 
 const catalog = JSON.parse(
-  await readFile(
-    resolve(repositoryRoot, 'apps/conformance-host/dist/fixtures.json'),
-    'utf8',
-  ),
+  await readFile(resolve(repositoryRoot, "apps/conformance-host/dist/fixtures.json"), "utf8"),
 );
 if (!catalog.upstream || !Array.isArray(catalog.fixtures)) {
-  throw new Error('The current conformance host build did not produce a valid fixture catalog');
+  throw new Error("The current conformance host build did not produce a valid fixture catalog");
 }
 if (catalog.fixtures.length !== requiredFixtureCount) {
   throw new Error(
@@ -76,7 +59,9 @@ const fixtureById = new Map();
 const expectedStateKeys = new Set();
 for (const fixture of catalog.fixtures) {
   if (!fixture?.id || fixtureById.has(fixture.id)) {
-    throw new Error(`Fixture catalog contains a missing or duplicate id: ${fixture?.id ?? '<missing>'}`);
+    throw new Error(
+      `Fixture catalog contains a missing or duplicate id: ${fixture?.id ?? "<missing>"}`,
+    );
   }
   if (!fixture.componentId || !Array.isArray(fixture.states) || fixture.states.length === 0) {
     throw new Error(`${fixture.id}: executable component/state contract is incomplete`);
@@ -85,14 +70,16 @@ for (const fixture of catalog.fixtures) {
   const stateIds = new Set();
   for (const state of fixture.states) {
     if (!state?.id || stateIds.has(state.id)) {
-      throw new Error(`${fixture.id}: state id is missing or duplicated: ${state?.id ?? '<missing>'}`);
+      throw new Error(
+        `${fixture.id}: state id is missing or duplicated: ${state?.id ?? "<missing>"}`,
+      );
     }
     stateIds.add(state.id);
     expectedStateKeys.add(`${fixture.id}\0${state.id}`);
   }
 }
 const expectedFixtureIds = [...fixtureById.keys()].sort();
-const temporaryDirectory = await mkdtemp(resolve(tmpdir(), 'krds-conformance-'));
+const temporaryDirectory = await mkdtemp(resolve(tmpdir(), "krds-conformance-"));
 
 const assertFreshTimestamp = (value, framework) => {
   const timestamp = Date.parse(value);
@@ -115,8 +102,8 @@ const validateWorkerReport = (report, framework, exitCode) => {
   }
   if (
     !report.browser ||
-    report.browser.name !== 'chromium' ||
-    typeof report.browser.version !== 'string'
+    report.browser.name !== "chromium" ||
+    typeof report.browser.version !== "string"
   ) {
     throw new Error(`${framework}: Chromium runtime identity is missing`);
   }
@@ -147,12 +134,12 @@ const validateWorkerReport = (report, framework, exitCode) => {
     }
     actualStateKeys.add(stateKey);
     const checksPass = requiredChecks.every(
-      (check) => typeof result.checks?.[check]?.passed === 'boolean' && result.checks[check].passed,
+      (check) => typeof result.checks?.[check]?.passed === "boolean" && result.checks[check].passed,
     );
-    if (!requiredChecks.every((check) => typeof result.checks?.[check]?.passed === 'boolean')) {
+    if (!requiredChecks.every((check) => typeof result.checks?.[check]?.passed === "boolean")) {
       throw new Error(`${framework}/${result.fixtureId}/${result.state}: check result is missing`);
     }
-    const expectedStatus = checksPass ? 'passing' : 'failing';
+    const expectedStatus = checksPass ? "passing" : "failing";
     if (result.status !== expectedStatus) {
       throw new Error(
         `${framework}/${result.fixtureId}/${result.state}: status disagrees with executable checks`,
@@ -173,7 +160,7 @@ const validateWorkerReport = (report, framework, exitCode) => {
   const evidence = report.evidence[0];
   if (
     evidence?.framework !== framework ||
-    evidence.source !== 'scripts/conformance/runtime.mjs' ||
+    evidence.source !== "scripts/conformance/runtime.mjs" ||
     !Array.isArray(evidence.fixtureResults) ||
     evidence.fixtureResults.length !== requiredFixtureCount ||
     !Array.isArray(evidence.unresolvedSelectors) ||
@@ -185,9 +172,11 @@ const validateWorkerReport = (report, framework, exitCode) => {
   const evidenceByFixture = new Map();
   for (const result of evidence.fixtureResults) {
     if (!fixtureById.has(result?.fixtureId) || evidenceByFixture.has(result.fixtureId)) {
-      throw new Error(`${framework}: unexpected or duplicate fixture evidence ${result?.fixtureId}`);
+      throw new Error(
+        `${framework}: unexpected or duplicate fixture evidence ${result?.fixtureId}`,
+      );
     }
-    const expectedStatus = fixturePassing.get(result.fixtureId) ? 'passing' : 'failing';
+    const expectedStatus = fixturePassing.get(result.fixtureId) ? "passing" : "failing";
     if (result.status !== expectedStatus) {
       throw new Error(`${framework}/${result.fixtureId}: evidence disagrees with runtime states`);
     }
@@ -199,7 +188,7 @@ const validateWorkerReport = (report, framework, exitCode) => {
 
   const workerPasses =
     [...fixturePassing.values()].every(Boolean) &&
-    evidence.status === 'passing' &&
+    evidence.status === "passing" &&
     evidence.unresolvedSelectors.length === 0 &&
     evidence.errors.length === 0;
   if (report.strictConformance !== workerPasses) {
@@ -218,31 +207,27 @@ const runFramework = async (framework) => {
   console.log(`[${framework}] started`);
   const runtimeArguments = [
     runtimePath,
-    '--framework',
+    "--framework",
     framework,
-    '--output',
+    "--output",
     shardPath,
     ...(saveDiffs
-      ? [
-          '--save-diffs',
-          '--diff-directory',
-          resolve(dirname(outputPath), 'conformance-diffs'),
-        ]
+      ? ["--save-diffs", "--diff-directory", resolve(dirname(outputPath), "conformance-diffs")]
       : []),
   ];
-  let stderr = '';
+  let stderr = "";
   const exitCode = await new Promise((resolvePromise, reject) => {
     const child = spawn(process.execPath, runtimeArguments, {
       cwd: repositoryRoot,
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: ["ignore", "pipe", "pipe"],
     });
     child.stdout.resume();
-    child.stderr.setEncoding('utf8');
-    child.stderr.on('data', (chunk) => {
+    child.stderr.setEncoding("utf8");
+    child.stderr.on("data", (chunk) => {
       stderr += chunk;
     });
-    child.on('error', reject);
-    child.on('close', (code, signal) => {
+    child.on("error", reject);
+    child.on("close", (code, signal) => {
       if (signal) {
         reject(new Error(`[${framework}] worker received ${signal}\n${stderr.trim()}`));
         return;
@@ -257,7 +242,7 @@ const runFramework = async (framework) => {
 
   let report;
   try {
-    report = JSON.parse(await readFile(shardPath, 'utf8'));
+    report = JSON.parse(await readFile(shardPath, "utf8"));
   } catch (error) {
     throw new Error(
       `[${framework}] worker did not produce readable current-run evidence: ${
@@ -267,9 +252,9 @@ const runFramework = async (framework) => {
   }
   validateWorkerReport(report, framework, exitCode);
   const elapsedSeconds = ((performance.now() - startedAt) / 1_000).toFixed(1);
-  const passingStates = report.results.filter((result) => result.status === 'passing').length;
+  const passingStates = report.results.filter((result) => result.status === "passing").length;
   console.log(
-    `[${framework}] ${report.strictConformance ? 'passed' : 'failed'} ${passingStates}/${report.stateCount} states in ${elapsedSeconds}s`,
+    `[${framework}] ${report.strictConformance ? "passed" : "failed"} ${passingStates}/${report.stateCount} states in ${elapsedSeconds}s`,
   );
   return report;
 };
@@ -283,7 +268,7 @@ try {
         report.browser.version !== reports[0].browser.version,
     )
   ) {
-    throw new Error('Framework workers did not execute with the same browser runtime');
+    throw new Error("Framework workers did not execute with the same browser runtime");
   }
 
   const results = reports.flatMap((report) => report.results);
@@ -294,7 +279,7 @@ try {
   const expectedEvidenceCount = requiredEvidenceCount;
   const failures = [
     ...results
-      .filter((result) => result.status !== 'passing')
+      .filter((result) => result.status !== "passing")
       .map((result) => `${result.framework}/${result.fixtureId}/${result.state}`),
     ...evidence.flatMap((entry) => [
       ...entry.errors.map((error) => `${entry.framework}: ${error}`),
@@ -309,22 +294,20 @@ try {
     evidence.reduce((sum, entry) => sum + entry.fixtureResults.length, 0) ===
       expectedEvidenceCount &&
     executedFixtures.size === expectedEvidenceCount &&
-    results.every((result) => result.status === 'passing') &&
+    results.every((result) => result.status === "passing") &&
     evidence.every(
       (entry) =>
-        entry.status === 'passing' &&
-        entry.fixtureResults.every((result) => result.status === 'passing') &&
+        entry.status === "passing" &&
+        entry.fixtureResults.every((result) => result.status === "passing") &&
         entry.unresolvedSelectors.length === 0 &&
         entry.errors.length === 0,
     ) &&
     uniqueFailures.length === 0;
-  const unresolvedSelectors = [
-    ...new Set(evidence.flatMap((entry) => entry.unresolvedSelectors)),
-  ];
+  const unresolvedSelectors = [...new Set(evidence.flatMap((entry) => entry.unresolvedSelectors))];
   const errata = [...new Set(evidence.flatMap((entry) => entry.errata))];
   const report = {
     schemaVersion: 1,
-    reportType: 'runtime-strict-evidence',
+    reportType: "runtime-strict-evidence",
     runStartedAt: new Date(runStartedAt).toISOString(),
     generatedAt: new Date().toISOString(),
     upstream: catalog.upstream,
@@ -347,9 +330,9 @@ try {
   await mkdir(dirname(outputPath), { recursive: true });
   await writeFile(temporaryOutputPath, `${JSON.stringify(report, null, 2)}\n`);
   await rename(temporaryOutputPath, outputPath);
-  const passingStates = results.filter((result) => result.status === 'passing').length;
+  const passingStates = results.filter((result) => result.status === "passing").length;
   console.log(
-    `Runtime conformance ${strictConformance ? 'passed' : 'failed'}: ${passingStates}/${results.length} states and ${executedFixtures.size}/${expectedEvidenceCount} executable framework fixtures.`,
+    `Runtime conformance ${strictConformance ? "passed" : "failed"}: ${passingStates}/${results.length} states and ${executedFixtures.size}/${expectedEvidenceCount} executable framework fixtures.`,
   );
   if (!strictConformance) process.exitCode = 1;
 } finally {

@@ -1,107 +1,152 @@
 ---
-import {
-  coverageSummary,
-  publicComponentExports,
-  type FixtureCatalogEntry,
-} from '../data/component-catalog';
-import { pinnedKrdsSnapshot } from '../data/provenance';
-
-const formatValue = (value: unknown) => {
-  if (value === undefined) return 'manifest에 선언되지 않음';
-  const serialized = JSON.stringify(value);
-  return serialized === undefined ? 'manifest에 선언되지 않음' : serialized;
-};
-
-const behaviorSummary = (fixture: FixtureCatalogEntry) =>
-  fixture.behavior
-    .map(({ state, setup }) => {
-      if (!setup.length) return state;
-      const actions = setup.map((step) => {
-        const target = step.target ? ` ${step.target}` : '';
-        const key = step.key ? ` ${step.key}` : '';
-        const value = step.value ? `=${step.value}` : '';
-        return `${step.action}${target}${key}${value}`;
-      });
-      return `${state}: ${actions.join(', ')}`;
-    })
-    .join(' · ');
+import { componentNavigation } from '../data/component-meta';
+const base = import.meta.env.BASE_URL;
 ---
 
-<section class="component-catalog" aria-labelledby="component-catalog-title">
-  <header class="component-page-intro">
-    <p class="pattern-eyebrow">Generated inventory</p>
-    <h2 id="component-catalog-title">전체 public export와 공식 fixture</h2>
-    <p>
-      아래 목록은 Astro 패키지의 생성된 public 선언과 고정 KRDS HTML fixture manifest를 조합합니다.
-      각 항목에서 공식 source path·selector, 상태, API/폼 계약, 접근성 요구사항과 동작 setup의 근거를 확인할 수 있습니다.
-    </p>
-    <p>
-      snapshot <code>{pinnedKrdsSnapshot.ref}</code> · fixture
-      <strong>{coverageSummary.fixtures.covered}/{coverageSummary.fixtures.expected}</strong> · public export
-      <strong>{coverageSummary.exports.covered}/{coverageSummary.exports.expected}</strong>
-    </p>
-  </header>
-
-  <div class="component-catalog-summary" role="status" aria-live="polite">
-    <p>
-      fixture ID discoverability <strong>{coverageSummary.fixtures.discovered}/{coverageSummary.fixtures.expected}</strong>
-      · Astro export discoverability <strong>{coverageSummary.exports.discovered}/{coverageSummary.exports.expected}</strong>
-    </p>
-    <p>
-      Source data: <code>{coverageSummary.source.fixtures}</code> · <code>{coverageSummary.source.exports}</code>
-    </p>
+<section class="component-catalog not-content" data-component-catalog>
+  <label class="catalog-search">
+    <span>컴포넌트 찾기</span>
+    <input type="search" placeholder="이름 또는 ID 검색" autocomplete="off" data-catalog-query />
+  </label>
+  <p class="catalog-count"><strong data-catalog-count>{componentNavigation.length}</strong>개 컴포넌트</p>
+  <div class="catalog-grid">
+    {
+      componentNavigation.map((component) => (
+        <a
+          href={`${base}components/${component.category}/${component.id}/`}
+          class="catalog-item"
+          data-catalog-item
+          data-search={`${component.title} ${component.id}`}
+        >
+          <span class="catalog-id">{component.id}</span>
+          <strong>{component.title}</strong>
+          <span class="catalog-meta">6개 프레임워크 · 소스 + 실행 미리보기</span>
+        </a>
+      ))
+    }
   </div>
-
-  <nav aria-label="컴포넌트 public export 목차">
-    <ul class="component-catalog-index">
-      {publicComponentExports.map((entry) => (
-        <li><a href={`#export-${entry.id}`}><code>{entry.name}</code></a></li>
-      ))}
-    </ul>
-  </nav>
-
-  <div class="component-catalog-list">
-    {publicComponentExports.map((entry) => (
-      <article id={`export-${entry.id}`} class="component-catalog-entry" aria-labelledby={`export-${entry.id}-title`}>
-        <header>
-          <p class="pattern-eyebrow">{entry.id}</p>
-          <h3 id={`export-${entry.id}-title`}>{entry.name}</h3>
-          <p><code>{entry.importPath}</code></p>
-          <p>Astro source: <code>{entry.sourceFile}</code></p>
-        </header>
-
-        {entry.manifest ? (
-          <>
-            <p>
-              Official HTML source: {entry.manifest.files.map((file) => <code>{file}</code>)}
-              · manifest <code>conformance/manifests/{entry.id}.yaml</code>
-            </p>
-            <div class="component-catalog-fixtures">
-              {entry.fixtures.map((fixture) => (
-                <section class="component-catalog-fixture" aria-labelledby={`fixture-${fixture.id}`}>
-                  <h4 id={`fixture-${fixture.id}`}><code>{fixture.id}</code></h4>
-                  <dl>
-                    <div><dt>Source</dt><dd><code>{fixture.source.file}</code> · <code>{fixture.source.selector}</code></dd></div>
-                    <div><dt>Viewport</dt><dd>{fixture.viewport}</dd></div>
-                    <div><dt>States</dt><dd>{fixture.states.map((state) => <code>{state}</code>)}</dd></div>
-                    <div><dt>API / props</dt><dd><code>{formatValue(fixture.props)}</code> · semantic <code>{fixture.api.semanticElement ?? 'manifest에 선언되지 않음'}</code> · role <code>{fixture.api.accessibleRole ?? 'manifest에 선언되지 않음'}</code> · required <code>{formatValue(fixture.api.requiredAttributes)}</code> · forbidden <code>{formatValue(fixture.api.forbiddenAttributes)}</code></dd></div>
-                    <div><dt>Events</dt><dd>{fixture.events.length ? fixture.events.map((event) => <code>{event}</code>) : 'setup 이벤트가 manifest에 선언되지 않음'}</dd></div>
-                    <div><dt>Forms</dt><dd>{fixture.forms.declared ? 'fixture props에 form 관련 키가 선언됨' : 'fixture manifest에 별도 form prop이 선언되지 않음'} · provenance <code>{fixture.forms.source}</code></dd></div>
-                    <div><dt>Accessibility</dt><dd>{fixture.accessibility.length ? fixture.accessibility.map((item) => <code>{item}</code>) : 'manifest에 선언되지 않음'}</dd></div>
-                    <div><dt>Behavior setup</dt><dd>{behaviorSummary(fixture) || '상태 setup 없음'} · provenance <code>{fixture.provenance.manifest}</code></dd></div>
-                  </dl>
-                  {fixture.provenance.referenceImplementationNotes && <p>Reference implementation: {fixture.provenance.referenceImplementationNotes}</p>}
-                  {fixture.provenance.errata.length > 0 && (
-                    <p>Errata: {fixture.provenance.errata.map((erratum) => <code>{erratum}</code>)}</p>
-                  )}
-                </section>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p role="alert">이 export에 대응하는 generated fixture manifest가 없습니다.</p>
-        )}
-      </article>
-    ))}
-  </div>
+  <p class="catalog-empty" hidden data-catalog-empty>일치하는 컴포넌트가 없습니다.</p>
 </section>
+
+<script>
+  const initializeCatalog = (root: HTMLElement) => {
+    if (root.dataset.ready === 'true') return;
+    root.dataset.ready = 'true';
+    const input = root.querySelector<HTMLInputElement>('[data-catalog-query]');
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-catalog-item]'));
+    const count = root.querySelector<HTMLElement>('[data-catalog-count]');
+    const empty = root.querySelector<HTMLElement>('[data-catalog-empty]');
+    if (!input || !count || !empty) return;
+    input.addEventListener('input', () => {
+      const query = input.value.trim().toLocaleLowerCase('ko-KR');
+      let visible = 0;
+      items.forEach((item) => {
+        const matches = !query || item.dataset.search?.includes(query) === true;
+        item.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      count.textContent = String(visible);
+      empty.hidden = visible > 0;
+    });
+  };
+  document.querySelectorAll<HTMLElement>('[data-component-catalog]').forEach(initializeCatalog);
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll<HTMLElement>('[data-component-catalog]').forEach(initializeCatalog);
+  });
+</script>
+
+<style>
+  .component-catalog {
+    margin-top: 1.5rem;
+  }
+
+  .catalog-search {
+    display: grid;
+    max-width: 34rem;
+    gap: 0.4rem;
+    color: var(--sl-color-gray-2);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .catalog-search input {
+    min-height: 3.1rem;
+    padding-inline: 1rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.7rem;
+    background: var(--sl-color-bg-nav);
+    color: var(--sl-color-text);
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .catalog-search input:focus-visible {
+    outline: 2px solid var(--sl-color-accent-high);
+    outline-offset: 2px;
+  }
+
+  .catalog-count {
+    margin-block: 1rem;
+    color: var(--sl-color-gray-2);
+    font-size: 0.85rem;
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .catalog-grid a {
+    display: flex;
+    min-height: 9rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.8rem;
+    background: linear-gradient(150deg, var(--sl-color-bg-nav), var(--sl-color-bg));
+    color: var(--sl-color-text);
+    text-decoration: none;
+    transition: border-color 140ms ease, transform 140ms ease;
+  }
+
+  .catalog-grid a:hover {
+    border-color: var(--sl-color-accent-high);
+    transform: translateY(-2px);
+  }
+
+  .catalog-grid a[hidden] {
+    display: none;
+  }
+
+  .catalog-id {
+    margin-bottom: auto;
+    color: var(--sl-color-text-accent);
+    font-family: var(--__sl-font-mono);
+    font-size: 0.7rem;
+  }
+
+  .catalog-grid strong {
+    font-size: 1.05rem;
+  }
+
+  .catalog-meta {
+    margin-top: 0.3rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.72rem;
+  }
+
+  .catalog-empty {
+    padding-block: 3rem;
+    color: var(--sl-color-gray-3);
+    text-align: center;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .catalog-grid a {
+      transition: none;
+    }
+  }
+</style>

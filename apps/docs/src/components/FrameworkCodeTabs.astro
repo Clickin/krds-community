@@ -1,0 +1,165 @@
+---
+import { Code } from 'astro:components';
+import { krdsShikiHighContrast, krdsShikiLight } from '../theme/krds-shiki';
+import AngularIcon from './icons/AngularIcon.astro';
+import AstroIcon from './icons/AstroIcon.astro';
+import ReactIcon from './icons/ReactIcon.astro';
+import SolidIcon from './icons/SolidIcon.astro';
+import SvelteIcon from './icons/SvelteIcon.astro';
+import VueIcon from './icons/VueIcon.astro';
+
+type FrameworkCodeLanguage = 'tsx' | 'vue' | 'svelte' | 'ts' | 'astro';
+type FrameworkCode = {
+  framework: string;
+  label: string;
+  language: FrameworkCodeLanguage;
+  code: string;
+};
+
+type Props = { examples: FrameworkCode[]; title?: string };
+const { examples, title } = Astro.props;
+
+const frameworkIcons = {
+  react: ReactIcon,
+  vue: VueIcon,
+  svelte: SvelteIcon,
+  solid: SolidIcon,
+  angular: AngularIcon,
+  astro: AstroIcon,
+} as const;
+
+const shikiThemes = { light: krdsShikiLight, dark: krdsShikiHighContrast };
+const uid = `code-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'tabs'}`;
+---
+
+<div class="framework-code-tabs not-content" data-code-tabs data-title={title || ''}>
+  <div class="tabs-header">
+    <div class="framework-tabs" role="tablist" aria-label="프레임워크 선택">
+      {examples.map((example, index) => {
+        const Icon = frameworkIcons[example.framework as keyof typeof frameworkIcons] || ReactIcon;
+        const selected = index === 0;
+        return (
+          <button
+            type="button"
+            role="tab"
+            id={`${uid}-${example.framework}-tab`}
+            aria-controls={`${uid}-${example.framework}`}
+            aria-selected={selected ? 'true' : 'false'}
+            tabindex={selected ? 0 : -1}
+            data-framework={example.framework}
+          >
+            <Icon class="tab-icon" />
+            <span>{example.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+  {examples.map((example, index) => (
+    <div
+      role="tabpanel"
+      id={`${uid}-${example.framework}`}
+      aria-labelledby={`${uid}-${example.framework}-tab`}
+      class="code-panel"
+      data-code-panel
+      data-framework={example.framework}
+      hidden={index !== 0}
+    >
+      <Code
+        code={example.code}
+        lang={example.language}
+        themes={shikiThemes}
+        defaultColor="light"
+      />
+    </div>
+  ))}
+</div>
+
+<script>
+  const STORAGE_KEY = 'krds-community:docs:framework';
+
+  const selectFramework = (root: HTMLElement, framework: string) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
+    const target = tabs.find((tab) => tab.dataset.framework === framework);
+    if (!target) return;
+    tabs.forEach((tab) => {
+      const sel = tab === target;
+      tab.setAttribute('aria-selected', String(sel));
+      tab.tabIndex = sel ? 0 : -1;
+    });
+    root.querySelectorAll<HTMLElement>('[data-code-panel]').forEach((panel) => {
+      panel.hidden = panel.dataset.framework !== framework;
+    });
+  };
+
+  const applyAll = (framework: string) => {
+    document.querySelectorAll<HTMLElement>('[data-code-tabs]').forEach((root) => selectFramework(root, framework));
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-code-tabs]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const fw = tab.dataset.framework;
+        if (!fw) return;
+        applyAll(fw);
+        try { localStorage.setItem(STORAGE_KEY, fw); } catch {}
+      });
+    });
+    const stored = (() => { try { return localStorage.getItem(STORAGE_KEY); } catch { return null; } })();
+    const available = tabs.map((tab) => tab.dataset.framework).filter((fw): fw is string => Boolean(fw));
+    const initial = stored && available.includes(stored) ? stored : available[0];
+    if (initial) selectFramework(root, initial);
+  });
+</script>
+
+<style>
+  .framework-code-tabs {
+    margin-block: 1.5rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.85rem;
+    overflow: hidden;
+  }
+  .tabs-header {
+    background: var(--sl-color-bg-nav);
+    border-bottom: 1px solid var(--sl-color-hairline-light);
+  }
+  .framework-tabs {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .framework-tabs [role="tab"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .framework-tabs [role="tab"]:hover {
+    color: var(--sl-color-text);
+  }
+  .framework-tabs [role="tab"][aria-selected="true"] {
+    color: var(--sl-color-text-accent);
+    border-bottom-color: var(--sl-color-text-accent);
+  }
+  .tab-icon {
+    width: 1em;
+    height: 1em;
+  }
+  .code-panel {
+    padding: 0;
+  }
+  .code-panel :global(pre) {
+    margin: 0;
+    border-radius: 0;
+  }
+</style>

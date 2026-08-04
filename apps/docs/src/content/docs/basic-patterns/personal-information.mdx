@@ -3,6 +3,1436 @@ title: 개인 식별 정보 입력
 description: 개인의 신원과 기본 정보를 확인하기 위해 정보를 입력받는 기본 패턴입니다.
 ---
 
-import PatternPage from '../../../components/PatternPage.astro';
+import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Radio as ReactRadio } from "@krds-community/react";
+import { Radio as VueRadio } from "@krds-community/vue";
+import { Radio as SvelteRadio } from "@krds-community/svelte";
+import { Radio as SolidRadio } from "@krds-community/solid";
+import { AngularRadio } from "@docs/angular-previews.ts";
+import { Radio as AstroRadio } from "@krds-community/astro";
+import { DateInput as ReactDateInput } from "@krds-community/react";
+import { DateInput as VueDateInput } from "@krds-community/vue";
+import { DateInput as SvelteDateInput } from "@krds-community/svelte";
+import { DateInput as SolidDateInput } from "@krds-community/solid";
+import { AngularDateInput } from "@docs/angular-previews.ts";
+import { DateInput as AstroDateInput } from "@krds-community/astro";
+import { Select as ReactSelect } from "@krds-community/react";
+import { Select as VueSelect } from "@krds-community/vue";
+import { Select as SvelteSelect } from "@krds-community/svelte";
+import { Select as SolidSelect } from "@krds-community/solid";
+import { AngularSelect } from "@docs/angular-previews.ts";
+import { Select as AstroSelect } from "@krds-community/astro";
 
-<PatternPage patternId="personal-information" />
+<PatternReference patternId="personal-information" />
+
+## 공식 문서
+
+### 유형
+
+**이름** 이름은 일반적으로 하나의 텍스트 입력 필드로 제공되며, 모든 사용자의 이름 형식을 수용할 수 있도록 구성한다.
+
+**생년월일** 생년월일은 사용자가 이미 알고 있는 날짜이므로 날짜 선택기 대신 날짜 입력 서식에 맞추어 연도, 월, 일을 직접 입력받는다.
+
+**성별** 성별은 라디오 버튼으로 제공되며 특정 성별이 기본값으로 지정되지 않아야 한다.
+
+**전화번호** 전화번호는 활용 용도에 적합한 유형(휴대 전화번호, 지역 번호 등)을 명확한 레이블과 함께 입력받는다.
+
+## 사용성 가이드라인
+
+### 개인 식별 정보 입력
+
+#### 공통
+
+**개인 식별 정보의 수집이 필요한지 확인한다.** 사용자에게 개인 식별 정보의 입력을 요청하기 전에 서비스 이용을 위해 필요한 정보인지 다시 한 번 확인해야 한다.
+
+**입력이 필요한 데이터의 용도를 명확하게 설명한다.** 입력한 데이터가 어떻게 활용될 것이고, 어떤 편의성을 제공할 수 있는지를 사용자에게 명확하게 안내해야 한다.
+
+**개인 식별 정보 입력 필드에 복사와 붙여넣기를 허용한다.** 데이터 입력에 어려움을 느끼거나 시간이 많이 걸리는 사용자를 고려하여 모든 개인 식별 정보 입력 필드에는 복사와 붙여넣기를 제한하지 않아야 한다.
+
+**기본값을 설정하지 않는다.** 플레이스홀더를 사용하는 경우에는 실제 입력과 쉽게 구분할 수 있도록 한다.
+
+#### 이름
+
+**사용자가 입력할 수 있는 모든 문자의 입력과 표시를 지원한다.** 사용자의 이름이 다양한 언어로 작성될 수 있음을 고려하여 기호, 공백을 포함한 모든 문자를 입력 가능하도록 허용하고 화면에 적절히 표시될 수 있도록 해야 한다. 만약 본인인증 과정 등 문서에 표시된 이름의 문자 형식이 지정되어 있고 해당 형식에 따라 정확하게 입력되어야 하는 과업이라면 제약 사항에 대해 사용자에게 명확하게 설명하고, 적절한 경우 대안을 제시해야 한다.
+
+**이름 입력 필드에 입력 가능한 글자 수를 적절하게 구성한다.** 이름 입력 필드는 모든 사용자의 이름을 수용할 수 있는 정도의 글자 수 입력을 허용하고 최대 길이에 맞추어 입력 필드의 너비를 제공한다. 이때, 가장 짧은 이름의 글자 수 역시 고려되어야 한다. 한글 이름을 기준으로 하였을 때 유효성 검사에서 최소 3글자 이상의 입력을 요청하지 않도록 유의한다.
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="이름 입력 필드에 입력 가능한 글자 수를 적절하게 구성한다."
+>
+  <div slot="react">
+    <div style={{ width: "120px" }}>
+      <ReactTextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width:120px">
+      <VueTextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width:120px">
+      <SvelteTextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ width: "120px" }}>
+      <SolidTextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width:120px">
+      <AstroTextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width:120px">
+      <AngularTextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "120px" }}>
+      <TextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width:120px">
+    <TextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="width:120px">
+  <TextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "120px" }}>
+      <TextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from '@krds-community/angular';
+
+// template
+<div style="width:120px">
+  <krds-text-input name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다."></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="width:120px">
+  <TextInput name="name" label="이름" hint="최대 3자까지 입력할 수 있습니다." />
+</div>
+```
+
+</PracticeExample>
+
+**이름 입력에 단일 텍스트 입력 필드를 사용한다.** 모든 사람의 이름이 일반적인 성, 이름 형식에 부합하지 않을 수 있으므로 여러 개의 이름 입력 필드는 신중하게 사용해야 한다.
+
+**개명한 사용자가 문제 없이 이름을 입력할 수 있는지 확인한다.** 개명한 사용자의 이름 입력에 제약이 있는 경우, 이름 입력 문제를 해결하는 데 참고할 수 있는 방안을 이름 입력 필드 주변에 제공해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="개명한 사용자가 문제 없이 이름을 입력할 수 있는지 확인한다."
+>
+  <div slot="react">
+    <div style={{ width: "320px" }}>
+      <ReactTextInput name="name" label="이름" hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요." client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width:320px">
+      <VueTextInput name="name" label="이름" hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요." client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width:320px">
+      <SvelteTextInput name="name" label="이름" hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요." client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ width: "320px" }}>
+      <SolidTextInput name="name" label="이름" hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요." client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width:320px">
+      <AstroTextInput name="name" label="이름" hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요." />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width:320px">
+      <AngularTextInput name="name" label="이름" hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요." client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <TextInput
+        name="name"
+        label="이름"
+        hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요."
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width:320px">
+    <TextInput
+      name="name"
+      label="이름"
+      hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요."
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="width:320px">
+  <TextInput
+    name="name"
+    label="이름"
+    hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요."
+  />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <TextInput
+        name="name"
+        label="이름"
+        hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요."
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from '@krds-community/angular';
+
+// template
+<div style="width:320px">
+  <krds-text-input
+    name="name"
+    label="이름"
+    hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요."
+  ></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="width:320px">
+  <TextInput
+    name="name"
+    label="이름"
+    hint="개명한 경우 회원 정보에서 이름을 변경한 후 신청 가능합니다. 관련 도움말을 참고하세요."
+  />
+</div>
+```
+
+</PracticeExample>
+
+**외국인 사용자 이름의 길이를 고려하여 이름 입력 필드의 가로 길이(field length)를 충분히 확보한다.** 일반 단일 입력 필드 기준 최소 320~360px 이상을 확보하고, 폼이 단일열일 경우 가용 폭을 100% 사용하도록 한다. 이름이 길어도 필드 안에서는 스크롤되거나 전체가 보이도록 처리해 사용자가 내용을 확인할 수 있게 한다.
+
+**사용자가 공백을 포함한 이름을 입력하도록 허용한다.** 클라이언트 및 서버 측 유효성 검사 시 중간 공백을 오류로 처리하거나 자동 제거하지 않으며, “여권에 표기된 이름 전체를 입력하세요. 공백과 ‘-’를 포함할 수 있습니다.”와 같은 안내 문구를 제공하여 입력 오류를 예방한다.
+
+**이름의 대소문자를 정규화하지 않는다.** 여권, 외국인등록증 등 공적 문서와의 일치성을 보장하기 위하여 이름 입력 필드에 대해서는 사용자가 입력한 대·소문자 표기를 그대로 저장하고 표시한다.
+
+#### 생년월일
+
+**생년월일의 입력에 날짜 선택기를 사용하지 않는다.** 날짜 선택기는 사용자가 데이터를 입력하는 시점을 기준으로 전·후의 날짜를 상대적으로 탐색해야 하기 때문에 사용자가 이미 명확하게 알고 있는 날짜를 선택하는 데 적합하지 않다.
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="생년월일의 입력에 날짜 선택기를 사용하지 않는다."
+>
+  <div slot="react">
+    <div style={{ width: "320px" }}>
+      <ReactDateInput label="생년월일" calendarLabel="달력" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width:320px">
+      <VueDateInput label="생년월일" calendarLabel="달력" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width:320px">
+      <SvelteDateInput label="생년월일" calendarLabel="달력" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ width: "320px" }}>
+      <SolidDateInput label="생년월일" calendarLabel="달력" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width:320px">
+      <AstroDateInput
+        label="생년월일"
+        calendarLabel="달력"
+        year={2026}
+        month={8}
+        years={[2025, 2026, 2027]}
+        leadingDays={6}
+        previousMonthDayCount={31}
+        dayCount={31}
+        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width:320px">
+      <AngularDateInput label="생년월일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { DateInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <DateInput label="생년월일" calendarLabel="달력" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { DateInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width:320px">
+    <DateInput label="생년월일" calendarLabel="달력" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { DateInput } from '@krds-community/svelte';
+</script>
+
+<div style="width:320px">
+  <DateInput label="생년월일" calendarLabel="달력" />
+</div>
+```
+
+```tsx fw=solid
+import { DateInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <DateInput label="생년월일" calendarLabel="달력" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsDateInputComponent } from '@krds-community/angular';
+
+// template
+<div style="width:320px">
+  <krds-date-input label="생년월일" calendarLabel="달력"></krds-date-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { DateInput } from "@krds-community/astro";
+---
+
+<div style="width:320px">
+  <DateInput
+    label="생년월일"
+    calendarLabel="달력"
+    year={2026}
+    month={8}
+    years={[2025, 2026, 2027]}
+    leadingDays={6}
+    previousMonthDayCount={31}
+    dayCount={31}
+    weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+  />
+</div>
+```
+
+</PracticeExample>
+
+**연도, 일의 입력에 셀렉트를 사용하지 않는다.** 연도와 일 정보를 셀렉트로 제공하게 되면 옵션 수가 지나치게 많아져 오히려 입력이 어려워질 수 있다. 날짜 입력 서식 컴포넌트 중 다중 입력 필드나 단일 입력 필드를 사용하는 것이 좋다.
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="연도, 일의 입력에 셀렉트를 사용하지 않는다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+      <div style={{ width: "140px" }}>
+        <ReactSelect
+          label="연도"
+          title="선택"
+          options={[
+            { value: "1960", label: "1960" },
+            { value: "1970", label: "1970" },
+            { value: "1980", label: "1980" },
+            { value: "1990", label: "1990" },
+            { value: "2000", label: "2000" },
+            { value: "2010", label: "2010" },
+          ]}
+          client:only="react"
+        />
+      </div>
+      <div style={{ width: "140px" }}>
+        <ReactSelect
+          label="일"
+          title="선택"
+          options={[
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
+            { value: "5", label: "5" },
+            { value: "6", label: "6" },
+            { value: "7", label: "7" },
+            { value: "8", label: "8" },
+            { value: "9", label: "9" },
+            { value: "10", label: "10" },
+          ]}
+          client:only="react"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="width:140px">
+        <VueSelect
+          label="연도"
+          title="선택"
+          options={[
+            { value: '1960', label: '1960' },
+            { value: '1970', label: '1970' },
+            { value: '1980', label: '1980' },
+            { value: '1990', label: '1990' },
+            { value: '2000', label: '2000' },
+            { value: '2010', label: '2010' },
+          ]}
+          client:only="vue"
+        />
+      </div>
+      <div style="width:140px">
+        <VueSelect
+          label="일"
+          title="선택"
+          options={[
+            { value: '1', label: '1' },
+            { value: '2', label: '2' },
+            { value: '3', label: '3' },
+            { value: '4', label: '4' },
+            { value: '5', label: '5' },
+            { value: '6', label: '6' },
+            { value: '7', label: '7' },
+            { value: '8', label: '8' },
+            { value: '9', label: '9' },
+            { value: '10', label: '10' },
+          ]}
+          client:only="vue"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="width:140px">
+        <SvelteSelect
+          label="연도"
+          title="선택"
+          options={[
+            { value: "1960", label: "1960" },
+            { value: "1970", label: "1970" },
+            { value: "1980", label: "1980" },
+            { value: "1990", label: "1990" },
+            { value: "2000", label: "2000" },
+            { value: "2010", label: "2010" },
+          ]}
+          client:only="svelte"
+        />
+      </div>
+      <div style="width:140px">
+        <SvelteSelect
+          label="일"
+          title="선택"
+          options={[
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
+            { value: "5", label: "5" },
+            { value: "6", label: "6" },
+            { value: "7", label: "7" },
+            { value: "8", label: "8" },
+            { value: "9", label: "9" },
+            { value: "10", label: "10" },
+          ]}
+          client:only="svelte"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+      <div style={{ width: "140px" }}>
+        <SolidSelect
+          label="연도"
+          title="선택"
+          options={[
+            { value: "1960", label: "1960" },
+            { value: "1970", label: "1970" },
+            { value: "1980", label: "1980" },
+            { value: "1990", label: "1990" },
+            { value: "2000", label: "2000" },
+            { value: "2010", label: "2010" },
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+      <div style={{ width: "140px" }}>
+        <SolidSelect
+          label="일"
+          title="선택"
+          options={[
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
+            { value: "5", label: "5" },
+            { value: "6", label: "6" },
+            { value: "7", label: "7" },
+            { value: "8", label: "8" },
+            { value: "9", label: "9" },
+            { value: "10", label: "10" },
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="width:140px">
+        <AstroSelect
+          label="연도"
+          title="선택"
+          options={[
+            { value: "1960", label: "1960" },
+            { value: "1970", label: "1970" },
+            { value: "1980", label: "1980" },
+            { value: "1990", label: "1990" },
+            { value: "2000", label: "2000" },
+            { value: "2010", label: "2010" },
+          ]}
+        />
+      </div>
+      <div style="width:140px">
+        <AstroSelect
+          label="일"
+          title="선택"
+          options={[
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
+            { value: "5", label: "5" },
+            { value: "6", label: "6" },
+            { value: "7", label: "7" },
+            { value: "8", label: "8" },
+            { value: "9", label: "9" },
+            { value: "10", label: "10" },
+          ]}
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="width:140px">
+        <AngularSelect
+          label="연도"
+          title="선택"
+          options={[
+            { value: '1960', label: '1960' },
+            { value: '1970', label: '1970' },
+            { value: '1980', label: '1980' },
+            { value: '1990', label: '1990' },
+            { value: '2000', label: '2000' },
+            { value: '2010', label: '2010' },
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+      <div style="width:140px">
+        <AngularSelect
+          label="일"
+          title="선택"
+          options={[
+            { value: '1', label: '1' },
+            { value: '2', label: '2' },
+            { value: '3', label: '3' },
+            { value: '4', label: '4' },
+            { value: '5', label: '5' },
+            { value: '6', label: '6' },
+            { value: '7', label: '7' },
+            { value: '8', label: '8' },
+            { value: '9', label: '9' },
+            { value: '10', label: '10' },
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Select } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+      <div style={{ width: "140px" }}>
+        <Select
+          label="연도"
+          title="선택"
+          options={[
+            { value: "1960", label: "1960" },
+            { value: "1970", label: "1970" },
+            { value: "1980", label: "1980" },
+            { value: "1990", label: "1990" },
+            { value: "2000", label: "2000" },
+            { value: "2010", label: "2010" },
+          ]}
+        />
+      </div>
+      <div style={{ width: "140px" }}>
+        <Select
+          label="일"
+          title="선택"
+          options={[
+            { value: "1", label: "1" },
+            { value: "2", label: "2" },
+            { value: "3", label: "3" },
+            { value: "4", label: "4" },
+            { value: "5", label: "5" },
+            { value: "6", label: "6" },
+            { value: "7", label: "7" },
+            { value: "8", label: "8" },
+            { value: "9", label: "9" },
+            { value: "10", label: "10" },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Select } from "@krds-community/vue";
+
+const years = [
+  { value: "1960", label: "1960" },
+  { value: "1970", label: "1970" },
+  { value: "1980", label: "1980" },
+  { value: "1990", label: "1990" },
+  { value: "2000", label: "2000" },
+  { value: "2010", label: "2010" },
+];
+const days = [
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "3", label: "3" },
+  { value: "4", label: "4" },
+  { value: "5", label: "5" },
+  { value: "6", label: "6" },
+  { value: "7", label: "7" },
+  { value: "8", label: "8" },
+  { value: "9", label: "9" },
+  { value: "10", label: "10" },
+];
+</script>
+
+<template>
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div style="width:140px">
+      <Select label="연도" title="선택" :options="years" />
+    </div>
+    <div style="width:140px">
+      <Select label="일" title="선택" :options="days" />
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Select } from '@krds-community/svelte';
+
+const years = [
+  { value: '1960', label: '1960' },
+  { value: '1970', label: '1970' },
+  { value: '1980', label: '1980' },
+  { value: '1990', label: '1990' },
+  { value: '2000', label: '2000' },
+  { value: '2010', label: '2010' },
+];
+const days = [
+  { value: '1', label: '1' },
+  { value: '2', label: '2' },
+  { value: '3', label: '3' },
+  { value: '4', label: '4' },
+  { value: '5', label: '5' },
+  { value: '6', label: '6' },
+  { value: '7', label: '7' },
+  { value: '8', label: '8' },
+  { value: '9', label: '9' },
+  { value: '10', label: '10' },
+];
+</script>
+
+<div style="display:flex;gap:16px;flex-wrap:wrap">
+  <div style="width:140px">
+    <Select label="연도" title="선택" options={years} />
+  </div>
+  <div style="width:140px">
+    <Select label="일" title="선택" options={days} />
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Select } from "@krds-community/solid";
+
+export function Example() {
+  const years = [
+    { value: "1960", label: "1960" },
+    { value: "1970", label: "1970" },
+    { value: "1980", label: "1980" },
+    { value: "1990", label: "1990" },
+    { value: "2000", label: "2000" },
+    { value: "2010", label: "2010" },
+  ];
+  const days = [
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+    { value: "6", label: "6" },
+    { value: "7", label: "7" },
+    { value: "8", label: "8" },
+    { value: "9", label: "9" },
+    { value: "10", label: "10" },
+  ];
+  return (
+    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+      <div style={{ width: "140px" }}>
+        <Select label="연도" title="선택" options={years} />
+      </div>
+      <div style={{ width: "140px" }}>
+        <Select label="일" title="선택" options={days} />
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsSelectComponent } from '@krds-community/angular';
+
+// component
+years = [
+  { value: '1960', label: '1960' },
+  { value: '1970', label: '1970' },
+  { value: '1980', label: '1980' },
+  { value: '1990', label: '1990' },
+  { value: '2000', label: '2000' },
+  { value: '2010', label: '2010' },
+];
+days = [
+  { value: '1', label: '1' },
+  { value: '2', label: '2' },
+  { value: '3', label: '3' },
+  { value: '4', label: '4' },
+  { value: '5', label: '5' },
+  { value: '6', label: '6' },
+  { value: '7', label: '7' },
+  { value: '8', label: '8' },
+  { value: '9', label: '9' },
+  { value: '10', label: '10' },
+];
+
+// template
+<div style="display:flex;gap:16px;flex-wrap:wrap">
+  <div style="width:140px">
+    <krds-select label="연도" title="선택" [options]="years"></krds-select>
+  </div>
+  <div style="width:140px">
+    <krds-select label="일" title="선택" [options]="days"></krds-select>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Select } from "@krds-community/astro";
+
+const years = [
+  { value: "1960", label: "1960" },
+  { value: "1970", label: "1970" },
+  { value: "1980", label: "1980" },
+  { value: "1990", label: "1990" },
+  { value: "2000", label: "2000" },
+  { value: "2010", label: "2010" },
+];
+const days = [
+  { value: "1", label: "1" },
+  { value: "2", label: "2" },
+  { value: "3", label: "3" },
+  { value: "4", label: "4" },
+  { value: "5", label: "5" },
+  { value: "6", label: "6" },
+  { value: "7", label: "7" },
+  { value: "8", label: "8" },
+  { value: "9", label: "9" },
+  { value: "10", label: "10" },
+];
+---
+
+<div style="display:flex;gap:16px;flex-wrap:wrap">
+  <div style="width:140px">
+    <Select label="연도" title="선택" options={years} />
+  </div>
+  <div style="width:140px">
+    <Select label="일" title="선택" options={days} />
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**날짜 입력 형식을 정확하게 안내한다.** 날짜 입력 필드 컴포넌트를 참조하여 해당 가이드라인에 따라 입력 형식을 안내한다.
+
+#### 성별
+
+**특정 성별을 기본값으로 지정하지 않는다.** 입력폼이 로딩되었을 때 특정 성별 옵션이 기본으로 선택되어 있지 않도록 유의한다.
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="특정 성별을 기본값으로 지정하지 않는다."
+>
+  <div slot="react">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <ReactRadio name="gender" value="male" label="남성" checked client:only="react" />
+      <ReactRadio name="gender" value="female" label="여성" client:only="react" />
+      <ReactRadio name="gender" value="none" label="선택 안 함" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <VueRadio name="gender" value="male" label="남성" checked client:only="vue" />
+      <VueRadio name="gender" value="female" label="여성" client:only="vue" />
+      <VueRadio name="gender" value="none" label="선택 안 함" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <SvelteRadio name="gender" value="male" label="남성" checked client:only="svelte" />
+      <SvelteRadio name="gender" value="female" label="여성" client:only="svelte" />
+      <SvelteRadio name="gender" value="none" label="선택 안 함" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <SolidRadio name="gender" value="male" label="남성" checked client:only="solid-js" />
+      <SolidRadio name="gender" value="female" label="여성" client:only="solid-js" />
+      <SolidRadio name="gender" value="none" label="선택 안 함" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <AstroRadio name="gender" value="male" label="남성" checked />
+      <AstroRadio name="gender" value="female" label="여성" />
+      <AstroRadio name="gender" value="none" label="선택 안 함" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <AngularRadio name="gender" value="male" label="남성" checked={true} client:only="@analogjs/astro-angular" />
+      <AngularRadio name="gender" value="female" label="여성" client:only="@analogjs/astro-angular" />
+      <AngularRadio name="gender" value="none" label="선택 안 함" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Radio } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div>
+      <p style={{ margin: "0 0 8px", fontWeight: 700 }}>성별</p>
+      <Radio name="gender" value="male" label="남성" checked />
+      <Radio name="gender" value="female" label="여성" />
+      <Radio name="gender" value="none" label="선택 안 함" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Radio } from "@krds-community/vue";
+</script>
+
+<template>
+  <div>
+    <p style="margin:0 0 8px;font-weight:700">성별</p>
+    <Radio name="gender" value="male" label="남성" checked />
+    <Radio name="gender" value="female" label="여성" />
+    <Radio name="gender" value="none" label="선택 안 함" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Radio } from '@krds-community/svelte';
+</script>
+
+<div>
+  <p style="margin:0 0 8px;font-weight:700">성별</p>
+  <Radio name="gender" value="male" label="남성" checked />
+  <Radio name="gender" value="female" label="여성" />
+  <Radio name="gender" value="none" label="선택 안 함" />
+</div>
+```
+
+```tsx fw=solid
+import { Radio } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div>
+      <p style={{ margin: "0 0 8px", fontWeight: 700 }}>성별</p>
+      <Radio name="gender" value="male" label="남성" checked />
+      <Radio name="gender" value="female" label="여성" />
+      <Radio name="gender" value="none" label="선택 안 함" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsRadioComponent } from '@krds-community/angular';
+
+// template
+<div>
+  <p style="margin:0 0 8px;font-weight:700">성별</p>
+  <krds-radio name="gender" value="male" label="남성" [checked]="true"></krds-radio>
+  <krds-radio name="gender" value="female" label="여성"></krds-radio>
+  <krds-radio name="gender" value="none" label="선택 안 함"></krds-radio>
+</div>
+```
+
+```astro fw=astro
+---
+import { Radio } from "@krds-community/astro";
+---
+
+<div>
+  <p style="margin:0 0 8px;font-weight:700">성별</p>
+  <Radio name="gender" value="male" label="남성" checked />
+  <Radio name="gender" value="female" label="여성" />
+  <Radio name="gender" value="none" label="선택 안 함" />
+</div>
+```
+
+</PracticeExample>
+
+**‘선택 안 함’ 옵션을 제공한다.** 성별이 개인의 신원을 정확하게 하는 데 필요한 정보가 아니라면 성별 정보를 필수 입력 항목에서 제외하거나 사용자가 응답하지 않을 옵션을 제공하는 것이 바람직하다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="‘선택 안 함’ 옵션을 제공한다."
+>
+  <div slot="react">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <ReactRadio name="gender" value="male" label="남성" client:only="react" />
+      <ReactRadio name="gender" value="female" label="여성" client:only="react" />
+      <ReactRadio name="gender" value="none" label="선택 안 함" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <VueRadio name="gender" value="male" label="남성" client:only="vue" />
+      <VueRadio name="gender" value="female" label="여성" client:only="vue" />
+      <VueRadio name="gender" value="none" label="선택 안 함" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <SvelteRadio name="gender" value="male" label="남성" client:only="svelte" />
+      <SvelteRadio name="gender" value="female" label="여성" client:only="svelte" />
+      <SvelteRadio name="gender" value="none" label="선택 안 함" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <SolidRadio name="gender" value="male" label="남성" client:only="solid-js" />
+      <SolidRadio name="gender" value="female" label="여성" client:only="solid-js" />
+      <SolidRadio name="gender" value="none" label="선택 안 함" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <AstroRadio name="gender" value="male" label="남성" />
+      <AstroRadio name="gender" value="female" label="여성" />
+      <AstroRadio name="gender" value="none" label="선택 안 함" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div>
+      <p style="margin:0 0 8px;font-weight:700">성별</p>
+      <AngularRadio name="gender" value="male" label="남성" client:only="@analogjs/astro-angular" />
+      <AngularRadio name="gender" value="female" label="여성" client:only="@analogjs/astro-angular" />
+      <AngularRadio name="gender" value="none" label="선택 안 함" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Radio } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div>
+      <p style={{ margin: "0 0 8px", fontWeight: 700 }}>성별</p>
+      <Radio name="gender" value="male" label="남성" />
+      <Radio name="gender" value="female" label="여성" />
+      <Radio name="gender" value="none" label="선택 안 함" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Radio } from "@krds-community/vue";
+</script>
+
+<template>
+  <div>
+    <p style="margin:0 0 8px;font-weight:700">성별</p>
+    <Radio name="gender" value="male" label="남성" />
+    <Radio name="gender" value="female" label="여성" />
+    <Radio name="gender" value="none" label="선택 안 함" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Radio } from '@krds-community/svelte';
+</script>
+
+<div>
+  <p style="margin:0 0 8px;font-weight:700">성별</p>
+  <Radio name="gender" value="male" label="남성" />
+  <Radio name="gender" value="female" label="여성" />
+  <Radio name="gender" value="none" label="선택 안 함" />
+</div>
+```
+
+```tsx fw=solid
+import { Radio } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div>
+      <p style={{ margin: "0 0 8px", fontWeight: 700 }}>성별</p>
+      <Radio name="gender" value="male" label="남성" />
+      <Radio name="gender" value="female" label="여성" />
+      <Radio name="gender" value="none" label="선택 안 함" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsRadioComponent } from '@krds-community/angular';
+
+// template
+<div>
+  <p style="margin:0 0 8px;font-weight:700">성별</p>
+  <krds-radio name="gender" value="male" label="남성"></krds-radio>
+  <krds-radio name="gender" value="female" label="여성"></krds-radio>
+  <krds-radio name="gender" value="none" label="선택 안 함"></krds-radio>
+</div>
+```
+
+```astro fw=astro
+---
+import { Radio } from "@krds-community/astro";
+---
+
+<div>
+  <p style="margin:0 0 8px;font-weight:700">성별</p>
+  <Radio name="gender" value="male" label="남성" />
+  <Radio name="gender" value="female" label="여성" />
+  <Radio name="gender" value="none" label="선택 안 함" />
+</div>
+```
+
+</PracticeExample>
+
+#### 전화번호
+
+**활용 용도에 적합한 유형의 전화번호 입력을 요청한다.** 모든 사용자가 모든 유형의 전화번호를 보유하고 있지 않으므로 인증이나 메시지 발신이 필요하지 않는 한 특정 유형의 전화번호의 입력만 허용하는 것은 바람직하지 않다.
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="활용 용도에 적합한 유형의 전화번호 입력을 요청한다."
+>
+  <div slot="react">
+    <div style={{ width: "320px" }}>
+      <ReactTextInput name="mobile" label="휴대 전화번호" placeholder="010-1234-5678" hint="휴대 전화번호만 입력할 수 있습니다." client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width:320px">
+      <VueTextInput name="mobile" label="휴대 전화번호" placeholder="010-1234-5678" hint="휴대 전화번호만 입력할 수 있습니다." client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width:320px">
+      <SvelteTextInput name="mobile" label="휴대 전화번호" placeholder="010-1234-5678" hint="휴대 전화번호만 입력할 수 있습니다." client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ width: "320px" }}>
+      <SolidTextInput name="mobile" label="휴대 전화번호" placeholder="010-1234-5678" hint="휴대 전화번호만 입력할 수 있습니다." client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width:320px">
+      <AstroTextInput name="mobile" label="휴대 전화번호" placeholder="010-1234-5678" hint="휴대 전화번호만 입력할 수 있습니다." />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width:320px">
+      <AngularTextInput name="mobile" label="휴대 전화번호" placeholder="010-1234-5678" hint="휴대 전화번호만 입력할 수 있습니다." client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <TextInput
+        name="mobile"
+        label="휴대 전화번호"
+        placeholder="010-1234-5678"
+        hint="휴대 전화번호만 입력할 수 있습니다."
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width:320px">
+    <TextInput
+      name="mobile"
+      label="휴대 전화번호"
+      placeholder="010-1234-5678"
+      hint="휴대 전화번호만 입력할 수 있습니다."
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="width:320px">
+  <TextInput
+    name="mobile"
+    label="휴대 전화번호"
+    placeholder="010-1234-5678"
+    hint="휴대 전화번호만 입력할 수 있습니다."
+  />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <TextInput
+        name="mobile"
+        label="휴대 전화번호"
+        placeholder="010-1234-5678"
+        hint="휴대 전화번호만 입력할 수 있습니다."
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from '@krds-community/angular';
+
+// template
+<div style="width:320px">
+  <krds-text-input
+    name="mobile"
+    label="휴대 전화번호"
+    placeholder="010-1234-5678"
+    hint="휴대 전화번호만 입력할 수 있습니다."
+  ></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="width:320px">
+  <TextInput
+    name="mobile"
+    label="휴대 전화번호"
+    placeholder="010-1234-5678"
+    hint="휴대 전화번호만 입력할 수 있습니다."
+  />
+</div>
+```
+
+</PracticeExample>
+
+**전화번호 입력 필드에 명확한 레이블을 제공한다.** 입력해야 하는 전화번호의 유형이 무엇인지 정확하게 인지할 수 있도록 ‘휴대 전화번호’, ‘지역 번호’와 같이 명확한 레이블을 제공한다. 전화번호의 유형 구분이 불필요한 경우에는 ‘전화번호’라는 레이블을 사용한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="전화번호 입력 필드에 명확한 레이블을 제공한다."
+>
+  <div slot="react">
+    <div style={{ width: "320px" }}>
+      <ReactTextInput name="phone" label="전화번호" placeholder="010-1234-5678" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width:320px">
+      <VueTextInput name="phone" label="전화번호" placeholder="010-1234-5678" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width:320px">
+      <SvelteTextInput name="phone" label="전화번호" placeholder="010-1234-5678" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ width: "320px" }}>
+      <SolidTextInput name="phone" label="전화번호" placeholder="010-1234-5678" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width:320px">
+      <AstroTextInput name="phone" label="전화번호" placeholder="010-1234-5678" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width:320px">
+      <AngularTextInput name="phone" label="전화번호" placeholder="010-1234-5678" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <TextInput name="phone" label="전화번호" placeholder="010-1234-5678" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width:320px">
+    <TextInput name="phone" label="전화번호" placeholder="010-1234-5678" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="width:320px">
+  <TextInput name="phone" label="전화번호" placeholder="010-1234-5678" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "320px" }}>
+      <TextInput name="phone" label="전화번호" placeholder="010-1234-5678" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from '@krds-community/angular';
+
+// template
+<div style="width:320px">
+  <krds-text-input name="phone" label="전화번호" placeholder="010-1234-5678"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="width:320px">
+  <TextInput name="phone" label="전화번호" placeholder="010-1234-5678" />
+</div>
+```
+
+</PracticeExample>
+
+**여러 가지 입력 형식에 유연한 입력 필드를 제공한다.** 공백, 하이픈, 대시 등 일반적으로 전화번호의 입력 형식으로 사용되는 다양한 형식의 입력을 허용하여 사용자가 익숙한 방식으로 전화번호를 입력할 수 있도록 한다. 하이픈을 반드시 포함해야 하는 등 특정 형식에 맞추어 입력이 필요한 경우, 도움말 텍스트로 입력 형식의 제한에 대해 명확하게 설명해야 한다. 사용자의 편의성을 위해 자동으로 형식을 수정할 수 있다.
+
+**국가 코드 입력에 콤보박스를 사용한다.** 국가 코드를 기억하지 못하는 사용자의 입력을 돕기 위해 국가명과 국가 코드가 명시된 목록을 콤보박스의 옵션으로 제공한다.
+
+**여러 개의 전화번호 입력 요청 시, 각 번호를 구분할 수 있는 레이블을 제공한다.** 사용자에게 여러 개의 전화번호를 입력할 것을 요청하는 경우, 전화번호 입력 필드 레이블이나 필드셋의 제목으로 각 번호를 명확하게 구분할 수 있는 레이블을 제공하여 사용자가 혼동을 느끼지 않도록 해야 한다. 예) ‘휴대 전화번호’, ‘사무실 전화번호’
+
+**여러 개의 전화번호 입력 요청 시, 주로 사용하는 번호를 지정할 수 있는 옵션을 제공한다.** 사용자가 입력한 번호를 연락 수단으로 사용하고자 하는 경우, 사용자가 어떤 수단을 통해 연락을 받을 것인지, 주로 사용하는 번호가 무엇인지를 선택할 수 있는 옵션을 제공하여 연락을 놓치지 않도록 해야 한다.

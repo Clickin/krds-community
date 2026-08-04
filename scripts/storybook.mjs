@@ -1,100 +1,136 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { spawn } from 'node:child_process';
-import { iconSvg } from '../packages/icons/dist/index.js';
+import { spawn } from "node:child_process";
+import { mkdir, rm } from "node:fs/promises";
+import { networkInterfaces } from "node:os";
+import { join } from "node:path";
 
 const root = process.cwd();
-const outputRoot = join(root, 'storybook-static');
+const outputRoot = join(root, "storybook-static");
+const composed = {
+  id: "composed",
+  label: "All frameworks",
+  config: ".storybook/composed",
+  port: 6005,
+};
 const projects = [
-  { id: 'react', label: 'React', icon: 'react', config: '.storybook/react', port: 6006 },
-  { id: 'vue', label: 'Vue', icon: 'vue', config: '.storybook/vue', port: 6007 },
-  { id: 'svelte', label: 'Svelte', icon: 'svelte', config: '.storybook/svelte', port: 6008 },
-  { id: 'solid', label: 'SolidJS', icon: 'solid', config: '.storybook/solid', port: 6009 },
-  { id: 'angular', label: 'Angular', icon: 'angular', config: '.storybook/angular', port: 6010 },
+  { id: "react", label: "React", config: ".storybook/react", port: 6006 },
+  { id: "vue", label: "Vue", config: ".storybook/vue", port: 6007 },
+  { id: "svelte", label: "Svelte", config: ".storybook/svelte", port: 6008 },
+  { id: "solid", label: "SolidJS", config: ".storybook/solid", port: 6009 },
+  { id: "angular", label: "Angular", config: ".storybook/angular", port: 6010 },
 ];
 
-const command = process.argv[2] ?? 'dev';
+const publicHost =
+  process.env.STORYBOOK_PUBLIC_HOST ??
+  Object.values(networkInterfaces())
+    .flat()
+    .find((address) => address?.family === "IPv4" && !address.internal)?.address ??
+  "localhost";
+const childEnvironment = { ...process.env, STORYBOOK_PUBLIC_HOST: publicHost };
+
+const command = process.argv[2] ?? "dev";
 const storybook = join(
   root,
-  'node_modules',
-  '.bin',
-  process.platform === 'win32' ? 'storybook.cmd' : 'storybook',
+  "node_modules",
+  ".bin",
+  process.platform === "win32" ? "storybook.cmd" : "storybook",
 );
 const angularCli = join(
   root,
-  'node_modules',
-  '.bin',
-  process.platform === 'win32' ? 'ng.cmd' : 'ng',
+  "node_modules",
+  ".bin",
+  process.platform === "win32" ? "ng.cmd" : "ng",
 );
 
 const run = (executable, args) =>
   new Promise((resolve, reject) => {
-    const child = spawn(executable, args, { cwd: root, stdio: 'inherit', env: process.env });
-    child.once('error', reject);
-    child.once('exit', (code, signal) => {
+    const child = spawn(executable, args, {
+      cwd: root,
+      stdio: "inherit",
+      env: childEnvironment,
+    });
+    child.once("error", reject);
+    child.once("exit", (code, signal) => {
       if (code === 0) resolve();
       else reject(new Error(`Storybook exited with ${signal ?? code}`));
     });
   });
 
-const writePortal = async () => {
-  const links = projects
-    .map(
-      ({ id, label, icon }) =>
-        `<li><a href="./${id}/"><span class="framework-icon" aria-hidden="true">${iconSvg(icon)}</span><span>${label} Storybook</span></a><span>프레임워크 네이티브 예제와 상호작용 확인</span></li>`,
-    )
-    .join('');
-  await writeFile(
-    join(outputRoot, 'index.html'),
-    `<!doctype html>
-<html lang="ko">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KRDS Community Storybook</title>
-<style>body{font-family:system-ui,sans-serif;max-width:56rem;margin:0 auto;padding:4rem 1.5rem;color:#171719}h1{margin-bottom:.5rem}p{color:#58616a}ul{display:grid;gap:1rem;padding:0;list-style:none}li{border:1px solid #b1b8be;border-radius:.5rem;padding:1rem}a{display:flex;align-items:center;gap:.5rem;font-weight:700;color:#0b50d0;text-decoration:none}a>span:last-child{margin:0;color:inherit;font-size:1rem}.framework-icon{display:inline-flex;margin:0;color:currentColor}.framework-icon svg{width:1.25rem;height:1.25rem}li>span{display:block;margin-top:.4rem;color:#58616a;font-size:.9rem}</style></head>
-<body><main><p>KRDS Community</p><h1>프레임워크별 Storybook</h1><p>각 프레임워크의 렌더러와 생명주기를 보존한 독립 Storybook을 하나의 프로젝트 포털에서 제공합니다.</p><ul>${links}</ul></main></body></html>
-`,
-  );
-};
-
-if (command === 'build') {
+if (command === "build") {
   await rm(outputRoot, { recursive: true, force: true });
   await mkdir(outputRoot, { recursive: true });
+  await run(storybook, ["build", "--config-dir", composed.config, "--output-dir", outputRoot]);
   for (const project of projects) {
-    if (project.id === 'angular') {
-      await run(angularCli, ['run', 'krds-storybook:build-storybook']);
+    if (project.id === "angular") {
+      await run(angularCli, ["run", "krds-storybook:build-storybook"]);
     } else {
       await run(storybook, [
-        'build',
-        '--config-dir',
+        "build",
+        "--config-dir",
         project.config,
-        '--output-dir',
+        "--output-dir",
         join(outputRoot, project.id),
       ]);
     }
   }
-  await writePortal();
-  console.log(`Built ${projects.length} framework Storybooks in ${outputRoot}.`);
-} else if (command === 'dev') {
-  const children = projects.map((project) => {
-    if (project.id === 'angular') {
-      return spawn(angularCli, ['run', 'krds-storybook:storybook'], {
-        cwd: root,
-        stdio: ['ignore', 'pipe', 'pipe'],
-        env: process.env,
-      });
-    }
-    const child = spawn(
-      storybook,
-      ['dev', '--config-dir', project.config, '--port', String(project.port), '--no-open'],
-      { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: process.env },
-    );
-    child.stdout.on('data', (data) => process.stdout.write(`[${project.label}] ${data}`));
-    child.stderr.on('data', (data) => process.stderr.write(`[${project.label}] ${data}`));
-    return child;
+  console.log(`Built one composed and ${projects.length} framework Storybooks in ${outputRoot}.`);
+} else if (command === "dev") {
+  const children = [composed, ...projects].map((project) => {
+    const child =
+      project.id === "angular"
+        ? spawn(angularCli, ["run", "krds-storybook:storybook"], {
+            cwd: root,
+            stdio: ["ignore", "pipe", "pipe"],
+            env: childEnvironment,
+          })
+        : spawn(
+            storybook,
+            [
+              "dev",
+              "--config-dir",
+              project.config,
+              "--port",
+              String(project.port),
+              "--host",
+              "0.0.0.0",
+              "--no-open",
+            ],
+            {
+              cwd: root,
+              stdio: ["ignore", "pipe", "pipe"],
+              env: childEnvironment,
+            },
+          );
+    child.stdout.on("data", (data) => process.stdout.write(`[${project.label}] ${data}`));
+    child.stderr.on("data", (data) => process.stderr.write(`[${project.label}] ${data}`));
+    return { child, project };
   });
-  const stop = () => children.forEach((child) => child.kill('SIGTERM'));
-  process.once('SIGINT', stop);
-  process.once('SIGTERM', stop);
-  await new Promise((resolve) => children.at(-1)?.once('exit', resolve));
+
+  let stopping = false;
+  const stop = () => {
+    if (stopping) return;
+    stopping = true;
+    children.forEach(({ child }) => child.kill("SIGTERM"));
+  };
+  process.once("SIGINT", stop);
+  process.once("SIGTERM", stop);
+
+  const result = await Promise.race(
+    children.map(
+      ({ child, project }) =>
+        new Promise((resolveExit) => {
+          child.once("error", (error) => resolveExit({ error, project }));
+          child.once("exit", (code, signal) => resolveExit({ code, signal, project }));
+        }),
+    ),
+  );
+  const interrupted = stopping;
+  stop();
+  if ("error" in result) throw result.error;
+  if (!interrupted) {
+    throw new Error(
+      `${result.project.label} Storybook exited with ${result.signal ?? result.code}.`,
+    );
+  }
 } else {
   throw new Error(`Unknown Storybook command: ${command}. Use dev or build.`);
 }

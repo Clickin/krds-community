@@ -1,0 +1,87 @@
+---
+import { krdsTokens } from '@krds-community/tokens';
+
+interface Props {
+  /** token group prefixes, e.g. 'primitive.color.light' */
+  groups: string[];
+}
+const { groups } = Astro.props;
+
+const isColor = (value: string) => /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(value);
+
+const entries = groups
+  .filter((group) => Object.keys(krdsTokens).some((key) => key.startsWith(`${group}.`)))
+  .map((group) => ({
+    group,
+    tokens: Object.entries(krdsTokens)
+      .filter(([key]) => key.startsWith(`${group}.`))
+      .map(([key, value]) => ({ name: key.slice(group.length + 1), value })),
+  }));
+---
+
+{
+  entries.map(({ group, tokens }) => (
+    <section class="token-swatches">
+      <h3><code>{group}</code></h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">토큰</th>
+              <th scope="col">값</th>
+              <th scope="col">미리보기</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tokens.map(({ name, value }) => (
+              <tr>
+                <th scope="row"><code>{name}</code></th>
+                <td><code>{value}</code></td>
+                <td>
+                  {isColor(value) ? (
+                    <span class="swatch" style={`background-color: ${value}`} title={value} />
+                  ) : (
+                    <span class="value-preview">{value}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))
+}
+
+<style>
+  .token-swatches {
+    margin-block: 1.5rem;
+  }
+  .token-swatches h3 {
+    margin-block: 1rem 0.5rem;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  .token-swatches table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .token-swatches th,
+  .token-swatches td {
+    border: 1px solid var(--sl-color-gray-5);
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .swatch {
+    display: inline-block;
+    width: 2rem;
+    height: 1.25rem;
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.25rem;
+  }
+  .value-preview {
+    font-size: var(--sl-text-sm);
+  }
+</style>

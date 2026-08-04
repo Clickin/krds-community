@@ -1,5 +1,4 @@
 import {
-  For,
   Show,
   createEffect,
   createSignal,
@@ -7,31 +6,26 @@ import {
   mergeProps,
   splitProps,
   type JSX,
-} from 'solid-js';
-import { accordionRecipe, buttonRecipe } from '@krds-community/recipes';
+} from "solid-js";
+import { buttonRecipe } from "@krds-community/recipes";
 import type {
-  AccordionContractProps,
-  AccordionItemContract,
   ButtonContractProps,
   ChoiceContractProps,
   RadioContractProps,
   TextInputContractProps,
-} from '@krds-community/recipes';
+} from "@krds-community/recipes";
 
 export interface ButtonProps
   extends ButtonContractProps, JSX.ButtonHTMLAttributes<HTMLButtonElement> {}
 export function Button(rawProps: ButtonProps) {
-  const merged = mergeProps(
-    { size: 'medium' as const, type: 'button' as const },
-    rawProps,
-  );
+  const merged = mergeProps({ size: "medium" as const, type: "button" as const }, rawProps);
   const [props, nativeProps] = splitProps(merged, [
-    'variant',
-    'size',
-    'type',
-    'class',
-    'disabled',
-    'children',
+    "variant",
+    "size",
+    "type",
+    "class",
+    "disabled",
+    "children",
   ]);
   const recipe = () =>
     buttonRecipe({
@@ -41,12 +35,7 @@ export function Button(rawProps: ButtonProps) {
       className: props.class,
     });
   return (
-    <button
-      {...nativeProps}
-      type={props.type}
-      disabled={props.disabled}
-      class={recipe().className}
-    >
+    <button {...nativeProps} type={props.type} disabled={props.disabled} class={recipe().className}>
       {props.children}
     </button>
   );
@@ -54,8 +43,8 @@ export function Button(rawProps: ButtonProps) {
 
 export interface TextInputProps
   extends
-    Omit<TextInputContractProps, 'label' | 'hint'>,
-    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'disabled'> {
+    Omit<TextInputContractProps, "label" | "hint">,
+    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | "value" | "disabled"> {
   label?: string;
   hint?: string;
   error?: string;
@@ -63,42 +52,42 @@ export interface TextInputProps
 export function TextInput(rawProps: TextInputProps) {
   const merged = mergeProps(
     {
-      state: 'default' as const,
-      type: 'text' as const,
+      state: "default" as const,
+      type: "text" as const,
       id: `krds-input-${createUniqueId()}`,
     },
     rawProps,
   );
   const [props, nativeProps] = splitProps(merged, [
-    'state',
-    'size',
-    'id',
-    'label',
-    'hint',
-    'error',
-    'class',
-    'value',
-    'onInput',
-    'ref',
+    "state",
+    "size",
+    "id",
+    "label",
+    "hint",
+    "error",
+    "class",
+    "value",
+    "onInput",
+    "ref",
   ]);
-  const [localValue, setLocalValue] = createSignal('');
+  const [localValue, setLocalValue] = createSignal("");
   const hintClass = () => {
-    if (props.state === 'error') return 'form-hint-invalid';
-    if (props.state === 'success') return 'form-hint-success';
-    if (props.state === 'information') return 'form-hint-information';
-    return 'form-hint';
+    if (props.state === "error") return "form-hint-invalid";
+    if (props.state === "success") return "form-hint-success";
+    if (props.state === "information") return "form-hint-information";
+    return "form-hint";
   };
   const ariaInvalid = () => {
-    if (props.state === 'error') return 'true';
-    return nativeProps['aria-invalid'];
+    if (props.state === "error") return "true";
+    return nativeProps["aria-invalid"];
   };
   const updateValue = (
     event: InputEvent & { currentTarget: HTMLInputElement; target: HTMLInputElement },
   ) => {
     if (props.value === undefined) setLocalValue(event.currentTarget.value);
     const handler = props.onInput;
-    if (typeof handler === 'function') handler(event);
-    else if (Array.isArray(handler) && typeof handler[0] === 'function')
+    if (typeof handler === "function") handler(event);
+    else if (Array.isArray(handler) && typeof handler[0] === "function")
       handler[0](handler[1], event);
   };
   return (
@@ -106,34 +95,27 @@ export function TextInput(rawProps: TextInputProps) {
       <div class="form-tit">
         <label for={props.id}>{props.label}</label>
       </div>
-      <div
-        class={
-          props.state === 'default' ? 'form-conts' : `form-conts is-${props.state}`
-        }
-      >
+      <div class={props.state === "default" ? "form-conts" : `form-conts is-${props.state}`}>
         <input
           {...nativeProps}
           id={props.id}
           ref={(element) => {
             const callerRef = props.ref;
-            if (typeof callerRef === 'function') callerRef(element);
+            if (typeof callerRef === "function") callerRef(element);
             createEffect(() => {
               const controlledValue = props.value;
               if (controlledValue !== undefined) {
                 const serializedValue = String(controlledValue);
                 element.value = serializedValue;
-                element.setAttribute('value', serializedValue);
+                element.setAttribute("value", serializedValue);
               }
             });
           }}
-          value={
-            props.value === undefined ? localValue() : String(props.value ?? '')
-          }
-          class={`krds-input${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
+          value={props.value === undefined ? localValue() : String(props.value ?? "")}
+          class={`krds-input${props.size ? ` ${props.size}` : ""}${props.class ? ` ${props.class}` : ""}`}
           aria-invalid={ariaInvalid()}
           aria-describedby={
-            nativeProps['aria-describedby'] ??
-            (props.hint ? `${props.id}-hint` : undefined)
+            nativeProps["aria-describedby"] ?? (props.hint ? `${props.id}-hint` : undefined)
           }
           onInput={updateValue}
         />
@@ -149,23 +131,17 @@ export function TextInput(rawProps: TextInputProps) {
 
 export interface CheckboxProps
   extends
-    Omit<ChoiceContractProps, 'label' | 'description'>,
-    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled'> {
+    Omit<ChoiceContractProps, "label" | "description">,
+    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "disabled"> {
   label: string;
   description?: string;
 }
 export function Checkbox(rawProps: CheckboxProps) {
   const merged = mergeProps({ id: `krds-checkbox-${createUniqueId()}` }, rawProps);
-  const [props, nativeProps] = splitProps(merged, [
-    'size',
-    'id',
-    'label',
-    'description',
-    'class',
-  ]);
+  const [props, nativeProps] = splitProps(merged, ["size", "id", "label", "description", "class"]);
   return (
     <div
-      class={`krds-form-check${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
+      class={`krds-form-check${props.size ? ` ${props.size}` : ""}${props.class ? ` ${props.class}` : ""}`}
     >
       <input {...nativeProps} id={props.id} type="checkbox" />
       <label for={props.id}>{props.label}</label>
@@ -180,8 +156,8 @@ export function Checkbox(rawProps: CheckboxProps) {
 
 export interface RadioProps
   extends
-    Omit<RadioContractProps, 'label' | 'description' | 'value'>,
-    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled' | 'value'> {
+    Omit<RadioContractProps, "label" | "description" | "value">,
+    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "disabled" | "value"> {
   label: string;
   value?: string;
   description?: string;
@@ -189,16 +165,16 @@ export interface RadioProps
 export function Radio(rawProps: RadioProps) {
   const merged = mergeProps({ id: `krds-radio-${createUniqueId()}` }, rawProps);
   const [props, nativeProps] = splitProps(merged, [
-    'size',
-    'id',
-    'label',
-    'description',
-    'class',
-    'value',
+    "size",
+    "id",
+    "label",
+    "description",
+    "class",
+    "value",
   ]);
   return (
     <div
-      class={`krds-form-check${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
+      class={`krds-form-check${props.size ? ` ${props.size}` : ""}${props.class ? ` ${props.class}` : ""}`}
     >
       <input {...nativeProps} id={props.id} type="radio" value={props.value} />
       <label for={props.id}>{props.label}</label>
@@ -213,16 +189,16 @@ export function Radio(rawProps: RadioProps) {
 
 export interface SwitchProps
   extends
-    Omit<ChoiceContractProps, 'label' | 'description'>,
-    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size' | 'disabled'> {
+    Omit<ChoiceContractProps, "label" | "description">,
+    Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "size" | "disabled"> {
   label: string;
 }
 export function Switch(rawProps: SwitchProps) {
   const merged = mergeProps({ id: `krds-switch-${createUniqueId()}` }, rawProps);
-  const [props, nativeProps] = splitProps(merged, ['size', 'id', 'label', 'class']);
+  const [props, nativeProps] = splitProps(merged, ["size", "id", "label", "class"]);
   return (
     <div
-      class={`krds-form-toggle-switch${props.size ? ` ${props.size}` : ''}${props.class ? ` ${props.class}` : ''}`}
+      class={`krds-form-toggle-switch${props.size ? ` ${props.size}` : ""}${props.class ? ` ${props.class}` : ""}`}
     >
       <input {...nativeProps} id={props.id} type="checkbox" />
       <label for={props.id}>
@@ -235,153 +211,59 @@ export function Switch(rawProps: SwitchProps) {
   );
 }
 
-export interface AccordionItem extends AccordionItemContract {}
-export interface AccordionProps
-  extends Omit<AccordionContractProps, 'items'>, JSX.HTMLAttributes<HTMLDivElement> {
-  items: AccordionItem[];
-  defaultOpen?: string[];
-}
-export function Accordion(rawProps: AccordionProps) {
-  const merged = mergeProps(
-    { type: 'default' as const, multiple: false, defaultOpen: [] as string[] },
-    rawProps,
-  );
-  const instanceId = createUniqueId();
-  const [props, nativeProps] = splitProps(merged, [
-    'type',
-    'multiple',
-    'defaultOpen',
-    'items',
-    'class',
-    'children',
-  ]);
-  const [openItems, setOpenItems] = createSignal(props.defaultOpen);
-  const toggle = (id: string) => {
-    const current = openItems();
-    if (current.includes(id)) setOpenItems(current.filter((item) => item !== id));
-    else if (props.multiple) setOpenItems([...current, id]);
-    else setOpenItems([id]);
-  };
-  return (
-    <div
-      {...nativeProps}
-      class={accordionRecipe({ type: props.type, className: props.class }).className}
-    >
-      <For each={props.items}>
-        {(item) => {
-          const open = () => openItems().includes(item.id);
-          return (
-            <div
-              class="accordion-item"
-              classList={{ active: open() }}
-            >
-              <h5 class="accordion-header">
-                <button
-                  type="button"
-                  class="btn-accordion"
-                  classList={{ active: open() }}
-                  id={`krds-accordion-${instanceId}-header-${item.id}`}
-                  aria-expanded={open()}
-                  aria-controls={`krds-accordion-${instanceId}-panel-${item.id}`}
-                  disabled={item.disabled}
-                  onClick={() => toggle(item.id)}
-                >
-                  {item.title}
-                </button>
-              </h5>
-              <div
-                id={`krds-accordion-${instanceId}-panel-${item.id}`}
-                class="accordion-collapse collapse"
-                classList={{ show: open() }}
-                role="region"
-                aria-labelledby={`krds-accordion-${instanceId}-header-${item.id}`}
-                hidden={!open()}
-              >
-                <div class="accordion-body">{item.content}</div>
-              </div>
-            </div>
-          );
-        }}
-      </For>
-    </div>
-  );
-}
-
-export function AccordionLine(props: Omit<AccordionProps, 'type'>) {
-  return <Accordion {...props} type="line" />;
-}
+export type { AccordionItem, AccordionProps } from "./components/Accordion.js";
+export { AccordionLine } from "./components/AccordionLine.js";
 export const TextInputSize = TextInput;
 export const TextInputState = TextInput;
-
-export {
-  Badge,
-  BadgeNumber,
-  BadgeSize,
-  Breadcrumb,
-  ButtonHierarchy,
-  ButtonIcon,
-  ButtonSize,
-  ButtonText,
-  ButtonWithIcon,
-  Calendar,
-  CalendarRange,
-  Carousel,
-  CarouselBanner,
-  CheckboxChip,
-  CheckboxSize,
-  CoachMark,
-  ContextualHelp,
-  CriticalAlerts,
-  DateInput,
-  Disclosure,
-  Favicon,
-  FileUpload,
-  Footer,
-  Header,
-  HelpPanel,
-  Identifier,
-  InPageNavigation,
-  LanguageSwitcher,
-  LanguageSwitcherPage,
-  Link,
-  MainMenuMobile,
-  MainMenuPc,
-  Masthead,
-  Modal,
-  ModalSample,
-  Pagination,
-  RadioButton,
-  RadioChip,
-  RadioSize,
-  Resize,
-  Select,
-  SelectSize,
-  SelectSorting,
-  SelectState,
-  SideNavigation,
-  SkipLink,
-  Spinner,
-  StepIndicator,
-  StructuredList,
-  StructuredListTable,
-  Tab,
-  Table,
-  Tag,
-  TagLink,
-  Textarea,
-  TextInputIcon,
-  TextList,
-  TextListOrdered,
-  ToggleSwitch,
-  ToggleSwitchSize,
-  Tooltip,
-  TooltipBox,
-  TooltipVertical,
-  Tts,
-  TtsIcon,
-  TtsSize,
-  TutorialPanel,
-} from './additional.js';
+export { Badge, BadgeNumber, BadgeSize } from "./components/Badge.js";
+export { Breadcrumb } from "./components/Breadcrumb.js";
+export { ButtonHierarchy, ButtonSize } from "./components/ButtonHierarchy.js";
+export { ButtonIcon } from "./components/ButtonIcon.js";
+export { ButtonText, ButtonWithIcon } from "./components/ButtonText.js";
+export { Calendar, CalendarRange, DateInput } from "./components/Calendar.js";
+export { Carousel, CarouselBanner } from "./components/Carousel.js";
+export { CheckboxChip } from "./components/CheckboxChip.js";
+export { CheckboxSize } from "./components/CheckboxSize.js";
+export { CoachMark } from "./components/CoachMark.js";
+export { ContextualHelp } from "./components/ContextualHelp.js";
+export { CriticalAlerts } from "./components/CriticalAlerts.js";
+export { Disclosure } from "./components/Disclosure.js";
+export { Favicon } from "./components/Favicon.js";
+export { FileUpload } from "./components/FileUpload.js";
+export { Footer } from "./components/Footer.js";
+export { Header } from "./components/Header.js";
+export { HelpPanel, TutorialPanel } from "./components/HelpPanel.js";
+export { Identifier } from "./components/Identifier.js";
+export { InPageNavigation } from "./components/InPageNavigation.js";
+export { Accordion } from "./components/Accordion.js";
+export { Link } from "./components/Link.js";
+export { MainMenuMobile } from "./components/MainMenuMobile.js";
+export { MainMenuPc } from "./components/MainMenuPc.js";
+export { Masthead } from "./components/Masthead.js";
+export { LanguageSwitcher, LanguageSwitcherPage } from "./components/LanguageSwitcher.js";
+export { Modal, ModalSample } from "./components/Modal.js";
+export { Pagination } from "./components/Pagination.js";
+export { RadioButton } from "./components/RadioButton.js";
+export { RadioChip } from "./components/RadioChip.js";
+export { RadioSize } from "./components/RadioSize.js";
+export { Resize } from "./components/Resize.js";
+export { Select, SelectSize, SelectState } from "./components/Select.js";
+export { SelectSorting } from "./components/SelectSorting.js";
+export { SideNavigation } from "./components/SideNavigation.js";
+export { SkipLink } from "./components/SkipLink.js";
+export { Spinner } from "./components/Spinner.js";
+export { StepIndicator } from "./components/StepIndicator.js";
+export { StructuredList } from "./components/StructuredList.js";
+export { StructuredListTable } from "./components/StructuredListTable.js";
+export { Tab } from "./components/Tab.js";
+export { Table } from "./components/Table.js";
+export { Tag, TagLink } from "./components/Tag.js";
+export { Textarea } from "./components/Textarea.js";
+export { TextInputIcon } from "./components/TextInputIcon.js";
+export { TextList, TextListOrdered } from "./components/TextList.js";
+export { ToggleSwitch, ToggleSwitchSize } from "./components/ToggleSwitch.js";
+export { Tooltip, TooltipBox, TooltipVertical } from "./components/Tooltip.js";
+export { Tts, TtsIcon, TtsSize } from "./components/Tts.js";
 export type {
   AdditionalProps,
   HeaderMobileMenu,
@@ -389,4 +271,4 @@ export type {
   MenuBanner,
   MenuDescriptionItem,
   MenuItem,
-} from './additional.js';
+} from "./types.js";

@@ -1,1 +1,1 @@
-declare module '@krds-community/styles';
+declare module "@krds-community/styles";

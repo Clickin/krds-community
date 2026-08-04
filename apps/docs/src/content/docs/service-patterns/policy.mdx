@@ -3,6 +3,3195 @@ title: 정책 정보 확인
 description: 정부·기관의 행동 방침, 계획, 법률에 관한 정보를 확인하는 서비스 패턴입니다.
 ---
 
-import PatternPage from '../../../components/PatternPage.astro';
+import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { Badge as ReactBadge } from "@krds-community/react";
+import { Badge as VueBadge } from "@krds-community/vue";
+import { Badge as SvelteBadge } from "@krds-community/svelte";
+import { Badge as SolidBadge } from "@krds-community/solid";
+import { AngularBadge } from "@docs/angular-previews.ts";
+import { Badge as AstroBadge } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Link as ReactLink } from "@krds-community/react";
+import { Link as VueLink } from "@krds-community/vue";
+import { Link as SvelteLink } from "@krds-community/svelte";
+import { Link as SolidLink } from "@krds-community/solid";
+import { AngularLink } from "@docs/angular-previews.ts";
+import { Link as AstroLink } from "@krds-community/astro";
 
-<PatternPage patternId="policy" />
+<PatternReference patternId="policy" />
+
+## 공식 문서
+
+### 유형
+
+**정책 정보** 정부가 공공문제를 해결하거나 정치적·행정적 목표를 실현하기 위해 마련한 법률·정책·사업·사업계획·정부방침·정책지침·결의 사항 등에 대한 정보
+
+- 예) 주요 정책 소개
+
+**관련 자료** 주요 정책을 이해하고 참여하는데 필요한 각종 자료
+
+- 예) 보고서, 매뉴얼, 법령 자료, 정책 홍보자료, 연구 자료, 국정 과제 등
+
+## 사용성 가이드라인
+
+### 정책 탐색
+
+**권장: 모든 정책을 하나의 목록에서 탐색할 수 있는 수단을 제공한다.**
+
+분류별 정책을 개별 목록으로만 제공하게 되면 사용자는 다양한 조건에 따라 정책을 탐색할 수 없어 필요한 정책 정보를 발견하는 데 어려움을 겪게 된다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="모든 정책을 하나의 목록에서 탐색할 수 있는 수단을 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">전체 정책</h3>
+      <ReactTextInput label="정책 검색" placeholder="정책명을 입력해 주세요"  client:only="react"/>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <ReactBadge tone="point" appearance="solid" label="신규"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+        <div><ReactButton variant="primary" client:only="react">신청하기</ReactButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <ReactBadge tone="information" appearance="solid" label="중요"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div><ReactButton variant="primary" client:only="react">신청하기</ReactButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>산모·신생아 건강관리 지원</strong>
+          <ReactBadge tone="secondary" appearance="solid" label="접수 중"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div><ReactButton variant="primary" client:only="react">신청하기</ReactButton></div>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">전체 정책</h3>
+      <VueTextInput label="정책 검색" placeholder="정책명을 입력해 주세요"  client:only="vue"/>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <VueBadge tone="point" appearance="solid" label="신규"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+        <div><VueButton variant="primary" client:only="vue">신청하기</VueButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <VueBadge tone="information" appearance="solid" label="중요"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div><VueButton variant="primary" client:only="vue">신청하기</VueButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>산모·신생아 건강관리 지원</strong>
+          <VueBadge tone="secondary" appearance="solid" label="접수 중"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div><VueButton variant="primary" client:only="vue">신청하기</VueButton></div>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">전체 정책</h3>
+      <SvelteTextInput label="정책 검색" placeholder="정책명을 입력해 주세요"  client:only="svelte"/>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <SvelteBadge tone="point" appearance="solid" label="신규"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+        <div><SvelteButton variant="primary" client:only="svelte">신청하기</SvelteButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <SvelteBadge tone="information" appearance="solid" label="중요"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div><SvelteButton variant="primary" client:only="svelte">신청하기</SvelteButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>산모·신생아 건강관리 지원</strong>
+          <SvelteBadge tone="secondary" appearance="solid" label="접수 중"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div><SvelteButton variant="primary" client:only="svelte">신청하기</SvelteButton></div>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">전체 정책</h3>
+      <SolidTextInput label="정책 검색" placeholder="정책명을 입력해 주세요"  client:only="solid-js"/>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <SolidBadge tone="point" appearance="solid" label="신규"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+        <div><SolidButton variant="primary" client:only="solid-js">신청하기</SolidButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <SolidBadge tone="information" appearance="solid" label="중요"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div><SolidButton variant="primary" client:only="solid-js">신청하기</SolidButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>산모·신생아 건강관리 지원</strong>
+          <SolidBadge tone="secondary" appearance="solid" label="접수 중"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div><SolidButton variant="primary" client:only="solid-js">신청하기</SolidButton></div>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">전체 정책</h3>
+      <AstroTextInput label="정책 검색" placeholder="정책명을 입력해 주세요" />
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <AstroBadge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+        <div><AstroButton variant="primary">신청하기</AstroButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <AstroBadge tone="information" appearance="solid" label="중요" />
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div><AstroButton variant="primary">신청하기</AstroButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>산모·신생아 건강관리 지원</strong>
+          <AstroBadge tone="secondary" appearance="solid" label="접수 중" />
+        </div>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div><AstroButton variant="primary">신청하기</AstroButton></div>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">전체 정책</h3>
+      <AngularTextInput label="정책 검색" placeholder="정책명을 입력해 주세요"  client:only="@analogjs/astro-angular"/>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <AngularBadge tone="point" appearance="solid" label="신규"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+        <div><AngularButton variant="primary" label="신청하기" client:only="@analogjs/astro-angular">신청하기</AngularButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <AngularBadge tone="information" appearance="solid" label="중요"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div><AngularButton variant="primary" label="신청하기" client:only="@analogjs/astro-angular">신청하기</AngularButton></div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>산모·신생아 건강관리 지원</strong>
+          <AngularBadge tone="secondary" appearance="solid" label="접수 중"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div><AngularButton variant="primary" label="신청하기" client:only="@analogjs/astro-angular">신청하기</AngularButton></div>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge, Button, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>전체 정책</h3>
+      <TextInput label="정책 검색" placeholder="정책명을 입력해 주세요" />
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>청년 월세 한시 특별지원</strong>
+          <Badge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책
+        </p>
+        <div>
+          <Button variant="primary">신청하기</Button>
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>국민내일배움카드</strong>
+          <Badge tone="information" appearance="solid" label="중요" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+        <div>
+          <Button variant="primary">신청하기</Button>
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>산모·신생아 건강관리 지원</strong>
+          <Badge tone="secondary" appearance="solid" label="접수 중" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div>
+          <Button variant="primary">신청하기</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge, Button, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+    <h3 style="margin:0">전체 정책</h3>
+    <TextInput label="정책 검색" placeholder="정책명을 입력해 주세요" />
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <Badge tone="point" appearance="solid" label="신규" />
+      </div>
+      <p style="margin:0;font-size:14px">
+        청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책
+      </p>
+      <div><Button variant="primary">신청하기</Button></div>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <Badge tone="information" appearance="solid" label="중요" />
+      </div>
+      <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      <div><Button variant="primary">신청하기</Button></div>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <Badge tone="secondary" appearance="solid" label="접수 중" />
+      </div>
+      <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      <div><Button variant="primary">신청하기</Button></div>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge, Button, TextInput } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">전체 정책</h3>
+  <TextInput label="정책 검색" placeholder="정책명을 입력해 주세요" />
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 한시 특별지원</strong>
+      <Badge tone="point" appearance="solid" label="신규" />
+    </div>
+    <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+    <div><Button variant="primary">신청하기</Button></div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>국민내일배움카드</strong>
+      <Badge tone="information" appearance="solid" label="중요" />
+    </div>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    <div><Button variant="primary">신청하기</Button></div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>산모·신생아 건강관리 지원</strong>
+      <Badge tone="secondary" appearance="solid" label="접수 중" />
+    </div>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+    <div><Button variant="primary">신청하기</Button></div>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Badge, Button, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>전체 정책</h3>
+      <TextInput label="정책 검색" placeholder="정책명을 입력해 주세요" />
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>청년 월세 한시 특별지원</strong>
+          <Badge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책
+        </p>
+        <div>
+          <Button variant="primary">신청하기</Button>
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>국민내일배움카드</strong>
+          <Badge tone="information" appearance="solid" label="중요" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+        <div>
+          <Button variant="primary">신청하기</Button>
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>산모·신생아 건강관리 지원</strong>
+          <Badge tone="secondary" appearance="solid" label="접수 중" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>산모와 신생아의 건강관리를 지원하는 정책</p>
+        <div>
+          <Button variant="primary">신청하기</Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Badge, Button, TextInput } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">전체 정책</h3>
+  <TextInput label="정책 검색" placeholder="정책명을 입력해 주세요" />
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 한시 특별지원</strong>
+      <Badge tone="point" appearance="solid" label="신규" />
+    </div>
+    <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+    <div><Button variant="primary">신청하기</Button></div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>국민내일배움카드</strong>
+      <Badge tone="information" appearance="solid" label="중요" />
+    </div>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    <div><Button variant="primary">신청하기</Button></div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>산모·신생아 건강관리 지원</strong>
+      <Badge tone="secondary" appearance="solid" label="접수 중" />
+    </div>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+    <div><Button variant="primary">신청하기</Button></div>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsBadgeComponent, KrdsButtonComponent, KrdsTextInputComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">전체 정책</h3>
+  <krds-text-input label="정책 검색" placeholder="정책명을 입력해 주세요" ></krds-text-input>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 한시 특별지원</strong>
+      <krds-badge tone="point" appearance="solid" label="신규" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+    <div><krds-button variant="primary" label="신청하기">신청하기</krds-button></div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>국민내일배움카드</strong>
+      <krds-badge tone="information" appearance="solid" label="중요" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    <div><krds-button variant="primary" label="신청하기">신청하기</krds-button></div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>산모·신생아 건강관리 지원</strong>
+      <krds-badge tone="secondary" appearance="solid" label="접수 중" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+    <div><krds-button variant="primary" label="신청하기">신청하기</krds-button></div>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="모든 정책을 하나의 목록에서 탐색할 수 있는 수단을 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+      <h3 style="margin:0">복지 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style="margin:0">교육 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>온라인 평생교육 지원</strong>
+        <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+      <h3 style="margin:0">복지 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style="margin:0">교육 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>온라인 평생교육 지원</strong>
+        <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+      <h3 style="margin:0">복지 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style="margin:0">교육 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>온라인 평생교육 지원</strong>
+        <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+      <h3 style="margin:0">복지 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style="margin:0">교육 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>온라인 평생교육 지원</strong>
+        <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+      <h3 style="margin:0">복지 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style="margin:0">교육 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>온라인 평생교육 지원</strong>
+        <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+      <h3 style="margin:0">복지 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style="margin:0">교육 정책</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>온라인 평생교육 지원</strong>
+        <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import {} from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>복지 정책</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style={{ margin: "0" }}>교육 정책</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>국민내일배움카드</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>온라인 평생교육 지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import {} from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+    <h3 style="margin:0">복지 정책</h3>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>청년 월세 한시 특별지원</strong>
+      <p style="margin:0;font-size:14px">
+        청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책
+      </p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>산모·신생아 건강관리 지원</strong>
+      <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+    </div>
+    <h3 style="margin:0">교육 정책</h3>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>국민내일배움카드</strong>
+      <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>온라인 평생교육 지원</strong>
+      <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import {  } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+  <h3 style="margin:0">복지 정책</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>청년 월세 한시 특별지원</strong>
+    <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>산모·신생아 건강관리 지원</strong>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+  </div>
+  <h3 style="margin:0">교육 정책</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>국민내일배움카드</strong>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>온라인 평생교육 지원</strong>
+    <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import {} from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>복지 정책</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+      <h3 style={{ margin: "0" }}>교육 정책</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>국민내일배움카드</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>온라인 평생교육 지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>온라인 평생교육 강좌를 지원하는 정책</p>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import {  } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+  <h3 style="margin:0">복지 정책</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>청년 월세 한시 특별지원</strong>
+    <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>산모·신생아 건강관리 지원</strong>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+  </div>
+  <h3 style="margin:0">교육 정책</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>국민내일배움카드</strong>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>온라인 평생교육 지원</strong>
+    <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import {  } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
+  <h3 style="margin:0">복지 정책</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>청년 월세 한시 특별지원</strong>
+    <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 지원하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>산모·신생아 건강관리 지원</strong>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+  </div>
+  <h3 style="margin:0">교육 정책</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>국민내일배움카드</strong>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>온라인 평생교육 지원</strong>
+    <p style="margin:0;font-size:14px">온라인 평생교육 강좌를 지원하는 정책</p>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**권장: 필터링 또는 검색 기능을 제공한다.**
+
+목록에 필터링 또는 검색 기능을 제공하여 사용자가 여러 분류 체계에 해당하는 정책을 조회하는 과정을 통해 빠르게 원하는 정책을 찾을 수 있도록 한다.
+
+**권장: 정책의 대상/분야 등의 분류 체계를 표시한다.**
+
+제공 유형, 지원 주기 등 정책의 분류 체계를 배지와 기타 메타 데이터로 제공하여 사용자가 참고할 수 있도록 해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="정책의 대상/분야 등의 분류 체계를 표시한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <ReactBadge tone="secondary" appearance="solid" label="지원 유형: 현금"  client:only="react"/>
+          <ReactBadge tone="gray" appearance="solid" label="지원 주기: 월 1회"  client:only="react"/>
+          <ReactBadge tone="gray" appearance="solid" label="대상: 만 19~34세"  client:only="react"/>
+        </div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <ReactBadge tone="secondary" appearance="solid" label="지원 유형: 현물"  client:only="react"/>
+          <ReactBadge tone="gray" appearance="solid" label="지원 주기: 연 1회"  client:only="react"/>
+          <ReactBadge tone="gray" appearance="solid" label="대상: 만 15세 이상"  client:only="react"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <VueBadge tone="secondary" appearance="solid" label="지원 유형: 현금"  client:only="vue"/>
+          <VueBadge tone="gray" appearance="solid" label="지원 주기: 월 1회"  client:only="vue"/>
+          <VueBadge tone="gray" appearance="solid" label="대상: 만 19~34세"  client:only="vue"/>
+        </div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <VueBadge tone="secondary" appearance="solid" label="지원 유형: 현물"  client:only="vue"/>
+          <VueBadge tone="gray" appearance="solid" label="지원 주기: 연 1회"  client:only="vue"/>
+          <VueBadge tone="gray" appearance="solid" label="대상: 만 15세 이상"  client:only="vue"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <SvelteBadge tone="secondary" appearance="solid" label="지원 유형: 현금"  client:only="svelte"/>
+          <SvelteBadge tone="gray" appearance="solid" label="지원 주기: 월 1회"  client:only="svelte"/>
+          <SvelteBadge tone="gray" appearance="solid" label="대상: 만 19~34세"  client:only="svelte"/>
+        </div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <SvelteBadge tone="secondary" appearance="solid" label="지원 유형: 현물"  client:only="svelte"/>
+          <SvelteBadge tone="gray" appearance="solid" label="지원 주기: 연 1회"  client:only="svelte"/>
+          <SvelteBadge tone="gray" appearance="solid" label="대상: 만 15세 이상"  client:only="svelte"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <SolidBadge tone="secondary" appearance="solid" label="지원 유형: 현금"  client:only="solid-js"/>
+          <SolidBadge tone="gray" appearance="solid" label="지원 주기: 월 1회"  client:only="solid-js"/>
+          <SolidBadge tone="gray" appearance="solid" label="대상: 만 19~34세"  client:only="solid-js"/>
+        </div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <SolidBadge tone="secondary" appearance="solid" label="지원 유형: 현물"  client:only="solid-js"/>
+          <SolidBadge tone="gray" appearance="solid" label="지원 주기: 연 1회"  client:only="solid-js"/>
+          <SolidBadge tone="gray" appearance="solid" label="대상: 만 15세 이상"  client:only="solid-js"/>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <AstroBadge tone="secondary" appearance="solid" label="지원 유형: 현금" />
+          <AstroBadge tone="gray" appearance="solid" label="지원 주기: 월 1회" />
+          <AstroBadge tone="gray" appearance="solid" label="대상: 만 19~34세" />
+        </div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <AstroBadge tone="secondary" appearance="solid" label="지원 유형: 현물" />
+          <AstroBadge tone="gray" appearance="solid" label="지원 주기: 연 1회" />
+          <AstroBadge tone="gray" appearance="solid" label="대상: 만 15세 이상" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <AngularBadge tone="secondary" appearance="solid" label="지원 유형: 현금"  client:only="@analogjs/astro-angular"/>
+          <AngularBadge tone="gray" appearance="solid" label="지원 주기: 월 1회"  client:only="@analogjs/astro-angular"/>
+          <AngularBadge tone="gray" appearance="solid" label="대상: 만 19~34세"  client:only="@analogjs/astro-angular"/>
+        </div>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+        <div style="display:flex;gap:8px">
+          <AngularBadge tone="secondary" appearance="solid" label="지원 유형: 현물"  client:only="@analogjs/astro-angular"/>
+          <AngularBadge tone="gray" appearance="solid" label="지원 주기: 연 1회"  client:only="@analogjs/astro-angular"/>
+          <AngularBadge tone="gray" appearance="solid" label="대상: 만 15세 이상"  client:only="@analogjs/astro-angular"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 목록</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          만 19~34세 무주택 청년에게 월세를 지원하는 정책
+        </p>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Badge tone="secondary" appearance="solid" label="지원 유형: 현금" />
+          <Badge tone="gray" appearance="solid" label="지원 주기: 월 1회" />
+          <Badge tone="gray" appearance="solid" label="대상: 만 19~34세" />
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>국민내일배움카드</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Badge tone="secondary" appearance="solid" label="지원 유형: 현물" />
+          <Badge tone="gray" appearance="solid" label="지원 주기: 연 1회" />
+          <Badge tone="gray" appearance="solid" label="대상: 만 15세 이상" />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+    <h3 style="margin:0">정책 목록</h3>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>청년 월세 한시 특별지원</strong>
+      <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      <div style="display:flex;gap:8px">
+        <Badge tone="secondary" appearance="solid" label="지원 유형: 현금" />
+        <Badge tone="gray" appearance="solid" label="지원 주기: 월 1회" />
+        <Badge tone="gray" appearance="solid" label="대상: 만 19~34세" />
+      </div>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>국민내일배움카드</strong>
+      <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      <div style="display:flex;gap:8px">
+        <Badge tone="secondary" appearance="solid" label="지원 유형: 현물" />
+        <Badge tone="gray" appearance="solid" label="지원 주기: 연 1회" />
+        <Badge tone="gray" appearance="solid" label="대상: 만 15세 이상" />
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 목록</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>청년 월세 한시 특별지원</strong>
+    <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+    <div style="display:flex;gap:8px">
+      <Badge tone="secondary" appearance="solid" label="지원 유형: 현금" />
+      <Badge tone="gray" appearance="solid" label="지원 주기: 월 1회" />
+      <Badge tone="gray" appearance="solid" label="대상: 만 19~34세" />
+    </div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>국민내일배움카드</strong>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    <div style="display:flex;gap:8px">
+      <Badge tone="secondary" appearance="solid" label="지원 유형: 현물" />
+      <Badge tone="gray" appearance="solid" label="지원 주기: 연 1회" />
+      <Badge tone="gray" appearance="solid" label="대상: 만 15세 이상" />
+    </div>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Badge } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 목록</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>청년 월세 한시 특별지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          만 19~34세 무주택 청년에게 월세를 지원하는 정책
+        </p>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Badge tone="secondary" appearance="solid" label="지원 유형: 현금" />
+          <Badge tone="gray" appearance="solid" label="지원 주기: 월 1회" />
+          <Badge tone="gray" appearance="solid" label="대상: 만 19~34세" />
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>국민내일배움카드</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Badge tone="secondary" appearance="solid" label="지원 유형: 현물" />
+          <Badge tone="gray" appearance="solid" label="지원 주기: 연 1회" />
+          <Badge tone="gray" appearance="solid" label="대상: 만 15세 이상" />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Badge } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 목록</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>청년 월세 한시 특별지원</strong>
+    <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+    <div style="display:flex;gap:8px">
+      <Badge tone="secondary" appearance="solid" label="지원 유형: 현금" />
+      <Badge tone="gray" appearance="solid" label="지원 주기: 월 1회" />
+      <Badge tone="gray" appearance="solid" label="대상: 만 19~34세" />
+    </div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>국민내일배움카드</strong>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    <div style="display:flex;gap:8px">
+      <Badge tone="secondary" appearance="solid" label="지원 유형: 현물" />
+      <Badge tone="gray" appearance="solid" label="지원 주기: 연 1회" />
+      <Badge tone="gray" appearance="solid" label="대상: 만 15세 이상" />
+    </div>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsBadgeComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 목록</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>청년 월세 한시 특별지원</strong>
+    <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+    <div style="display:flex;gap:8px">
+      <krds-badge tone="secondary" appearance="solid" label="지원 유형: 현금" ></krds-badge>
+      <krds-badge tone="gray" appearance="solid" label="지원 주기: 월 1회" ></krds-badge>
+      <krds-badge tone="gray" appearance="solid" label="대상: 만 19~34세" ></krds-badge>
+    </div>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>국민내일배움카드</strong>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    <div style="display:flex;gap:8px">
+      <krds-badge tone="secondary" appearance="solid" label="지원 유형: 현물" ></krds-badge>
+      <krds-badge tone="gray" appearance="solid" label="지원 주기: 연 1회" ></krds-badge>
+      <krds-badge tone="gray" appearance="solid" label="대상: 만 15세 이상" ></krds-badge>
+    </div>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**권장: 새로운 정책 및 자료를 명확하게 구분한다.**
+
+새로 시행되는 정책이나 중요 저책에 '신규', '중요'와 같은 메타 데이터를 배지로 제공함으로써 사용자가 시의성 있는 정책 정보를 탐색할 수 있도록 도와야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="새로운 정책 및 자료를 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <ReactBadge tone="point" appearance="solid" label="신규"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <ReactBadge tone="information" appearance="solid" label="중요"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <VueBadge tone="point" appearance="solid" label="신규"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <VueBadge tone="information" appearance="solid" label="중요"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <SvelteBadge tone="point" appearance="solid" label="신규"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <SvelteBadge tone="information" appearance="solid" label="중요"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <SolidBadge tone="point" appearance="solid" label="신규"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <SolidBadge tone="information" appearance="solid" label="중요"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <AstroBadge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <AstroBadge tone="information" appearance="solid" label="중요" />
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 목록</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 한시 특별지원</strong>
+          <AngularBadge tone="point" appearance="solid" label="신규"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>국민내일배움카드</strong>
+          <AngularBadge tone="information" appearance="solid" label="중요"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 목록</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>청년 월세 한시 특별지원</strong>
+          <Badge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          만 19~34세 무주택 청년에게 월세를 지원하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>국민내일배움카드</strong>
+          <Badge tone="information" appearance="solid" label="중요" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+    <h3 style="margin:0">정책 목록</h3>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>청년 월세 한시 특별지원</strong>
+        <Badge tone="point" appearance="solid" label="신규" />
+      </div>
+      <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>국민내일배움카드</strong>
+        <Badge tone="information" appearance="solid" label="중요" />
+      </div>
+      <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>산모·신생아 건강관리 지원</strong>
+      <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 목록</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 한시 특별지원</strong>
+      <Badge tone="point" appearance="solid" label="신규" />
+    </div>
+    <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>국민내일배움카드</strong>
+      <Badge tone="information" appearance="solid" label="중요" />
+    </div>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>산모·신생아 건강관리 지원</strong>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Badge } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 목록</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>청년 월세 한시 특별지원</strong>
+          <Badge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          만 19~34세 무주택 청년에게 월세를 지원하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>국민내일배움카드</strong>
+          <Badge tone="information" appearance="solid" label="중요" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          직업훈련 비용을 지원하는 카드를 발급하는 정책
+        </p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>산모·신생아 건강관리 지원</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>산모와 신생아의 건강관리를 지원하는 정책</p>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Badge } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 목록</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 한시 특별지원</strong>
+      <Badge tone="point" appearance="solid" label="신규" />
+    </div>
+    <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>국민내일배움카드</strong>
+      <Badge tone="information" appearance="solid" label="중요" />
+    </div>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>산모·신생아 건강관리 지원</strong>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsBadgeComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 목록</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 한시 특별지원</strong>
+      <krds-badge tone="point" appearance="solid" label="신규" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">만 19~34세 무주택 청년에게 월세를 지원하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>국민내일배움카드</strong>
+      <krds-badge tone="information" appearance="solid" label="중요" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">직업훈련 비용을 지원하는 카드를 발급하는 정책</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>산모·신생아 건강관리 지원</strong>
+    <p style="margin:0;font-size:14px">산모와 신생아의 건강관리를 지원하는 정책</p>
+  </div>
+</div>
+```
+
+</PracticeExample>
+### 정보 확인
+
+**권장: 화면 제목을 정책명으로 제공한다.**
+
+정확히 어떤 항목에 대한 상세 정보인지 사용자가 명확하게 파악할 수 있도록 정책명을 제목으로 제공하고 본문에서 가장 강조된 형태로 표현해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="화면 제목을 정책명으로 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+        <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+        <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+        <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+      </div>
+      <div><ReactButton variant="primary" client:only="react">지원 신청하기</ReactButton></div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+        <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+        <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+        <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+      </div>
+      <div><VueButton variant="primary" client:only="vue">지원 신청하기</VueButton></div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+        <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+        <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+        <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+      </div>
+      <div><SvelteButton variant="primary" client:only="svelte">지원 신청하기</SvelteButton></div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+        <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+        <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+        <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+      </div>
+      <div><SolidButton variant="primary" client:only="solid-js">지원 신청하기</SolidButton></div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+        <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+        <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+        <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+      </div>
+      <div><AstroButton variant="primary">지원 신청하기</AstroButton></div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+        <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+        <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+        <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+        <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+      </div>
+      <div><AngularButton variant="primary" label="지원 신청하기" client:only="@analogjs/astro-angular">지원 신청하기</AngularButton></div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "560px" }}>
+      <h3 style={{ margin: "0" }}>청년 월세 한시 특별지원</h3>
+      <p style={{ margin: "0", fontSize: "14px" }}>
+        청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+      </p>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          gap: "12px",
+        }}
+      >
+        <div>
+          <strong>지원 내용</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>월 최대 20만 원, 최대 24개월</p>
+        </div>
+        <div>
+          <strong>지원 대상</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>만 19~34세 무주택 청년</p>
+        </div>
+        <div>
+          <strong>신청 기간</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>2025. 2. 1. ~ 2025. 12. 31.</p>
+        </div>
+        <div>
+          <strong>문의처</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>청년월세 상담센터 1600-1234</p>
+        </div>
+      </div>
+      <div>
+        <Button variant="primary">지원 신청하기</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+    <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+    <p style="margin:0;font-size:14px">
+      청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+    </p>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px"
+    >
+      <div>
+        <strong>지원 내용</strong>
+        <p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p>
+      </div>
+      <div>
+        <strong>지원 대상</strong>
+        <p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p>
+      </div>
+      <div>
+        <strong>신청 기간</strong>
+        <p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p>
+      </div>
+      <div>
+        <strong>문의처</strong>
+        <p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p>
+      </div>
+    </div>
+    <div><Button variant="primary">지원 신청하기</Button></div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+    <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+    <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+    <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+    <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+  </div>
+  <div><Button variant="primary">지원 신청하기</Button></div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "560px" }}>
+      <h3 style={{ margin: "0" }}>청년 월세 한시 특별지원</h3>
+      <p style={{ margin: "0", fontSize: "14px" }}>
+        청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+      </p>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          gap: "12px",
+        }}
+      >
+        <div>
+          <strong>지원 내용</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>월 최대 20만 원, 최대 24개월</p>
+        </div>
+        <div>
+          <strong>지원 대상</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>만 19~34세 무주택 청년</p>
+        </div>
+        <div>
+          <strong>신청 기간</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>2025. 2. 1. ~ 2025. 12. 31.</p>
+        </div>
+        <div>
+          <strong>문의처</strong>
+          <p style={{ margin: "0", fontSize: "14px" }}>청년월세 상담센터 1600-1234</p>
+        </div>
+      </div>
+      <div>
+        <Button variant="primary">지원 신청하기</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+    <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+    <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+    <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+    <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+  </div>
+  <div><Button variant="primary">지원 신청하기</Button></div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+    <div><strong>지원 내용</strong><p style="margin:0;font-size:14px">월 최대 20만 원, 최대 24개월</p></div>
+    <div><strong>지원 대상</strong><p style="margin:0;font-size:14px">만 19~34세 무주택 청년</p></div>
+    <div><strong>신청 기간</strong><p style="margin:0;font-size:14px">2025. 2. 1. ~ 2025. 12. 31.</p></div>
+    <div><strong>문의처</strong><p style="margin:0;font-size:14px">청년월세 상담센터 1600-1234</p></div>
+  </div>
+  <div><krds-button variant="primary" label="지원 신청하기">지원 신청하기</krds-button></div>
+</div>
+```
+
+</PracticeExample>
+
+**권장: 본문 정보 콘텐츠는 간결하며 이해하기 쉽게 작성한다.**
+
+가능한 한 모든 사용자가 이해하기 쉬운 단어를 사용하고 문장의 구조를 단순화하여 정보를 제공해야 한다. 정책의 특성으로 인해 불가피하게 전문 용어, 외국어 등이 사용되어야 한다면 도움 관련 컴포넌트를 활용하여 설명을 제공해야 한다.
+
+**필수: 상세 정보는 정확하고 최신화된 상태로 제공한다.**
+
+모든 상세 정보 텍스트에는 오탈자가 없도록 하고 공식적인 용어와 명칭을 사용해야 한다. 또한 정보에 변경이 필요한 경우 다른 채널보다 우선적으로 내용을 최신화하여 디지털 정부 서비스에 대한 신뢰를 확보해야 한다.
+
+**권장: 내용이 없는 콘텐츠 섹션과 섹션 제목은 표시되지 않도록 한다.**
+
+상세 내용에서 세부 제목은 제공되고 있으나 하위에 아무런 정보가 제공되지 않은 채로 비어 있는 영역이 노출되면 사용자는 정보가 제대로 작성되지 않은 것으로 오인할 수 있다.
+
+**우수: 인포그래픽, 사진, 동영상 등의 콘텐츠를 적절하게 활용한다.**
+
+시각적 정보를 활용하면 텍스트에만 의존하는 것보다 말하고자 하는 바를 효과적으로 전달할 수 있으며 사용자의 흥미를 유발한다.
+
+**권장: 사용자에게 도움을 줄 수 있는 다양한 부가 정보를 제공한다.**
+
+정책과 관련하여 사용자가 참고할 수 있는 유용한 부가 정보를 충분히 제공하여 사용자가 별도의 메뉴 탐색, 검색을 시도하지 않도록 해야 한다. 정책과 관련하여 제공할 수 있는 부가 정보의 예시는 다음과 같다.
+
+- 정책에 대한 문의처: 담당자 이름과 전화번호 또는 이메일 주소
+- 관련 정책 링크 목록, 관련 자료 다운로드 링크, 관련 자료 게시판
+- 관련 웹사이트 링크, 정책 관련 신청 링크
+
+**권장: 부가 정보는 사용자가 필요에 따라 상세 내용을 확인할 수 있게 제공하는 방안을 고려한다.**
+
+모든 부가 정보를 노출시키지 않고 각 항목의 콘텐츠를 일부만 표시하고 숨긴 다음 해당 정보가 필요한 사용자가 영역을 확장하여 내용을 확인할 수 있게 제공할 수 있다.
+
+**권장: 모든 링크는 실행하였을 때, 링크 레이블에 명시된 적절한 화면으로 이동해야 한다.**
+
+링크의 목적지를 부적절하게 설정하면 사용자는 예측하지 않은 화면으로 이동하여 당황할 수 있고 도착한 화면/사이트에서 원하는 정보를 찾기 위해 추가적인 정보 탐색을 시도해야 한다. 정책에 대해 보다 구체적인 정보를 확인할 수 있는 링크를 클릭하면 게시판 목록이나 외부 서비스의 메인 화면이 아닌 관련 상세 화면으로 연결되어 사용자가 의도한 행동을 수행할 수 있게 설계한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="모든 링크는 실행하였을 때, 링크 레이블에 명시된 적절한 화면으로 이동해야 한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <ReactLink href="#" client:only="react">지원 신청 안내 보기</ReactLink>
+        <ReactLink href="#" client:only="react">자주 묻는 질문 보기</ReactLink>
+        <ReactLink href="#" client:only="react">관련 법령 보기</ReactLink>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <VueLink href="#" client:only="vue">지원 신청 안내 보기</VueLink>
+        <VueLink href="#" client:only="vue">자주 묻는 질문 보기</VueLink>
+        <VueLink href="#" client:only="vue">관련 법령 보기</VueLink>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <SvelteLink href="#" client:only="svelte">지원 신청 안내 보기</SvelteLink>
+        <SvelteLink href="#" client:only="svelte">자주 묻는 질문 보기</SvelteLink>
+        <SvelteLink href="#" client:only="svelte">관련 법령 보기</SvelteLink>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <SolidLink href="#" client:only="solid-js">지원 신청 안내 보기</SolidLink>
+        <SolidLink href="#" client:only="solid-js">자주 묻는 질문 보기</SolidLink>
+        <SolidLink href="#" client:only="solid-js">관련 법령 보기</SolidLink>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <AstroLink href="#">지원 신청 안내 보기</AstroLink>
+        <AstroLink href="#">자주 묻는 질문 보기</AstroLink>
+        <AstroLink href="#">관련 법령 보기</AstroLink>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <AngularLink href="#" label="지원 신청 안내 보기"  client:only="@analogjs/astro-angular"/>
+        <AngularLink href="#" label="자주 묻는 질문 보기"  client:only="@analogjs/astro-angular"/>
+        <AngularLink href="#" label="관련 법령 보기"  client:only="@analogjs/astro-angular"/>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Link } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "560px" }}>
+      <h3 style={{ margin: "0" }}>청년 월세 한시 특별지원</h3>
+      <p style={{ margin: "0", fontSize: "14px" }}>
+        청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+      </p>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>관련 정보</strong>
+        <Link href="#">지원 신청 안내 보기</Link>
+        <Link href="#">자주 묻는 질문 보기</Link>
+        <Link href="#">관련 법령 보기</Link>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Link } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+    <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+    <p style="margin:0;font-size:14px">
+      청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+    </p>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>관련 정보</strong>
+      <Link href="#">지원 신청 안내 보기</Link>
+      <Link href="#">자주 묻는 질문 보기</Link>
+      <Link href="#">관련 법령 보기</Link>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Link } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>관련 정보</strong>
+    <Link href="#">지원 신청 안내 보기</Link>
+    <Link href="#">자주 묻는 질문 보기</Link>
+    <Link href="#">관련 법령 보기</Link>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Link } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "560px" }}>
+      <h3 style={{ margin: "0" }}>청년 월세 한시 특별지원</h3>
+      <p style={{ margin: "0", fontSize: "14px" }}>
+        청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+      </p>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>관련 정보</strong>
+        <Link href="#">지원 신청 안내 보기</Link>
+        <Link href="#">자주 묻는 질문 보기</Link>
+        <Link href="#">관련 법령 보기</Link>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Link } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>관련 정보</strong>
+    <Link href="#">지원 신청 안내 보기</Link>
+    <Link href="#">자주 묻는 질문 보기</Link>
+    <Link href="#">관련 법령 보기</Link>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsLinkComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>관련 정보</strong>
+    <krds-link href="#" label="지원 신청 안내 보기"></krds-link>
+    <krds-link href="#" label="자주 묻는 질문 보기"></krds-link>
+    <krds-link href="#" label="관련 법령 보기"></krds-link>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="모든 링크는 실행하였을 때, 링크 레이블에 명시된 적절한 화면으로 이동해야 한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <ReactLink href="#" client:only="react">더보기</ReactLink>
+        <ReactLink href="#" client:only="react">게시판 목록</ReactLink>
+        <ReactLink href="#" client:only="react">메인 바로가기</ReactLink>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <VueLink href="#" client:only="vue">더보기</VueLink>
+        <VueLink href="#" client:only="vue">게시판 목록</VueLink>
+        <VueLink href="#" client:only="vue">메인 바로가기</VueLink>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <SvelteLink href="#" client:only="svelte">더보기</SvelteLink>
+        <SvelteLink href="#" client:only="svelte">게시판 목록</SvelteLink>
+        <SvelteLink href="#" client:only="svelte">메인 바로가기</SvelteLink>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <SolidLink href="#" client:only="solid-js">더보기</SolidLink>
+        <SolidLink href="#" client:only="solid-js">게시판 목록</SolidLink>
+        <SolidLink href="#" client:only="solid-js">메인 바로가기</SolidLink>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <AstroLink href="#">더보기</AstroLink>
+        <AstroLink href="#">게시판 목록</AstroLink>
+        <AstroLink href="#">메인 바로가기</AstroLink>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+      <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+      <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>관련 정보</strong>
+        <AngularLink href="#" label="더보기"  client:only="@analogjs/astro-angular"/>
+        <AngularLink href="#" label="게시판 목록"  client:only="@analogjs/astro-angular"/>
+        <AngularLink href="#" label="메인 바로가기"  client:only="@analogjs/astro-angular"/>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Link } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "560px" }}>
+      <h3 style={{ margin: "0" }}>청년 월세 한시 특별지원</h3>
+      <p style={{ margin: "0", fontSize: "14px" }}>
+        청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+      </p>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>관련 정보</strong>
+        <Link href="#">더보기</Link>
+        <Link href="#">게시판 목록</Link>
+        <Link href="#">메인 바로가기</Link>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Link } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+    <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+    <p style="margin:0;font-size:14px">
+      청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+    </p>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>관련 정보</strong>
+      <Link href="#">더보기</Link>
+      <Link href="#">게시판 목록</Link>
+      <Link href="#">메인 바로가기</Link>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Link } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>관련 정보</strong>
+    <Link href="#">더보기</Link>
+    <Link href="#">게시판 목록</Link>
+    <Link href="#">메인 바로가기</Link>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Link } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "560px" }}>
+      <h3 style={{ margin: "0" }}>청년 월세 한시 특별지원</h3>
+      <p style={{ margin: "0", fontSize: "14px" }}>
+        청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.
+      </p>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>관련 정보</strong>
+        <Link href="#">더보기</Link>
+        <Link href="#">게시판 목록</Link>
+        <Link href="#">메인 바로가기</Link>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Link } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>관련 정보</strong>
+    <Link href="#">더보기</Link>
+    <Link href="#">게시판 목록</Link>
+    <Link href="#">메인 바로가기</Link>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsLinkComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:16px;max-width:560px">
+  <h3 style="margin:0">청년 월세 한시 특별지원</h3>
+  <p style="margin:0;font-size:14px">청년층의 주거비 부담을 완화하기 위해 월세를 한시적으로 지원하는 정책입니다.</p>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>관련 정보</strong>
+    <krds-link href="#" label="더보기"></krds-link>
+    <krds-link href="#" label="게시판 목록"></krds-link>
+    <krds-link href="#" label="메인 바로가기"></krds-link>
+  </div>
+</div>
+```
+
+</PracticeExample>
+### 정책 자료 탐색
+
+**권장: 필터링 또는 검색 기능을 제공한다.**
+
+사용자가 주로 찾는 자료의 특성을 고려하여 목록에 필터링, 정렬 방식, 상세 검색(기간, 자료 유형 등) 기능을 제공하여 사용자가 여러 분류 체계에 해당하는 정보를 효과적으로 조회할 수 있도록 만든다.
+
+**권장: 새로운 자료, 변경이 있는 자료를 명확하게 구분한다.**
+
+새로 등록된 정책 자료나 중요 자료에 '신규', '중요'와 같은 메타 데이터를 배지로 제공함으로써 사용자가 시의성 있는 정책 정보 자료를 탐색할 수 있도록 도와야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="새로운 자료, 변경이 있는 자료를 명확하게 구분한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 자료</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <ReactBadge tone="point" appearance="solid" label="신규"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <ReactBadge tone="information" appearance="solid" label="개정"  client:only="react"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책 홍보 리플릿</strong>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 자료</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <VueBadge tone="point" appearance="solid" label="신규"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <VueBadge tone="information" appearance="solid" label="개정"  client:only="vue"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책 홍보 리플릿</strong>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 자료</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <SvelteBadge tone="point" appearance="solid" label="신규"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <SvelteBadge tone="information" appearance="solid" label="개정"  client:only="svelte"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책 홍보 리플릿</strong>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 자료</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <SolidBadge tone="point" appearance="solid" label="신규"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <SolidBadge tone="information" appearance="solid" label="개정"  client:only="solid-js"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책 홍보 리플릿</strong>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 자료</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <AstroBadge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <AstroBadge tone="information" appearance="solid" label="개정" />
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책 홍보 리플릿</strong>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 자료</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <AngularBadge tone="point" appearance="solid" label="신규"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <AngularBadge tone="information" appearance="solid" label="개정"  client:only="@analogjs/astro-angular"/>
+        </div>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책 홍보 리플릿</strong>
+        <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 자료</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <Badge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>등록일: 2025. 1. 30.</p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <Badge tone="information" appearance="solid" label="개정" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>등록일: 2025. 1. 20.</p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>정책 홍보 리플릿</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+    <h3 style="margin:0">정책 자료</h3>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>2025 청년 지원 정책 안내서</strong>
+        <Badge tone="point" appearance="solid" label="신규" />
+      </div>
+      <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <strong>청년 월세 특별지원 매뉴얼</strong>
+        <Badge tone="information" appearance="solid" label="개정" />
+      </div>
+      <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>정책 홍보 리플릿</strong>
+      <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 자료</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>2025 청년 지원 정책 안내서</strong>
+      <Badge tone="point" appearance="solid" label="신규" />
+    </div>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 특별지원 매뉴얼</strong>
+      <Badge tone="information" appearance="solid" label="개정" />
+    </div>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>정책 홍보 리플릿</strong>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Badge } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 자료</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>2025 청년 지원 정책 안내서</strong>
+          <Badge tone="point" appearance="solid" label="신규" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>등록일: 2025. 1. 30.</p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "8px",
+          }}
+        >
+          <strong>청년 월세 특별지원 매뉴얼</strong>
+          <Badge tone="information" appearance="solid" label="개정" />
+        </div>
+        <p style={{ margin: "0", fontSize: "14px" }}>등록일: 2025. 1. 20.</p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>정책 홍보 리플릿</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>등록일: 2025. 1. 5.</p>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import { Badge } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 자료</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>2025 청년 지원 정책 안내서</strong>
+      <Badge tone="point" appearance="solid" label="신규" />
+    </div>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 특별지원 매뉴얼</strong>
+      <Badge tone="information" appearance="solid" label="개정" />
+    </div>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>정책 홍보 리플릿</strong>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import { KrdsBadgeComponent } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 자료</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>2025 청년 지원 정책 안내서</strong>
+      <krds-badge tone="point" appearance="solid" label="신규" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 30.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <strong>청년 월세 특별지원 매뉴얼</strong>
+      <krds-badge tone="information" appearance="solid" label="개정" ></krds-badge>
+    </div>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 20.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>정책 홍보 리플릿</strong>
+    <p style="margin:0;font-size:14px">등록일: 2025. 1. 5.</p>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**권장: 정책 관련 간행물의 발행 주기에 대한 정보를 제공한다.**
+
+정기적으로 정책 동향을 확인하고자 하는 사용자를 고려하여 간행물 자료의 발행 주기 정보를 본문의 부제목이나 별도 안내 영역에 제공해야 한다. 발행 주기가 일시적으로 변경되거나 발행이 일시적·영구적으로 중단되었다면 이러한 상황에 대한 정보도 반드시 제공되어야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="정책 관련 간행물의 발행 주기에 대한 정보를 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 간행물</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책브리핑</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>복지동향</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 간행물</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책브리핑</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>복지동향</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 간행물</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책브리핑</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>복지동향</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 간행물</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책브리핑</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>복지동향</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 간행물</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책브리핑</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>복지동향</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+      <h3 style="margin:0">정책 간행물</h3>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>정책브리핑</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+      </div>
+      <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+        <strong>복지동향</strong>
+        <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import {} from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 간행물</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>정책브리핑</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>발행 주기: 매월 (매월 10일 발행)</p>
+        <p style={{ margin: "0", fontSize: "14px" }}>최근호: 2025. 1. 10.</p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>복지동향</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.
+        </p>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import {} from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+    <h3 style="margin:0">정책 간행물</h3>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>정책브리핑</strong>
+      <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+      <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+    </div>
+    <div
+      style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px"
+    >
+      <strong>복지동향</strong>
+      <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+      <p style="margin:0;font-size:14px">
+        최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.
+      </p>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import {  } from '@krds-community/svelte';
+</script>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 간행물</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>정책브리핑</strong>
+    <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+    <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>복지동향</strong>
+    <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+    <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import {} from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "520px" }}>
+      <h3 style={{ margin: "0" }}>정책 간행물</h3>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>정책브리핑</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>발행 주기: 매월 (매월 10일 발행)</p>
+        <p style={{ margin: "0", fontSize: "14px" }}>최근호: 2025. 1. 10.</p>
+      </div>
+      <div
+        style={{
+          border: "1px solid #d9d9d9",
+          borderRadius: "8px",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <strong>복지동향</strong>
+        <p style={{ margin: "0", fontSize: "14px" }}>발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+        <p style={{ margin: "0", fontSize: "14px" }}>
+          최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.
+        </p>
+      </div>
+    </div>
+  );
+}
+```
+
+```astro fw=astro
+---
+import {  } from '@krds-community/astro';
+---
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 간행물</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>정책브리핑</strong>
+    <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+    <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>복지동향</strong>
+    <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+    <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+  </div>
+</div>
+```
+
+```ts fw=angular
+import {  } from '@krds-community/angular';
+
+// template
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px">
+  <h3 style="margin:0">정책 간행물</h3>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>정책브리핑</strong>
+    <p style="margin:0;font-size:14px">발행 주기: 매월 (매월 10일 발행)</p>
+    <p style="margin:0;font-size:14px">최근호: 2025. 1. 10.</p>
+  </div>
+  <div style="border:1px solid #d9d9d9;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px">
+    <strong>복지동향</strong>
+    <p style="margin:0;font-size:14px">발행 주기: 연 4회 (3·6·9·12월 발행)</p>
+    <p style="margin:0;font-size:14px">최근호: 2024. 12. 15. / 2025년 3월호는 발행 일정이 변경되었습니다.</p>
+  </div>
+</div>
+```
+
+</PracticeExample>

@@ -17,4 +17,4 @@ export const krdsIcons = {
 export type KrdsIconName = keyof typeof krdsIcons;
 
 export const iconSvg = (name: KrdsIconName, label?: string): string =>
-  `<svg aria-hidden="${label ? 'false' : 'true'}"${label ? ` aria-label="${label}" role="img"` : ''} viewBox="0 0 24 24" focusable="false">${krdsIcons[name]}</svg>`;
+  `<svg aria-hidden="${label ? "false" : "true"}"${label ? ` aria-label="${label}" role="img"` : ""} viewBox="0 0 24 24" focusable="false">${krdsIcons[name]}</svg>`;

@@ -3,6 +3,1047 @@ title: 방문
 description: 사용자가 디지털 서비스에 접속하여 원하는 상세 정보로 연결되는 서비스 패턴입니다.
 ---
 
-import PatternPage from '../../../components/PatternPage.astro';
+import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Badge as ReactBadge } from "@krds-community/react";
+import { Badge as VueBadge } from "@krds-community/vue";
+import { Badge as SvelteBadge } from "@krds-community/svelte";
+import { Badge as SolidBadge } from "@krds-community/solid";
+import { AngularBadge } from "@docs/angular-previews.ts";
+import { Badge as AstroBadge } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { Carousel as ReactCarousel } from "@krds-community/react";
+import { Carousel as VueCarousel } from "@krds-community/vue";
+import { Carousel as SvelteCarousel } from "@krds-community/svelte";
+import { Carousel as SolidCarousel } from "@krds-community/solid";
+import { AngularCarousel } from "@docs/angular-previews.ts";
+import { Carousel as AstroCarousel } from "@krds-community/astro";
+import { TextList as ReactTextList } from "@krds-community/react";
+import { TextList as VueTextList } from "@krds-community/vue";
+import { TextList as SvelteTextList } from "@krds-community/svelte";
+import { TextList as SolidTextList } from "@krds-community/solid";
+import { AngularTextList } from "@docs/angular-previews.ts";
+import { TextList as AstroTextList } from "@krds-community/astro";
 
-<PatternPage patternId="visit"></PatternPage>
+<PatternReference patternId="visit" />
+
+## 공식 문서
+
+### 유형
+
+- **정책 및 서비스 정보** 정책, 법령, 핵심 운영 서비스 정보 (예) 정책, 훈령, 예고, 고시
+- **기관 정보** 기관/조직이나 장관에 대한 정보 (예) 공지사항, 알림, 장관 소개
+- **내비게이션** 다른 정보나 서비스, 사이트로 이동하기 위한 링크 그룹 (예) 자주 찾는 서비스
+- **캠페인 및 홍보 정보** 대개 일정 기간 동안 한시적으로 운영되는 시의성 있는 홍보 콘텐츠 (예) 홍보 배너, 히어로 콘텐츠
+- **긴급 알림** 기관/조직 또는 서비스 운영에 대한 긴급 공지사항 (예) 서비스 중단/서버 점검 알림, 재난 알림
+- **연락처** 서비스 운영 담당자 또는 기관의 연락처를 확인 (예) 대표 전화번호, 민원 전화번호, 팩스 번호, 이메일 주소
+
+## 사용성 가이드라인
+
+### 방문
+
+**권장: 다양한 콘텐츠의 구성 요소를 일관성 있게 구성한다.**
+메인 화면에는 사용자가 원하는 다양한 콘텐츠와 서비스가 배치된다. 이를 구성하는 요소별로 표현과 작동 방식을 일관성 있게 구성하여 사용자가 원하는 정보를 탐색하고 이동하는 과정에서 불필요한 시간이 소요되지 않도록 해야 한다. 메인 화면에 배치되는 콘텐츠 구성 요소의 유형은 다음과 같다.
+
+- 캐러셀
+- 탭
+- 목록과 더보기 링크
+- 기타 링크 및 버튼
+
+**필수: 시급하거나 중요한 정보를 사용자가 빠르게 인지할 수 있도록 제공한다.**
+서비스 점검이나 제공 기능 중단 등 사용자가 서비스 이용 전에 반드시 알아야 하는 정보는 가장 먼저 인지할 수 있도록 구성해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="시급하거나 중요한 정보를 사용자가 빠르게 인지할 수 있도록 제공한다."
+>
+  <div slot="react">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+        <ReactBadge tone="danger" appearance="solid" size="medium" label="긴급" client:only="react" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <ReactCarousel
+        slides={[
+          { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+          { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+        <VueBadge tone="danger" appearance="solid" size="medium" label="긴급" client:only="vue" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <VueCarousel
+        slides={[
+          { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+          { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+        <SvelteBadge tone="danger" appearance="solid" size="medium" label="긴급" client:only="svelte" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <SvelteCarousel
+        slides={[
+          { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+          { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+        <SolidBadge tone="danger" appearance="solid" size="medium" label="긴급" client:only="solid-js" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <SolidCarousel
+        slides={[
+          { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+          { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+        <AstroBadge tone="danger" appearance="solid" size="medium" label="긴급" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <AstroCarousel
+        slides={[
+          { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+          { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+        <AngularBadge tone="danger" appearance="solid" size="medium" label="긴급" client:only="@analogjs/astro-angular" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <AngularCarousel
+        slides={[
+          { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+          { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge } from "@krds-community/react";
+import { Carousel } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          padding: "1rem",
+          border: "1px solid var(--krds-mode-color-border-primary)",
+          borderRadius: "0.5rem",
+          marginBottom: "1rem",
+        }}
+      >
+        <Badge tone="danger" appearance="solid" size="medium" label="긴급" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <Carousel
+        slides={[
+          {
+            id: "slide-1",
+            title: "국민정책 바로가기",
+            description: "자주 찾는 정책 서비스를 한곳에서",
+            href: "#",
+          },
+          {
+            id: "slide-2",
+            title: "공공서비스 신청",
+            description: "온라인으로 간편하게 신청하세요",
+            href: "#",
+          },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge } from "@krds-community/vue";
+import { Carousel } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width: 100%">
+    <div
+      style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;"
+    >
+      <Badge tone="danger" appearance="solid" size="medium" label="긴급" />
+      <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+    </div>
+    <Carousel
+      :slides="[
+        {
+          id: 'slide-1',
+          title: '국민정책 바로가기',
+          description: '자주 찾는 정책 서비스를 한곳에서',
+          href: '#',
+        },
+        {
+          id: 'slide-2',
+          title: '공공서비스 신청',
+          description: '온라인으로 간편하게 신청하세요',
+          href: '#',
+        },
+      ]"
+      previous-label="이전"
+      next-label="다음"
+      more-label="더 보기"
+      action-label="슬라이드 보기"
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge } from "@krds-community/svelte";
+import { Carousel } from "@krds-community/svelte";
+</script>
+
+<div style="width: 100%">
+  <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+    <Badge tone="danger" appearance="solid" size="medium" label="긴급" />
+    <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+  </div>
+  <Carousel
+    slides={[
+      { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+      { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+    ]}
+    previousLabel="이전"
+    nextLabel="다음"
+    moreLabel="더 보기"
+    actionLabel="슬라이드 보기"
+  />
+</div>
+```
+
+```tsx fw=solid
+import { Badge } from "@krds-community/solid";
+import { Carousel } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          padding: "1rem",
+          border: "1px solid var(--krds-mode-color-border-primary)",
+          borderRadius: "0.5rem",
+          marginBottom: "1rem",
+        }}
+      >
+        <Badge tone="danger" appearance="solid" size="medium" label="긴급" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <Carousel
+        slides={[
+          {
+            id: "slide-1",
+            title: "국민정책 바로가기",
+            description: "자주 찾는 정책 서비스를 한곳에서",
+            href: "#",
+          },
+          {
+            id: "slide-2",
+            title: "공공서비스 신청",
+            description: "온라인으로 간편하게 신청하세요",
+            href: "#",
+          },
+        ]}
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { Component } from "@angular/core";
+import { KrdsBadgeComponent, KrdsCarouselComponent } from "@krds-community/angular";
+
+@Component({
+  selector: "app-example",
+  imports: [KrdsBadgeComponent, KrdsCarouselComponent],
+  template: `
+    <div style="width: 100%">
+      <div
+        style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;"
+      >
+        <krds-badge tone="danger" appearance="solid" size="medium" label="긴급" />
+        <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+      </div>
+      <krds-carousel
+        [slides]="slides"
+        previousLabel="이전"
+        nextLabel="다음"
+        moreLabel="더 보기"
+        actionLabel="슬라이드 보기"
+      />
+    </div>
+  `,
+})
+export class Example {
+  slides = [
+    {
+      id: "slide-1",
+      title: "국민정책 바로가기",
+      description: "자주 찾는 정책 서비스를 한곳에서",
+      href: "#",
+    },
+    {
+      id: "slide-2",
+      title: "공공서비스 신청",
+      description: "온라인으로 간편하게 신청하세요",
+      href: "#",
+    },
+  ];
+}
+```
+
+```astro fw=astro
+---
+import { Badge } from "@krds-community/astro";
+import { Carousel } from "@krds-community/astro";
+---
+
+<div style="width: 100%">
+  <div style="display: flex; align-items: center; gap: 0.5rem; padding: 1rem; border: 1px solid var(--krds-mode-color-border-primary); border-radius: 0.5rem; margin-bottom: 1rem;">
+    <Badge tone="danger" appearance="solid" size="medium" label="긴급" />
+    <strong>2026. 8. 5.(수) 00:00~06:00 시스템 점검으로 인한 서비스 일시 중단 안내</strong>
+  </div>
+  <Carousel
+    slides={[
+      { id: "slide-1", title: "국민정책 바로가기", description: "자주 찾는 정책 서비스를 한곳에서", href: "#" },
+      { id: "slide-2", title: "공공서비스 신청", description: "온라인으로 간편하게 신청하세요", href: "#" },
+    ]}
+    previousLabel="이전"
+    nextLabel="다음"
+    moreLabel="더 보기"
+    actionLabel="슬라이드 보기"
+  />
+</div>
+```
+
+</PracticeExample>
+
+**권장: 사용자 데이터를 기반으로 한 우선순위에 따라 콘텐츠를 배치한다.**
+메인 화면을 구성하는 요소들의 우선순위를 제공자의 관점으로만 결정하면 사용자들이 주로 찾는 정보와 기능이 찾기 어려운 곳에 배치되거나 주목도가 낮아지게 되어 방문 단계에서부터 사용자가 원하는 목적을 달성할 수 없게 된다.
+
+**권장: 사용자 관점에서 같은 목적의 콘텐츠들은 섹션으로 모아서 구성한다.**
+같은 목적의 콘텐츠를 여러 섹션에 산발적으로 배치하거나 하나의 섹션에 목적이 다른 콘텐츠를 모아서 배치하면 사용자의 직관적인 탐색이 어렵고 원하는 내용을 찾는 데 많은 시간이 소요된다. 섹션을 구성할 때는 명확한 타이틀과 간단한 안내를 제공하여 사용자가 섹션의 관련성을 이해하거나 다른 콘텐츠와의 구별에 어려움을 겪지 않도록 해야 한다.
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="사용자 관점에서 같은 목적의 콘텐츠들은 섹션으로 모아서 구성한다."
+>
+  <div slot="react">
+    <div style="width: 100%;">
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">새소식</p>
+        <ReactTextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+          client:only="react"
+        />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">알림마당</p>
+        <ReactTextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+          client:only="react"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width: 100%;">
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">새소식</p>
+        <VueTextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+          client:only="vue"
+        />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">알림마당</p>
+        <VueTextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+          client:only="vue"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width: 100%;">
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">새소식</p>
+        <SvelteTextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+          client:only="svelte"
+        />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">알림마당</p>
+        <SvelteTextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+          client:only="svelte"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="width: 100%;">
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">새소식</p>
+        <SolidTextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">알림마당</p>
+        <SolidTextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width: 100%;">
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">새소식</p>
+        <AstroTextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+        />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">알림마당</p>
+        <AstroTextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width: 100%;">
+      <div style="margin-bottom: 1rem;">
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">새소식</p>
+        <AngularTextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem;">알림마당</p>
+        <AngularTextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextList } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "100%" }}>
+      <div style={{ marginBottom: "1rem" }}>
+        <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>새소식</p>
+        <TextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+        />
+      </div>
+      <div>
+        <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>알림마당</p>
+        <TextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextList } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width: 100%">
+    <div style="margin-bottom: 1rem">
+      <p style="font-weight: 700; margin-bottom: 0.5rem">새소식</p>
+      <TextList
+        aria-label="새소식 목록"
+        :items="[
+          '2026년 표준품셈 고시',
+          '홍보 담당자 채용 공고',
+          '제1회 정책 아이디어 공모전 안내',
+          '민원 상담 서비스 개편 안내',
+        ]"
+      />
+    </div>
+    <div>
+      <p style="font-weight: 700; margin-bottom: 0.5rem">알림마당</p>
+      <TextList
+        aria-label="알림마당 목록"
+        :items="[
+          '2026년 표준품셈 고시',
+          '개인정보 처리방침 개정 예고',
+          '제1회 정책 아이디어 공모전 안내',
+          '서비스 점검 알림',
+        ]"
+      />
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextList } from "@krds-community/svelte";
+</script>
+
+<div style="width: 100%">
+  <div style="margin-bottom: 1rem">
+    <p style="font-weight: 700; margin-bottom: 0.5rem">새소식</p>
+    <TextList
+      aria-label="새소식 목록"
+      items={[
+        "2026년 표준품셈 고시",
+        "홍보 담당자 채용 공고",
+        "제1회 정책 아이디어 공모전 안내",
+        "민원 상담 서비스 개편 안내",
+      ]}
+    />
+  </div>
+  <div>
+    <p style="font-weight: 700; margin-bottom: 0.5rem">알림마당</p>
+    <TextList
+      aria-label="알림마당 목록"
+      items={[
+        "2026년 표준품셈 고시",
+        "개인정보 처리방침 개정 예고",
+        "제1회 정책 아이디어 공모전 안내",
+        "서비스 점검 알림",
+      ]}
+    />
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { TextList } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "100%" }}>
+      <div style={{ marginBottom: "1rem" }}>
+        <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>새소식</p>
+        <TextList
+          aria-label="새소식 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "홍보 담당자 채용 공고",
+            "제1회 정책 아이디어 공모전 안내",
+            "민원 상담 서비스 개편 안내",
+          ]}
+        />
+      </div>
+      <div>
+        <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>알림마당</p>
+        <TextList
+          aria-label="알림마당 목록"
+          items={[
+            "2026년 표준품셈 고시",
+            "개인정보 처리방침 개정 예고",
+            "제1회 정책 아이디어 공모전 안내",
+            "서비스 점검 알림",
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { Component } from "@angular/core";
+import { KrdsTextListComponent } from "@krds-community/angular";
+
+@Component({
+  selector: "app-example",
+  imports: [KrdsTextListComponent],
+  template: `
+    <div style="width: 100%">
+      <div style="margin-bottom: 1rem">
+        <p style="font-weight: 700; margin-bottom: 0.5rem">새소식</p>
+        <krds-text-list aria-label="새소식 목록" [items]="newsItems" />
+      </div>
+      <div>
+        <p style="font-weight: 700; margin-bottom: 0.5rem">알림마당</p>
+        <krds-text-list aria-label="알림마당 목록" [items]="noticeItems" />
+      </div>
+    </div>
+  `,
+})
+export class Example {
+  newsItems = [
+    "2026년 표준품셈 고시",
+    "홍보 담당자 채용 공고",
+    "제1회 정책 아이디어 공모전 안내",
+    "민원 상담 서비스 개편 안내",
+  ];
+  noticeItems = [
+    "2026년 표준품셈 고시",
+    "개인정보 처리방침 개정 예고",
+    "제1회 정책 아이디어 공모전 안내",
+    "서비스 점검 알림",
+  ];
+}
+```
+
+```astro fw=astro
+---
+import { TextList } from "@krds-community/astro";
+---
+
+<div style="width: 100%">
+  <div style="margin-bottom: 1rem">
+    <p style="font-weight: 700; margin-bottom: 0.5rem">새소식</p>
+    <TextList
+      aria-label="새소식 목록"
+      items={[
+        "2026년 표준품셈 고시",
+        "홍보 담당자 채용 공고",
+        "제1회 정책 아이디어 공모전 안내",
+        "민원 상담 서비스 개편 안내",
+      ]}
+    />
+  </div>
+  <div>
+    <p style="font-weight: 700; margin-bottom: 0.5rem">알림마당</p>
+    <TextList
+      aria-label="알림마당 목록"
+      items={[
+        "2026년 표준품셈 고시",
+        "개인정보 처리방침 개정 예고",
+        "제1회 정책 아이디어 공모전 안내",
+        "서비스 점검 알림",
+      ]}
+    />
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**권장: 방문 목적 및 사용자 유형별로 핵심적인 정보와 서비스를 탐색할 수 있는 영역을 구성한다.**
+사용자마다 다른 방문 목적에 대응하기 위해 다양하고 많은 콘텐츠를 메인 화면에 배치하는 것에는 한계가 있다. 서비스의 이용 패턴을 고려하여 ‘방문 목적별/사용자 유형별 바로가기’, ‘자주 찾는 서비스’와 같은 방식으로 사용자가 원하는 정보를 직접 선택하고 빠르게 탐색 및 이동할 수 있는 기능을 제공해야 한다.
+
+**우수: 로그인 기반의 개인화된 바로가기 영역을 배치한다.**
+방문 빈도가 높고 정해진 과업을 반복적으로 수행하는 사용자의 경우, 방문할 때마다 반복적인 탐색 과정으로 인해 과업 진행 절차의 비효율이 발생할 수 있다. 특히 로그인 기반으로 사용자의 행동 패턴 분석이 가능한 경우에는 메인 화면에서부터 적극적인 개인화 서비스를 제공하는 것이 효과적이다. 로그인 기능이 없는 경우에는 사용자 데이터를 기반으로 이용 빈도가 높은 바로가기 영역을 배치하여 과업 탐색의 시간을 단축한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="로그인 기반의 개인화된 바로가기 영역을 배치한다."
+>
+  <div slot="react">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <strong>나의 바로가기</strong>
+        <ReactBadge tone="information" appearance="light" size="small" label="김민지님" client:only="react" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <ReactButton variant="secondary" client:only="react">나의 신청 현황</ReactButton>
+        <ReactButton variant="secondary" client:only="react">나의 민원</ReactButton>
+        <ReactButton variant="secondary" client:only="react">최근 본 정책</ReactButton>
+        <ReactButton variant="secondary" client:only="react">자주 찾는 서비스</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <strong>나의 바로가기</strong>
+        <VueBadge tone="information" appearance="light" size="small" label="김민지님" client:only="vue" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <VueButton variant="secondary" client:only="vue">나의 신청 현황</VueButton>
+        <VueButton variant="secondary" client:only="vue">나의 민원</VueButton>
+        <VueButton variant="secondary" client:only="vue">최근 본 정책</VueButton>
+        <VueButton variant="secondary" client:only="vue">자주 찾는 서비스</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <strong>나의 바로가기</strong>
+        <SvelteBadge tone="information" appearance="light" size="small" label="김민지님" client:only="svelte" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <SvelteButton variant="secondary" client:only="svelte">나의 신청 현황</SvelteButton>
+        <SvelteButton variant="secondary" client:only="svelte">나의 민원</SvelteButton>
+        <SvelteButton variant="secondary" client:only="svelte">최근 본 정책</SvelteButton>
+        <SvelteButton variant="secondary" client:only="svelte">자주 찾는 서비스</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <strong>나의 바로가기</strong>
+        <SolidBadge tone="information" appearance="light" size="small" label="김민지님" client:only="solid-js" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <SolidButton variant="secondary" client:only="solid-js">나의 신청 현황</SolidButton>
+        <SolidButton variant="secondary" client:only="solid-js">나의 민원</SolidButton>
+        <SolidButton variant="secondary" client:only="solid-js">최근 본 정책</SolidButton>
+        <SolidButton variant="secondary" client:only="solid-js">자주 찾는 서비스</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <strong>나의 바로가기</strong>
+        <AstroBadge tone="information" appearance="light" size="small" label="김민지님" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <AstroButton variant="secondary">나의 신청 현황</AstroButton>
+        <AstroButton variant="secondary">나의 민원</AstroButton>
+        <AstroButton variant="secondary">최근 본 정책</AstroButton>
+        <AstroButton variant="secondary">자주 찾는 서비스</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="width: 100%;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <strong>나의 바로가기</strong>
+        <AngularBadge tone="information" appearance="light" size="small" label="김민지님" client:only="@analogjs/astro-angular" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <AngularButton variant="secondary" label="나의 신청 현황" client:only="@analogjs/astro-angular">나의 신청 현황</AngularButton>
+        <AngularButton variant="secondary" label="나의 민원" client:only="@analogjs/astro-angular">나의 민원</AngularButton>
+        <AngularButton variant="secondary" label="최근 본 정책" client:only="@analogjs/astro-angular">최근 본 정책</AngularButton>
+        <AngularButton variant="secondary" label="자주 찾는 서비스" client:only="@analogjs/astro-angular">자주 찾는 서비스</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge } from "@krds-community/react";
+import { Button } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ width: "100%" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}
+      >
+        <strong>나의 바로가기</strong>
+        <Badge tone="information" appearance="light" size="small" label="김민지님" />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+        <Button variant="secondary">나의 신청 현황</Button>
+        <Button variant="secondary">나의 민원</Button>
+        <Button variant="secondary">최근 본 정책</Button>
+        <Button variant="secondary">자주 찾는 서비스</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge } from "@krds-community/vue";
+import { Button } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="width: 100%">
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem">
+      <strong>나의 바로가기</strong>
+      <Badge tone="information" appearance="light" size="small" label="김민지님" />
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem">
+      <Button variant="secondary">나의 신청 현황</Button>
+      <Button variant="secondary">나의 민원</Button>
+      <Button variant="secondary">최근 본 정책</Button>
+      <Button variant="secondary">자주 찾는 서비스</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge } from "@krds-community/svelte";
+import { Button } from "@krds-community/svelte";
+</script>
+
+<div style="width: 100%">
+  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem">
+    <strong>나의 바로가기</strong>
+    <Badge tone="information" appearance="light" size="small" label="김민지님" />
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem">
+    <Button variant="secondary">나의 신청 현황</Button>
+    <Button variant="secondary">나의 민원</Button>
+    <Button variant="secondary">최근 본 정책</Button>
+    <Button variant="secondary">자주 찾는 서비스</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Badge } from "@krds-community/solid";
+import { Button } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ width: "100%" }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}
+      >
+        <strong>나의 바로가기</strong>
+        <Badge tone="information" appearance="light" size="small" label="김민지님" />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+        <Button variant="secondary">나의 신청 현황</Button>
+        <Button variant="secondary">나의 민원</Button>
+        <Button variant="secondary">최근 본 정책</Button>
+        <Button variant="secondary">자주 찾는 서비스</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { Component } from "@angular/core";
+import { KrdsBadgeComponent, KrdsButtonComponent } from "@krds-community/angular";
+
+@Component({
+  selector: "app-example",
+  imports: [KrdsBadgeComponent, KrdsButtonComponent],
+  template: `
+    <div style="width: 100%">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem">
+        <strong>나의 바로가기</strong>
+        <krds-badge tone="information" appearance="light" size="small" label="김민지님" />
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem">
+        <krds-button variant="secondary" label="나의 신청 현황">나의 신청 현황</krds-button>
+        <krds-button variant="secondary" label="나의 민원">나의 민원</krds-button>
+        <krds-button variant="secondary" label="최근 본 정책">최근 본 정책</krds-button>
+        <krds-button variant="secondary" label="자주 찾는 서비스">자주 찾는 서비스</krds-button>
+      </div>
+    </div>
+  `,
+})
+export class Example {}
+```
+
+```astro fw=astro
+---
+import { Badge } from "@krds-community/astro";
+import { Button } from "@krds-community/astro";
+---
+
+<div style="width: 100%">
+  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem">
+    <strong>나의 바로가기</strong>
+    <Badge tone="information" appearance="light" size="small" label="김민지님" />
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem">
+    <Button variant="secondary">나의 신청 현황</Button>
+    <Button variant="secondary">나의 민원</Button>
+    <Button variant="secondary">최근 본 정책</Button>
+    <Button variant="secondary">자주 찾는 서비스</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**권장: 사용자가 정보를 빠르게 구분하고 정확하게 이동할 수 있는 방법을 제시한다.**
+사용자는 메인 화면에서 원하는 콘텐츠를 탐색한 이후에 내용을 확인하고 해당 링크로 이동하게 된다. 이 과정에서 사용자가 콘텐츠를 쉽게 이해하고 정확하게 이동할 수 있도록 돕는 것이 중요하며, 콘텐츠의 특성에 따라 제공할 수 있는 방법은 다음과 같다.
+
+- 최신 업데이트, 기한 표시 등의 레이블 제공
+- 용어 및 콘텐츠의 간략한 설명
+- 외부 사이트로 이동하는 링크의 표시
+
+**필수: 최신의 정확한 정보를 제공한다.**
+메인 화면에서 제공하는 콘텐츠가 최신 정보가 아니거나 부정확한 정보인 경우 사용자는 서비스가 정상적으로 운영 및 관리되고 있지 않다고 판단할 수 있다. 메인 화면에서 제공되는 정보는 최신으로 업데이트된 정보인지 내용은 정확한지 수시로 점검해야 한다.
+
+**권장: 콘텐츠 및 서비스 명칭은 친숙하고 일관성이 있어야 한다.**
+메인 화면에서 사용자가 인지한 용어가 서비스의 다른 영역에서 동일하지 않게 제공되면 사용자는 자신의 이동 과정에 대해 혼동을 겪을 수 있다. 서비스에서 사용하는 용어는 정확하고 일관성이 있어야 하며 사용자가 쉽게 이해할 수 있게 친숙하고 명확해야 한다.

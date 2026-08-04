@@ -1,0 +1,53 @@
+id: errata.main-menu-mobile.landmark-and-control-labels
+component: main-menu-mobile
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/main_menu_mobile.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".krds-main-menu-mobile"
+      - ".sch-input input"
+      - ".gnb-sub-trigger.has-depth3"
+      - ".depth3-wrap"
+    behavior: >-
+      The literal mobile menu navigation landmark and its search input lack accessible names, and depth3 disclosures lack targets.
+correction:
+  behavior: >-
+    Label the navigation landmark and search input and wire depth3 disclosure ids.
+  attributes:
+    - selector: ".krds-main-menu-mobile"
+      attribute: aria-label
+      rule: "menu label text"
+    - selector: ".sch-input input"
+      attribute: aria-label
+      rule: "search label or title text"
+    - selector: ".gnb-sub-trigger.has-depth3"
+      attribute: aria-controls
+      rule: "references: sibling .depth3-wrap[id]"
+    - selector: ".depth3-wrap"
+      attribute: id
+      rule: "stable generated id for the depth3 disclosure"
+fixtures:
+  - main-menu-mobile.default
+normalization:
+  whitelist:
+    - selector: ".krds-main-menu-mobile"
+      attribute: aria-label
+      operation: rewrite
+      rewriteValue: "전체 메뉴"
+    - selector: ".sch-input input"
+      attribute: aria-label
+      operation: rewrite
+      rewriteValue: "검색"
+    - selector: ".gnb-sub-trigger.has-depth3"
+      attribute: aria-controls
+      operation: omit
+    - selector: ".depth3-wrap"
+      attribute: id
+      operation: omit
+evidence:
+  rationale: >-
+    Framework adds landmark/search names and disclosure wiring; attributes are non-semantic additions vs upstream.

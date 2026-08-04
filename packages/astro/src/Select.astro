@@ -69,6 +69,7 @@ const selectClass = cx(recipe.control, state === 'complete' && 'completed', clas
     id={id}
     class={selectClass}
     title={title}
+    aria-label={variant === "sorting" ? title : undefined}
     aria-describedby={describedBy}
     aria-invalid={state === 'error' ? 'true' : consumerAriaInvalid}
   >

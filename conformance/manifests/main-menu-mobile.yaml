@@ -13,6 +13,7 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 errata:
+  - errata.main-menu-mobile.landmark-and-control-labels
   - errata.navigation.missing-landmark-semantics
 contract:
   semanticElement: navigation

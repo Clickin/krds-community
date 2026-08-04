@@ -1,0 +1,269 @@
+---
+title: 바텀시트
+description: 바텀 시트는 주요 콘텐츠 또는 선택 옵션을 일시적으로 집중하여 볼 수 있도록 하는 경우 사용한다.
+category: live-only
+---
+
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Modal as ReactModal } from "@krds-community/react";
+import { Modal as VueModal } from "@krds-community/vue";
+import { Modal as SvelteModal } from "@krds-community/svelte";
+import { Modal as SolidModal } from "@krds-community/solid";
+import { AngularModal } from "@docs/angular-previews.ts";
+import { Modal as AstroModal } from "@krds-community/astro";
+
+{/* krds-official:component_12_03 */}
+
+> 이 컴포넌트는 공식 웹사이트(2026-07-27 확인)에 있으나 고정 스냅샷 1.1.0(krds-uiux@1.1.0)에 포함되지 않습니다. 커뮤니티 구현과 conformance 결과가 없습니다.
+
+## 공식 문서
+
+바텀 시트는 주요 콘텐츠 또는 선택 옵션을 일시적으로 집중하여 볼 수 있도록 하는 경우 사용한다. 모바일 기기화면의 하단 가장자리에 고정하여 모달 형태로 표현한다.
+
+### 구조
+
+1. **오버레이(Overlay)** 바텀 시트와 기본 창을 시각적으로 구분하기 위한 그림자 또는 가림막
+2. **헤더(선택)** 바텀 시트에서 제공하는 콘텐츠나 요청하는 행동에 대한 간단한 정보를 담은 제목, 설명을 제공함
+3. **핸들(Handle)** 정해진 범위 내 값을 선택하는 선택자로, 슬라이더를 따라 좌/우로 이동함
+4. **본문** 콘텐츠 또는 컴포넌트 요소가 제공되는 영역
+5. **닫기 버튼** 사용자가 바텀 시트를 닫을 수 있게 하는 버튼 요소로 대게 ‘X’
+   아이콘으로 표현됨. 바텀 시트에서 데이터를 선택하여 제출하거나 행동을 확정해야 하는 경우, 닫기 버튼은 바텀 시트를 닫는 동시에 취소와 동일한 기능을 제공함
+
+### 용례
+
+#### 사용하기 적합한 경우
+
+- 사용자의 현재 상황을 보존하며, 추가정보 제공이 필요한 경우
+- 바텀시트는 기존화면을 유지한 채 부가적인 정보나 세부 옵션을 제공할 수 있어, 화면전환 없이도 사용자가 현재 맥락을 잃지 않고 추가 행동을 수행할 수 있습니다.
+- 사용자가 집중하여 주요 정보를 인지하여야 하는 경우
+- 바텀시트는 시각적으로 부각되어 표시되므로, 사용자의 시선을 자연스럽게 집중시켜 핵심 정보나 주요 선택 항목을 명확히 전달할 수 있습니다.
+
+#### 사용하기 적합하지 않은 경우
+
+- 사용자가 항상 필요로 하는 정보를 표시하는 경우
+- 바텀 시트는 화면의 일부를 의도적으로 가리기 때문에 항상 필요한 정보나 도구를 표시하는데 적합하지 않다
+- 서비스 이용에 따른 사용자 여정의 한 스텝으로 사용하는 경우
+- 바텀 시트는 서비스 제공 또는 정책 정보와 같이 상당 시간을 소비하는 페이지가 아닌 일시적 정보를 제공하는 UI에 적합합니다.
+
+### 사용성 가이드라인
+
+**닫기 버튼을 포함하여 구현하여야 한다.**
+바텀 시트는 상단 핸들을 아래로 스와이프 하거나 탭 하여 닫을 수 있지만, 이 기능을 모든 사용자가 알지 못 한다. 사용자가 바텀 시트를 안정적으로 닫을 수 있도록 화면에서 인지하기 쉬운 바텀 시트 상단에 ‘닫기’ 또는 ‘X’ 버튼을 포함하여 구성하는 것이 좋다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="닫기 버튼을 포함하여 구현하여야 한다."
+>
+  <div slot="react">
+    <div style="display: flex; justify-content: center;">
+      <ReactModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; justify-content: center;">
+      <VueModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; justify-content: center;">
+      <SvelteModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display: flex; justify-content: center;">
+      <SolidModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; justify-content: center;">
+      <AstroModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; justify-content: center;">
+      <AngularModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Modal } from "@krds-community/react";
+
+<div style="display: flex; justify-content: center;">
+  <ReactModal
+    open="true"
+    title="정렬 기준 선택"
+    description="정렬 기준을 선택해 주세요."
+    closeLabel="닫기"
+    cancelLabel="취소"
+    confirmLabel="선택"
+  />
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Modal } from "@krds-community/vue";
+</script>
+
+<div style="display: flex; justify-content: center;">
+  <VueModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Modal } from '@krds-community/svelte';
+</script>
+
+<div style="display: flex; justify-content: center;">
+  <SvelteModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+```tsx fw=solid
+import { Modal } from "@krds-community/solid";
+
+<div style="display: flex; justify-content: center;">
+  <SolidModal
+    open="true"
+    title="정렬 기준 선택"
+    description="정렬 기준을 선택해 주세요."
+    closeLabel="닫기"
+    cancelLabel="취소"
+    confirmLabel="선택"
+  />
+</div>;
+```
+
+```ts fw=angular
+import { KrdsModalComponent } from '@krds-community/angular';
+
+<div style="display: flex; justify-content: center;">
+  <krds-modal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+```astro fw=astro
+---
+import { Modal } from '@krds-community/astro';
+---
+
+<div style="display: flex; justify-content: center;">
+  <AstroModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="닫기 버튼을 포함하여 구현하여야 한다."
+>
+  <div slot="react">
+    <div style="display: flex; justify-content: center;">
+      <ReactModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; justify-content: center;">
+      <VueModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; justify-content: center;">
+      <SvelteModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display: flex; justify-content: center;">
+      <SolidModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; justify-content: center;">
+      <AstroModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; justify-content: center;">
+      <AngularModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Modal } from "@krds-community/react";
+
+<div style="display: flex; justify-content: center;">
+  <ReactModal
+    open="true"
+    title="정렬 기준 선택"
+    description="정렬 기준을 선택해 주세요."
+    cancelLabel="취소"
+    confirmLabel="선택"
+  />
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Modal } from "@krds-community/vue";
+</script>
+
+<div style="display: flex; justify-content: center;">
+  <VueModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Modal } from '@krds-community/svelte';
+</script>
+
+<div style="display: flex; justify-content: center;">
+  <SvelteModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+```tsx fw=solid
+import { Modal } from "@krds-community/solid";
+
+<div style="display: flex; justify-content: center;">
+  <SolidModal
+    open="true"
+    title="정렬 기준 선택"
+    description="정렬 기준을 선택해 주세요."
+    cancelLabel="취소"
+    confirmLabel="선택"
+  />
+</div>;
+```
+
+```ts fw=angular
+import { KrdsModalComponent } from '@krds-community/angular';
+
+<div style="display: flex; justify-content: center;">
+  <krds-modal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+```astro fw=astro
+---
+import { Modal } from '@krds-community/astro';
+---
+
+<div style="display: flex; justify-content: center;">
+  <AstroModal open="true" title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." cancelLabel="취소" confirmLabel="선택" />
+</div>
+```
+
+</PracticeExample>
+
+**다중으로 바텀 시트를 사용하지 않아야 한다.**
+여러 개의 바텀 시트를 서로 위로 쌓을 경우, 사용자는 현재 자신이 위치한 단계에 혼란을 줄 수 있어 하나의 바텀시트만 사용하는 것이 바람직하다. 부득이하게 여러 개의 바텀 시트를 사용할 수 밖에 없는 경우, 현 단계를 사용자에게 명확하게 전달하여야 하며, 시트를 닫을 때 현재의
+시트만 닫을지, 전체 시트를 닫을지를 구분하여 사용자에게 제공해야 한다.
+**짧은 상호작용에만 바텀 시트를 사용한다.**
+바텀 시트는 일시적인 UI 요소로 빠른 상호작용을 지원하기 위해 사용하는 것이 바람직하다. 사용자가 바텀 시트에 표시된 정보를 검토하는데 상당한 시간을 소비해야 하는 경우 바텀 시트를 사용하지 않는 것이 좋다.
+{/* /krds-official:component_12_03 */}

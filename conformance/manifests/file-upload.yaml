@@ -13,6 +13,7 @@ fixtures:
     props: {}
     states: [default, focus-visible]
 errata:
+  - errata.file-upload.control-label
   - errata.file-upload.nested-interactive-control
 contract:
   semanticElement: native-element

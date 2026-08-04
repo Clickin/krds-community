@@ -1,0 +1,116 @@
+---
+import { findPattern } from '../data/patterns';
+
+type Props = { patternId: string };
+const { patternId } = Astro.props as Props;
+const pattern = findPattern(patternId);
+---
+
+<section class="official-reference">
+  <div class="reference-heading">
+    <div>
+      <p class="pattern-kicker">Normative reference</p>
+    </div>
+  </div>
+  <div class="reference-links">
+    <a href={pattern.officialOverview} target="_blank" rel="noreferrer"><span>01</span><strong>패턴 개요</strong><small>원칙과 사용 맥락</small></a>
+    <a href={pattern.officialExample} target="_blank" rel="noreferrer"><span>02</span><strong>공식 사례</strong><small>단계별 화면과 예시</small></a>
+    <a href={pattern.officialChecklist} target="_blank" rel="noreferrer"><span>03</span><strong>체크리스트</strong><small>적용 전 검토 항목</small></a>
+  </div>
+</section>
+
+{pattern.officialStageLinks.length > 0 && (
+  <section class="pattern-section">
+    <h3>단계별 공식 문서</h3>
+    <ol class="stage-list">
+      {pattern.officialStageLinks.map((stage) => (
+        <li><a href={stage.href} target="_blank" rel="noreferrer">{stage.title}</a></li>
+      ))}
+    </ol>
+  </section>
+)}
+
+{pattern.officialLevels && (
+  <section class="pattern-section">
+    <h3>공식 적용 수준</h3>
+    <div class="level-list">{pattern.officialLevels.map((level) => <span>{level}</span>)}</div>
+  </section>
+)}
+
+<style>
+  .official-reference {
+    margin-block: 2rem;
+    padding: 1.25rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.85rem;
+    background: var(--sl-color-bg-nav);
+  }
+  .reference-heading {
+    margin-bottom: 1rem;
+  }
+  .pattern-kicker {
+    margin: 0;
+    color: var(--sl-color-text-accent);
+    font-size: 0.76rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .reference-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .reference-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.65rem;
+    background: var(--sl-color-bg);
+    color: var(--sl-color-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .reference-links a:hover {
+    border-color: var(--sl-color-accent);
+  }
+  .reference-links span {
+    font-weight: 700;
+    color: var(--sl-color-text-accent);
+  }
+  .reference-links strong {
+    display: block;
+    font-size: 0.95rem;
+  }
+  .reference-links small {
+    display: block;
+    color: var(--sl-color-gray-2);
+    font-size: 0.78rem;
+  }
+  .pattern-section {
+    margin-block: 1.5rem;
+  }
+  .pattern-section h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .stage-list {
+    padding-left: 1.2rem;
+  }
+  .stage-list li {
+    margin-bottom: 0.4rem;
+  }
+  .level-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .level-list span {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.4rem;
+    font-size: 0.85rem;
+  }
+</style>

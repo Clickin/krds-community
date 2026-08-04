@@ -14,7 +14,7 @@ export type SemanticSnapshot = Record<string, unknown> & {
 export class SelectorResolutionError extends Error {
   constructor(details: {
     kind: string;
-    side: 'upstream' | 'framework';
+    side: "upstream" | "framework";
     selector?: string;
     message: string;
   });
@@ -37,14 +37,12 @@ export type ContractLocator = EvaluatedLocator & {
   nth: (index: number) => ContractLocator;
 };
 
-export type ContractAncestorSelectors = Partial<
-  Record<'upstream' | 'framework', string>
->;
+export type ContractAncestorSelectors = Partial<Record<"upstream" | "framework", string>>;
 
 export function captureDom(
   locator: unknown,
   ignoredAttributes?: string | DomNormalizationRule[],
-  side?: 'upstream' | 'framework',
+  side?: "upstream" | "framework",
 ): Promise<DomSnapshot>;
 
 export function compareDom(
@@ -56,7 +54,7 @@ export function resolveContractRoot(
   page: { locator: (selector: string) => ContractLocator },
   root: EvaluatedLocator,
   selectors: ContractAncestorSelectors | undefined,
-  side: 'upstream' | 'framework',
+  side: "upstream" | "framework",
 ): Promise<{ locator: ContractLocator; marker?: string }>;
 
 export function inspectSemantics(locator: unknown): Promise<SemanticSnapshot>;

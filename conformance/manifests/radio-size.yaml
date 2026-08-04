@@ -11,7 +11,16 @@ fixtures:
     mandatory: true
     viewport: desktop
     props: {}
-    states: [default, focus-visible]
+    states: [default, checked, disabled, focus-visible]
+  - id: radio-size.default.large
+    sourceSelector: ".krds-form-check.large input"
+    sourceAncestorSelector: ".krds-form-check"
+    sourceFile: upstream/krds-html/html/code/radio_size.html
+    mandatory: true
+    viewport: desktop
+    props:
+      size: large
+    states: [default, checked, disabled, focus-visible]
 contract:
   semanticElement: label-and-radio
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

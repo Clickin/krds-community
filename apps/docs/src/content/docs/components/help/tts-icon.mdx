@@ -1,0 +1,169 @@
+---
+title: 아이콘 텍스트 읽기
+description: KRDS 아이콘 텍스트 읽기 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: help
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import { TtsIcon as ReactTtsIcon } from "@krds-community/react";
+import { TtsIcon as VueTtsIcon } from "@krds-community/vue";
+import { TtsIcon as SvelteTtsIcon } from "@krds-community/svelte";
+import { TtsIcon as SolidTtsIcon } from "@krds-community/solid";
+import { AngularTtsIcon } from "@docs/angular-previews.ts";
+import { TtsIcon as AstroTtsIcon } from "@krds-community/astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+
+<FrameworkPreview title="아이콘 텍스트 읽기">
+  <ReactTtsIcon slot="react" label="텍스트 읽기" client:only="react" />
+  <VueTtsIcon slot="vue" label="텍스트 읽기" client:only="vue" />
+  <SvelteTtsIcon slot="svelte" label="텍스트 읽기" client:only="svelte" />
+  <SolidTtsIcon slot="solid" label="텍스트 읽기" client:only="solid-js" />
+  <AngularTtsIcon slot="angular" label="텍스트 읽기" client:only="@analogjs/astro-angular" />
+  <AstroTtsIcon slot="astro" label="텍스트 읽기" />
+
+```tsx fw=react
+import { TtsIcon } from "@krds-community/react";
+
+export function Example() {
+  return <TtsIcon label="텍스트 읽기"></TtsIcon>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TtsIcon } from "@krds-community/vue";
+</script>
+
+<template>
+  <TtsIcon label="텍스트 읽기"></TtsIcon>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TtsIcon } from '@krds-community/svelte';
+</script>
+
+<TtsIcon label="텍스트 읽기"></TtsIcon>
+```
+
+```tsx fw=solid
+import { TtsIcon } from "@krds-community/solid";
+
+export function Example() {
+  return <TtsIcon label="텍스트 읽기"></TtsIcon>;
+}
+```
+
+```ts fw=angular
+import { KrdsTtsIconComponent } from '@krds-community/angular';
+
+// template
+<krds-tts-icon label="텍스트 읽기"></krds-tts-icon>
+```
+
+```astro fw=astro
+---
+import { TtsIcon } from '@krds-community/astro';
+---
+
+<TtsIcon label="텍스트 읽기"></TtsIcon>
+```
+
+</FrameworkPreview>
+
+{/* krds-official:component_08_06 */}
+
+## 공식 문서
+
+TTS 기능이란 화면에 표시된 주요 안내, 입력 서식 설명, 업무 진행 상태 등의 텍스트를 사용자가 요청했을 때 음성으로 읽어주는 보조적 사용자 지원 기능을 말하며, 이는 시각 정보의 대체가 아닌 보완 수단으로서 다른 접근성 기능(글자 크기 조절, 대비 향상, 쉬운모드 등)과 함께 제공되는 것을
+원칙으로 한다.
+
+### 구조
+
+1. **음성 안내** 아이콘 버튼과 및 텍스트 레이블
+2. **음성 제어** 음성 안내를 제어할 수 있는 버튼
+
+### 유형
+
+#### 페이지 단위 음성지원
+
+페이지 상단 또는 주요 타이틀 근처에 배치하여 이 페이지의 목적, 주요 기능, 이용 순서 등을 요약하여 낭독
+
+(예: 민원 신청 첫 화면, 복잡한 안내 페이지 등)
+
+#### 영역 단위 음성 지원
+
+카드, 서브 타이틀, 약관 등 독립된 정보 단위 옆에 배치하여 해당 영역 텍스트를 요약하여 낭독
+
+(예: 신청 안내, 도움 안내 등)
+
+### 용례
+
+#### 사용하기 적합한 경우
+
+- 페이지 전체 흐름을 요약·설명해야 하는 경우
+- 특정 영역(신청 단계 등)의 내용을 음성으로 설명할 때
+- 디지털 취약계층·고령자·외국인을 대상으로, 텍스트 이해를 보완해야 할 때
+- 튜토리얼/도움말 플로우에서 단계별로 화면 사용법을 읽어줄 때
+
+#### 사용하기 적합하지 않은 경우
+
+- 전체페이지를 의미 없이 읽어주어 재생되는 음성이 실질적인 정보나 도움을 제공하지 않는 경우
+- 음성 보조기구(스크린리더 등)와 동일한 내용을 중복해서 제공하는 경우
+
+### 사용성 가이드라인
+
+**명확한 레이블을 제공한다.**
+사용자자가 제공되는 정보를 정확하게 인지할 수 있도록 동작과 목적이 드러나도록버튼 레이블을 붙인다.
+**모범 사례**
+
+<PracticeExample kind="good" title="명확한 레이블을 제공한다.">
+  <div slot="react">
+    <ReactTtsIcon label="텍스트 읽기" client:only="react"></ReactTtsIcon>
+  </div>
+  <div slot="vue">
+    <VueTtsIcon label="텍스트 읽기" client:only="vue"></VueTtsIcon>
+  </div>
+  <div slot="svelte">
+    <SvelteTtsIcon label="텍스트 읽기" client:only="svelte"></SvelteTtsIcon>
+  </div>
+  <div slot="solid">
+    <SolidTtsIcon label="텍스트 읽기" client:only="solid-js"></SolidTtsIcon>
+  </div>
+  <div slot="astro">
+    <AstroTtsIcon label="텍스트 읽기"></AstroTtsIcon>
+  </div>
+  <div slot="angular">
+    <AngularTtsIcon label="텍스트 읽기" client:only="@analogjs/astro-angular"></AngularTtsIcon>
+  </div>
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample kind="bad" title="명확한 레이블을 제공한다.">
+  <div slot="react">
+    <ReactTtsIcon label="안내" client:only="react"></ReactTtsIcon>
+  </div>
+  <div slot="vue">
+    <VueTtsIcon label="안내" client:only="vue"></VueTtsIcon>
+  </div>
+  <div slot="svelte">
+    <SvelteTtsIcon label="안내" client:only="svelte"></SvelteTtsIcon>
+  </div>
+  <div slot="solid">
+    <SolidTtsIcon label="안내" client:only="solid-js"></SolidTtsIcon>
+  </div>
+  <div slot="astro">
+    <AstroTtsIcon label="안내"></AstroTtsIcon>
+  </div>
+  <div slot="angular">
+    <AngularTtsIcon label="안내" client:only="@analogjs/astro-angular"></AngularTtsIcon>
+  </div>
+</PracticeExample>
+
+**자동재생을 금지한다.**
+화면 전환 시 사용자의 조작 없이 자동으로 실행되지 않도록 한다. 또한 언제든지 일시정지, 정지할 수 있어야 한다.
+**너무 긴 내용을 읽어주지 않도록 한다.**
+음성 지원은 음성 보조기구(스크린리더 등)와 동일한 내용을 중복해서 제공하지 않도록 하고, 사용자에게 꼭 필요한 정보를 요약된 형태로 제공한다. (예 : 무엇을 할 수 있는지, 어떤 순서로 진행하면 되는지, 안내 및 주의 사항 등)
+{/* /krds-official:component_08_06 */}

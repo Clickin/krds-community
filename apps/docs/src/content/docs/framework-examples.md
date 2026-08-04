@@ -12,13 +12,13 @@ description: 같은 KRDS 패턴 과업을 React, Vue, Svelte, SolidJS, Angular, 
 
 각 구현은 다음 특성을 문서와 실행 뷰에서 확인할 수 있습니다.
 
-| 프레임워크 | 상태·이벤트·폼                                                       | SSR·hydration                                        |
-| ---------- | -------------------------------------------------------------------- | ---------------------------------------------------- |
-| React      | `useState`, `onChange`, `onSubmit`, 제어·비제어 입력                 | Astro `client:load` island에서 React hydration       |
-| Vue        | `ref`, `computed`, `v-model`, `@submit`                              | Astro `client:load` island에서 Vue hydration         |
-| Svelte     | `$state`, `$derived`, `bind:value`, `onsubmit`                       | Astro `client:load` island에서 Svelte hydration      |
-| SolidJS    | `createSignal`, reactive props, `onInput`                             | Astro `client:load` island에서 SolidJS hydration     |
-| Angular    | standalone component, `ngModel`, `ngSubmit`                           | Astro `client:load` island에서 Angular hydration     |
+| 프레임워크 | 상태·이벤트·폼                                                        | SSR·hydration                                         |
+| ---------- | --------------------------------------------------------------------- | ----------------------------------------------------- |
+| React      | `useState`, `onChange`, `onSubmit`, 제어·비제어 입력                  | Astro `client:load` island에서 React hydration        |
+| Vue        | `ref`, `computed`, `v-model`, `@submit`                               | Astro `client:load` island에서 Vue hydration          |
+| Svelte     | `$state`, `$derived`, `bind:value`, `onsubmit`                        | Astro `client:load` island에서 Svelte hydration       |
+| SolidJS    | `createSignal`, reactive props, `onInput`                             | Astro `client:load` island에서 SolidJS hydration      |
+| Angular    | standalone component, `ngModel`, `ngSubmit`                           | Astro `client:load` island에서 Angular hydration      |
 | Astro      | frontmatter `patternId`, native `submit`·`click`·`change`, HTML forms | 서버 렌더링 + 필요한 상호작용만 native script enhance |
 
 ## React 최적화 진단 절차

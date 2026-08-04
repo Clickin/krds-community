@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'astro/types';
+import type { HTMLAttributes } from "astro/types";
 import type {
   AccordionContractProps,
   AccordionItemContract,
@@ -7,17 +7,18 @@ import type {
   KrdsAdditionalProps,
   RadioContractProps,
   TextInputContractProps,
-} from '@krds-community/recipes';
+} from "@krds-community/recipes";
 
-export type NativeButtonAttributes = HTMLAttributes<'button'>;
-export type NativeInputAttributes = HTMLAttributes<'input'>;
-export type NativeElementAttributes = HTMLAttributes<'div'>;
+export type NativeButtonAttributes = HTMLAttributes<"button">;
+export type NativeInputAttributes = HTMLAttributes<"input">;
+export type NativeElementAttributes = HTMLAttributes<"div">;
 
 export interface ButtonProps
-  extends ButtonContractProps,
-    Omit<NativeButtonAttributes, keyof ButtonContractProps | 'class' | 'class:list' | 'type'> {
+  extends
+    ButtonContractProps,
+    Omit<NativeButtonAttributes, keyof ButtonContractProps | "class" | "class:list" | "type"> {
   class?: string;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
 }
 
 export interface AccordionProps extends AccordionContractProps, NativeElementAttributes {
@@ -26,27 +27,37 @@ export interface AccordionProps extends AccordionContractProps, NativeElementAtt
 }
 
 export interface ChoiceProps
-  extends ChoiceContractProps,
-    Omit<NativeInputAttributes, keyof ChoiceContractProps | 'checked' | 'class' | 'class:list' | 'type'> {
+  extends
+    ChoiceContractProps,
+    Omit<
+      NativeInputAttributes,
+      keyof ChoiceContractProps | "checked" | "class" | "class:list" | "type"
+    > {
   class?: string;
 }
 
 export interface RadioProps
-  extends RadioContractProps,
-    Omit<NativeInputAttributes, keyof RadioContractProps | 'checked' | 'class' | 'class:list' | 'type'> {
+  extends
+    RadioContractProps,
+    Omit<
+      NativeInputAttributes,
+      keyof RadioContractProps | "checked" | "class" | "class:list" | "type"
+    > {
   class?: string;
 }
 
 export interface TextInputProps
-  extends TextInputContractProps,
-    Omit<NativeInputAttributes, keyof TextInputContractProps | 'class' | 'class:list' | 'type'> {
+  extends
+    TextInputContractProps,
+    Omit<NativeInputAttributes, keyof TextInputContractProps | "class" | "class:list" | "type"> {
   class?: string;
-  type?: NativeInputAttributes['type'];
+  type?: NativeInputAttributes["type"];
 }
 
 export interface AdditionalProps
-  extends KrdsAdditionalProps,
-    Omit<NativeElementAttributes, keyof KrdsAdditionalProps | 'class' | 'class:list'> {
+  extends
+    KrdsAdditionalProps,
+    Omit<NativeElementAttributes, keyof KrdsAdditionalProps | "class" | "class:list"> {
   class?: string;
   kind?: string;
   [key: string]: unknown;

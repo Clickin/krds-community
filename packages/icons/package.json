@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "description": "프레임워크 중립 KRDS 아이콘 데이터와 SVG 보조 기능.",
   "license": "Apache-2.0",
-  "type": "module",
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

@@ -3,21 +3,21 @@
   "version": "0.1.0",
   "description": "선택적으로 적용하는 KRDS 기초 스타일.",
   "license": "Apache-2.0",
-  "type": "module",
   "files": [
     "dist",
     "LICENSE",
     "NOTICE"
   ],
+  "type": "module",
   "exports": {
     ".": "./dist/index.css",
     "./css": "./dist/index.css"
   },
-  "dependencies": {
-    "@krds-community/tokens": "workspace:*"
-  },
   "scripts": {
     "build": "node scripts/build.mjs",
     "lint": "node scripts/build.mjs --check"
+  },
+  "dependencies": {
+    "@krds-community/tokens": "workspace:*"
   }
 }

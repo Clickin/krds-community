@@ -1,8 +1,7 @@
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
-import { expect, test } from '@playwright/test';
-import type { Locator } from '@playwright/test';
-
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+import { expect, test } from "@playwright/test";
+import type { Locator } from "@playwright/test";
 
 type VisualCaptureContext = {
   origin: { x: number; y: number };
@@ -29,10 +28,7 @@ type VisualModule = {
     options?: Record<string, unknown>,
     context?: VisualCaptureContext,
   ) => Promise<Buffer>;
-  captureVisualSignature: (
-    locator: Locator,
-    context?: VisualCaptureContext,
-  ) => Promise<unknown>;
+  captureVisualSignature: (locator: Locator, context?: VisualCaptureContext) => Promise<unknown>;
   comparePixels: (
     expected: Buffer,
     actual: Buffer,
@@ -59,26 +55,20 @@ type RuntimeModule = {
 };
 
 const moduleUrl = (path: string) => pathToFileURL(resolve(process.cwd(), path)).href;
-const importModule = new Function('specifier', 'return import(specifier)') as (
+const importModule = new Function("specifier", "return import(specifier)") as (
   specifier: string,
 ) => Promise<unknown>;
 const loadVisual = () =>
-  importModule(moduleUrl('scripts/conformance/visual.mjs')) as Promise<VisualModule>;
-const captureCanonicalScreenshot = async (
-  locator: Locator,
-  context?: VisualCaptureContext,
-) => (await loadVisual()).captureCanonicalScreenshot(locator, undefined, context);
-const captureVisualSignature = async (
-  locator: Locator,
-  context?: VisualCaptureContext,
-) => (await loadVisual()).captureVisualSignature(locator, context);
+  importModule(moduleUrl("scripts/conformance/visual.mjs")) as Promise<VisualModule>;
+const captureCanonicalScreenshot = async (locator: Locator, context?: VisualCaptureContext) =>
+  (await loadVisual()).captureCanonicalScreenshot(locator, undefined, context);
+const captureVisualSignature = async (locator: Locator, context?: VisualCaptureContext) =>
+  (await loadVisual()).captureVisualSignature(locator, context);
 const comparePixels = async (expected: Buffer, actual: Buffer) =>
   (await loadVisual()).comparePixels(expected, actual);
 const createConformanceServer = async (root: string) =>
   (
-    (await importModule(
-      moduleUrl('scripts/conformance/server.mjs'),
-    )) as ServerModule
+    (await importModule(moduleUrl("scripts/conformance/server.mjs"))) as ServerModule
   ).createConformanceServer(root);
 const compareVisualCaptures = async (
   upstreamCapture: DeferredVisualCapture,
@@ -86,12 +76,12 @@ const compareVisualCaptures = async (
   enabled = true,
 ) =>
   (
-    (await importModule(
-      moduleUrl('scripts/conformance/runtime.mjs'),
-    )) as RuntimeModule
+    (await importModule(moduleUrl("scripts/conformance/runtime.mjs"))) as RuntimeModule
   ).compareVisualCaptures(upstreamCapture, frameworkCapture, enabled);
 
-test('visual signatures ignore document origin and detect rendered style changes', async ({ page }) => {
+test("visual signatures ignore document origin and detect rendered style changes", async ({
+  page,
+}) => {
   await page.setContent(`
     <style>
       .offset { margin-left: 37.375px; margin-top: 19.625px; }
@@ -121,20 +111,20 @@ test('visual signatures ignore document origin and detect rendered style changes
     </div>
   `);
 
-  const expected = await captureVisualSignature(page.locator('#expected'));
-  const actual = await captureVisualSignature(page.locator('#actual'));
+  const expected = await captureVisualSignature(page.locator("#expected"));
+  const actual = await captureVisualSignature(page.locator("#actual"));
   expect(actual).toEqual(expected);
-  expect(await captureVisualSignature(page.locator('#hidden-actual'))).toEqual(
-    await captureVisualSignature(page.locator('#hidden-expected')),
+  expect(await captureVisualSignature(page.locator("#hidden-actual"))).toEqual(
+    await captureVisualSignature(page.locator("#hidden-expected")),
   );
 
-  await page.locator('#actual').evaluate((element) => {
-    element.style.paddingInline = '20px';
+  await page.locator("#actual").evaluate((element) => {
+    element.style.paddingInline = "20px";
   });
-  expect(await captureVisualSignature(page.locator('#actual'))).not.toEqual(expected);
+  expect(await captureVisualSignature(page.locator("#actual"))).not.toEqual(expected);
 });
 
-test('runtime skips exact screenshots when visual signatures are equal', async ({ page }) => {
+test("runtime skips exact screenshots when visual signatures are equal", async ({ page }) => {
   await page.setContent(`
     <style>
       .sample { width: 18px; height: 18px; background: rgb(0, 94, 168); }
@@ -142,8 +132,8 @@ test('runtime skips exact screenshots when visual signatures are equal', async (
     <div id="upstream" class="sample"></div>
     <div id="framework" class="sample"></div>
   `);
-  const upstreamRoot = page.locator('#upstream');
-  const frameworkRoot = page.locator('#framework');
+  const upstreamRoot = page.locator("#upstream");
+  const frameworkRoot = page.locator("#framework");
   const [upstreamSignature, frameworkSignature] = await Promise.all([
     captureVisualSignature(upstreamRoot),
     captureVisualSignature(frameworkRoot),
@@ -173,13 +163,13 @@ test('runtime skips exact screenshots when visual signatures are equal', async (
       passed: true,
       differingPixels: 0,
       skipped: true,
-      comparison: 'dom-style',
+      comparison: "dom-style",
     },
     screenshots: { expected: null, actual: null },
   });
 });
 
-test('runtime captures exactly two screenshots and records pixel evidence for unequal signatures', async ({
+test("runtime captures exactly two screenshots and records pixel evidence for unequal signatures", async ({
   page,
 }) => {
   await page.setContent(`
@@ -191,8 +181,8 @@ test('runtime captures exactly two screenshots and records pixel evidence for un
     <div id="upstream" class="sample"></div>
     <div id="framework" class="sample"></div>
   `);
-  const upstreamRoot = page.locator('#upstream');
-  const frameworkRoot = page.locator('#framework');
+  const upstreamRoot = page.locator("#upstream");
+  const frameworkRoot = page.locator("#framework");
   const [upstreamSignature, frameworkSignature] = await Promise.all([
     captureVisualSignature(upstreamRoot),
     captureVisualSignature(frameworkRoot),
@@ -203,20 +193,20 @@ test('runtime captures exactly two screenshots and records pixel evidence for un
     {
       signature: upstreamSignature,
       captureScreenshot: async () => {
-        screenshotCalls.push('upstream');
+        screenshotCalls.push("upstream");
         return captureCanonicalScreenshot(upstreamRoot);
       },
     },
     {
       signature: frameworkSignature,
       captureScreenshot: async () => {
-        screenshotCalls.push('framework');
+        screenshotCalls.push("framework");
         return captureCanonicalScreenshot(frameworkRoot);
       },
     },
   );
 
-  expect(screenshotCalls).toEqual(['upstream', 'framework']);
+  expect(screenshotCalls).toEqual(["upstream", "framework"]);
   expect(comparison.evidence).toMatchObject({ passed: false });
   expect(comparison.evidence.expectedSize).toEqual(comparison.evidence.actualSize);
   expect(comparison.evidence.expectedSize?.width).toBeGreaterThan(0);
@@ -227,7 +217,7 @@ test('runtime captures exactly two screenshots and records pixel evidence for un
   expect(Buffer.isBuffer(comparison.screenshots.actual)).toBe(true);
 });
 
-test('runtime contains signature failures to visual evidence and uses exact pixel fallback', async ({
+test("runtime contains signature failures to visual evidence and uses exact pixel fallback", async ({
   page,
 }) => {
   await page.setContent(`
@@ -237,15 +227,15 @@ test('runtime contains signature failures to visual evidence and uses exact pixe
     <div id="upstream" class="sample"></div>
     <div id="framework" class="sample"></div>
   `);
-  const upstreamRoot = page.locator('#upstream');
-  const frameworkRoot = page.locator('#framework');
+  const upstreamRoot = page.locator("#upstream");
+  const frameworkRoot = page.locator("#framework");
   const frameworkSignature = await captureVisualSignature(frameworkRoot);
   let screenshotCalls = 0;
 
   const comparison = await compareVisualCaptures(
     {
       signature: null,
-      signatureError: 'signature capture failed',
+      signatureError: "signature capture failed",
       captureScreenshot: async () => {
         screenshotCalls += 1;
         return captureCanonicalScreenshot(upstreamRoot);
@@ -264,18 +254,18 @@ test('runtime contains signature failures to visual evidence and uses exact pixe
   expect(comparison.evidence).toMatchObject({
     passed: true,
     differingPixels: 0,
-    comparison: 'pixel-fallback',
-    signatureErrors: ['upstream visual signature: signature capture failed'],
+    comparison: "pixel-fallback",
+    signatureErrors: ["upstream visual signature: signature capture failed"],
   });
   expect(comparison.evidence.expectedSize).toEqual(comparison.evidence.actualSize);
   expect(comparison.evidence.expectedSize?.width).toBeGreaterThan(0);
   expect(comparison.evidence.expectedSize?.height).toBeGreaterThan(0);
-  expect(comparison.evidence).not.toHaveProperty('captureScreenshot');
-  expect(comparison.evidence).not.toHaveProperty('locator');
+  expect(comparison.evidence).not.toHaveProperty("captureScreenshot");
+  expect(comparison.evidence).not.toHaveProperty("locator");
   expect(JSON.parse(JSON.stringify(comparison.evidence))).toEqual(comparison.evidence);
 });
 
-test('canonical screenshots do not make static roots contain absolute descendants', async ({
+test("canonical screenshots do not make static roots contain absolute descendants", async ({
   page,
 }) => {
   await page.setContent(`
@@ -300,15 +290,15 @@ test('canonical screenshots do not make static roots contain absolute descendant
     </div>
   `);
 
-  const withAbsolute = await captureCanonicalScreenshot(page.locator('#with-absolute'));
-  const withoutAbsolute = await captureCanonicalScreenshot(page.locator('#without-absolute'));
+  const withAbsolute = await captureCanonicalScreenshot(page.locator("#with-absolute"));
+  const withoutAbsolute = await captureCanonicalScreenshot(page.locator("#without-absolute"));
   expect(await comparePixels(withAbsolute, withoutAbsolute)).toMatchObject({
     passed: true,
     differingPixels: 0,
   });
 });
 
-test('canonical capture aligns equal-size roots from different layout origins transactionally', async ({
+test("canonical capture aligns equal-size roots from different layout origins transactionally", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 240 });
@@ -336,17 +326,17 @@ test('canonical capture aligns equal-size roots from different layout origins tr
     <label id="root" class="sample">선택 항목</label>
   `;
   await page.setContent(`<body style="margin-left: 163.828125px">${sample}</body>`);
-  const sourceRoot = page.locator('#root');
+  const sourceRoot = page.locator("#root");
   const sourceBounds = await sourceRoot.boundingBox();
-  if (!sourceBounds) throw new Error('source root bounds unavailable');
+  if (!sourceBounds) throw new Error("source root bounds unavailable");
   const expected = await captureCanonicalScreenshot(sourceRoot);
   const expectedSignature = await captureVisualSignature(sourceRoot);
 
   await page.setContent(`<body style="margin: 0">${sample}</body>`);
-  const frameworkRoot = page.locator('#root');
+  const frameworkRoot = page.locator("#root");
   const beforeBounds = await frameworkRoot.boundingBox();
-  const beforeStyle = await page.locator('body').getAttribute('style');
-  if (!beforeBounds) throw new Error('framework root bounds unavailable');
+  const beforeStyle = await page.locator("body").getAttribute("style");
+  if (!beforeBounds) throw new Error("framework root bounds unavailable");
   expect(beforeBounds.x).toBe(0);
 
   const context = { origin: { x: sourceBounds.x, y: sourceBounds.y } };
@@ -362,10 +352,10 @@ test('canonical capture aligns equal-size roots from different layout origins tr
     actualSize: { width: 136, height: 35 },
   });
   expect(afterBounds).toEqual(beforeBounds);
-  expect(await page.locator('body').getAttribute('style')).toBe(beforeStyle);
+  expect(await page.locator("body").getAttribute("style")).toBe(beforeStyle);
 });
 
-test('canonical capture gives full-viewport focus paint an external gutter without resizing', async ({
+test("canonical capture gives full-viewport focus paint an external gutter without resizing", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 240 });
@@ -393,24 +383,24 @@ test('canonical capture gives full-viewport focus paint an external gutter witho
   const context = { origin: { x: 4, y: 0 }, gutter: 4 };
 
   await page.setContent(baseline);
-  await page.locator('button').focus();
-  const expectedRoot = page.locator('#root');
+  await page.locator("button").focus();
+  const expectedRoot = page.locator("#root");
   const expectedBeforeBounds = await expectedRoot.boundingBox();
-  const expectedBeforeStyle = await page.locator('body').getAttribute('style');
-  const expectedRootStyle = await expectedRoot.getAttribute('style');
-  if (!expectedBeforeBounds) throw new Error('expected root bounds unavailable');
+  const expectedBeforeStyle = await page.locator("body").getAttribute("style");
+  const expectedRootStyle = await expectedRoot.getAttribute("style");
+  if (!expectedBeforeBounds) throw new Error("expected root bounds unavailable");
   const expected = await captureCanonicalScreenshot(expectedRoot, context);
   expect(await expectedRoot.boundingBox()).toEqual(expectedBeforeBounds);
-  expect(await page.locator('body').getAttribute('style')).toBe(expectedBeforeStyle);
-  expect(await expectedRoot.getAttribute('style')).toBe(expectedRootStyle);
+  expect(await page.locator("body").getAttribute("style")).toBe(expectedBeforeStyle);
+  expect(await expectedRoot.getAttribute("style")).toBe(expectedRootStyle);
 
   await page.setContent(baseline);
-  await page.locator('button').focus();
-  const actualRoot = page.locator('#root');
+  await page.locator("button").focus();
+  const actualRoot = page.locator("#root");
   const actualBeforeBounds = await actualRoot.boundingBox();
-  const actualBeforeStyle = await page.locator('body').getAttribute('style');
-  const actualRootStyle = await actualRoot.getAttribute('style');
-  if (!actualBeforeBounds) throw new Error('actual root bounds unavailable');
+  const actualBeforeStyle = await page.locator("body").getAttribute("style");
+  const actualRootStyle = await actualRoot.getAttribute("style");
+  if (!actualBeforeBounds) throw new Error("actual root bounds unavailable");
   const actual = await captureCanonicalScreenshot(actualRoot, context);
 
   expect(await comparePixels(expected, actual)).toMatchObject({
@@ -420,11 +410,11 @@ test('canonical capture gives full-viewport focus paint an external gutter witho
     actualSize: { width: 1288, height: 96 },
   });
   expect(await actualRoot.boundingBox()).toEqual(actualBeforeBounds);
-  expect(await page.locator('body').getAttribute('style')).toBe(actualBeforeStyle);
-  expect(await actualRoot.getAttribute('style')).toBe(actualRootStyle);
+  expect(await page.locator("body").getAttribute("style")).toBe(actualBeforeStyle);
+  expect(await actualRoot.getAttribute("style")).toBe(actualRootStyle);
 });
 
-test('visual signatures compare equivalent SVG assets by rendered content', async ({ page }) => {
+test("visual signatures compare equivalent SVG assets by rendered content", async ({ page }) => {
   const compact = encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="black" d="M0 0h8v8H0z"/></svg>',
   );
@@ -449,12 +439,12 @@ test('visual signatures compare equivalent SVG assets by rendered content', asyn
     <span id="actual" class="icon"></span>
   `);
 
-  expect(await captureVisualSignature(page.locator('#actual'))).toEqual(
-    await captureVisualSignature(page.locator('#expected')),
+  expect(await captureVisualSignature(page.locator("#actual"))).toEqual(
+    await captureVisualSignature(page.locator("#expected")),
   );
 });
 
-test('visual signatures distinguish same-size images with different painted content', async ({
+test("visual signatures distinguish same-size images with different painted content", async ({
   page,
 }) => {
   const red = encodeURIComponent(
@@ -468,18 +458,16 @@ test('visual signatures distinguish same-size images with different painted cont
     <img id="actual" width="8" height="8" src="data:image/svg+xml,${blue}" alt="">
   `);
   await Promise.all([
-    page
-      .locator('#expected')
-      .evaluate((element) => (element as HTMLImageElement).decode()),
-    page.locator('#actual').evaluate((element) => (element as HTMLImageElement).decode()),
+    page.locator("#expected").evaluate((element) => (element as HTMLImageElement).decode()),
+    page.locator("#actual").evaluate((element) => (element as HTMLImageElement).decode()),
   ]);
 
-  expect(await captureVisualSignature(page.locator('#actual'))).not.toEqual(
-    await captureVisualSignature(page.locator('#expected')),
+  expect(await captureVisualSignature(page.locator("#actual"))).not.toEqual(
+    await captureVisualSignature(page.locator("#expected")),
   );
 });
 
-test('visual signatures preserve SVG sprite fragment identity', async ({ page }) => {
+test("visual signatures preserve SVG sprite fragment identity", async ({ page }) => {
   const compact = encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg"><symbol id="icon-a" viewBox="0 0 8 8"><path d="M0 0h8v8H0z"/></symbol><symbol id="icon-b" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></symbol></svg>',
   );
@@ -517,12 +505,12 @@ test('visual signatures preserve SVG sprite fragment identity', async ({ page })
     <span id="actual" class="icon"></span>
   `);
 
-  const expected = await captureVisualSignature(page.locator('#expected'));
-  expect(await captureVisualSignature(page.locator('#equivalent'))).toEqual(expected);
-  expect(await captureVisualSignature(page.locator('#actual'))).not.toEqual(expected);
+  const expected = await captureVisualSignature(page.locator("#expected"));
+  expect(await captureVisualSignature(page.locator("#equivalent"))).toEqual(expected);
+  expect(await captureVisualSignature(page.locator("#actual"))).not.toEqual(expected);
 });
 
-test('upstream runtime documents re-run DOMContentLoaded initialization', async ({ page }) => {
+test("upstream runtime documents re-run DOMContentLoaded initialization", async ({ page }) => {
   const server = await createConformanceServer(process.cwd());
   try {
     const initializedDocument = (value: string) => `
@@ -536,13 +524,13 @@ test('upstream runtime documents re-run DOMContentLoaded initialization', async 
       </body></html>
     `;
 
-    server.setRuntimeDocument(initializedDocument('first'));
+    server.setRuntimeDocument(initializedDocument("first"));
     await page.goto(`${server.baseUrl}/__upstream-runtime`);
-    await expect(page.locator('body')).toHaveAttribute('data-initialized', 'first');
+    await expect(page.locator("body")).toHaveAttribute("data-initialized", "first");
 
-    server.setRuntimeDocument(initializedDocument('second'));
+    server.setRuntimeDocument(initializedDocument("second"));
     await page.goto(`${server.baseUrl}/__upstream-runtime`);
-    await expect(page.locator('body')).toHaveAttribute('data-initialized', 'second');
+    await expect(page.locator("body")).toHaveAttribute("data-initialized", "second");
   } finally {
     await server.close();
   }

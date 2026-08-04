@@ -1,0 +1,353 @@
+---
+/* ---------------------------------------------------------------------------
+ * FrameworkPreview — named slot 기반 프레임워크 미리보기.
+ *
+ * MDX에서 사용:
+ *
+ *   <FrameworkPreview title="버튼">
+ *     <ReactButton slot="react" label="버튼" client:only="react" />
+ *     <VueButton slot="vue" label="버튼" client:only="vue" />
+ *     <SvelteButton slot="svelte" label="버튼" client:only="svelte" />
+ *     <SolidButton slot="solid" label="버튼" client:only="solid-js" />
+ *     <AngularButton slot="angular" label="버튼" client:only="@analogjs/astro-angular" />
+ *     <AstroButton slot="astro" label="버튼" />
+ *   </FrameworkPreview>
+ *
+ * 각 slot 이름은 프레임워크 ID와 일치해야 함.
+ * 각 framework component에는 MDX에서 `client:only`를 직접 붙인다.
+ * --------------------------------------------------------------------------- */
+
+import { Code } from 'astro:components';
+import { krdsShikiHighContrast, krdsShikiLight } from '../theme/krds-shiki';
+import AngularIcon from './icons/AngularIcon.astro';
+import AstroIcon from './icons/AstroIcon.astro';
+import ReactIcon from './icons/ReactIcon.astro';
+import SolidIcon from './icons/SolidIcon.astro';
+import SvelteIcon from './icons/SvelteIcon.astro';
+import VueIcon from './icons/VueIcon.astro';
+
+export type Framework = 'react' | 'vue' | 'svelte' | 'solid' | 'angular' | 'astro';
+
+export interface Props {
+  title?: string;
+  /** remark 플러그인이 주입한 코드 객체 */
+  code?: Partial<Record<Framework, string>>;
+}
+
+const { title, code: codeMap = {} } = Astro.props;
+
+const frameworks: { id: Framework; label: string }[] = [
+  { id: 'react', label: 'React' },
+  { id: 'vue', label: 'Vue' },
+  { id: 'svelte', label: 'Svelte' },
+  { id: 'solid', label: 'SolidJS' },
+  { id: 'angular', label: 'Angular' },
+  { id: 'astro', label: 'Astro' },
+];
+const missingSlots = frameworks.filter(({ id }) => !Astro.slots.has(id)).map(({ id }) => id);
+const missingCode = frameworks.filter(({ id }) => !codeMap[id]?.trim()).map(({ id }) => id);
+if (missingSlots.length || missingCode.length) {
+  const details = [
+    missingSlots.length ? `slots: ${missingSlots.join(', ')}` : '',
+    missingCode.length ? `code: ${missingCode.join(', ')}` : '',
+  ].filter(Boolean).join('; ');
+  throw new Error(`FrameworkPreview "${title ?? 'example'}" is incomplete (${details})`);
+}
+const shikiThemes = { light: krdsShikiLight, dark: krdsShikiHighContrast };
+
+const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}`;
+---
+
+<section class="framework-preview not-content" data-framework-preview data-title={title ?? ''}>
+  <header class="preview-header">
+    <p class="eyebrow">Framework native example</p>
+    <h2>{title ?? 'Framework'} 구현 예제</h2>
+  </header>
+
+  <div class="preview-grid">
+    <section class="source-pane" aria-label="소스 코드">
+      <div class="pane-toolbar source-toolbar">
+        <div class="framework-tabs" role="tablist" aria-label="프레임워크 선택">
+          <button type="button" role="tab" id={`${uid}-react-tab`} aria-controls={`${uid}-react`} aria-selected="true" tabindex="0" data-framework="react"><ReactIcon class="tab-icon" /><span>React</span></button>
+          <button type="button" role="tab" id={`${uid}-vue-tab`} aria-controls={`${uid}-vue`} aria-selected="false" tabindex="-1" data-framework="vue"><VueIcon class="tab-icon" /><span>Vue</span></button>
+          <button type="button" role="tab" id={`${uid}-svelte-tab`} aria-controls={`${uid}-svelte`} aria-selected="false" tabindex="-1" data-framework="svelte"><SvelteIcon class="tab-icon" /><span>Svelte</span></button>
+          <button type="button" role="tab" id={`${uid}-solid-tab`} aria-controls={`${uid}-solid`} aria-selected="false" tabindex="-1" data-framework="solid"><SolidIcon class="tab-icon" /><span>SolidJS</span></button>
+          <button type="button" role="tab" id={`${uid}-angular-tab`} aria-controls={`${uid}-angular`} aria-selected="false" tabindex="-1" data-framework="angular"><AngularIcon class="tab-icon" /><span>Angular</span></button>
+          <button type="button" role="tab" id={`${uid}-astro-tab`} aria-controls={`${uid}-astro`} aria-selected="false" tabindex="-1" data-framework="astro"><AstroIcon class="tab-icon" /><span>Astro</span></button>
+        </div>
+        <button type="button" class="quiet-action" data-copy-source>복사</button>
+      </div>
+
+      <div role="tabpanel" id={`${uid}-react`} aria-labelledby={`${uid}-react-tab`} class="source-panel" data-source-panel data-framework="react"><Code code={codeMap.react ?? ''} lang="tsx" themes={shikiThemes} defaultColor="light" /></div>
+      <div role="tabpanel" id={`${uid}-vue`} aria-labelledby={`${uid}-vue-tab`} class="source-panel" data-source-panel data-framework="vue" hidden><Code code={codeMap.vue ?? ''} lang="vue" themes={shikiThemes} defaultColor="light" /></div>
+      <div role="tabpanel" id={`${uid}-svelte`} aria-labelledby={`${uid}-svelte-tab`} class="source-panel" data-source-panel data-framework="svelte" hidden><Code code={codeMap.svelte ?? ''} lang="svelte" themes={shikiThemes} defaultColor="light" /></div>
+      <div role="tabpanel" id={`${uid}-solid`} aria-labelledby={`${uid}-solid-tab`} class="source-panel" data-source-panel data-framework="solid" hidden><Code code={codeMap.solid ?? ''} lang="tsx" themes={shikiThemes} defaultColor="light" /></div>
+      <div role="tabpanel" id={`${uid}-angular`} aria-labelledby={`${uid}-angular-tab`} class="source-panel" data-source-panel data-framework="angular" hidden><Code code={codeMap.angular ?? ''} lang="ts" themes={shikiThemes} defaultColor="light" /></div>
+      <div role="tabpanel" id={`${uid}-astro`} aria-labelledby={`${uid}-astro-tab`} class="source-panel" data-source-panel data-framework="astro" hidden><Code code={codeMap.astro ?? ''} lang="astro" themes={shikiThemes} defaultColor="light" /></div>
+    </section>
+
+    <section class="preview-pane" aria-label="컴포넌트 미리보기">
+      <div class="pane-toolbar preview-toolbar"><span>Preview</span></div>
+      <div class="preview-stage">
+        <div class="preview-viewport" data-preview-panel data-framework="react"><slot name="react" /></div>
+        <div class="preview-viewport" data-preview-panel data-framework="vue" hidden><slot name="vue" /></div>
+        <div class="preview-viewport" data-preview-panel data-framework="svelte" hidden><slot name="svelte" /></div>
+        <div class="preview-viewport" data-preview-panel data-framework="solid" hidden><slot name="solid" /></div>
+        <div class="preview-viewport" data-preview-panel data-framework="angular" hidden><slot name="angular" /></div>
+        <div class="preview-viewport" data-preview-panel data-framework="astro" hidden><slot name="astro" /></div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<script>
+  const STORAGE_KEY = 'krds-community:docs:framework';
+  const readStored = () => { try { return window.localStorage.getItem(STORAGE_KEY); } catch { return null; } };
+  const writeStored = (fw: string) => { try { window.localStorage.setItem(STORAGE_KEY, fw); } catch { } };
+  const selectFramework = (root: HTMLElement, framework: string) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
+    const target = tabs.find((t) => t.dataset.framework === framework);
+    if (!target) return false;
+    tabs.forEach((t) => { const sel = t === target; t.setAttribute('aria-selected', String(sel)); t.tabIndex = sel ? 0 : -1; });
+    root.dataset.framework = framework;
+    root.querySelectorAll<HTMLElement>('[data-source-panel]').forEach((p) => { p.hidden = p.dataset.framework !== framework; });
+    root.querySelectorAll<HTMLElement>('[data-preview-panel]').forEach((p) => { p.hidden = p.dataset.framework !== framework; });
+    return true;
+  };
+  const applyAll = (framework: string) => { document.querySelectorAll<HTMLElement>('[data-framework-preview]').forEach((r) => selectFramework(r, framework)); };
+  const initialize = (root: HTMLElement) => {
+    if (root.dataset.ready === 'true') return;
+    root.dataset.ready = 'true';
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
+    const copy = root.querySelector<HTMLButtonElement>('[data-copy-source]');
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => { const f = tab.dataset.framework; if (f) { applyAll(f); writeStored(f); } });
+      tab.addEventListener('keydown', (e) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+        e.preventDefault();
+        const ti = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        const t = tabs[ti]; const f = t?.dataset.framework;
+        if (t && f) { t.focus(); applyAll(f); writeStored(f); }
+      });
+    });
+    copy?.addEventListener('click', async () => {
+      const active = root.querySelector<HTMLElement>('[data-source-panel]:not([hidden])');
+      await navigator.clipboard.writeText(active?.textContent ?? '');
+      copy.textContent = '복사됨';
+      setTimeout(() => { copy.textContent = '복사'; }, 1200);
+    });
+    const stored = readStored();
+    const available = tabs.map((t) => t.dataset.framework).filter(Boolean) as string[];
+    if (stored && available.includes(stored)) selectFramework(root, stored);
+  };
+  const initAll = () => { document.querySelectorAll<HTMLElement>('[data-framework-preview]').forEach(initialize); };
+  if (document.documentElement.dataset.krdsFrameworkSync !== 'true') {
+    document.documentElement.dataset.krdsFrameworkSync = 'true';
+    window.addEventListener('storage', (e) => { if (e.key === STORAGE_KEY && e.newValue) applyAll(e.newValue); });
+  }
+  initAll();
+  document.addEventListener('astro:page-load', initAll);
+</script>
+
+<style>
+  .framework-preview {
+    margin-block: 2rem;
+  }
+
+  .preview-header {
+    margin-bottom: 1rem;
+  }
+
+  .preview-header .eyebrow {
+    margin-block-end: 0.25rem;
+    color: var(--sl-color-text-accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .preview-header h2 {
+    margin: 0;
+    color: var(--sl-color-text);
+    font-size: 1.15rem;
+  }
+
+  .preview-grid {
+    display: grid;
+    border: 1px solid var(--krds-mode-light-color-border-secondary-light);
+    border-radius: 1rem;
+    background: var(--krds-mode-light-color-background-white);
+    box-shadow: 0 1.25rem 3rem color-mix(in srgb, var(--krds-mode-light-color-text-basic) 10%, transparent);
+  }
+
+  .pane-toolbar {
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-inline: 0.75rem 1rem;
+    border-bottom: 1px solid var(--krds-mode-light-color-border-gray-light);
+    background: var(--krds-mode-light-color-background-white);
+    color: var(--krds-mode-light-color-text-basic);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .framework-tabs {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.2rem;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .framework-tabs button {
+    display: inline-flex;
+    min-height: 2.35rem;
+    align-items: center;
+    gap: 0.35rem;
+    padding-inline: 0.7rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--sl-color-gray-2);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .framework-tabs button[aria-selected='true'] {
+    border-color: var(--sl-color-hairline-light);
+    border-bottom-color: var(--sl-color-accent-high);
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--sl-color-bg-inline-code);
+    color: var(--sl-color-text-accent);
+  }
+
+  .framework-tabs button:hover:not([aria-selected='true']) {
+    background: var(--sl-color-bg-inline-code);
+    color: var(--sl-color-text);
+  }
+
+  .framework-tabs button:focus-visible,
+  .quiet-action:focus-visible {
+    outline: 2px solid var(--sl-color-accent-high);
+    outline-offset: 2px;
+  }
+
+  .framework-tabs .tab-icon {
+    flex: none;
+    width: 1em;
+    height: 1em;
+  }
+
+  .quiet-action {
+    display: inline-flex;
+    min-height: 2.35rem;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 0.7rem;
+    border: 1px solid var(--krds-mode-light-color-border-gray-light);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--krds-mode-light-color-text-subtle);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .quiet-action:hover {
+    border-color: var(--krds-mode-light-color-border-primary);
+    color: var(--krds-mode-light-color-text-primary);
+  }
+
+  .source-panel {
+    padding: 0;
+  }
+
+  .source-panel :global(figure) {
+    margin: 0;
+  }
+
+  .source-panel :global(.astro-code) {
+    min-height: 30rem;
+    margin: 0;
+    padding: 1.1rem 1.25rem 2rem;
+    border: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    font-size: 0.74rem;
+    line-height: 1.65;
+    tab-size: 2;
+  }
+
+  .preview-pane {
+    border-top: 1px solid var(--krds-mode-light-color-border-gray-light);
+    background: var(--krds-mode-light-color-background-gray-subtler);
+  }
+
+  .preview-toolbar span {
+    color: var(--krds-mode-light-color-text-subtle);
+    font-size: 0.72rem;
+  }
+
+  .preview-stage {
+    display: flex;
+    height: auto;
+    min-height: 30rem;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 1rem;
+    background-image: radial-gradient(circle, color-mix(in srgb, #6b7280 26%, transparent) 0.7px, transparent 0.7px);
+    background-size: 12px 12px;
+  }
+
+  .preview-viewport {
+    width: 100%;
+    height: auto;
+    min-height: 30rem;
+    background: var(--krds-mode-light-color-background-white);
+  }
+
+  .preview-viewport:empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sl-color-gray-4);
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 38rem) {
+    .pane-toolbar {
+      align-items: flex-start;
+      flex-wrap: wrap;
+      padding-block: 0.65rem;
+    }
+
+    .framework-tabs {
+      width: 100%;
+    }
+
+    .source-panel :global(.astro-code),
+    .preview-stage {
+      min-height: 26rem;
+    }
+
+    .preview-stage {
+      padding: 0.5rem;
+    }
+  }
+</style>

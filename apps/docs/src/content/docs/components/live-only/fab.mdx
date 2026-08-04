@@ -1,0 +1,346 @@
+---
+title: 플로팅
+description: 플로팅 버튼은 사용자가 화면에서 가장 자주 사용하고 중요한 작업에 단일 또는 다중으로 사용한다.
+category: live-only
+---
+
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+
+{/* krds-official:component_05_03 */}
+
+> 이 컴포넌트는 공식 웹사이트(2026-07-27 확인)에 있으나 고정 스냅샷 1.1.0(krds-uiux@1.1.0)에 포함되지 않습니다. 커뮤니티 구현과 conformance 결과가 없습니다.
+
+## 공식 문서
+
+플로팅 버튼은 사용자가 화면에서 가장 자주 사용하고 중요한 작업에 단일 또는 다중으로 사용한다. 페이지가 스크롤될 때에도 화면 우측 하단에 계속 표현 한다.
+
+### 구조
+
+1. **아이콘** 버튼 이름이 나타내는 의미/개념을 시각적으로 표상화한 요소
+2. **컨테이너** 아이콘 또는 아이콘과 레이블을 담고 있는 영역
+3. **레이블** 버튼 이름을 보여주는 텍스트
+4. **오버레이(Overlay)** 플로팅 액션 버튼과 기본 창을 시각적으로 구분하기 위한 그림자 또는 가림막
+5. **확장/닫기 버튼** 확장을 ‘+’, 닫기는 ‘X’로 표현
+
+### 용례
+
+#### 사용하기 적합한 경우
+
+- 사용자가 자주 사용하는 단일 행동이 있는 경우
+- 플로팅 버튼은 화면에서 사용자가 반복적으로 수행하는 주요 단일 행동이 있는 경우, 사용자의 접근성과 사용성을 증진할 수 있다.
+
+#### 사용하기 적합하지 않은 경우
+
+- 사용자의 주요 행동이 다수인 경우
+- 자주 사용하는 행동이 다수인 경우에는 메뉴, 탭바 등과 같이 다른 UI요소가 더 적합하다.
+- 제스처(Gesture) 중심 화면인 경우
+- 지도, 캘린더, 이미지 편집 등과 관리 제스처 조작이 많은 화면의 경우 손동작이나 콘텐츠 탐색 영역을 가려 사용성을저하할 수 있기 때문에 사용하기 적합하지 않다.
+
+### 사용성 가이드라인
+
+**플로팅 버튼은 우측 하단에 배치한다.**
+대부분의 사용자가 오른손 엄지손가락으로 스마트 폰을 조작하기 때문에 손가락 접근성을 고려하여 우측하단에 배치하는 것이 제일 안정적이다. 콘텐츠의 흐름이 위에서 아래로 진행되기 때문에 우측 하단에 배치하는 것이 콘텐츠 가림을 최소화 할 수 있다. ‘탭바’를 사용하는 경우 탭바와 겹치지 않게 ‘탭바’ 위 우측
+하단에 배치한다.
+**플로팅 버튼은 항상 화면의 모든 항목 위에 배치한다.**
+사용자가 어떤 화면에 있더라도 항상 동일한 주요 작업을 즉시 접근할 수 있도록 해야 하며, 사용자의 주의가 자연스럽게 플로팅 버튼에 집중할 수 있게 시각적 우선순위에 배치하는 것이 좋다.
+**너무 많은 플로팅 버튼을 구성하지 않는다.**
+플로팅 버튼을 2개 이상 사용해야 하는 경우 확장형 플로팅 버튼을 사용하는 것이 적합하며, 확장형 플로팅 버튼의 수량은 3개 이하로 구성하는 것이 적합하다. 너무 많은 수의 플로팅 버튼을 구성하는 경우 사용자에게 시작적 혼란과 중요 버튼의 집중도를 저하할 수 있다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="너무 많은 플로팅 버튼을 구성하지 않는다."
+>
+  <div slot="react">
+    <div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px;">
+        <ReactButton variant="primary" aria-label="문서 작성" client:only="react">+</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px;">
+        <VueButton variant="primary" aria-label="문서 작성" client:only="vue">+</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px;">
+        <SvelteButton variant="primary" aria-label="문서 작성" client:only="svelte">+</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px;">
+        <SolidButton variant="primary" aria-label="문서 작성" client:only="solid-js">+</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px;">
+        <AstroButton variant="primary" aria-label="문서 작성">+</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px;">
+        <AngularButton variant="primary" aria-label="문서 작성" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+<div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px;">
+    <Button variant="primary" aria-label="문서 작성">
+      +
+    </Button>
+  </div>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from '@krds-community/vue';
+</script>
+
+<div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px;">
+    <Button variant="primary" aria-label="문서 작성">+</Button>
+  </div>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px;">
+    <Button variant="primary" aria-label="문서 작성">+</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+<div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px;">
+    <Button variant="primary" aria-label="문서 작성">
+      +
+    </Button>
+  </div>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+<div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px;">
+    <krds-button variant="primary" aria-label="문서 작성">+</krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="position: relative; max-width: 360px; height: 220px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px;">
+    <Button variant="primary" aria-label="문서 작성">+</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="너무 많은 플로팅 버튼을 구성하지 않는다."
+>
+  <div slot="react">
+    <div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <ReactButton variant="primary" aria-label="링크 추가" client:only="react">+</ReactButton>
+        <ReactButton variant="primary" aria-label="파일 추가" client:only="react">+</ReactButton>
+        <ReactButton variant="primary" aria-label="사진 추가" client:only="react">+</ReactButton>
+        <ReactButton variant="primary" aria-label="문서 작성" client:only="react">+</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <VueButton variant="primary" aria-label="링크 추가" client:only="vue">+</VueButton>
+        <VueButton variant="primary" aria-label="파일 추가" client:only="vue">+</VueButton>
+        <VueButton variant="primary" aria-label="사진 추가" client:only="vue">+</VueButton>
+        <VueButton variant="primary" aria-label="문서 작성" client:only="vue">+</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <SvelteButton variant="primary" aria-label="링크 추가" client:only="svelte">+</SvelteButton>
+        <SvelteButton variant="primary" aria-label="파일 추가" client:only="svelte">+</SvelteButton>
+        <SvelteButton variant="primary" aria-label="사진 추가" client:only="svelte">+</SvelteButton>
+        <SvelteButton variant="primary" aria-label="문서 작성" client:only="svelte">+</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <SolidButton variant="primary" aria-label="링크 추가" client:only="solid-js">+</SolidButton>
+        <SolidButton variant="primary" aria-label="파일 추가" client:only="solid-js">+</SolidButton>
+        <SolidButton variant="primary" aria-label="사진 추가" client:only="solid-js">+</SolidButton>
+        <SolidButton variant="primary" aria-label="문서 작성" client:only="solid-js">+</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <AstroButton variant="primary" aria-label="링크 추가">+</AstroButton>
+        <AstroButton variant="primary" aria-label="파일 추가">+</AstroButton>
+        <AstroButton variant="primary" aria-label="사진 추가">+</AstroButton>
+        <AstroButton variant="primary" aria-label="문서 작성">+</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+      <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <AngularButton variant="primary" aria-label="링크 추가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+        <AngularButton variant="primary" aria-label="파일 추가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+        <AngularButton variant="primary" aria-label="사진 추가" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+        <AngularButton variant="primary" aria-label="문서 작성" label="+" client:only="@analogjs/astro-angular">+</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+<div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+    <Button variant="primary" aria-label="링크 추가">
+      +
+    </Button>
+    <Button variant="primary" aria-label="파일 추가">
+      +
+    </Button>
+    <Button variant="primary" aria-label="사진 추가">
+      +
+    </Button>
+    <Button variant="primary" aria-label="문서 작성">
+      +
+    </Button>
+  </div>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from '@krds-community/vue';
+</script>
+
+<div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+    <Button variant="primary" aria-label="링크 추가">+</Button>
+    <Button variant="primary" aria-label="파일 추가">+</Button>
+    <Button variant="primary" aria-label="사진 추가">+</Button>
+    <Button variant="primary" aria-label="문서 작성">+</Button>
+  </div>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+    <Button variant="primary" aria-label="링크 추가">+</Button>
+    <Button variant="primary" aria-label="파일 추가">+</Button>
+    <Button variant="primary" aria-label="사진 추가">+</Button>
+    <Button variant="primary" aria-label="문서 작성">+</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+<div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+    <Button variant="primary" aria-label="링크 추가">
+      +
+    </Button>
+    <Button variant="primary" aria-label="파일 추가">
+      +
+    </Button>
+    <Button variant="primary" aria-label="사진 추가">
+      +
+    </Button>
+    <Button variant="primary" aria-label="문서 작성">
+      +
+    </Button>
+  </div>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+<div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+    <krds-button variant="primary" aria-label="링크 추가">+</krds-button>
+    <krds-button variant="primary" aria-label="파일 추가">+</krds-button>
+    <krds-button variant="primary" aria-label="사진 추가">+</krds-button>
+    <krds-button variant="primary" aria-label="문서 작성">+</krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="position: relative; max-width: 360px; height: 260px; background: #f7f7f7; border-radius: 12px;">
+  <div style="position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px;">
+    <Button variant="primary" aria-label="링크 추가">+</Button>
+    <Button variant="primary" aria-label="파일 추가">+</Button>
+    <Button variant="primary" aria-label="사진 추가">+</Button>
+    <Button variant="primary" aria-label="문서 작성">+</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**확장형 플로팅 버튼 터치의 깊이는 2수준 이하로만 사용한다.**
+플로팅 버튼은 사용자의 주요 작업을 신속하게 접근, 수행하도록 설계된 구성 요소로, 터치의 깊이가 2수준 이상으로 깊어지면,사용자로 하여금 사용성 저하와 인지 저하를 유발할 수 있다.
+{/* /krds-official:component_05_03 */}

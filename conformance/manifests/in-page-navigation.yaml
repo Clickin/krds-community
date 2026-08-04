@@ -11,6 +11,8 @@ fixtures:
     viewport: desktop
     props: {}
     states: [default, focus-visible]
+errata:
+  - errata.in-page-navigation.landmark-label
 contract:
   semanticElement: navigation
   accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

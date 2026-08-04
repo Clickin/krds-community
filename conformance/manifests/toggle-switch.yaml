@@ -12,6 +12,8 @@ fixtures:
     props: {}
     states:
       - default
+      - checked
+      - disabled
       - id: focus-visible
         setup:
           - action: keyboard-focus

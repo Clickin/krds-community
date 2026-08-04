@@ -1,9 +1,9 @@
-import '@krds-community/styles/css';
+import "@krds-community/styles/css";
 
 const preview = {
   parameters: {
     controls: { expanded: true },
-    a11y: { test: 'error' },
+    a11y: { test: "error" },
   },
 };
 

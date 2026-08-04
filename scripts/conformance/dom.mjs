@@ -1,9 +1,9 @@
 export class SelectorResolutionError extends Error {
   constructor({ kind, side, selector, message, cause }) {
     const causeMessage =
-      cause instanceof Error ? cause.message : cause === undefined ? '' : String(cause);
+      cause instanceof Error ? cause.message : cause === undefined ? "" : String(cause);
     super(causeMessage ? `${message}: ${causeMessage}` : message);
-    this.name = 'SelectorResolutionError';
+    this.name = "SelectorResolutionError";
     this.kind = kind;
     this.side = side;
     this.selector = selector;
@@ -12,118 +12,120 @@ export class SelectorResolutionError extends Error {
 
   toEvidence({ fixtureId, framework, stateId }) {
     return [
-      ['fixture', fixtureId],
-      ['framework', framework],
-      ...(stateId === undefined ? [] : [['state', stateId]]),
-      ['kind', this.kind],
-      ['side', this.side],
-      ['selector', this.selector],
-      ['error', this.message],
+      ["fixture", fixtureId],
+      ["framework", framework],
+      ...(stateId === undefined ? [] : [["state", stateId]]),
+      ["kind", this.kind],
+      ["side", this.side],
+      ["selector", this.selector],
+      ["error", this.message],
     ]
       .map(([name, value]) => `${name}=${JSON.stringify(String(value))}`)
-      .join(' ');
+      .join(" ");
   }
 }
 
 const normalizeSnapshot = (value) => JSON.stringify(value);
 
-export const captureDom = async (
-  locator,
-  ignoredAttributes = [],
-  side = 'framework',
-) => {
-  const normalizationSide =
-    typeof ignoredAttributes === 'string' ? ignoredAttributes : side;
-  const rules = typeof ignoredAttributes === 'string' ? [] : ignoredAttributes;
+export const captureDom = async (locator, ignoredAttributes = [], side = "framework") => {
+  const normalizationSide = typeof ignoredAttributes === "string" ? ignoredAttributes : side;
+  const rules = typeof ignoredAttributes === "string" ? [] : ignoredAttributes;
   return locator.evaluate(
     (root, { normalizationRules, snapshotSide }) => {
       const generatedAttribute =
         /^(?:data-v-|data-conformance-|_ng(?:content|host)-|ng-reflect-|data-svelte)/;
       const referenceAttributes = new Set([
-        'aria-controls',
-        'aria-describedby',
-        'aria-labelledby',
-        'aria-owns',
-        'for',
-        'headers',
+        "aria-controls",
+        "aria-describedby",
+        "aria-labelledby",
+        "aria-owns",
+        "for",
+        "headers",
       ]);
       const booleanAttributes = new Set([
-        'allowfullscreen',
-        'async',
-        'autofocus',
-        'autoplay',
-        'checked',
-        'controls',
-        'default',
-        'defer',
-        'disabled',
-        'formnovalidate',
-        'hidden',
-        'inert',
-        'ismap',
-        'itemscope',
-        'loop',
-        'multiple',
-        'muted',
-        'nomodule',
-        'novalidate',
-        'open',
-        'playsinline',
-        'readonly',
-        'required',
-        'reversed',
-        'selected',
+        "allowfullscreen",
+        "async",
+        "autofocus",
+        "autoplay",
+        "checked",
+        "controls",
+        "default",
+        "defer",
+        "disabled",
+        "formnovalidate",
+        "hidden",
+        "inert",
+        "ismap",
+        "itemscope",
+        "loop",
+        "multiple",
+        "muted",
+        "nomodule",
+        "novalidate",
+        "open",
+        "playsinline",
+        "readonly",
+        "required",
+        "reversed",
+        "selected",
       ]);
-      const ids = new Map();
-      let nextId = 0;
-      root.querySelectorAll('[id]').forEach((element) => {
-        const id = element.getAttribute('id');
-        if (id && !ids.has(id)) ids.set(id, `generated-${++nextId}`);
-      });
-      if (root instanceof Element) {
-        const id = root.getAttribute('id');
-        if (id && !ids.has(id)) ids.set(id, `generated-${++nextId}`);
-      }
-      const normalizeAttribute = (name, value) => {
-        if (booleanAttributes.has(name)) return '';
-        if (name === 'id') return ids.get(value) ?? value;
-        if (referenceAttributes.has(name)) {
-          return value
-            .split(/\s+/)
-            .map((part) => ids.get(part) ?? part)
-            .join(' ');
-        }
-        if (name === 'href' && value.startsWith('#')) {
-          return `#${ids.get(value.slice(1)) ?? value.slice(1)}`;
-        }
-        if (name === 'class') return value.split(/\s+/).filter(Boolean).sort().join(' ');
-        return value;
-      };
       const matchesRule = (node, rule) =>
-        typeof rule?.selector === 'string' && node.matches(rule.selector);
+        typeof rule?.selector === "string" && node.matches(rule.selector);
       const isIgnoreElement = (rule) =>
-        rule?.ignoreElement === true || rule?.operation === 'ignore-element';
+        rule?.ignoreElement === true || rule?.operation === "ignore-element";
       const isIgnoreSubtree = (rule) =>
-        rule?.ignoreSubtree === true || rule?.operation === 'ignore-subtree';
+        rule?.ignoreSubtree === true || rule?.operation === "ignore-subtree";
       const isRewrite = (rule) =>
-        rule?.operation === 'rewrite' ||
-        Object.prototype.hasOwnProperty.call(rule ?? {}, 'rewriteValue');
+        rule?.operation === "rewrite" ||
+        Object.prototype.hasOwnProperty.call(rule ?? {}, "rewriteValue");
       const rewriteValue = (rule) =>
-        Object.prototype.hasOwnProperty.call(rule ?? {}, 'rewriteValue')
+        Object.prototype.hasOwnProperty.call(rule ?? {}, "rewriteValue")
           ? rule.rewriteValue
           : rule.value;
       const isOmission = (rule) =>
         !isRewrite(rule) &&
         !isIgnoreElement(rule) &&
         !isIgnoreSubtree(rule) &&
-        (rule?.operation === 'omit' ||
-          (typeof rule?.attribute === 'string' && typeof rule?.rule === 'string'));
+        (rule?.operation === "omit" ||
+          (typeof rule?.attribute === "string" && typeof rule?.rule === "string"));
+      const ids = new Map();
+      let nextId = 0;
+      // Ids whose id attribute is omitted by a normalization rule must not
+      // shift the generated numbering of the remaining ids, or every shared id
+      // after them would get a different token on each side.
+      const omittedIdRules = normalizationRules.filter(
+        (rule) => isOmission(rule) && rule.attribute === "id",
+      );
+      root.querySelectorAll("[id]").forEach((element) => {
+        if (omittedIdRules.some((rule) => element.matches(rule.selector))) return;
+        const id = element.getAttribute("id");
+        if (id && !ids.has(id)) ids.set(id, `generated-${++nextId}`);
+      });
+      if (root instanceof Element) {
+        const id = root.getAttribute("id");
+        if (id && !ids.has(id)) ids.set(id, `generated-${++nextId}`);
+      }
+      const normalizeAttribute = (name, value) => {
+        if (booleanAttributes.has(name)) return "";
+        if (name === "id") return ids.get(value) ?? value;
+        if (referenceAttributes.has(name)) {
+          return value
+            .split(/\s+/)
+            .map((part) => ids.get(part) ?? part)
+            .join(" ");
+        }
+        if (name === "href" && value.startsWith("#")) {
+          return `#${ids.get(value.slice(1)) ?? value.slice(1)}`;
+        }
+        if (name === "class") return value.split(/\s+/).filter(Boolean).sort().join(" ");
+        return value;
+      };
       const serialize = (node) => {
         if (node.nodeType === Node.TEXT_NODE) {
-          const text = node.textContent?.replace(/\s+/g, ' ').trim();
+          const text = node.textContent?.replace(/\s+/g, " ").trim();
           return text ? { text } : null;
         }
-        if (!(node instanceof Element) || node.matches('script, style')) return null;
+        if (!(node instanceof Element) || node.matches("script, style")) return null;
         const matchingRules = normalizationRules.filter((rule) => matchesRule(node, rule));
         if (matchingRules.some(isIgnoreSubtree)) return null;
         const serializeChildren = () =>
@@ -141,9 +143,9 @@ export const captureDom = async (
           matchingRules
             .filter(
               (rule) =>
-                typeof rule.attribute === 'string' &&
+                typeof rule.attribute === "string" &&
                 isRewrite(rule) &&
-                snapshotSide === 'upstream',
+                snapshotSide === "upstream",
             )
             .map((rule) => [rule.attribute, String(rewriteValue(rule))]),
         );
@@ -163,16 +165,16 @@ export const captureDom = async (
           .sort(([left], [right]) => left.localeCompare(right));
         const control = node;
         const state = {};
-        if ('value' in control && typeof control.value === 'string') state.value = control.value;
-        if ('checked' in control && typeof control.checked === 'boolean') {
+        if ("value" in control && typeof control.value === "string") state.value = control.value;
+        if ("checked" in control && typeof control.checked === "boolean") {
           state.checked = control.checked;
         }
-        if ('selectedIndex' in control && typeof control.selectedIndex === 'number') {
+        if ("selectedIndex" in control && typeof control.selectedIndex === "number") {
           state.selectedIndex = control.selectedIndex;
         }
         if (node instanceof HTMLDetailsElement) state.open = node.open;
         return {
-          tag: node.tagName.toLocaleLowerCase('en-US'),
+          tag: node.tagName.toLocaleLowerCase("en-US"),
           attributes: serializedAttributes,
           ...(Object.keys(state).length ? { state } : {}),
           children: serializeChildren(),
@@ -205,26 +207,26 @@ export const resolveContractRoot = async (page, root, selectors, side) => {
       (element, data) => {
         const ancestor = element.closest(data.selector);
         if (!ancestor) return false;
-        ancestor.setAttribute('data-conformance-contract-root', data.marker);
+        ancestor.setAttribute("data-conformance-contract-root", data.marker);
         return true;
       },
       { selector, marker },
     );
   } catch (cause) {
     throw new SelectorResolutionError({
-      kind: 'contract-ancestor',
+      kind: "contract-ancestor",
       side,
       selector,
-      message: 'Contract ancestor selector could not be evaluated',
+      message: "Contract ancestor selector could not be evaluated",
       cause,
     });
   }
   if (!found) {
     throw new SelectorResolutionError({
-      kind: 'contract-ancestor',
+      kind: "contract-ancestor",
       side,
       selector,
-      message: 'Contract ancestor selector did not resolve an ancestor',
+      message: "Contract ancestor selector did not resolve an ancestor",
     });
   }
   const contractLocator = page.locator(`[data-conformance-contract-root="${marker}"]`);
@@ -233,16 +235,16 @@ export const resolveContractRoot = async (page, root, selectors, side) => {
     contractCount = await contractLocator.count();
   } catch (cause) {
     throw new SelectorResolutionError({
-      kind: 'contract-ancestor',
+      kind: "contract-ancestor",
       side,
       selector,
-      message: 'Contract ancestor selector result could not be counted',
+      message: "Contract ancestor selector result could not be counted",
       cause,
     });
   }
   if (contractCount !== 1) {
     throw new SelectorResolutionError({
-      kind: 'contract-ancestor',
+      kind: "contract-ancestor",
       side,
       selector,
       message: `Contract ancestor selector did not resolve exactly one element (${contractCount})`,
@@ -261,22 +263,22 @@ export const withCorrectedAttributes = async (root, rules, captureCorrectedEvide
     const correctionError = await root.evaluate(
       (element, { key, rewrites }) => {
         const referenceAttributes = new Set([
-          'aria-activedescendant',
-          'aria-controls',
-          'aria-describedby',
-          'aria-details',
-          'aria-errormessage',
-          'aria-flowto',
-          'aria-labelledby',
-          'aria-owns',
-          'for',
-          'headers',
+          "aria-activedescendant",
+          "aria-controls",
+          "aria-describedby",
+          "aria-details",
+          "aria-errormessage",
+          "aria-flowto",
+          "aria-labelledby",
+          "aria-owns",
+          "for",
+          "headers",
         ]);
         const restorations = [];
         window[key] = restorations;
         try {
           const plans = rewrites.flatMap((rule, index) => {
-            if (typeof rule?.selector !== 'string' || typeof rule?.attribute !== 'string') {
+            if (typeof rule?.selector !== "string" || typeof rule?.attribute !== "string") {
               throw new Error(
                 `Accessibility correction rule ${index + 1} requires a selector and attribute`,
               );
@@ -293,11 +295,11 @@ export const withCorrectedAttributes = async (root, rules, captureCorrectedEvide
               );
             }
             const rewrite =
-              rule.operation === 'rewrite' ||
-              Object.prototype.hasOwnProperty.call(rule, 'rewriteValue');
+              rule.operation === "rewrite" ||
+              Object.prototype.hasOwnProperty.call(rule, "rewriteValue");
             const hasValue =
-              Object.prototype.hasOwnProperty.call(rule, 'rewriteValue') ||
-              Object.prototype.hasOwnProperty.call(rule, 'value');
+              Object.prototype.hasOwnProperty.call(rule, "rewriteValue") ||
+              Object.prototype.hasOwnProperty.call(rule, "value");
             if (rewrite && !hasValue) {
               throw new Error(
                 `Accessibility correction rewrite has no value: ${rule.selector} [${rule.attribute}]`,
@@ -305,7 +307,7 @@ export const withCorrectedAttributes = async (root, rules, captureCorrectedEvide
             }
             const expected = rewrite
               ? String(
-                  Object.prototype.hasOwnProperty.call(rule, 'rewriteValue')
+                  Object.prototype.hasOwnProperty.call(rule, "rewriteValue")
                     ? rule.rewriteValue
                     : rule.value,
                 )
@@ -324,7 +326,7 @@ export const withCorrectedAttributes = async (root, rules, captureCorrectedEvide
             if (value === null) candidate.removeAttribute(name);
             else candidate.setAttribute(name, value);
           };
-          const candidates = [...element.querySelectorAll('*'), element];
+          const candidates = [...element.querySelectorAll("*"), element];
 
           for (const { candidate, rule, expected } of plans) {
             updateAttribute(candidate, rule.attribute, expected);
@@ -340,15 +342,15 @@ export const withCorrectedAttributes = async (root, rules, captureCorrectedEvide
           }
 
           const targetsById = new Map();
-          element.ownerDocument.querySelectorAll('[id]').forEach((candidate) => {
-            const id = candidate.getAttribute('id');
+          element.ownerDocument.querySelectorAll("[id]").forEach((candidate) => {
+            const id = candidate.getAttribute("id");
             if (!id) return;
             const targets = targetsById.get(id) ?? [];
             targets.push(candidate);
             targetsById.set(id, targets);
           });
           for (const { candidate, rule, expected } of plans) {
-            if (rule.attribute === 'id' && expected !== null) {
+            if (rule.attribute === "id" && expected !== null) {
               const targets = targetsById.get(expected) ?? [];
               if (targets.length !== 1 || targets[0] !== candidate) {
                 throw new Error(
@@ -404,26 +406,28 @@ export const withCorrectedAttributes = async (root, rules, captureCorrectedEvide
 
 export const inspectSemantics = async (locator) =>
   locator.evaluate((element) => {
-    const label = element.getAttribute('aria-label') ?? '';
+    const label = element.getAttribute("aria-label") ?? "";
     const style = getComputedStyle(element);
-    const tag = element.tagName.toLocaleLowerCase('en-US');
+    const tag = element.tagName.toLocaleLowerCase("en-US");
     const isNativeFormControl = element.matches(
-      'button, fieldset, input, object, optgroup, option, output, select, textarea',
+      "button, fieldset, input, object, optgroup, option, output, select, textarea",
     );
     const form = {};
     if (isNativeFormControl) {
-      form.name = 'name' in element ? String(element.name ?? '') : '';
-      form.value = 'value' in element ? String(element.value ?? '') : '';
-      form.checked = 'checked' in element ? Boolean(element.checked) : undefined;
-      form.disabled = 'disabled' in element ? Boolean(element.disabled) : undefined;
-      form.required = 'required' in element ? Boolean(element.required) : undefined;
-      form.readOnly = 'readOnly' in element ? Boolean(element.readOnly) : undefined;
+      form.name = "name" in element ? String(element.name ?? "") : "";
+      form.value = "value" in element ? String(element.value ?? "") : "";
+      form.checked = "checked" in element ? Boolean(element.checked) : undefined;
+      form.disabled = "disabled" in element ? Boolean(element.disabled) : undefined;
+      form.required = "required" in element ? Boolean(element.required) : undefined;
+      form.readOnly = "readOnly" in element ? Boolean(element.readOnly) : undefined;
     }
     return {
       tag,
-      role: element.getAttribute('role'),
+      role: element.getAttribute("role"),
       label,
-      attributes: Object.fromEntries([...element.attributes].map(({ name, value }) => [name, value])),
+      attributes: Object.fromEntries(
+        [...element.attributes].map(({ name, value }) => [name, value]),
+      ),
       computedStyle: {
         boxSizing: style.boxSizing,
         display: style.display,

@@ -1,0 +1,281 @@
+---
+/**
+ * Starlight Sidebar override using the @krds-community/astro/Accordion component.
+ *
+ * Top-level sidebar groups render as Accordion items.
+ * Nested sub-groups under "컴포넌트" render as a nested accordion
+ * within the parent accordion body using KRDS accordion CSS classes.
+ *
+ * State persistence (open/close + scroll position) across page loads
+ * is preserved via an adapted version of Starlight's internal SidebarPersister.
+ */
+
+interface SidebarLink {
+  type: 'link';
+  label: string;
+  href: string;
+  isCurrent?: boolean;
+  attrs?: Record<string, string | null | undefined>;
+  badge?: { variant: string; text: string; class?: string };
+}
+interface SidebarGroup {
+  type: 'group';
+  label: string;
+  entries: (SidebarLink | SidebarGroup)[];
+  collapsed: boolean;
+  badge?: { variant: string; text: string; class?: string };
+}
+type SidebarEntry = SidebarLink | SidebarGroup;
+
+import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
+import Accordion from '@krds-community/astro/Accordion';
+
+const { sidebar } = Astro.locals.starlightRoute;
+const sidebarEntries = sidebar as unknown as SidebarEntry[];
+
+const hasCurrent = (entries: SidebarEntry[]): boolean =>
+  entries.some(
+    (e) => e.type === 'link'
+      ? e.isCurrent
+      : e.type === 'group' && hasCurrent(e.entries),
+  );
+/** Render a list of sidebar links as HTML string for the accordion body. */
+const renderLinks = (entries: SidebarEntry[], nested = false): string =>
+  `<ul class="krds-sidebar-list${nested ? ' krds-sidebar-list-nested' : ''}">
+${entries.map((entry) => {
+  if (entry.type === 'link') {
+    const isPage = entry.isCurrent ? ' aria-current="page"' : '';
+    const safeAttrs = entry.attrs
+      ? ' ' + Object.entries(entry.attrs).map(([k, v]) => `${k}="${v}"`).join(' ')
+      : '';
+    const badgeHtml = entry.badge
+      ? `<span class="krds-sidebar-badge${entry.badge.class ? ' ' + entry.badge.class : ''}">${entry.badge.text}</span>`
+      : '';
+    const linkClass = nested ? '' : ' large';
+    return `    <li>
+      <a href="${entry.href}" class="krds-sidebar-link${linkClass}"${isPage}${safeAttrs}>
+        <span class="krds-sidebar-link-label">${entry.label}</span>
+        ${badgeHtml}
+      </a>
+    </li>`;
+  }
+  /* group: render as nested accordion */
+  return renderSidebarGroup(entry);
+}).join('\n')}
+</ul>`;
+
+/** Render a nested sidebar group as a KRDS-class accordion HTML string. */
+const renderSidebarGroup = (entry: SidebarGroup): string => {
+  const itemsHtml = entry.entries
+    .filter((e): e is SidebarLink => e.type === 'link')
+    .map((link) => {
+      const isPage = link.isCurrent ? ' aria-current="page"' : '';
+      return `<li>
+        <a href="${link.href}" class="krds-sidebar-link"${isPage}>
+          <span class="krds-sidebar-link-label">${link.label}</span>
+        </a>
+      </li>`;
+    })
+    .join('\n');
+  const nestedGroups = entry.entries.filter((e): e is SidebarGroup => e.type === 'group');
+  const nestedHtml = nestedGroups.length > 0
+    ? renderLinks(nestedGroups, true)
+    : '';
+  // Nest sub-groups using KRDS accordion classes
+  if (nestedGroups.length > 0 && !itemsHtml) {
+    return `<li class="krds-sidebar-group-item">
+      <div class="krds-accordion">
+${nestedGroups.map((g) => {
+  const open = hasCurrent(g.entries);
+  const subLinksHtml = g.entries
+    .filter((e): e is SidebarLink => e.type === 'link')
+    .map((link) => {
+      const isPage = link.isCurrent ? ' aria-current="page"' : '';
+      return `      <li>
+        <a href="${link.href}" class="krds-sidebar-link"${isPage}>
+          <span class="krds-sidebar-link-label">${link.label}</span>
+        </a>
+      </li>`;
+    })
+    .join('\n');
+  return `        <div class="accordion-item${open ? ' active' : ''}">
+          <h5 class="accordion-header">
+            <button type="button" class="btn-accordion${open ? ' active' : ''}" aria-expanded="${open ? 'true' : 'false'}" data-krds-sidebar-group>
+              <span class="krds-sidebar-group-label">${g.label}</span>
+            </button>
+          </h5>
+          <div class="accordion-collapse collapse${open ? ' show' : ''}" role="region"${open ? '' : ' hidden'}>
+            <div class="accordion-body">
+              <ul class="krds-sidebar-list krds-sidebar-list-nested">
+${subLinksHtml}
+              </ul>
+            </div>
+          </div>
+        </div>`;
+}).join('\n')}
+      </div>
+    </li>`;
+  }
+  return `<li class="krds-sidebar-group-item">
+    <ul class="krds-sidebar-list krds-sidebar-list-nested">
+${itemsHtml || nestedHtml}
+    </ul>
+  </li>`;
+};
+
+const accordionItems = sidebarEntries
+  .filter((e): e is SidebarGroup => e.type === 'group')
+  .map((group) => ({
+    id: group.label,
+    title: group.label,
+    content: renderLinks(group.entries, false),
+  }));
+const defaultOpenIds = sidebarEntries
+  .filter((e): e is SidebarGroup => e.type === 'group' && hasCurrent(e.entries))
+  .map((g) => g.label);
+---
+
+
+<div id="krds-sidebar-wrapper">
+  <sl-sidebar-state-persist data-hash={sidebarEntries.map(e => e.type === 'group' ? e.label : '').join(',')}>
+    <nav class="krds-sidebar-nav" aria-label={Astro.locals.t('sidebarNav.accessibleLabel')}>
+      <Accordion
+        items={accordionItems}
+        type="default"
+        multiple={true}
+        defaultOpen={defaultOpenIds}
+      />
+    </nav>
+
+    <script is:inline>
+      (() => {
+        function saveSidebarState() {
+          const root = document.getElementById('krds-sidebar-wrapper');
+          if (!root) return;
+          const groups = root.querySelectorAll('[data-krds-sidebar-group]');
+          var persist = root.querySelector('sl-sidebar-state-persist');
+          var hash = persist ? persist.getAttribute('data-hash') : null;
+          var scroller = document.getElementById('starlight__sidebar');
+          try {
+            sessionStorage.setItem('krds-sidebar-state', JSON.stringify({
+              hash: hash,
+              open: Array.from(groups).map(function (btn) { return btn.getAttribute('aria-expanded') === 'true'; }),
+              scroll: scroller ? scroller.scrollTop : 0,
+            }));
+          } catch (e) {}
+        }
+
+        document.addEventListener('scrollend', saveSidebarState, { passive: true });
+      })();
+    </script>
+  </sl-sidebar-state-persist>
+
+  <div class="md:sl-hidden">
+    <MobileMenuFooter />
+  </div>
+</div>
+
+<style is:global>
+  #krds-sidebar-wrapper {
+    display: contents;
+  }
+  sl-sidebar-state-persist {
+    display: contents;
+  }
+  .krds-sidebar-nav {
+    font-size: var(--sl-text-sm);
+  }
+  .krds-sidebar-nav .krds-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .krds-sidebar-nav .accordion-header {
+    margin: 0;
+  }
+  .krds-sidebar-nav .btn-accordion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.3rem var(--sl-sidebar-item-padding-inline, 0.5rem);
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-base);
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: start;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    border-radius: 0.25rem;
+    user-select: none;
+  }
+  .krds-sidebar-nav .btn-accordion:hover,
+  .krds-sidebar-nav .btn-accordion:focus-visible {
+    color: var(--sl-color-white);
+    outline: 2px solid var(--sl-color-text-accent);
+    outline-offset: 2px;
+  }
+  /* Keep the KRDS accordion icon (::after) for visual consistency */
+  .krds-sidebar-nav .btn-accordion::after {
+    flex-shrink: 0;
+  }
+  .krds-sidebar-nav .krds-sidebar-group-label {
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-base);
+    font-weight: 600;
+  }
+  .krds-sidebar-nav .accordion-body {
+    padding: 0;
+  }
+  .krds-sidebar-nav .accordion-body .krds-sidebar-list-nested {
+    padding-inline-start: calc(var(--sl-sidebar-item-padding-inline, 0.5rem));
+  }
+  .krds-sidebar-nav .accordion-body .krds-sidebar-list-nested > li {
+    border-inline-start: 1px solid var(--sl-color-hairline-light);
+  }
+  .krds-sidebar-link {
+    display: block;
+    padding: 0.3rem var(--sl-sidebar-item-padding-inline, 0.5rem);
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+    line-height: 1.4;
+    border-radius: 0.25rem;
+  }
+  .krds-sidebar-link:hover,
+  .krds-sidebar-link:focus {
+    color: var(--sl-color-white);
+  }
+  .krds-sidebar-link[aria-current='page'],
+  .krds-sidebar-link[aria-current='page']:hover,
+  .krds-sidebar-link[aria-current='page']:focus {
+    font-weight: 600;
+    color: var(--sl-color-text-invert);
+    background-color: var(--sl-color-text-accent);
+  }
+  .krds-sidebar-link.large {
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+  .krds-sidebar-link-label {
+    display: inline;
+  }
+  .krds-sidebar-badge {
+    display: inline-block;
+    margin-inline-start: 0.25rem;
+  }
+
+  @media (min-width: 50rem) {
+    .krds-sidebar-nav {
+      font-size: var(--sl-text-sm);
+    }
+    .krds-sidebar-nav .btn-accordion {
+      font-size: var(--sl-text-sm);
+    }
+    .krds-sidebar-nav .krds-sidebar-group-label,
+    .krds-sidebar-link.large {
+      font-size: var(--sl-text-sm);
+      font-weight: 600;
+    }
+  }
+</style>

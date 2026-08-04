@@ -3,6 +3,2643 @@ title: 필터링·정렬
 description: 데이터 집합을 선별하거나 특정 기준으로 조직화하는 기본 패턴입니다.
 ---
 
-import PatternPage from '../../../components/PatternPage.astro';
+import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Select as ReactSelect, SelectSorting as ReactSelectSorting } from "@krds-community/react";
+import { Select as VueSelect, SelectSorting as VueSelectSorting } from "@krds-community/vue";
+import {
+  Select as SvelteSelect,
+  SelectSorting as SvelteSelectSorting,
+} from "@krds-community/svelte";
+import { Select as SolidSelect, SelectSorting as SolidSelectSorting } from "@krds-community/solid";
+import { AngularSelect, AngularSelectSorting } from "@docs/angular-previews.ts";
+import { Select as AstroSelect, SelectSorting as AstroSelectSorting } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { Tag as ReactTag } from "@krds-community/react";
+import { Tag as VueTag } from "@krds-community/vue";
+import { Tag as SvelteTag } from "@krds-community/svelte";
+import { Tag as SolidTag } from "@krds-community/solid";
+import { AngularTag } from "@docs/angular-previews.ts";
+import { Tag as AstroTag } from "@krds-community/astro";
+import { DateInput as ReactDateInput } from "@krds-community/react";
+import { DateInput as VueDateInput } from "@krds-community/vue";
+import { DateInput as SvelteDateInput } from "@krds-community/svelte";
+import { DateInput as SolidDateInput } from "@krds-community/solid";
+import { AngularDateInput } from "@docs/angular-previews.ts";
+import { DateInput as AstroDateInput } from "@krds-community/astro";
 
-<PatternPage patternId="filter-sort" />
+<PatternReference patternId="filter-sort" />
+
+## 공식 문서
+
+### 구조
+
+1. **정렬 컨트롤**
+   정렬 조건 설정을 위한 입력 양식과 레이블의 모음
+2. **필터 컨트롤**
+   필터 조건 설정을 위한 입력 양식과 레이블의 모음. 기본으로 노출되어 있거나 상세 필터 표시 버튼을 통해 활성화할 수 있음
+3. **적용된 필터링 조건**
+   적용된 필터 조건, 조건 수, 조건에 해당하는 데이터 항목 개수, 개별 조건 해제 버튼 등으로 구성됨
+4. **적용된 필터링 조건 해제 버튼**
+   적용된 모든 필터링 조건을 일괄 해제하기 위한 컨트롤
+
+### 유형
+
+**필터링 방식**
+
+- **텍스트 필터(Text)** 검색과 유사하게 데이터 집합에서 특정 단어를 포함하고 있는 정보를 조회하는 데 사용되는 가장 기본적인 필터링 방식이다.
+- **스코프 필터(Scope)** 스코프 필터는 텍스트 필터의 좌측 또는 우측에 배치되어 사용자가 입력한 텍스트 키워드로 검색할 정보 유형의 범위를 제한하는 데 사용된다. 사용자는 셀렉트의 옵션 목록에서 검색하고자 하는 정보의 범주를 선택할 수 있다.
+- **선택형 필터(Selection)** 선택형 필터에서는 데이터의 속성(Property)을 선택하여 특정 속성에 속하는 정보를 확인할 수 있다. 사용자는 1개 이상의 속성에 대해 각 속성별로 1개의 옵션을 선택하거나, 여러 개의 옵션을 선택할 수 있다.
+- **범위 필터(Range)** 범위 필터는 정량적 데이터의 범위 또는 날짜 범위별로 데이터 집합을 조회하고자 하는 경우에 사용하며 슬라이더, 날짜 범위 입력 컴포넌트로 제공된다.
+- **쿼리 필터(Query)** 여러 속성과 옵션 항목에 대해 'AND' 조건 외에 다양한 연산 조건을 적용하여 데이터 집합을 조회하고자 하는 경우에 사용한다. 매우 복잡한 데이터 집합에 사용하는 것이 적합하다.
+- **관계형 필터(Relationship)** 관계형 필터에는 데이터 속성 간 관계 또는 수준이 표현된다. 한 속성 내 옵션 선택을 통해 조회 가능한 다른 속성 정보를 빠르게 파악할 필요가 있거나 데이터 속성 간 위계 구조가 존재하는 경우 사용하기 적합하다.
+
+**정보 조회와 표시**
+
+- **즉각 표시(Instant display)** 사용자가 옵션을 선택하자마자 필터링·정렬·조회 동작이 실행된다. 사용자가 한 번에 1~2개의 속성을 필터링하거나 정렬하는 경우, 필터링·정렬·조회 속도가 빠른 경우에 사용하기 적합하다.
+- **일괄 표시(Batch display)** 사용자가 옵션을 선택하고 별도의 확정 행동(예 - '조회하기', '적용하기')을 수행한 경우에 필터링·정렬·조회 동작이 실행된다. 사용자가 필터링할 옵션을 선택하는 데 긴 시간이 소요되는 복잡한 데이터 목록이나 필터링·정렬·조회 속도가 느린 경우에 사용하기 적합하다.
+
+**레이아웃**
+
+- **수평 막대(Filter bar)** 필터링·정렬하고자 하는 목록 상단에 얇고 긴 막대 형태로 제공된다. 필터링, 정렬 컨트롤을 실행하면 상세 옵션을 위한 목록이 드롭다운에서 표시된다.
+- **인라인(Inline)** 필터링·정렬하고자 하는 데이터 목록 자체 또는 데이터의 열 헤더에 직접 필터링·정렬 컨트롤이 표시된다. 필터링, 정렬 컨트롤을 실행하면 상세 옵션을 위한 목록이 드롭다운에 표시된다. 수평 막대에 비해 수직 공간을 절약할 수 있으나 열 헤더에 컨트롤을 표시할 만큼의 충분한 너비가 확보된 화면에 사용하기 적합하다. 인라인 정렬을 사용할 경우 한 번에 하나의 속성만을 기준으로 정렬할 수 있고 속성 간 관계를 복합적으로 설정할 수 없으므로 필터링·정렬을 사용하는 사용자의 행동이 단순한 경우에 사용하기 적합하다.
+- **사이드 패널(Aside panel)** 필터링·정렬하고자 하는 데이터 목록 그리드의 좌측 또는 우측에 필터링 컨트롤이 수직으로 배치된다. 이때, 정렬 옵션은 대개 필터링 패널과는 별개로 목록 상단에 수평 막대 형식으로 배치된다. 모든 필터링 옵션과 목록을 부가적인 맥락 변경 없이 한 화면에서 비교할 수 있다.
+- **모달(Modal)** 필터링 조건 전체 또는 일부를 본문과 분리되는 별도의 모달에 제공하는 형태로 사용자가 빈번하게 사용하지는 않지만 고급 옵션을 필요로 하는 사용자에게 관련 컨트롤을 제공하거나, 화면의 너비가 충분하지 않아 다른 레이아웃으로 필터링·정렬 옵션을 표시할 수 없는 경우에 사용한다.
+
+## 사용성 가이드라인
+
+### 필터링·정렬
+
+**필터링·정렬 컨트롤을 가능한 한 숨기지 않는다.**
+화면 너비가 충분한 경우 필터링·정렬 컨트롤은 축약된 버튼 형태가 아니라 필터링할 수 있는 주요 옵션이 항상 노출되도록 표현한다. 이를 통해 사용자는 설정한 필터링·정렬 조건에 따른 결과 목록의 변화를 함께 비교할 수 있다.
+
+**선택된 필터링·정렬 옵션이 명확하게 구분되도록 표현한다.**
+라디오 버튼, 체크박스, 셀렉트 등 필터링·정렬 옵션 선택에 활용되는 컴포넌트 가이드라인을 참고하여 선택된 옵션이 명확하게 구분되도록 표현해야 한다.
+
+**조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다.**
+상세 검색 조건이 적용되어 데이터 집합 목록이 변경된 상황을 사용자가 빠르고 직관적으로 인지할 수 있도록 제공해야 한다.
+
+**모범 사례 1**
+
+<PracticeExample
+  kind="good"
+  title="조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <ReactSelect
+        label="생애 주기"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "infant", label: "영유아", selected: true },
+          { value: "child", label: "아동" },
+        ]}
+        client:only="react"
+      />
+      <ReactSelect
+        label="가구 상황"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "dual", label: "맞벌이", selected: true },
+          { value: "single", label: "1인 가구" },
+        ]}
+        client:only="react"
+      />
+      <ReactSelect
+        label="관심 주제"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육" },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="react"
+      />
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+      <strong style="font-size:0.875rem;">선택된 필터</strong>
+      <ReactTag label="영유아" removable client:only="react" />
+      <ReactTag label="맞벌이" removable client:only="react" />
+      <p style="margin:0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <VueSelect
+        label="생애 주기"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "infant", label: "영유아", selected: true },
+          { value: "child", label: "아동" },
+        ]}
+        client:only="vue"
+      />
+      <VueSelect
+        label="가구 상황"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "dual", label: "맞벌이", selected: true },
+          { value: "single", label: "1인 가구" },
+        ]}
+        client:only="vue"
+      />
+      <VueSelect
+        label="관심 주제"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육" },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="vue"
+      />
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+      <strong style="font-size:0.875rem;">선택된 필터</strong>
+      <VueTag label="영유아" removable client:only="vue" />
+      <VueTag label="맞벌이" removable client:only="vue" />
+      <p style="margin:0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <SvelteSelect
+        label="생애 주기"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "infant", label: "영유아", selected: true },
+          { value: "child", label: "아동" },
+        ]}
+        client:only="svelte"
+      />
+      <SvelteSelect
+        label="가구 상황"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "dual", label: "맞벌이", selected: true },
+          { value: "single", label: "1인 가구" },
+        ]}
+        client:only="svelte"
+      />
+      <SvelteSelect
+        label="관심 주제"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육" },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="svelte"
+      />
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+      <strong style="font-size:0.875rem;">선택된 필터</strong>
+      <SvelteTag label="영유아" removable client:only="svelte" />
+      <SvelteTag label="맞벌이" removable client:only="svelte" />
+      <p style="margin:0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <SolidSelect
+        label="생애 주기"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "infant", label: "영유아", selected: true },
+          { value: "child", label: "아동" },
+        ]}
+        client:only="solid-js"
+      />
+      <SolidSelect
+        label="가구 상황"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "dual", label: "맞벌이", selected: true },
+          { value: "single", label: "1인 가구" },
+        ]}
+        client:only="solid-js"
+      />
+      <SolidSelect
+        label="관심 주제"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육" },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="solid-js"
+      />
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+      <strong style="font-size:0.875rem;">선택된 필터</strong>
+      <SolidTag label="영유아" removable client:only="solid-js" />
+      <SolidTag label="맞벌이" removable client:only="solid-js" />
+      <p style="margin:0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <AstroSelect
+        label="생애 주기"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "infant", label: "영유아", selected: true },
+          { value: "child", label: "아동" },
+        ]}
+      />
+      <AstroSelect
+        label="가구 상황"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "dual", label: "맞벌이", selected: true },
+          { value: "single", label: "1인 가구" },
+        ]}
+      />
+      <AstroSelect
+        label="관심 주제"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육" },
+          { value: "welfare", label: "복지" },
+        ]}
+      />
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+      <strong style="font-size:0.875rem;">선택된 필터</strong>
+      <AstroTag label="영유아" removable />
+      <AstroTag label="맞벌이" removable />
+      <p style="margin:0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <AngularSelect
+        label="생애 주기"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "infant", label: "영유아", selected: true },
+          { value: "child", label: "아동" },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+      <AngularSelect
+        label="가구 상황"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "dual", label: "맞벌이", selected: true },
+          { value: "single", label: "1인 가구" },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+      <AngularSelect
+        label="관심 주제"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육" },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+      <strong style="font-size:0.875rem;">선택된 필터</strong>
+      <AngularTag label="영유아" message="삭제" client:only="@analogjs/astro-angular" />
+      <AngularTag label="맞벌이" message="삭제" client:only="@analogjs/astro-angular" />
+      <p style="margin:0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Select, Tag } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
+        <Select
+          label="생애 주기"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "infant", label: "영유아", selected: true },
+            { value: "child", label: "아동" },
+          ]}
+        />
+        <Select
+          label="가구 상황"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "dual", label: "맞벌이", selected: true },
+            { value: "single", label: "1인 가구" },
+          ]}
+        />
+        <Select
+          label="관심 주제"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "edu", label: "교육" },
+            { value: "welfare", label: "복지" },
+          ]}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          alignItems: "center",
+          marginTop: "1rem",
+        }}
+      >
+        <strong style={{ fontSize: "0.875rem" }}>선택된 필터</strong>
+        <Tag label="영유아" />
+        <Tag label="맞벌이" />
+        <p style={{ margin: 0, fontSize: "0.875rem" }}>
+          검색 결과 <strong>24</strong>건
+        </p>
+      </div>
+    </>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Select, Tag } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+    <Select
+      label="생애 주기"
+      size="medium"
+      :options="[
+        { value: '', label: '전체' },
+        { value: 'infant', label: '영유아', selected: true },
+        { value: 'child', label: '아동' },
+      ]"
+    />
+    <Select
+      label="가구 상황"
+      size="medium"
+      :options="[
+        { value: '', label: '전체' },
+        { value: 'dual', label: '맞벌이', selected: true },
+        { value: 'single', label: '1인 가구' },
+      ]"
+    />
+    <Select
+      label="관심 주제"
+      size="medium"
+      :options="[
+        { value: '', label: '전체' },
+        { value: 'edu', label: '교육' },
+        { value: 'welfare', label: '복지' },
+      ]"
+    />
+  </div>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+    <strong style="font-size:0.875rem;">선택된 필터</strong>
+    <Tag label="영유아" removable />
+    <Tag label="맞벌이" removable />
+    <p style="margin:0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Select, Tag } from "@krds-community/svelte";
+</script>
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+  <Select
+    label="생애 주기"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "infant", label: "영유아", selected: true },
+      { value: "child", label: "아동" },
+    ]}
+  />
+  <Select
+    label="가구 상황"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "dual", label: "맞벌이", selected: true },
+      { value: "single", label: "1인 가구" },
+    ]}
+  />
+  <Select
+    label="관심 주제"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "edu", label: "교육" },
+      { value: "welfare", label: "복지" },
+    ]}
+  />
+</div>
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+  <strong style="font-size:0.875rem;">선택된 필터</strong>
+  <Tag label="영유아" removable />
+  <Tag label="맞벌이" removable />
+  <p style="margin:0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+</div>
+```
+
+```tsx fw=solid
+import { Select, Tag } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
+        <Select
+          label="생애 주기"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "infant", label: "영유아", selected: true },
+            { value: "child", label: "아동" },
+          ]}
+        />
+        <Select
+          label="가구 상황"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "dual", label: "맞벌이", selected: true },
+            { value: "single", label: "1인 가구" },
+          ]}
+        />
+        <Select
+          label="관심 주제"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "edu", label: "교육" },
+            { value: "welfare", label: "복지" },
+          ]}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          alignItems: "center",
+          marginTop: "1rem",
+        }}
+      >
+        <strong style={{ fontSize: "0.875rem" }}>선택된 필터</strong>
+        <Tag label="영유아" />
+        <Tag label="맞벌이" />
+        <p style={{ margin: 0, fontSize: "0.875rem" }}>
+          검색 결과 <strong>24</strong>건
+        </p>
+      </div>
+    </>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsSelectComponent, KrdsTagComponent } from "@krds-community/angular";
+
+// template
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+  <krds-select
+    label="생애 주기"
+    size="medium"
+    [options]="[
+      { value: '', label: '전체' },
+      { value: 'infant', label: '영유아', selected: true },
+      { value: 'child', label: '아동' },
+    ]"
+  ></krds-select>
+  <krds-select
+    label="가구 상황"
+    size="medium"
+    [options]="[
+      { value: '', label: '전체' },
+      { value: 'dual', label: '맞벌이', selected: true },
+      { value: 'single', label: '1인 가구' },
+    ]"
+  ></krds-select>
+  <krds-select
+    label="관심 주제"
+    size="medium"
+    [options]="[
+      { value: '', label: '전체' },
+      { value: 'edu', label: '교육' },
+      { value: 'welfare', label: '복지' },
+    ]"
+  ></krds-select>
+</div>
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+  <strong style="font-size:0.875rem;">선택된 필터</strong>
+  <krds-tag label="영유아" message="삭제"></krds-tag>
+  <krds-tag label="맞벌이" message="삭제"></krds-tag>
+  <p style="margin:0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+</div>
+```
+
+```astro fw=astro
+---
+import { Select, Tag } from "@krds-community/astro";
+---
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+  <Select
+    label="생애 주기"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "infant", label: "영유아", selected: true },
+      { value: "child", label: "아동" },
+    ]}
+  />
+  <Select
+    label="가구 상황"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "dual", label: "맞벌이", selected: true },
+      { value: "single", label: "1인 가구" },
+    ]}
+  />
+  <Select
+    label="관심 주제"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "edu", label: "교육" },
+      { value: "welfare", label: "복지" },
+    ]}
+  />
+</div>
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; margin-top:1rem;">
+  <strong style="font-size:0.875rem;">선택된 필터</strong>
+  <Tag label="영유아" />
+  <Tag label="맞벌이" />
+  <p style="margin:0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 2**
+
+<PracticeExample
+  kind="good"
+  title="조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+      <ReactTag label="영유아" removable client:only="react" />
+      <ReactTag label="맞벌이" removable client:only="react" />
+    </div>
+    <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">
+      검색 결과 <strong>24</strong>건
+    </p>
+    <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+  <div slot="vue">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+      <VueTag label="영유아" removable client:only="vue" />
+      <VueTag label="맞벌이" removable client:only="vue" />
+    </div>
+    <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">
+      검색 결과 <strong>24</strong>건
+    </p>
+    <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+      <SvelteTag label="영유아" removable client:only="svelte" />
+      <SvelteTag label="맞벌이" removable client:only="svelte" />
+    </div>
+    <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">
+      검색 결과 <strong>24</strong>건
+    </p>
+    <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+  <div slot="solid">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+      <SolidTag label="영유아" removable client:only="solid-js" />
+      <SolidTag label="맞벌이" removable client:only="solid-js" />
+    </div>
+    <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">
+      검색 결과 <strong>24</strong>건
+    </p>
+    <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+  <div slot="astro">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+      <AstroTag label="영유아" removable />
+      <AstroTag label="맞벌이" removable />
+    </div>
+    <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">
+      검색 결과 <strong>24</strong>건
+    </p>
+    <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+  <div slot="angular">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+      <AngularTag label="영유아" message="삭제" client:only="@analogjs/astro-angular" />
+      <AngularTag label="맞벌이" message="삭제" client:only="@analogjs/astro-angular" />
+    </div>
+    <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">
+      검색 결과 <strong>24</strong>건
+    </p>
+    <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+      <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+
+```tsx fw=react
+import { Tag } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
+        <strong style={{ fontSize: "0.875rem" }}>선택된 필터 2</strong>
+        <Tag label="영유아" />
+        <Tag label="맞벌이" />
+      </div>
+      <p style={{ margin: "1rem 0 0.5rem", fontSize: "0.875rem" }}>
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul
+        style={{
+          margin: 0,
+          padding: 0,
+          listStyle: "none",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          fontSize: "0.875rem",
+        }}
+      >
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          영유아 보육료 지원 신청
+        </li>
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          아이돌봄 서비스 이용 신청
+        </li>
+        <li style={{ padding: "0.5rem" }}>출산 지원금 지급 안내</li>
+      </ul>
+    </>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Tag } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+    <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+    <Tag label="영유아" removable />
+    <Tag label="맞벌이" removable />
+  </div>
+  <p style="margin:1rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+  <ul
+    style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;"
+  >
+    <li
+      style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);"
+    >
+      영유아 보육료 지원 신청
+    </li>
+    <li
+      style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);"
+    >
+      아이돌봄 서비스 이용 신청
+    </li>
+    <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+  </ul>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Tag } from "@krds-community/svelte";
+</script>
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+  <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+  <Tag label="영유아" removable />
+  <Tag label="맞벌이" removable />
+</div>
+<p style="margin:1rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+<ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+  <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+  <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+  <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+</ul>
+```
+
+```tsx fw=solid
+import { Tag } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
+        <strong style={{ fontSize: "0.875rem" }}>선택된 필터 2</strong>
+        <Tag label="영유아" />
+        <Tag label="맞벌이" />
+      </div>
+      <p style={{ margin: "1rem 0 0.5rem", fontSize: "0.875rem" }}>
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul
+        style={{
+          margin: 0,
+          padding: 0,
+          listStyle: "none",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          fontSize: "0.875rem",
+        }}
+      >
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          영유아 보육료 지원 신청
+        </li>
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          아이돌봄 서비스 이용 신청
+        </li>
+        <li style={{ padding: "0.5rem" }}>출산 지원금 지급 안내</li>
+      </ul>
+    </>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTagComponent } from "@krds-community/angular";
+
+// template
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+  <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+  <krds-tag label="영유아" message="삭제"></krds-tag>
+  <krds-tag label="맞벌이" message="삭제"></krds-tag>
+</div>
+<p style="margin:1rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+<ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+  <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+  <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+  <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+</ul>
+```
+
+```astro fw=astro
+---
+import { Tag } from "@krds-community/astro";
+---
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+  <strong style="font-size:0.875rem;">선택된 필터 2</strong>
+  <Tag label="영유아" />
+  <Tag label="맞벌이" />
+</div>
+<p style="margin:1rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+<ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+  <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+  <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+  <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+</ul>
+```
+
+</PracticeExample>
+
+**모범 사례 3**
+
+<PracticeExample
+  kind="good"
+  title="조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다."
+>
+  <div slot="react">
+    <div style="max-width:20rem;">
+      <ReactSelect
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="react"
+      />
+      <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+        <ReactTag label="교육" removable client:only="react" />
+      </div>
+      <p style="margin:0.75rem 0 0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width:20rem;">
+      <VueSelect
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="vue"
+      />
+      <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+        <VueTag label="교육" removable client:only="vue" />
+      </div>
+      <p style="margin:0.75rem 0 0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width:20rem;">
+      <SvelteSelect
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="svelte"
+      />
+      <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+        <SvelteTag label="교육" removable client:only="svelte" />
+      </div>
+      <p style="margin:0.75rem 0 0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width:20rem;">
+      <SolidSelect
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="solid-js"
+      />
+      <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+        <SolidTag label="교육" removable client:only="solid-js" />
+      </div>
+      <p style="margin:0.75rem 0 0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width:20rem;">
+      <AstroSelect
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+      />
+      <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+        <AstroTag label="교육" removable />
+      </div>
+      <p style="margin:0.75rem 0 0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width:20rem;">
+      <AngularSelect
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+      <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+        <AngularTag label="교육" message="삭제" client:only="@analogjs/astro-angular" />
+      </div>
+      <p style="margin:0.75rem 0 0; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Select, Tag } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: "20rem" }}>
+      <Select
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+      />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginTop: "0.75rem" }}>
+        <Tag label="교육" />
+      </div>
+      <p style={{ margin: "0.75rem 0 0", fontSize: "0.875rem" }}>
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Select, Tag } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width:20rem;">
+    <Select
+      label="분야"
+      size="medium"
+      :options="[
+        { value: '', label: '전체' },
+        { value: 'edu', label: '교육', selected: true },
+        { value: 'welfare', label: '복지' },
+      ]"
+    />
+    <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+      <Tag label="교육" removable />
+    </div>
+    <p style="margin:0.75rem 0 0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Select, Tag } from "@krds-community/svelte";
+</script>
+
+<div style="max-width:20rem;">
+  <Select
+    label="분야"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "edu", label: "교육", selected: true },
+      { value: "welfare", label: "복지" },
+    ]}
+  />
+  <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+    <Tag label="교육" removable />
+  </div>
+  <p style="margin:0.75rem 0 0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+</div>
+```
+
+```tsx fw=solid
+import { Select, Tag } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: "20rem" }}>
+      <Select
+        label="분야"
+        size="medium"
+        options={[
+          { value: "", label: "전체" },
+          { value: "edu", label: "교육", selected: true },
+          { value: "welfare", label: "복지" },
+        ]}
+      />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem", marginTop: "0.75rem" }}>
+        <Tag label="교육" />
+      </div>
+      <p style={{ margin: "0.75rem 0 0", fontSize: "0.875rem" }}>
+        검색 결과 <strong>24</strong>건
+      </p>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsSelectComponent, KrdsTagComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width:20rem;">
+  <krds-select
+    label="분야"
+    size="medium"
+    [options]="[
+      { value: '', label: '전체' },
+      { value: 'edu', label: '교육', selected: true },
+      { value: 'welfare', label: '복지' },
+    ]"
+  ></krds-select>
+  <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+    <krds-tag label="교육" message="삭제"></krds-tag>
+  </div>
+  <p style="margin:0.75rem 0 0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+</div>
+```
+
+```astro fw=astro
+---
+import { Select, Tag } from "@krds-community/astro";
+---
+
+<div style="max-width:20rem;">
+  <Select
+    label="분야"
+    size="medium"
+    options={[
+      { value: "", label: "전체" },
+      { value: "edu", label: "교육", selected: true },
+      { value: "welfare", label: "복지" },
+    ]}
+  />
+  <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.75rem;">
+    <Tag label="교육" />
+  </div>
+  <p style="margin:0.75rem 0 0; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+</div>
+```
+
+</PracticeExample>
+
+**모든 필터링·정렬 컨트롤에 레이블과 그룹 헤딩을 제공한다.**
+사용자에 따라 각 필터링·정렬 컨트롤에 대한 레이블, 그룹 헤딩이 생략되면 어떤 속성의 옵션을 선택하는 것인지 분명하게 인지하지 못할 수 있다.
+
+**필터링·정렬 컨트롤 레이블은 이해가 쉽도록 간결하고 정확한 내용으로 제공한다.**
+필터링·정렬 컨트롤 레이블을 서술형으로 제공하게 되면 빠른 인지가 어려울 수 있다. 또한 특수한 서비스를 제외하고 레이블에 전문 용어를 사용하거나 축약어를 사용하면 내용을 이해하기 어려우므로 필터링·정렬 옵션의 의미를 정확하게 전달하되 간결하게 작성되어야 한다.
+
+**필터링 컨트롤은 우선순위에 따라 좌측 또는 상단부터 순차적으로 배치한다.**
+사용자가 빈번하게 사용하거나 데이터 집합을 조회하는 데 핵심적인 속성을 설정하기 위한 필터링 컨트롤은 일관된 위치, 사용자가 접근하기 쉬운 영역에 배치하여 빠르게 접근 가능하도록 한다.
+
+**관련 있거나 유사한 필터링 컨트롤을 군집화하여 제공한다.**
+여러 필터링 컨트롤 중 의미적으로 서로 관련 있는 필터링 컨트롤을 군집화하여 제공하게 되면 사용자는 보다 효과적으로 정보를 조회할 수 있다. 예) 지역을 '도', '시', '군/구' 단위로 나누어 조회할 수 있는 경우 세 개의 필터링 컨트롤은 연속적으로 배치함
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="관련 있거나 유사한 필터링 컨트롤을 군집화하여 제공한다."
+>
+  <div slot="react">
+    <div>
+      <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+        <ReactSelect
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+          client:only="react"
+        />
+        <ReactSelect
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+          client:only="react"
+        />
+        <ReactSelect
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+          client:only="react"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div>
+      <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+        <VueSelect
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+          client:only="vue"
+        />
+        <VueSelect
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+          client:only="vue"
+        />
+        <VueSelect
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+          client:only="vue"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div>
+      <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+        <SvelteSelect
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+          client:only="svelte"
+        />
+        <SvelteSelect
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+          client:only="svelte"
+        />
+        <SvelteSelect
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+          client:only="svelte"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div>
+      <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+        <SolidSelect
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+          client:only="solid-js"
+        />
+        <SolidSelect
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+          client:only="solid-js"
+        />
+        <SolidSelect
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div>
+      <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+        <AstroSelect
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+        />
+        <AstroSelect
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+        />
+        <AstroSelect
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+        />
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div>
+      <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+      <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+        <AngularSelect
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+        <AngularSelect
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+        <AngularSelect
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Select } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div>
+      <p style={{ margin: "0 0 0.5rem", fontWeight: 700, fontSize: "0.875rem" }}>지역</p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
+        <Select
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+        />
+        <Select
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+        />
+        <Select
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Select } from "@krds-community/vue";
+</script>
+
+<template>
+  <div>
+    <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+      <Select
+        label="시·도"
+        size="medium"
+        :options="[
+          { value: '', label: '전체' },
+          { value: 'seoul', label: '서울특별시', selected: true },
+          { value: 'gyeonggi', label: '경기도' },
+        ]"
+      />
+      <Select
+        label="시·군·구"
+        size="medium"
+        :options="[
+          { value: '', label: '전체' },
+          { value: 'jongno', label: '종로구', selected: true },
+          { value: 'jung', label: '중구' },
+        ]"
+      />
+      <Select
+        label="읍·면·동"
+        size="medium"
+        :options="[
+          { value: '', label: '전체' },
+          { value: 'cheongun', label: '청운효자동' },
+          { value: 'sajik', label: '사직동' },
+        ]"
+      />
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Select } from "@krds-community/svelte";
+</script>
+
+<div>
+  <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+    <Select
+      label="시·도"
+      size="medium"
+      options={[
+        { value: "", label: "전체" },
+        { value: "seoul", label: "서울특별시", selected: true },
+        { value: "gyeonggi", label: "경기도" },
+      ]}
+    />
+    <Select
+      label="시·군·구"
+      size="medium"
+      options={[
+        { value: "", label: "전체" },
+        { value: "jongno", label: "종로구", selected: true },
+        { value: "jung", label: "중구" },
+      ]}
+    />
+    <Select
+      label="읍·면·동"
+      size="medium"
+      options={[
+        { value: "", label: "전체" },
+        { value: "cheongun", label: "청운효자동" },
+        { value: "sajik", label: "사직동" },
+      ]}
+    />
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Select } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div>
+      <p style={{ margin: "0 0 0.5rem", fontWeight: 700, fontSize: "0.875rem" }}>지역</p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
+        <Select
+          label="시·도"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "seoul", label: "서울특별시", selected: true },
+            { value: "gyeonggi", label: "경기도" },
+          ]}
+        />
+        <Select
+          label="시·군·구"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "jongno", label: "종로구", selected: true },
+            { value: "jung", label: "중구" },
+          ]}
+        />
+        <Select
+          label="읍·면·동"
+          size="medium"
+          options={[
+            { value: "", label: "전체" },
+            { value: "cheongun", label: "청운효자동" },
+            { value: "sajik", label: "사직동" },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsSelectComponent } from "@krds-community/angular";
+
+// template
+<div>
+  <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+    <krds-select
+      label="시·도"
+      size="medium"
+      [options]="[
+        { value: '', label: '전체' },
+        { value: 'seoul', label: '서울특별시', selected: true },
+        { value: 'gyeonggi', label: '경기도' },
+      ]"
+    ></krds-select>
+    <krds-select
+      label="시·군·구"
+      size="medium"
+      [options]="[
+        { value: '', label: '전체' },
+        { value: 'jongno', label: '종로구', selected: true },
+        { value: 'jung', label: '중구' },
+      ]"
+    ></krds-select>
+    <krds-select
+      label="읍·면·동"
+      size="medium"
+      [options]="[
+        { value: '', label: '전체' },
+        { value: 'cheongun', label: '청운효자동' },
+        { value: 'sajik', label: '사직동' },
+      ]"
+    ></krds-select>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Select } from "@krds-community/astro";
+---
+
+<div>
+  <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
+    <Select
+      label="시·도"
+      size="medium"
+      options={[
+        { value: "", label: "전체" },
+        { value: "seoul", label: "서울특별시", selected: true },
+        { value: "gyeonggi", label: "경기도" },
+      ]}
+    />
+    <Select
+      label="시·군·구"
+      size="medium"
+      options={[
+        { value: "", label: "전체" },
+        { value: "jongno", label: "종로구", selected: true },
+        { value: "jung", label: "중구" },
+      ]}
+    />
+    <Select
+      label="읍·면·동"
+      size="medium"
+      options={[
+        { value: "", label: "전체" },
+        { value: "cheongun", label: "청운효자동" },
+        { value: "sajik", label: "사직동" },
+      ]}
+    />
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**인라인 형식의 정렬을 사용할 때를 제외하고 정렬 컨트롤은 대상 목록 오른쪽 상단에 배치한다.**
+디지털 정부서비스를 이용하는 사용자의 일관된 경험을 위해 정렬 컨트롤은 필터링·정렬을 수행하고자 하는 정보 목록의 오른쪽 상단에 배치한다.
+
+**필터링 옵션으로 제공되는 메타 데이터가 색인화되고 검색 가능한지 확인한다.**
+각 필터링 옵션을 선택하였을 때, 선택한 메타 데이터에 속하는 데이터가 적절하게 반환되는지 정기적으로 점검한다. 사용자가 옵션을 자주 이용하지 않거나, 해당 메타 데이터 속성을 가진 데이터가 더 이상 존재하지 않고 앞으로도 존재할 가능성이 낮다면 필터링 옵션을 선택하는 과정의 인지적 부담을 줄이기 위해 필터링 옵션에서 항목을 삭제하는 방안을 검토한다.
+
+**데이터 집합의 특성과 사용자의 요구사항에 적합한 수준의 필터링·정렬 옵션을 제공한다.**
+필터링·정렬 옵션을 지나치게 다양한 유형으로 세분화하여 제공하게 되면 사용자가 압박을 느끼거나 혼란을 느낄 수도 있다. 먼저 데이터 집합의 특성을 고려하여 결과를 좁히는 데 도움이 되는 속성을 중심으로 필터링·정렬할 수 있도록 하고 사용자가 필요로 하는 옵션을 추가 제공한다.
+
+**날짜, 시간을 기준으로 한 필터링은 범위를 입력할 수 있도록 제공한다.**
+단일 날짜만 설정할 수 있도록 제공하게 되면 사용자는 데이터에 부여된 정확한 날짜 메타 데이터를 알지 못하기 때문에 조건을 여러 번 설정해야 한다.
+
+**모범 사례 1**
+
+<PracticeExample
+  kind="good"
+  title="날짜, 시간을 기준으로 한 필터링은 범위를 입력할 수 있도록 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <ReactDateInput label="시작일" calendarLabel="달력" client:only="react" />
+      <ReactDateInput label="종료일" calendarLabel="달력" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <VueDateInput label="시작일" calendarLabel="달력" client:only="vue" />
+      <VueDateInput label="종료일" calendarLabel="달력" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <SvelteDateInput label="시작일" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput label="종료일" calendarLabel="달력" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <SolidDateInput label="시작일" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput label="종료일" calendarLabel="달력" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <AstroDateInput
+        label="시작일"
+        calendarLabel="달력"
+        year={2026}
+        month={7}
+        years={[2025, 2026, 2027]}
+        leadingDays={2}
+        previousMonthDayCount={31}
+        dayCount={31}
+        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+      />
+      <AstroDateInput
+        label="종료일"
+        calendarLabel="달력"
+        year={2026}
+        month={7}
+        years={[2025, 2026, 2027]}
+        leadingDays={2}
+        previousMonthDayCount={31}
+        dayCount={31}
+        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <AngularDateInput label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { DateInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-end" }}>
+      <DateInput label="시작일" calendarLabel="달력" />
+      <DateInput label="종료일" calendarLabel="달력" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { DateInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+    <DateInput label="시작일" calendarLabel="달력" />
+    <DateInput label="종료일" calendarLabel="달력" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { DateInput } from "@krds-community/svelte";
+</script>
+
+<div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+  <DateInput label="시작일" calendarLabel="달력" />
+  <DateInput label="종료일" calendarLabel="달력" />
+</div>
+```
+
+```tsx fw=solid
+import { DateInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-end" }}>
+      <DateInput label="시작일" calendarLabel="달력" />
+      <DateInput label="종료일" calendarLabel="달력" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsDateInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+  <krds-date-input label="시작일" calendarLabel="달력"></krds-date-input>
+  <krds-date-input label="종료일" calendarLabel="달력"></krds-date-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { DateInput } from "@krds-community/astro";
+---
+
+<div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+  <DateInput
+    label="시작일"
+    calendarLabel="달력"
+    year={2026}
+    month={7}
+    years={[2025, 2026, 2027]}
+    leadingDays={2}
+    previousMonthDayCount={31}
+    dayCount={31}
+    weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+  />
+  <DateInput
+    label="종료일"
+    calendarLabel="달력"
+    year={2026}
+    month={7}
+    years={[2025, 2026, 2027]}
+    leadingDays={2}
+    previousMonthDayCount={31}
+    dayCount={31}
+    weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+  />
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례 2**
+
+<PracticeExample
+  kind="good"
+  title="날짜, 시간을 기준으로 한 필터링은 범위를 입력할 수 있도록 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <ReactDateInput label="시작일" calendarLabel="달력" client:only="react" />
+      <ReactDateInput label="종료일" calendarLabel="달력" client:only="react" />
+      <ReactButton variant="secondary" client:only="react">조회</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <VueDateInput label="시작일" calendarLabel="달력" client:only="vue" />
+      <VueDateInput label="종료일" calendarLabel="달력" client:only="vue" />
+      <VueButton variant="secondary" client:only="vue">조회</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <SvelteDateInput label="시작일" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput label="종료일" calendarLabel="달력" client:only="svelte" />
+      <SvelteButton variant="secondary" client:only="svelte">조회</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <SolidDateInput label="시작일" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput label="종료일" calendarLabel="달력" client:only="solid-js" />
+      <SolidButton variant="secondary" client:only="solid-js">조회</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <AstroDateInput
+        label="시작일"
+        calendarLabel="달력"
+        year={2026}
+        month={7}
+        years={[2025, 2026, 2027]}
+        leadingDays={2}
+        previousMonthDayCount={31}
+        dayCount={31}
+        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+      />
+      <AstroDateInput
+        label="종료일"
+        calendarLabel="달력"
+        year={2026}
+        month={7}
+        years={[2025, 2026, 2027]}
+        leadingDays={2}
+        previousMonthDayCount={31}
+        dayCount={31}
+        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+      />
+      <AstroButton variant="secondary">조회</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+      <AngularDateInput label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularButton variant="secondary" label="조회" client:only="@analogjs/astro-angular">조회</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { DateInput, Button } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-end" }}>
+      <DateInput label="시작일" calendarLabel="달력" />
+      <DateInput label="종료일" calendarLabel="달력" />
+      <Button variant="secondary">조회</Button>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { DateInput, Button } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+    <DateInput label="시작일" calendarLabel="달력" />
+    <DateInput label="종료일" calendarLabel="달력" />
+    <Button variant="secondary">조회</Button>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { DateInput, Button } from "@krds-community/svelte";
+</script>
+
+<div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+  <DateInput label="시작일" calendarLabel="달력" />
+  <DateInput label="종료일" calendarLabel="달력" />
+  <Button variant="secondary">조회</Button>
+</div>
+```
+
+```tsx fw=solid
+import { DateInput, Button } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-end" }}>
+      <DateInput label="시작일" calendarLabel="달력" />
+      <DateInput label="종료일" calendarLabel="달력" />
+      <Button variant="secondary">조회</Button>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsDateInputComponent, KrdsButtonComponent } from "@krds-community/angular";
+
+// template
+<div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+  <krds-date-input label="시작일" calendarLabel="달력"></krds-date-input>
+  <krds-date-input label="종료일" calendarLabel="달력"></krds-date-input>
+  <krds-button variant="secondary" label="조회"></krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { DateInput, Button } from "@krds-community/astro";
+---
+
+<div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+  <DateInput
+    label="시작일"
+    calendarLabel="달력"
+    year={2026}
+    month={7}
+    years={[2025, 2026, 2027]}
+    leadingDays={2}
+    previousMonthDayCount={31}
+    dayCount={31}
+    weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+  />
+  <DateInput
+    label="종료일"
+    calendarLabel="달력"
+    year={2026}
+    month={7}
+    years={[2025, 2026, 2027]}
+    leadingDays={2}
+    previousMonthDayCount={31}
+    dayCount={31}
+    weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+  />
+  <Button variant="secondary">조회</Button>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="날짜, 시간을 기준으로 한 필터링은 범위를 입력할 수 있도록 제공한다."
+>
+  <div slot="react">
+    <div style="max-width:16rem;">
+      <ReactDateInput label="날짜" calendarLabel="달력" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width:16rem;">
+      <VueDateInput label="날짜" calendarLabel="달력" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width:16rem;">
+      <SvelteDateInput label="날짜" calendarLabel="달력" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width:16rem;">
+      <SolidDateInput label="날짜" calendarLabel="달력" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width:16rem;">
+      <AstroDateInput
+        label="날짜"
+        calendarLabel="달력"
+        year={2026}
+        month={7}
+        years={[2025, 2026, 2027]}
+        leadingDays={2}
+        previousMonthDayCount={31}
+        dayCount={31}
+        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width:16rem;">
+      <AngularDateInput label="날짜" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { DateInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: "16rem" }}>
+      <DateInput label="날짜" calendarLabel="달력" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { DateInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width:16rem;">
+    <DateInput label="날짜" calendarLabel="달력" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { DateInput } from "@krds-community/svelte";
+</script>
+
+<div style="max-width:16rem;">
+  <DateInput label="날짜" calendarLabel="달력" />
+</div>
+```
+
+```tsx fw=solid
+import { DateInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: "16rem" }}>
+      <DateInput label="날짜" calendarLabel="달력" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsDateInputComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width:16rem;">
+  <krds-date-input label="날짜" calendarLabel="달력"></krds-date-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { DateInput } from "@krds-community/astro";
+---
+
+<div style="max-width:16rem;">
+  <DateInput
+    label="날짜"
+    calendarLabel="달력"
+    year={2026}
+    month={7}
+    years={[2025, 2026, 2027]}
+    leadingDays={2}
+    previousMonthDayCount={31}
+    dayCount={31}
+    weekdays={["일", "월", "화", "수", "목", "금", "토"]}
+  />
+</div>
+```
+
+</PracticeExample>
+
+**적용된 필터링 옵션을 한 번에 해제할 수 있는 기능을 제공한다.**
+여러 가지 조건이 적용된 필터링 컨트롤과 옵션을 하나씩 눌러 해제하는 동작이 반복되지 않도록 3개 이상의 속성에 대해 필터링 컨트롤이 제공되는 경우 옵션 선택을 한 번에 해제할 수 있는 기능을 제공해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="적용된 필터링 옵션을 한 번에 해제할 수 있는 기능을 제공한다."
+>
+  <div slot="react">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+      <ReactTag label="영유아" removable client:only="react" />
+      <ReactTag label="맞벌이" removable client:only="react" />
+      <ReactTag label="교육" removable client:only="react" />
+      <ReactButton variant="tertiary" size="small" client:only="react">전체 해제</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+      <VueTag label="영유아" removable client:only="vue" />
+      <VueTag label="맞벌이" removable client:only="vue" />
+      <VueTag label="교육" removable client:only="vue" />
+      <VueButton variant="tertiary" size="small" client:only="vue">전체 해제</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+      <SvelteTag label="영유아" removable client:only="svelte" />
+      <SvelteTag label="맞벌이" removable client:only="svelte" />
+      <SvelteTag label="교육" removable client:only="svelte" />
+      <SvelteButton variant="tertiary" size="small" client:only="svelte">전체 해제</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+      <SolidTag label="영유아" removable client:only="solid-js" />
+      <SolidTag label="맞벌이" removable client:only="solid-js" />
+      <SolidTag label="교육" removable client:only="solid-js" />
+      <SolidButton variant="tertiary" size="small" client:only="solid-js">전체 해제</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+      <AstroTag label="영유아" removable />
+      <AstroTag label="맞벌이" removable />
+      <AstroTag label="교육" removable />
+      <AstroButton variant="tertiary" size="small">전체 해제</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+      <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+      <AngularTag label="영유아" message="삭제" client:only="@analogjs/astro-angular" />
+      <AngularTag label="맞벌이" message="삭제" client:only="@analogjs/astro-angular" />
+      <AngularTag label="교육" message="삭제" client:only="@analogjs/astro-angular" />
+      <AngularButton variant="tertiary" size="small" label="전체 해제" client:only="@analogjs/astro-angular">전체 해제</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Tag, Button } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
+      <strong style={{ fontSize: "0.875rem" }}>선택된 필터 3</strong>
+      <Tag label="영유아" />
+      <Tag label="맞벌이" />
+      <Tag label="교육" />
+      <Button variant="tertiary" size="small">
+        전체 해제
+      </Button>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Tag, Button } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+    <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+    <Tag label="영유아" removable />
+    <Tag label="맞벌이" removable />
+    <Tag label="교육" removable />
+    <Button variant="tertiary" size="small">전체 해제</Button>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Tag, Button } from "@krds-community/svelte";
+</script>
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+  <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+  <Tag label="영유아" removable />
+  <Tag label="맞벌이" removable />
+  <Tag label="교육" removable />
+  <Button variant="tertiary" size="small">전체 해제</Button>
+</div>
+```
+
+```tsx fw=solid
+import { Tag, Button } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center" }}>
+      <strong style={{ fontSize: "0.875rem" }}>선택된 필터 3</strong>
+      <Tag label="영유아" />
+      <Tag label="맞벌이" />
+      <Tag label="교육" />
+      <Button variant="tertiary" size="small">
+        전체 해제
+      </Button>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTagComponent, KrdsButtonComponent } from "@krds-community/angular";
+
+// template
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+  <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+  <krds-tag label="영유아" message="삭제"></krds-tag>
+  <krds-tag label="맞벌이" message="삭제"></krds-tag>
+  <krds-tag label="교육" message="삭제"></krds-tag>
+  <krds-button variant="tertiary" size="small" label="전체 해제"></krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { Tag, Button } from "@krds-community/astro";
+---
+
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+  <strong style="font-size:0.875rem;">선택된 필터 3</strong>
+  <Tag label="영유아" />
+  <Tag label="맞벌이" />
+  <Tag label="교육" />
+  <Button variant="tertiary" size="small">전체 해제</Button>
+</div>
+```
+
+</PracticeExample>
+
+### 플랫폼에 대한 고려 사항
+
+**모든 필터링·정렬 컨트롤을 표시하기에 화면 너비가 충분하지 않은 경우, 필터링 및 정렬 컨트롤 버튼을 축약하여 제공한다.**
+컨트롤 버튼은 목록의 우측 상단에 배치하며, 필터 컨트롤이 먼저 배치되도록 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="모든 필터링·정렬 컨트롤을 표시하기에 화면 너비가 충분하지 않은 경우, 필터링 및 정렬 컨트롤 버튼을 축약하여 제공한다."
+>
+  <div slot="react">
+    <div style="max-width:24rem;">
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+        <ReactButton variant="secondary" size="small" client:only="react">필터 2</ReactButton>
+        <ReactSelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+          client:only="react"
+        />
+      </div>
+      <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+        <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width:24rem;">
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+        <VueButton variant="secondary" size="small" client:only="vue">필터 2</VueButton>
+        <VueSelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+          client:only="vue"
+        />
+      </div>
+      <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+        <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width:24rem;">
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+        <SvelteButton variant="secondary" size="small" client:only="svelte">필터 2</SvelteButton>
+        <SvelteSelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+          client:only="svelte"
+        />
+      </div>
+      <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+        <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width:24rem;">
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+        <SolidButton variant="secondary" size="small" client:only="solid-js">필터 2</SolidButton>
+        <SolidSelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+          client:only="solid-js"
+        />
+      </div>
+      <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+        <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width:24rem;">
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+        <AstroButton variant="secondary" size="small">필터 2</AstroButton>
+        <AstroSelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+        />
+      </div>
+      <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+        <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width:24rem;">
+      <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+        <AngularButton variant="secondary" size="small" label="필터 2" client:only="@analogjs/astro-angular">필터 2</AngularButton>
+        <AngularSelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+          client:only="@analogjs/astro-angular"
+        />
+      </div>
+      <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+        <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+        <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, SelectSorting } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: "24rem" }}>
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.5rem" }}
+      >
+        <Button variant="secondary" size="small">
+          필터 2
+        </Button>
+        <SelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+        />
+      </div>
+      <p style={{ margin: "0.75rem 0 0.5rem", fontSize: "0.875rem" }}>
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul
+        style={{
+          margin: 0,
+          padding: 0,
+          listStyle: "none",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          fontSize: "0.875rem",
+        }}
+      >
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          영유아 보육료 지원 신청
+        </li>
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          아이돌봄 서비스 이용 신청
+        </li>
+        <li style={{ padding: "0.5rem" }}>출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, SelectSorting } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width:24rem;">
+    <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+      <Button variant="secondary" size="small">필터 2</Button>
+      <SelectSorting
+        label="정렬 기준"
+        :options="[
+          { value: 'recent', label: '최신순' },
+          { value: 'popular', label: '인기순' },
+        ]"
+      />
+    </div>
+    <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+    <ul
+      style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;"
+    >
+      <li
+        style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);"
+      >
+        영유아 보육료 지원 신청
+      </li>
+      <li
+        style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);"
+      >
+        아이돌봄 서비스 이용 신청
+      </li>
+      <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+    </ul>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, SelectSorting } from "@krds-community/svelte";
+</script>
+
+<div style="max-width:24rem;">
+  <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+    <Button variant="secondary" size="small">필터 2</Button>
+    <SelectSorting
+      label="정렬 기준"
+      options={[
+        { value: "recent", label: "최신순" },
+        { value: "popular", label: "인기순" },
+      ]}
+    />
+  </div>
+  <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+  <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+    <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+    <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+    <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+  </ul>
+</div>
+```
+
+```tsx fw=solid
+import { Button, SelectSorting } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: "24rem" }}>
+      <div
+        style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "0.5rem" }}
+      >
+        <Button variant="secondary" size="small">
+          필터 2
+        </Button>
+        <SelectSorting
+          label="정렬 기준"
+          options={[
+            { value: "recent", label: "최신순" },
+            { value: "popular", label: "인기순" },
+          ]}
+        />
+      </div>
+      <p style={{ margin: "0.75rem 0 0.5rem", fontSize: "0.875rem" }}>
+        검색 결과 <strong>24</strong>건
+      </p>
+      <ul
+        style={{
+          margin: 0,
+          padding: 0,
+          listStyle: "none",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          fontSize: "0.875rem",
+        }}
+      >
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          영유아 보육료 지원 신청
+        </li>
+        <li
+          style={{
+            padding: "0.5rem",
+            borderBottom: "1px solid var(--krds-mode-light-color-border-gray-light)",
+          }}
+        >
+          아이돌봄 서비스 이용 신청
+        </li>
+        <li style={{ padding: "0.5rem" }}>출산 지원금 지급 안내</li>
+      </ul>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsSelectSortingComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width:24rem;">
+  <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+    <krds-button variant="secondary" size="small" label="필터 2"></krds-button>
+    <krds-select-sorting
+      label="정렬 기준"
+      [options]="[
+        { value: 'recent', label: '최신순' },
+        { value: 'popular', label: '인기순' },
+      ]"
+    ></krds-select-sorting>
+  </div>
+  <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+  <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+    <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+    <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+    <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+  </ul>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, SelectSorting } from "@krds-community/astro";
+---
+
+<div style="max-width:24rem;">
+  <div style="display:flex; justify-content:flex-end; align-items:center; gap:0.5rem;">
+    <Button variant="secondary" size="small">필터 2</Button>
+    <SelectSorting
+      label="정렬 기준"
+      options={[
+        { value: "recent", label: "최신순" },
+        { value: "popular", label: "인기순" },
+      ]}
+    />
+  </div>
+  <p style="margin:0.75rem 0 0.5rem; font-size:0.875rem;">검색 결과 <strong>24</strong>건</p>
+  <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:0.25rem; font-size:0.875rem;">
+    <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">영유아 보육료 지원 신청</li>
+    <li style="padding:0.5rem; border-bottom:1px solid var(--krds-mode-light-color-border-gray-light);">아이돌봄 서비스 이용 신청</li>
+    <li style="padding:0.5rem;">출산 지원금 지급 안내</li>
+  </ul>
+</div>
+```
+
+</PracticeExample>

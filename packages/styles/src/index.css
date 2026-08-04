@@ -1,5 +1,5 @@
 /* Community CSS is opt-in. Generated token values are imported, no global reset is applied. */
-@import '@krds-community/tokens/css';
+@import "@krds-community/tokens/css";
 
 ::where(.krds-btn, .krds-input, .krds-form-check input, .krds-form-toggle-switch input) {
   font: inherit;
@@ -77,22 +77,22 @@
   padding: 0.625rem 0.75rem;
   width: 100%;
 }
-.krds-input[data-size='small'] {
+.krds-input[data-size="small"] {
   min-height: 2.25rem;
 }
-.krds-input[data-size='large'] {
+.krds-input[data-size="large"] {
   min-height: 3.25rem;
 }
-.krds-input[data-state='error'] {
+.krds-input[data-state="error"] {
   border-color: var(--krds-mode-light-color-input-border-error);
 }
-.krds-input[data-state='success'] {
+.krds-input[data-state="success"] {
   border-color: var(--krds-mode-light-color-border-success);
 }
 .krds-field-message {
   font-size: 0.875rem;
 }
-.krds-field-message[data-state='error'] {
+.krds-field-message[data-state="error"] {
   color: var(--krds-mode-light-color-text-danger);
 }
 
@@ -258,7 +258,7 @@
 .krds-btn-tag,
 .krds-tts,
 .krds-pagination button,
-.krds-tab-area [role='tab'],
+.krds-tab-area [role="tab"],
 .krds-tooltip {
   border-radius: var(--krds-semantic-radius-medium2, 0.25rem);
   cursor: pointer;
@@ -469,13 +469,13 @@
 }
 .krds-carousel button,
 .krds-pagination button,
-.krds-tab-area [role='tab'] {
+.krds-tab-area [role="tab"] {
   background: transparent;
   border: 1px solid var(--krds-mode-light-color-border-gray);
   font: inherit;
 }
 .krds-pagination .active,
-.krds-tab-area [aria-selected='true'] {
+.krds-tab-area [aria-selected="true"] {
   background: var(--krds-mode-light-color-button-primary-fill);
   color: var(--krds-mode-light-color-action-white);
 }
@@ -494,7 +494,7 @@
   width: 2rem;
 }
 .krds-step-wrap li.done > span,
-.krds-step-wrap li[aria-current='step'] > span {
+.krds-step-wrap li[aria-current="step"] > span {
   background: var(--krds-mode-light-color-button-primary-fill);
   color: var(--krds-mode-light-color-action-white);
 }
@@ -511,20 +511,20 @@
   padding: 0.75rem;
   text-align: start;
 }
-.krds-tab-area [role='tablist'] {
+.krds-tab-area [role="tablist"] {
   border-block-end: 1px solid var(--krds-mode-light-color-border-gray);
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
 }
-.krds-tab-area [role='tabpanel'] {
+.krds-tab-area [role="tabpanel"] {
   padding-block: 1rem;
 }
 .krds-tooltip-wrap {
   display: inline-flex;
   position: relative;
 }
-.krds-tooltip-wrap [role='tooltip'] {
+.krds-tooltip-wrap [role="tooltip"] {
   background: var(
     --krds-mode-light-color-background-gray,
     var(--krds-mode-light-color-element-gray)
@@ -570,7 +570,7 @@
   .krds-btn-tag,
   .krds-tts,
   .krds-pagination button,
-  .krds-tab-area [role='tab'],
+  .krds-tab-area [role="tab"],
   .krds-tooltip,
   .krds-input,
   .krds-form-select,
@@ -600,7 +600,7 @@
     .krds-btn-tag,
     .krds-tts,
     .krds-pagination button,
-    .krds-tab-area [role='tab'],
+    .krds-tab-area [role="tab"],
     .krds-tooltip,
     .krds-input,
     .krds-form-select,

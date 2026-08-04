@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { readFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   buildReport,
   frameworks,
@@ -12,19 +12,19 @@ import {
   toMarkdown,
   writeReport,
   type Framework,
-} from './index.js';
+} from "./index.js";
 
-const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '../../..');
+const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 const lock = JSON.parse(
-  await readFile(join(packageRoot, 'upstream/upstream.lock.json'), 'utf8'),
+  await readFile(join(packageRoot, "upstream/upstream.lock.json"), "utf8"),
 ) as {
   repository: string;
   ref: string;
   commit: string;
   packageVersion: string;
 };
-const manifests = await loadManifests(join(packageRoot, 'conformance/manifests'));
-const evidenceFlagIndex = process.argv.indexOf('--evidence');
+const manifests = await loadManifests(join(packageRoot, "conformance/manifests"));
+const evidenceFlagIndex = process.argv.indexOf("--evidence");
 const evidencePath =
   evidenceFlagIndex >= 0
     ? process.argv[evidenceFlagIndex + 1]
@@ -32,7 +32,7 @@ const evidencePath =
       : undefined
     : undefined;
 if (evidenceFlagIndex >= 0 && !evidencePath) {
-  throw new Error('--evidence requires a deterministic runtime evidence JSON path');
+  throw new Error("--evidence requires a deterministic runtime evidence JSON path");
 }
 const evidence = evidencePath ? await readEvidence(evidencePath) : undefined;
 const report = buildReport(
@@ -46,20 +46,20 @@ const report = buildReport(
   evidence,
 );
 
-const command = process.argv[2] ?? 'report';
-const strictRequested = process.argv.includes('--strict');
+const command = process.argv[2] ?? "report";
+const strictRequested = process.argv.includes("--strict");
 const requested =
-  process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : undefined;
+  process.argv[3] && !process.argv[3].startsWith("--") ? process.argv[3] : undefined;
 const framework = requested && frameworks.includes(requested as Framework) ? requested : undefined;
-if (command === 'inventory') {
+if (command === "inventory") {
   console.log(
     JSON.stringify(
-      { reportType: 'catalog', upstream: report.upstream, manifests: report.manifests },
+      { reportType: "catalog", upstream: report.upstream, manifests: report.manifests },
       null,
       2,
     ),
   );
-} else if (command === 'check') {
+} else if (command === "check") {
   const selected = framework
     ? report.frameworks.filter((summary) => summary.framework === framework)
     : report.frameworks;
@@ -80,22 +80,22 @@ if (command === 'inventory') {
     ),
   );
   if (strictRequested && !report.strictConformance) process.exitCode = 1;
-} else if (command === 'diff-upstream') {
+} else if (command === "diff-upstream") {
   console.log(
     JSON.stringify(
-      { command: 'pnpm upstream:diff', report: 'reports/upstream-diff.json' },
+      { command: "pnpm upstream:diff", report: "reports/upstream-diff.json" },
       null,
       2,
     ),
   );
-} else if (command === 'report') {
-  const formatFlagIndex = process.argv.indexOf('--format');
-  const format = formatFlagIndex >= 0 ? process.argv[formatFlagIndex + 1] : 'json';
-  if (format === 'markdown') console.log(toMarkdown(report));
-  else if (format === 'junit') console.log(toJUnit(report));
-  else if (format === 'html') console.log(toHtml(report));
+} else if (command === "report") {
+  const formatFlagIndex = process.argv.indexOf("--format");
+  const format = formatFlagIndex >= 0 ? process.argv[formatFlagIndex + 1] : "json";
+  if (format === "markdown") console.log(toMarkdown(report));
+  else if (format === "junit") console.log(toJUnit(report));
+  else if (format === "html") console.log(toHtml(report));
   else console.log(JSON.stringify(report, null, 2));
-  await writeReport(report, join(packageRoot, 'reports'));
+  await writeReport(report, join(packageRoot, "reports"));
 } else {
   throw new Error(
     `Unknown command ${command}. Use inventory, check [--strict], diff-upstream, or report [--evidence <path>].`,

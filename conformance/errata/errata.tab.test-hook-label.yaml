@@ -1,0 +1,32 @@
+id: errata.tab.test-hook-label
+component: tab
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/tab.html
+defect:
+  type: test-hook-label
+  literalSource:
+    selectors:
+      - ".krds-tab-area"
+    behavior: >-
+      The upstream markup has no test-hook element for the current selection.
+correction:
+  behavior: >-
+    Render a sr-only test-hook label for the currently selected tab id. It is
+    purely a test hook for selection assertions and carries no presentational
+    or accessibility semantics of its own.
+  attributes:
+    - selector: '.krds-tab-area [data-testid="selected-tab"]'
+      attribute: data-testid
+      rule: "exact-value:selected-tab"
+fixtures:
+  - tab.default
+normalization:
+  whitelist:
+    - selector: '.krds-tab-area [data-testid="selected-tab"]'
+      ignoreElement: true
+evidence:
+  rationale: >-
+    The element is a non-semantic selection test hook (data-testid) that must
+    not participate in DOM parity comparisons against the official fixture.

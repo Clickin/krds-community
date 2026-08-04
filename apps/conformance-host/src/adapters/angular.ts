@@ -1,40 +1,39 @@
-import '@angular/compiler';
+import "@angular/compiler";
 import {
   createComponent,
   reflectComponentType,
   type ApplicationRef,
   type EnvironmentInjector,
   type Type,
-} from '@angular/core';
-import { createApplication } from '@angular/platform-browser';
-import * as Components from '@krds-community/angular';
-import type { FrameworkAdapter } from '../protocol';
+} from "@angular/core";
+import { createApplication } from "@angular/platform-browser";
+import * as Components from "@krds-community/angular";
+import type { FrameworkAdapter } from "../protocol";
 
 const coreExports: Readonly<Record<string, string>> = {
-  button: 'KrdsButtonComponent',
-  checkbox: 'KrdsCheckboxComponent',
-  radio: 'KrdsRadioComponent',
-  switch: 'KrdsSwitchComponent',
-  'text-input': 'KrdsTextInputComponent',
-  accordion: 'KrdsAccordionComponent',
+  button: "KrdsButtonComponent",
+  checkbox: "KrdsCheckboxComponent",
+  radio: "KrdsRadioComponent",
+  switch: "KrdsSwitchComponent",
+  "text-input": "KrdsTextInputComponent",
+  accordion: "KrdsAccordionComponent",
 };
 
 const toPascalCase = (componentId: string): string =>
   componentId
-    .split('-')
+    .split("-")
     .filter((part) => part.length > 0)
     .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
-    .join('');
+    .join("");
 
 const isComponentType = (candidate: unknown): candidate is Type<unknown> =>
-  typeof candidate === 'function';
+  typeof candidate === "function";
 
 const resolveComponent = (
   componentId: string,
 ): { component: Type<unknown>; inputNames: ReadonlySet<string> } => {
   const coreExport = coreExports[componentId];
-  const exportName =
-    coreExport ?? `Krds${toPascalCase(componentId)}Component`;
+  const exportName = coreExport ?? `Krds${toPascalCase(componentId)}Component`;
   const candidate: unknown = Reflect.get(Components, exportName);
 
   if (!isComponentType(candidate)) {
@@ -52,7 +51,6 @@ const resolveComponent = (
   };
 };
 
-
 export const adapter: FrameworkAdapter = {
   async mount(target, componentId, initialProps) {
     const { component, inputNames } = resolveComponent(componentId);
@@ -61,7 +59,7 @@ export const adapter: FrameworkAdapter = {
     const application: ApplicationRef = await createApplication();
     const environmentInjector: EnvironmentInjector = application.injector;
     const projectedText =
-      typeof initialProps.children === 'string'
+      typeof initialProps.children === "string"
         ? document.createTextNode(initialProps.children)
         : undefined;
     const componentRef = createComponent(component, {
@@ -73,11 +71,11 @@ export const adapter: FrameworkAdapter = {
 
     let currentInputNames = new Set<string>();
     const commit = async (props: Record<string, unknown>): Promise<void> => {
-      if (inputNames.has('kind')) componentRef.setInput('kind', componentId);
+      if (inputNames.has("kind")) componentRef.setInput("kind", componentId);
       const nextInputNames = new Set<string>();
 
       for (const [name, value] of Object.entries(props)) {
-        if (name === 'children' || name === 'kind') continue;
+        if (name === "children" || name === "kind") continue;
         if (!inputNames.has(name)) continue;
         componentRef.setInput(name, value);
         nextInputNames.add(name);

@@ -17,14 +17,14 @@ pnpm add astro @krds-community/astro @krds-community/styles
 
 다른 프레임워크와 Astro는 다음 패키지를 사용합니다. Web Components 런타임은 사용하지 않습니다.
 
-| 프레임워크 | 패키지 |
-| ---------- | ------ |
-| React      | `@krds-community/react` |
-| Vue        | `@krds-community/vue` |
-| Svelte     | `@krds-community/svelte` |
-| SolidJS    | `@krds-community/solid` |
+| 프레임워크 | 패키지                    |
+| ---------- | ------------------------- |
+| React      | `@krds-community/react`   |
+| Vue        | `@krds-community/vue`     |
+| Svelte     | `@krds-community/svelte`  |
+| SolidJS    | `@krds-community/solid`   |
 | Angular    | `@krds-community/angular` |
-| Astro      | `@krds-community/astro` |
+| Astro      | `@krds-community/astro`   |
 
 설치 후 public export를 직접 import하는 최소 사용 예시는 다음과 같습니다. 각 컴포넌트의 전체 props/events/forms/a11y 계약과 복사 버튼은 [컴포넌트 API 안내](../../components/)에서 확인하세요.
 
@@ -38,7 +38,7 @@ export function SaveButton() {
 
 ```vue
 <script setup lang="ts">
-import { Button } from '@krds-community/vue';
+import { Button } from "@krds-community/vue";
 </script>
 
 <template>
@@ -63,7 +63,7 @@ export function SaveButton() {
 ```
 
 ```ts
-import { KrdsButtonComponent } from '@krds-community/angular';
+import { KrdsButtonComponent } from "@krds-community/angular";
 
 @Component({
   standalone: true,

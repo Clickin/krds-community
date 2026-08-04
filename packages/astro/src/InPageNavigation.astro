@@ -50,7 +50,7 @@ const {
       <p class="quick-caption">{title}</p>
       <p class="quick-title">{pageTitle}</p>
     </div>
-    <nav class="in-page-navigation-list" aria-label={navigationLabel}>
+    <nav class="in-page-navigation-list" aria-label={navigationLabel ?? title ?? '이 페이지의 구성'}>
       <ul>
         {items.map((item) => (
           <li>

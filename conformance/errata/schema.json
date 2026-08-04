@@ -63,10 +63,10 @@
             "required": ["selector", "attribute", "rule"],
             "properties": {
               "selector": { "type": "string", "minLength": 1 },
-            "attribute": {
-              "type": "string",
-              "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|data-listener-attached|onclick)$"
-            },
+              "attribute": {
+                "type": "string",
+                "pattern": "^(?:aria-[a-z0-9-]+|role|hidden|id|data-listener-attached|onclick)$"
+              },
               "rule": { "type": "string", "minLength": 1 }
             },
             "additionalProperties": false

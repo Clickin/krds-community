@@ -11,7 +11,7 @@ fixtures:
     mandatory: true
     viewport: desktop
     props: {}
-    states: [default, focus-visible]
+    states: [default, checked, disabled, focus-visible]
 contract:
   semanticElement: label-and-radio
   accessibleRole: radio

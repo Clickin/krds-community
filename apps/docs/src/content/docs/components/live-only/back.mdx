@@ -1,0 +1,632 @@
+---
+title: 뒤로가기
+description: 뒤로가기 버튼은 사용자가 현재 화면에서 직전 단계 또는 상위 정보 구조로 안전하게 되돌아갈 수 있도록 돕는 기본 탐색 요소이다.
+category: live-only
+---
+
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+
+{/* krds-official:component_12_02 */}
+
+> 이 컴포넌트는 공식 웹사이트(2026-07-27 확인)에 있으나 고정 스냅샷 1.1.0(krds-uiux@1.1.0)에 포함되지 않습니다. 커뮤니티 구현과 conformance 결과가 없습니다.
+
+## 공식 문서
+
+뒤로가기 버튼은 사용자가 현재 화면에서 직전 단계 또는 상위 정보 구조로 안전하게 되돌아갈 수 있도록 돕는 기본 탐색 요소이다.
+
+### 구조
+
+1. **뒤로가기 버튼** 이전 화면으로 돌아가는 버튼
+2. **제목** 현재 화면의 제목을 표시
+
+### 사용성 가이드라인
+
+**뒤로가기 버튼은 항상 상단바 좌측에 표시한다.**
+뒤로가기는 상단바 좌측에 위치함으로써 이전 화면으로 이동을 자연스럽게 의미 할 수 있도록 한다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="뒤로가기 버튼은 항상 상단바 좌측에 표시한다."
+>
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <ReactButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="react">← 뒤로</ReactButton>
+        <strong>신청 내역</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <VueButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="vue">← 뒤로</VueButton>
+        <strong>신청 내역</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <SvelteButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="svelte">← 뒤로</SvelteButton>
+        <strong>신청 내역</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <SolidButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="solid-js">← 뒤로</SolidButton>
+        <strong>신청 내역</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <AstroButton variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</AstroButton>
+        <strong>신청 내역</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <AngularButton variant="tertiary" aria-label="이전 화면으로 돌아가기" label="← 뒤로" client:only="@analogjs/astro-angular">← 뒤로</AngularButton>
+        <strong>신청 내역</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+    <strong>신청 내역</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from '@krds-community/vue';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <strong>신청 내역</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <strong>신청 내역</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+    <strong>신청 내역</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <krds-button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</krds-button>
+    <strong>신청 내역</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <strong>신청 내역</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="뒤로가기 버튼은 항상 상단바 좌측에 표시한다."
+>
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <strong>신청 내역</strong>
+        <ReactButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="react">← 뒤로</ReactButton>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <strong>신청 내역</strong>
+        <VueButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="vue">← 뒤로</VueButton>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <strong>신청 내역</strong>
+        <SvelteButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="svelte">← 뒤로</SvelteButton>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <strong>신청 내역</strong>
+        <SolidButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="solid-js">← 뒤로</SolidButton>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <strong>신청 내역</strong>
+        <AstroButton variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</AstroButton>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <strong>신청 내역</strong>
+        <AngularButton variant="tertiary" aria-label="이전 화면으로 돌아가기" label="← 뒤로" client:only="@analogjs/astro-angular">← 뒤로</AngularButton>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <strong>신청 내역</strong>
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from '@krds-community/vue';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <strong>신청 내역</strong>
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <strong>신청 내역</strong>
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <strong>신청 내역</strong>
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <strong>신청 내역</strong>
+    <krds-button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</krds-button>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <strong>신청 내역</strong>
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+</PracticeExample>
+
+**이전 화면으로의 이동을 기본으로 한다.**
+뒤로가기는 기본적으로 직전에 보던 화면(또는 상위 단계)으로 이동해야 한다, 동일 위치에 닫기, 취소 버튼을 위치 시켜 버튼 본연의 역할이 겹치지 않도록 명확이 구분하여 사용한다.
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="이전 화면으로의 이동을 기본으로 한다."
+>
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <ReactButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="react">← 뒤로</ReactButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <VueButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="vue">← 뒤로</VueButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <SvelteButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="svelte">← 뒤로</SvelteButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <SolidButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="solid-js">← 뒤로</SolidButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <AstroButton variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</AstroButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <AngularButton variant="tertiary" aria-label="이전 화면으로 돌아가기" label="← 뒤로" client:only="@analogjs/astro-angular">← 뒤로</AngularButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from '@krds-community/vue';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <krds-button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</krds-button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="이전 화면으로의 이동을 기본으로 한다."
+>
+  <div slot="react">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <ReactButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="react">← 뒤로</ReactButton>
+        <ReactButton variant="tertiary" client:only="react">취소</ReactButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <VueButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="vue">← 뒤로</VueButton>
+        <VueButton variant="tertiary" client:only="vue">취소</VueButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <SvelteButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="svelte">← 뒤로</SvelteButton>
+        <SvelteButton variant="tertiary" client:only="svelte">취소</SvelteButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <SolidButton variant="tertiary" aria-label="이전 화면으로 돌아가기" client:only="solid-js">← 뒤로</SolidButton>
+        <SolidButton variant="tertiary" client:only="solid-js">취소</SolidButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <AstroButton variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</AstroButton>
+        <AstroButton variant="tertiary">취소</AstroButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+        <AngularButton variant="tertiary" aria-label="이전 화면으로 돌아가기" label="← 뒤로" client:only="@analogjs/astro-angular">← 뒤로</AngularButton>
+        <AngularButton variant="tertiary" label="취소" client:only="@analogjs/astro-angular">취소</AngularButton>
+        <strong>신청 정보 입력</strong>
+      </div>
+      <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button } from "@krds-community/react";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+    <Button variant="tertiary">취소</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```vue fw=vue
+<script setup>
+import { Button } from '@krds-community/vue';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <Button variant="tertiary">취소</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```svelte fw=svelte
+<script>
+import { Button } from '@krds-community/svelte';
+</script>
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <Button variant="tertiary">취소</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```tsx fw=solid
+import { Button } from "@krds-community/solid";
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">
+      ← 뒤로
+    </Button>
+    <Button variant="tertiary">취소</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>;
+```
+
+```ts fw=angular
+import { KrdsButtonComponent } from '@krds-community/angular';
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <krds-button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</krds-button>
+    <krds-button variant="tertiary">취소</krds-button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button } from '@krds-community/astro';
+---
+
+<div style="max-width: 360px; font-size: 14px; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden;">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #fafafa; border-bottom: 1px solid #e5e5e5;">
+    <Button variant="tertiary" aria-label="이전 화면으로 돌아가기">← 뒤로</Button>
+    <Button variant="tertiary">취소</Button>
+    <strong>신청 정보 입력</strong>
+  </div>
+  <div style="padding: 24px 12px; color: #555555;">본문 영역</div>
+</div>
+```
+
+</PracticeExample>
+
+**사용자가 이동을 예측 가능하도록 한다.**
+사용자가 버튼을 누르면 어디로 이동할지 예측이 가능하도록 설계한다.
+**작성 중인 내용이 사라지는 경우에는 항상 경고하여야 한다.**
+신청 프로세스나 정보를 입력하면 화면에서의 동작은 작성 중인 내용이 유실될 가능성이 있는 모든 상황에서, 반드시 사전 경고를 제공하여 사용자가 계속 진행 여부를 스스로 결정할 수 있도록 하여야 한다.
+**시스템 뒤로가기와 앱 내 뒤로가기는 최대한 동일하게 동작하여야 한다.**
+같은 화면에서 상단 뒤로가기 버튼과 시스템 back/제스처를 사용했을 때, 서로 다른 화면으로 이동하거나, 하나는 팝업을 닫고 하나는 페이지를 이탈하는 등 상이한 결과를 초래해서는 안 된다.
+{/* /krds-official:component_12_02 */}

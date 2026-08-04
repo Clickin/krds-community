@@ -1,0 +1,90 @@
+id: errata.header.dropdown-and-search-labels
+component: header
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/header.html
+defect:
+  type: missing-control-relationship
+  literalSource:
+    selectors:
+      - ".header-utility .drop-btn"
+      - ".header-utility .drop-menu"
+      - ".my-drop > .drop-btn"
+      - ".my-drop > .drop-menu"
+      - ".gnb-sub-trigger"
+      - ".depth3-wrap"
+      - ".sch-input input"
+    behavior: >-
+      The literal header markup exposes disclosure triggers and an icon search input without naming their targets.
+correction:
+  behavior: >-
+    Wire aria-controls/id pairs for utility, my-menu, and depth3 disclosures and give the mobile search input an accessible name.
+  attributes:
+    - selector: ".header-utility .drop-btn"
+      attribute: aria-controls
+      rule: "references: sibling .drop-menu[id]"
+    - selector: ".header-utility .drop-menu"
+      attribute: id
+      rule: "stable generated id for the aria-controls target"
+    - selector: ".my-drop > .drop-btn"
+      attribute: aria-controls
+      rule: "references: .my-drop > .drop-menu[id]"
+    - selector: ".my-drop > .drop-menu"
+      attribute: id
+      rule: "stable generated id for the aria-controls target"
+    - selector: ".gnb-sub-trigger"
+      attribute: aria-controls
+      rule: "references: sibling .depth3-wrap[id]"
+    - selector: ".depth3-wrap"
+      attribute: id
+      rule: "stable generated id for the depth3 disclosure"
+    - selector: ".sch-input input"
+      attribute: aria-label
+      rule: "search label or title text"
+    - selector: "nav.krds-main-menu"
+      attribute: aria-label
+      rule: "menu label text"
+    - selector: ".krds-main-menu-mobile"
+      attribute: aria-label
+      rule: "mobile menu label text"
+
+fixtures:
+  - header.default
+normalization:
+  whitelist:
+    - selector: ".header-utility .drop-btn"
+      attribute: aria-controls
+      operation: omit
+    - selector: ".header-utility .drop-menu"
+      attribute: id
+      operation: omit
+    - selector: ".my-drop > .drop-btn"
+      attribute: aria-controls
+      operation: omit
+    - selector: ".my-drop > .drop-menu"
+      attribute: id
+      operation: omit
+    - selector: ".gnb-sub-trigger"
+      attribute: aria-controls
+      operation: omit
+    - selector: ".depth3-wrap"
+      attribute: id
+      operation: omit
+    - selector: ".sch-input input"
+      attribute: aria-label
+      operation: omit
+    - selector: ".krds-main-menu-mobile"
+      attribute: aria-label
+      operation: omit
+    - selector: "nav.krds-main-menu"
+      attribute: aria-label
+      operation: rewrite
+      rewriteValue: "메인 메뉴"
+    - selector: ".krds-main-menu-mobile"
+      attribute: role
+      operation: omit
+
+evidence:
+  rationale: >-
+    Framework adds disclosure relationships and an accessible search name; attributes are non-semantic additions vs upstream.

@@ -1,14 +1,14 @@
 ---
-'@krds-community/angular': minor
-'@krds-community/astro': minor
-'@krds-community/react': minor
-'@krds-community/conformance': minor
-'@krds-community/recipes': minor
-'@krds-community/solid': minor
-'@krds-community/krds-cli': minor
-'@krds-community/styles': minor
-'@krds-community/svelte': minor
-'@krds-community/vue': minor
+"@krds-community/angular": minor
+"@krds-community/astro": minor
+"@krds-community/react": minor
+"@krds-community/conformance": minor
+"@krds-community/recipes": minor
+"@krds-community/solid": minor
+"@krds-community/krds-cli": minor
+"@krds-community/styles": minor
+"@krds-community/svelte": minor
+"@krds-community/vue": minor
 ---
 
 공통 KRDS 컴포넌트 props 계약, 여섯 프레임워크의 네이티브 인벤토리 컴포넌트,
