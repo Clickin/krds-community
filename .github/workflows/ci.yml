@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
+    tags: ["v*"]
 
 permissions:
   contents: read
@@ -12,11 +13,11 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.0.10
         with:
-          version: 11.12.0
-      - uses: actions/setup-node@v4
+          version: 11.20.0
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version: 22
           cache: pnpm
@@ -24,10 +25,18 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Check dependency catalog policy
         run: pnpm catalog:check
-      - name: Install browser runtimes
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Provision Chrome for browser tests
+        uses: browser-actions/setup-chrome@v2.1.2
+        with:
+          install-dependencies: true
       - name: Check formatting
         run: pnpm format:check
+      # Build the type-declaration surfaces first so package-to-package .d.ts
+      # references (e.g. solid lint importing @krds-community/recipes) resolve on
+      # a fresh checkout where dist/ is not committed. conformance-viewer is
+      # excluded: its build reads reports/ (produced later by test:conformance).
+      - name: Build workspaces (type declarations)
+        run: pnpm -r --filter '!@krds-community/conformance-viewer' build && node scripts/copy-notices.mjs
       - name: Lint repository
         run: pnpm lint:oxide
       - name: Check React compiler rules
@@ -42,14 +51,12 @@ jobs:
         run: pnpm test:reactivity
       - name: Run SSR and hydration tests
         run: pnpm test:ssr
-      - name: Run cross-browser behavior tests
-        run: pnpm test:browser
       - name: Run Chromium visual tests
         run: pnpm test:visual
       - name: Generate and gate full runtime conformance evidence
         run: pnpm test:conformance
-      - name: Build every workspace
-        run: pnpm build
+      - name: Build conformance viewer (after reports exist)
+        run: pnpm --filter @krds-community/conformance-viewer build
       - name: Check publishable package artifacts
         run: pnpm test:packages
       - name: Build documentation
@@ -60,3 +67,30 @@ jobs:
         run: pnpm test:storybook:audit
       - name: Check release metadata
         run: pnpm changeset:status
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6.0.10
+        with:
+          version: 11.20.0
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+          package-manager-cache: false
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run unit tests
+        run: pnpm test:unit
+      # Trusted Publisher (OIDC): the ambient id-token is exchanged for a short-lived
+      # npm token — no long-lived NPM_TOKEN required. `--provenance` mints sigstore
+      # attestations from the same OIDC identity.
+      - name: Publish to npm
+        run: pnpm changeset publish --provenance

@@ -7,23 +7,23 @@
 
 ## 요약
 
-| ID | 패턴 페이지 | 섹션 | 가이드라인 (요약) | 유형 | docs 위치 | 공식 가이드 위치 |
-|---|---|---|---|---|---|---|
-| F1 | service-patterns/search.mdx | 검색어 입력 도움 | "검색어 입력 도움은 가능한 사용자가 검색어를 입력하는 시점에 실시간으로 제공한다" — 실시간 검색어 제안 | A | 2103-2104, 2106-2270(구현); 1064-1065, 1067-1370(구현); 1914-1917, 1920, ~1923-2098(구현) | service_02_03.html 구조 #7(1172-1174), 상호작용 가이드라인(1415-1491), 접근성 Status Messages(1388-1393) |
-| F2 | service-patterns/login.mdx | 로그인 정보 입력 | "실시간 유효성 검사는 입력 필드가 포커스를 잃을 때 발생" + "제출 시 오류가 발생한 경우 해당 항목으로 초점을 이동" | A | 3885-3889, 3006-3880(구현) | service_03_05.html 상호작용 가이드라인(1285-1297) |
-| F3 | basic-patterns/filter-sort.mdx | 정보 조회와 표시 | "즉각 표시(Instant display) — 사용자가 옵션을 선택하자마자 필터링·정렬·조회 동작이 실행" | A | 64, 90-1164(구현) | global_10.html 상호작용 가이드라인(1541-1615) |
-| F4 | basic-patterns/form.mdx | (가이드라인 자체 미복사) | "클라이언트 측 검증은 브라우저에서 실시간으로 사용자의 입력을 확인" (Keyup/Focusout) | A+B | 1536-1818(정적 `state="error"` 예시) — 가이드라인 텍스트 0건 | global_08.html 상호작용 가이드라인(1438-1518) |
-| F5 | basic-patterns/mobile-settings.mdx | 모바일 설정 | "설정 변경은 즉시 적용하며 간결한 피드백 제공" + "저장 버튼은 입력이 유효할 때만 활성화" | A (구현 부재) | 31, 35, 37-38 — 파일 44행, 예시 0건 | global_13.html 사용성 가이드라인(1060-1093) |
-| B1 | (시스템성) | 18개 패턴 mdx 전체 | 공식 상호작용 가이드라인(키보드 계약 테이블: 방향키↑↓/Enter/Esc/Keyup/Focusout 등) 미반영 | B | 18개 mdx `상호작용\|방향키\|Focusin\|Keyup\|Focusout` 0건 | global_03.html(1318-1395), global_05.html(1314-1405), global_08.html(1438-1518), global_10.html(1541-1615), service_02_03.html(1415-1491), service_03_05.html(1285-1297) |
-| OK-1 | basic-patterns/error.mdx | 오류 메시지 | "오류가 발생한 지점을 즉시 파악하고 수정" — 인라인 메시지 배치 안내(정적) | 제외 | 16 | — |
-| OK-2 | basic-patterns/feedback.mdx | frontmatter | description "제안을 수집하는 기본 패턴" — 가이드라인 아님 | 제외 | 3 | — |
-| OK-3 | basic-patterns/mobile-notification.mdx | 알림 유형·우선순위 | 스낵바/바텀시트 "즉각적인 반응을 유도" 문구 안내(23), 알림 우선순위 "긴급(즉시 조치 필요)" 분류(36) — 동적 상호작용 규정 아님 | 제외 | 23, 36 | — |
-| OK-4 | basic-patterns/mobile-settings.mdx | 유형 | "토글스위치 — 즉각적인 제어를 목적으로 상태를 전환하는 요소" — 컴포넌트 정의 문구 | 제외 | 19 | — |
-| OK-5 | basic-patterns/personal-information.mdx | 이름·생년월일 입력 | 이름 글자 수 유효성 최소 3글자 유의(65), 중간 공백 허용(305), 날짜 선택기 사용 금지(311) — 정적 입력 규칙 안내 | 제외 | 65, 305, 311 | — |
-| OK-6 | service-patterns/login.mdx | 로그인 유도 | "제안" 어휘 — 로그인 제안 유형 안내(787, 1182, 1184-1185), 세션 만료 안내 문맥(4365) — 검색 제안과 무관 | 제외 | 787, 1182, 1184-1185, 4365 | — |
-| OK-7 | service-patterns/search.mdx | 플레이스홀더 | "사용자가 검색어를 입력하는 시점에는 도움을 받을 수 없다" — 플레이스홀더 사용 규칙(정적) | 제외 | 1640 | — |
-| OK-8 | service-patterns/search.mdx | 검색 결과 과다 | "정렬/필터 기능을 제안하여" — 고급 검색 안내 문구의 "제안" 어휘 | 제외 | 3363 | — |
-| OK-9 | service-patterns/search.mdx | 검색어 입력 도움 | "권장: 실시간으로 검색어를 제안할 수 없는 경우, 검색 결과 화면에서 보조적인 도움 수단(음성입력)" — 실시간 계약의 폴백 안내, 계약 자체는 F1에서 다룸 | 제외 | 2274 | — |
+| ID   | 패턴 페이지                             | 섹션                     | 가이드라인 (요약)                                                                                                                                   | 유형          | docs 위치                                                                                 | 공식 가이드 위치                                                                                                                                                         |
+| ---- | --------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F1   | service-patterns/search.mdx             | 검색어 입력 도움         | "검색어 입력 도움은 가능한 사용자가 검색어를 입력하는 시점에 실시간으로 제공한다" — 실시간 검색어 제안                                              | A             | 2103-2104, 2106-2270(구현); 1064-1065, 1067-1370(구현); 1914-1917, 1920, ~1923-2098(구현) | service_02_03.html 구조 #7(1172-1174), 상호작용 가이드라인(1415-1491), 접근성 Status Messages(1388-1393)                                                                 |
+| F2   | service-patterns/login.mdx              | 로그인 정보 입력         | "실시간 유효성 검사는 입력 필드가 포커스를 잃을 때 발생" + "제출 시 오류가 발생한 경우 해당 항목으로 초점을 이동"                                   | A             | 3885-3889, 3006-3880(구현)                                                                | service_03_05.html 상호작용 가이드라인(1285-1297)                                                                                                                        |
+| F3   | basic-patterns/filter-sort.mdx          | 정보 조회와 표시         | "즉각 표시(Instant display) — 사용자가 옵션을 선택하자마자 필터링·정렬·조회 동작이 실행"                                                            | A             | 64, 90-1164(구현)                                                                         | global_10.html 상호작용 가이드라인(1541-1615)                                                                                                                            |
+| F4   | basic-patterns/form.mdx                 | (가이드라인 자체 미복사) | "클라이언트 측 검증은 브라우저에서 실시간으로 사용자의 입력을 확인" (Keyup/Focusout)                                                                | A+B           | 1536-1818(정적 `state="error"` 예시) — 가이드라인 텍스트 0건                              | global_08.html 상호작용 가이드라인(1438-1518)                                                                                                                            |
+| F5   | basic-patterns/mobile-settings.mdx      | 모바일 설정              | "설정 변경은 즉시 적용하며 간결한 피드백 제공" + "저장 버튼은 입력이 유효할 때만 활성화"                                                            | A (구현 부재) | 31, 35, 37-38 — 파일 44행, 예시 0건                                                       | global_13.html 사용성 가이드라인(1060-1093)                                                                                                                              |
+| B1   | (시스템성)                              | 18개 패턴 mdx 전체       | 공식 상호작용 가이드라인(키보드 계약 테이블: 방향키↑↓/Enter/Esc/Keyup/Focusout 등) 미반영                                                           | B             | 18개 mdx `상호작용\|방향키\|Focusin\|Keyup\|Focusout` 0건                                 | global_03.html(1318-1395), global_05.html(1314-1405), global_08.html(1438-1518), global_10.html(1541-1615), service_02_03.html(1415-1491), service_03_05.html(1285-1297) |
+| OK-1 | basic-patterns/error.mdx                | 오류 메시지              | "오류가 발생한 지점을 즉시 파악하고 수정" — 인라인 메시지 배치 안내(정적)                                                                           | 제외          | 16                                                                                        | —                                                                                                                                                                        |
+| OK-2 | basic-patterns/feedback.mdx             | frontmatter              | description "제안을 수집하는 기본 패턴" — 가이드라인 아님                                                                                           | 제외          | 3                                                                                         | —                                                                                                                                                                        |
+| OK-3 | basic-patterns/mobile-notification.mdx  | 알림 유형·우선순위       | 스낵바/바텀시트 "즉각적인 반응을 유도" 문구 안내(23), 알림 우선순위 "긴급(즉시 조치 필요)" 분류(36) — 동적 상호작용 규정 아님                       | 제외          | 23, 36                                                                                    | —                                                                                                                                                                        |
+| OK-4 | basic-patterns/mobile-settings.mdx      | 유형                     | "토글스위치 — 즉각적인 제어를 목적으로 상태를 전환하는 요소" — 컴포넌트 정의 문구                                                                   | 제외          | 19                                                                                        | —                                                                                                                                                                        |
+| OK-5 | basic-patterns/personal-information.mdx | 이름·생년월일 입력       | 이름 글자 수 유효성 최소 3글자 유의(65), 중간 공백 허용(305), 날짜 선택기 사용 금지(311) — 정적 입력 규칙 안내                                      | 제외          | 65, 305, 311                                                                              | —                                                                                                                                                                        |
+| OK-6 | service-patterns/login.mdx              | 로그인 유도              | "제안" 어휘 — 로그인 제안 유형 안내(787, 1182, 1184-1185), 세션 만료 안내 문맥(4365) — 검색 제안과 무관                                             | 제외          | 787, 1182, 1184-1185, 4365                                                                | —                                                                                                                                                                        |
+| OK-7 | service-patterns/search.mdx             | 플레이스홀더             | "사용자가 검색어를 입력하는 시점에는 도움을 받을 수 없다" — 플레이스홀더 사용 규칙(정적)                                                            | 제외          | 1640                                                                                      | —                                                                                                                                                                        |
+| OK-8 | service-patterns/search.mdx             | 검색 결과 과다           | "정렬/필터 기능을 제안하여" — 고급 검색 안내 문구의 "제안" 어휘                                                                                     | 제외          | 3363                                                                                      | —                                                                                                                                                                        |
+| OK-9 | service-patterns/search.mdx             | 검색어 입력 도움         | "권장: 실시간으로 검색어를 제안할 수 없는 경우, 검색 결과 화면에서 보조적인 도움 수단(음성입력)" — 실시간 계약의 폴백 안내, 계약 자체는 F1에서 다룸 | 제외          | 2274                                                                                      | —                                                                                                                                                                        |
 
 ## 발견 상세
 
@@ -84,6 +84,7 @@
 `packages/*/src` 전체에 `autocomplete|combobox|suggestion` (대소문자 무시) grep 결과 — **실시간 검색어 제안/자동완성을 표현할 수 있는 컴포넌트가 6개 프레임워크(react/vue/svelte/solid/angular/astro) 어디에도 없음**.
 
 유일한 히트:
+
 - Calendar 계열의 연/월 선택 버튼 `role="combobox"` (react `Calendar.tsx`/`additional.tsx`, vue `shared.ts`, svelte `Calendar.svelte`/`Additional.svelte`, solid `Calendar.tsx`, angular `calendar.component.ts`/`calendar-range.component.ts`/`date-input.component.ts`, astro `Calendar.astro`) — 캘린더 내부 셀렉트용, 검색 제안과 무관.
 - HTML `autocomplete` 속성 포워딩 (svelte `TextInputIcon.svelte`, `Textarea.svelte`, `Additional.svelte` 등) — 브라우저 네이티브 자동완성 위임, KRDS 검색 제안 계약과 무관.
 
@@ -102,26 +103,26 @@
 
 ### Step 2 — 공식 가이드 매핑 (각 mdx의 `<PatternReference patternId>`로 1줄 재확인)
 
-| docs mdx | patternId | 공식 가이드 |
-|---|---|---|
-| service-patterns/search.mdx | search | service_02_01..08.html (검색) |
-| service-patterns/login.mdx | login | service_03_01..08.html (로그인) |
-| service-patterns/application.mdx | application | service_04_01..08.html (신청) |
-| service-patterns/policy.mdx | policy | service_05_01..04.html (정책) |
-| service-patterns/visit.mdx | visit | service_01_01..02.html (방문) |
-| basic-patterns/personal-information.mdx | personal-information | global_01.html |
-| basic-patterns/help.mdx | help | global_02.html |
-| basic-patterns/consent.mdx | consent | global_03.html |
-| basic-patterns/list.mdx | list | global_04.html |
-| basic-patterns/feedback.mdx | feedback | global_05.html |
-| basic-patterns/detail.mdx | detail | global_06.html |
-| basic-patterns/error.mdx | error | global_07.html |
-| basic-patterns/form.mdx | form | global_08.html |
-| basic-patterns/attachment.mdx | attachment | global_09.html |
-| basic-patterns/filter-sort.mdx | filter-sort | global_10.html |
-| basic-patterns/confirm.mdx | confirm | global_11.html |
-| basic-patterns/mobile-notification.mdx | mobile-notification | global_12.html |
-| basic-patterns/mobile-settings.mdx | mobile-settings | global_13.html |
+| docs mdx                                | patternId            | 공식 가이드                     |
+| --------------------------------------- | -------------------- | ------------------------------- |
+| service-patterns/search.mdx             | search               | service_02_01..08.html (검색)   |
+| service-patterns/login.mdx              | login                | service_03_01..08.html (로그인) |
+| service-patterns/application.mdx        | application          | service_04_01..08.html (신청)   |
+| service-patterns/policy.mdx             | policy               | service_05_01..04.html (정책)   |
+| service-patterns/visit.mdx              | visit                | service_01_01..02.html (방문)   |
+| basic-patterns/personal-information.mdx | personal-information | global_01.html                  |
+| basic-patterns/help.mdx                 | help                 | global_02.html                  |
+| basic-patterns/consent.mdx              | consent              | global_03.html                  |
+| basic-patterns/list.mdx                 | list                 | global_04.html                  |
+| basic-patterns/feedback.mdx             | feedback             | global_05.html                  |
+| basic-patterns/detail.mdx               | detail               | global_06.html                  |
+| basic-patterns/error.mdx                | error                | global_07.html                  |
+| basic-patterns/form.mdx                 | form                 | global_08.html                  |
+| basic-patterns/attachment.mdx           | attachment           | global_09.html                  |
+| basic-patterns/filter-sort.mdx          | filter-sort          | global_10.html                  |
+| basic-patterns/confirm.mdx              | confirm              | global_11.html                  |
+| basic-patterns/mobile-notification.mdx  | mobile-notification  | global_12.html                  |
+| basic-patterns/mobile-settings.mdx      | mobile-settings      | global_13.html                  |
 
 ### Step 3 — 프레임워크 컴포넌트 갭
 
@@ -131,39 +132,39 @@
 
 히트 66건 모두 아래에 매핑됨 — 미매핑 0건.
 
-| # | 파일:행 | 분류 |
-|---|---|---|
-| 1 | error.mdx:16 | OK-1 |
-| 2 | feedback.mdx:3 | OK-2 |
-| 3 | filter-sort.mdx:64 | F3 |
-| 4 | mobile-notification.mdx:23 | OK-3 |
-| 5 | mobile-notification.mdx:36 | OK-3 |
-| 6 | mobile-settings.mdx:19 | OK-4 |
-| 7 | mobile-settings.mdx:31 | F5 |
-| 8 | mobile-settings.mdx:35 | F5 |
-| 9 | mobile-settings.mdx:37 | F5 |
-| 10 | mobile-settings.mdx:38 | F5 |
-| 11 | personal-information.mdx:65 | OK-5 |
-| 12 | personal-information.mdx:305 | OK-5 |
-| 13 | personal-information.mdx:311 | OK-5 |
-| 14 | login.mdx:787 | OK-6 |
-| 15 | login.mdx:1182 | OK-6 |
-| 16 | login.mdx:1184 | OK-6 |
-| 17 | login.mdx:1185 | OK-6 |
-| 18 | login.mdx:3885 | F2 |
-| 19 | login.mdx:3886 | F2 |
-| 20 | login.mdx:3888 | F2 |
-| 21 | login.mdx:3889 | F2 |
-| 22 | login.mdx:4365 | OK-6 |
-| 23 | search.mdx:1065 | F1 |
-| 24 | search.mdx:1203-1366 (실시간 검색어 제안 구현 펜스, 24건) | F1 |
-| 25 | search.mdx:1640 | OK-7 |
-| 26 | search.mdx:1920 | F1 |
-| 27 | search.mdx:2103 | F1 |
-| 28 | search.mdx:2104 | F1 |
-| 29 | search.mdx:2110-2266 (검색어 입력 도움 구현 펜스, 13건) | F1 |
-| 30 | search.mdx:2274 | OK-9 |
-| 31 | search.mdx:3363 | OK-8 |
+| #   | 파일:행                                                   | 분류 |
+| --- | --------------------------------------------------------- | ---- |
+| 1   | error.mdx:16                                              | OK-1 |
+| 2   | feedback.mdx:3                                            | OK-2 |
+| 3   | filter-sort.mdx:64                                        | F3   |
+| 4   | mobile-notification.mdx:23                                | OK-3 |
+| 5   | mobile-notification.mdx:36                                | OK-3 |
+| 6   | mobile-settings.mdx:19                                    | OK-4 |
+| 7   | mobile-settings.mdx:31                                    | F5   |
+| 8   | mobile-settings.mdx:35                                    | F5   |
+| 9   | mobile-settings.mdx:37                                    | F5   |
+| 10  | mobile-settings.mdx:38                                    | F5   |
+| 11  | personal-information.mdx:65                               | OK-5 |
+| 12  | personal-information.mdx:305                              | OK-5 |
+| 13  | personal-information.mdx:311                              | OK-5 |
+| 14  | login.mdx:787                                             | OK-6 |
+| 15  | login.mdx:1182                                            | OK-6 |
+| 16  | login.mdx:1184                                            | OK-6 |
+| 17  | login.mdx:1185                                            | OK-6 |
+| 18  | login.mdx:3885                                            | F2   |
+| 19  | login.mdx:3886                                            | F2   |
+| 20  | login.mdx:3888                                            | F2   |
+| 21  | login.mdx:3889                                            | F2   |
+| 22  | login.mdx:4365                                            | OK-6 |
+| 23  | search.mdx:1065                                           | F1   |
+| 24  | search.mdx:1203-1366 (실시간 검색어 제안 구현 펜스, 24건) | F1   |
+| 25  | search.mdx:1640                                           | OK-7 |
+| 26  | search.mdx:1920                                           | F1   |
+| 27  | search.mdx:2103                                           | F1   |
+| 28  | search.mdx:2104                                           | F1   |
+| 29  | search.mdx:2110-2266 (검색어 입력 도움 구현 펜스, 13건)   | F1   |
+| 30  | search.mdx:2274                                           | OK-9 |
+| 31  | search.mdx:3363                                           | OK-8 |
 
 (검색 구현 펜스 내 "실시간 검색어 제안" aria-label/text 히트는 24·29 행의 범위로 묶음 — 행 단위 나열 시 1203, 1205, 1214, 1216, 1225, 1227, 1236, 1238, 1247, 1249, 1257, 1259, 1274, 1276, 1293, 1295, 1310, 1312, 1326, 1328, 1346, 1347, 1364, 1366, 2110, 2116, 2126, 2137, 2147, 2156, 2165, 2181, 2199, 2215, 2230, 2248, 2266 포함)
 

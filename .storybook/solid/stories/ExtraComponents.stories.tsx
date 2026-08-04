@@ -3,11 +3,7 @@ import type { Meta, StoryObj } from "@storybook/html-vite";
 import type { JSX } from "solid-js";
 import { render } from "solid-js/web";
 import { expect, userEvent, within } from "storybook/test";
-import {
-  FilterableList,
-  SearchSuggestions,
-  ValidatedInput,
-} from "@krds-community/solid/extra";
+import { FilterableList, SearchSuggestions, ValidatedInput } from "@krds-community/solid/extra";
 import {
   FILTERABLE_LIST_FILTERS,
   FILTERABLE_LIST_ITEMS,
@@ -42,13 +38,7 @@ export const SearchSuggestionsRender: Story = {
 
 export const ValidatedInputRender: Story = {
   render: () =>
-    mount(
-      <ValidatedInput
-        {...VALIDATED_INPUT_PROPS}
-        validate="min-length:4"
-        mode="focusout"
-      />,
-    ),
+    mount(<ValidatedInput {...VALIDATED_INPUT_PROPS} validate="min-length:4" mode="focusout" />),
 };
 
 export const FilterableListRender: Story = {

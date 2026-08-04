@@ -1,13 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  h,
-  reactive,
-  ref,
-  useId,
-  type PropType,
-  type VNode,
-} from "vue";
+import { computed, defineComponent, h, reactive, ref, useId, type PropType, type VNode } from "vue";
 
 /**
  * 즉각 표시 필터·정렬 목록 (extra).
@@ -175,13 +166,15 @@ export const FilterableList = defineComponent<FilterableListProps>({
                 onVnodeUpdated: setSortStyle,
               },
               [
-                h("select", {
-                  id: `${id.value}-sort`,
-                  class: "krds-form-select",
-                  title: props.sort.label,
-                }, [
-                  h("option", { value: props.sort.field }, props.sort.label),
-                ]),
+                h(
+                  "select",
+                  {
+                    id: `${id.value}-sort`,
+                    class: "krds-form-select",
+                    title: props.sort.label,
+                  },
+                  [h("option", { value: props.sort.field }, props.sort.label)],
+                ),
                 h(
                   "button",
                   {

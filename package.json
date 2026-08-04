@@ -72,7 +72,7 @@
     "@storybook/vue3-vite": "10.5.4",
     "@sveltejs/vite-plugin-svelte": "7.2.0",
     "@testing-library/jest-dom": "6.9.1",
-    "@types/node": "26.1.1",
+    "@types/node": "catalog:",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@typescript-eslint/parser": "8.65.0",
@@ -101,5 +101,5 @@
     "node": ">=22.0.0",
     "pnpm": ">=11.0.0"
   },
-  "packageManager": "pnpm@11.12.0"
+  "packageManager": "pnpm@11.20.0"
 }

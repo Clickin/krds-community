@@ -14,11 +14,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.0.10
         with:
-          version: 11.12.0
-      - uses: actions/setup-node@v4
+          version: 11.20.0
+      - uses: actions/setup-node@v7.0.0
         with:
           node-version: 22
           cache: pnpm
@@ -29,7 +29,7 @@ jobs:
       - if: steps.upstream.outcome == 'failure'
         run: pnpm upstream:diff
       - if: steps.upstream.outcome == 'failure'
-        uses: peter-evans/create-issue-from-file@v5
+        uses: peter-evans/create-issue-from-file@v6.0.0
         with:
           title: "Upstream KRDS revision requires review"
           content-filepath: reports/upstream-diff.md

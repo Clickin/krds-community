@@ -1,12 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  h,
-  onUnmounted,
-  ref,
-  useId,
-  type PropType,
-} from "vue";
+import { computed, defineComponent, h, onUnmounted, ref, useId, type PropType } from "vue";
 
 /**
  * 실시간 유효성 검사 입력 필드 (extra).
@@ -37,9 +29,7 @@ export interface ValidatedInputProps {
   placeholder?: string;
   /** 초기값. 비어 있지 않을 때만 value 속성으로 렌더(공식 TextInput 계약과 동일). */
   value?: string;
-  validate:
-    | ((value: string) => ValidationResult | Promise<ValidationResult>)
-    | string;
+  validate: ((value: string) => ValidationResult | Promise<ValidationResult>) | string;
   /** 검증 시점. 기본 "focusout" (service_03_05 계약). */
   mode?: ValidatedInputMode;
   /** keyup 모드 디바운스(ms). 기본 300. */
@@ -87,8 +77,7 @@ export const ValidatedInput = defineComponent<ValidatedInputProps>({
     value: { type: String, default: undefined },
     validate: {
       type: [Function, String] as PropType<
-        | ((value: string) => ValidationResult | Promise<ValidationResult>)
-        | string
+        ((value: string) => ValidationResult | Promise<ValidationResult>) | string
       >,
       required: true,
     },

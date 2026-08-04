@@ -24,14 +24,13 @@ const lock = JSON.parse(
   packageVersion: string;
 };
 const manifestFlagIndex = process.argv.indexOf("--manifests");
-const manifestArgument =
-  manifestFlagIndex >= 0 ? process.argv[manifestFlagIndex + 1] : undefined;
+const manifestArgument = manifestFlagIndex >= 0 ? process.argv[manifestFlagIndex + 1] : undefined;
 const manifests = await loadManifests(
   resolve(packageRoot, manifestArgument ?? "conformance/manifests"),
 );
 const prefixFlagIndex = process.argv.indexOf("--prefix");
 const reportPrefix =
-  prefixFlagIndex >= 0 ? process.argv[prefixFlagIndex + 1] ?? "conformance" : "conformance";
+  prefixFlagIndex >= 0 ? (process.argv[prefixFlagIndex + 1] ?? "conformance") : "conformance";
 const evidenceFlagIndex = process.argv.indexOf("--evidence");
 const evidencePath =
   evidenceFlagIndex >= 0

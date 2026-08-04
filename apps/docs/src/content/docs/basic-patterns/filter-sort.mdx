@@ -1537,32 +1537,32 @@ import { KrdsFilterableListComponent } from "@krds-community/angular/extra";
 })
 export class Example {
   items = [
-    { id: '1', label: '영유아 보육료 지원 신청', life: 'infant', family: 'single' },
-    { id: '2', label: '아이돌봄 서비스 이용 신청', life: 'child', family: 'dual' },
-    { id: '3', label: '청년 월세 지원 신청', life: 'youth', family: 'single' },
+    { id: "1", label: "영유아 보육료 지원 신청", life: "infant", family: "single" },
+    { id: "2", label: "아이돌봄 서비스 이용 신청", life: "child", family: "dual" },
+    { id: "3", label: "청년 월세 지원 신청", life: "youth", family: "single" },
   ];
   filters = [
     {
-      id: 'life',
-      label: '생애 주기',
-      field: 'life',
+      id: "life",
+      label: "생애 주기",
+      field: "life",
       options: [
-        { value: 'infant', label: '영유아' },
-        { value: 'child', label: '아동' },
-        { value: 'youth', label: '청년' },
+        { value: "infant", label: "영유아" },
+        { value: "child", label: "아동" },
+        { value: "youth", label: "청년" },
       ],
     },
     {
-      id: 'family',
-      label: '가구 상황',
-      field: 'family',
+      id: "family",
+      label: "가구 상황",
+      field: "family",
       options: [
-        { value: 'dual', label: '맞벌이' },
-        { value: 'single', label: '1인 가구' },
+        { value: "dual", label: "맞벌이" },
+        { value: "single", label: "1인 가구" },
       ],
     },
   ];
-  sort = { id: 'title', label: '이름순', field: 'label' };
+  sort = { id: "title", label: "이름순", field: "label" };
 }
 ```
 

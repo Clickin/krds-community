@@ -1,10 +1,6 @@
 import { expect, userEvent, within } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/svelte-vite";
-import {
-  FilterableList,
-  SearchSuggestions,
-  ValidatedInput,
-} from "@krds-community/svelte/extra";
+import { FilterableList, SearchSuggestions, ValidatedInput } from "@krds-community/svelte/extra";
 import {
   FILTERABLE_LIST_FILTERS,
   FILTERABLE_LIST_ITEMS,

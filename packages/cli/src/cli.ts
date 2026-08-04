@@ -753,7 +753,7 @@ const componentSource = async (
     entry.kind === "extra"
       ? component === "search-suggestions"
         ? extraSnippets[framework]!
-        : extraSnippetsV2[framework] ?? generatedSnippet(component, framework)
+        : (extraSnippetsV2[framework] ?? generatedSnippet(component, framework))
       : generatedSnippet(component, framework);
   return renderSnippet(metadata, body);
 };
@@ -1004,8 +1004,14 @@ const interactiveWizard = async (): Promise<void> => {
     );
     if (missing.length) {
       let manager = await detectPackageManager(projectRoot);
-      if (!manager) manager = await askSelect("lockfile이 없습니다. 패키지 매니저를 선택하세요.", packageManagers);
-      if (await askConfirm(`누락된 의존성 ${missing.join(", ")}을(를) ${manager}로 설치할까요?`, true)) {
+      if (!manager)
+        manager = await askSelect(
+          "lockfile이 없습니다. 패키지 매니저를 선택하세요.",
+          packageManagers,
+        );
+      if (
+        await askConfirm(`누락된 의존성 ${missing.join(", ")}을(를) ${manager}로 설치할까요?`, true)
+      ) {
         try {
           await installDependencies({ projectRoot, packages: missing, manager });
         } catch (error) {
@@ -1068,13 +1074,20 @@ componentCommand
 componentCommand
   .command("copy <component>")
   .description("Copy a component into your project")
-  .option("--framework <framework>", "Target framework (react, vue, svelte, solid, angular, astro)", "react")
+  .option(
+    "--framework <framework>",
+    "Target framework (react, vue, svelte, solid, angular, astro)",
+    "react",
+  )
   .option("--out <file>", "Write output to a file instead of stdout")
   .option("--clipboard", "Write to (copy) the system clipboard")
   .option("--as <name>", "Override the component name in metadata and snippet")
   .option("--force", "Overwrite a file whose source hash differs")
   .option("--exclude-required-component", "Do not install missing @krds-community dependencies")
-  .option("--package-manager <pm>", "Package manager for installing missing dependencies (pnpm, npm, yarn, bun, deno)")
+  .option(
+    "--package-manager <pm>",
+    "Package manager for installing missing dependencies (pnpm, npm, yarn, bun, deno)",
+  )
   .action(async (component: string, options: CopyOptions) => {
     const repositoryRoot = await findRepositoryRoot();
     const inventory = await loadComponentInventory();

@@ -11,12 +11,12 @@ No image assets were added.
 
 ### Coverage
 
-- **68 component pages** (components/*, design/*): 413 practice labels →
+- **68 component pages** (components/_, design/_): 413 practice labels →
   413 `<PracticeExample kind="good|bad" title="…">` blocks, 6 framework slots
   each. Design/live-only pages compose existing package components wherever
   one exists (Button/Modal/TextInput/Spinner/…); native semantic markup only
   where the package has no component (range slider, tab bar, media).
-- **18 basic/service pattern pages** (basic-patterns/*, service-patterns/*):
+- **18 basic/service pattern pages** (basic-patterns/_, service-patterns/_):
   129 practice labels → 129 PracticeExample blocks (6 slots + 6 `fw=` code
   fences), plus official description copies (구조/유형/사용성 가이드라인 with
   필수/권장/우수 levels) from the pinned official snapshot, keeping the

@@ -87,9 +87,8 @@ export const installDependencies = async (args: {
   manager: string;
 }): Promise<void> => {
   const verb = installVerbs[args.manager]!;
-  execFileSync(
-    args.manager,
-    [verb, ...formatPackages(args.manager, args.packages)],
-    { cwd: args.projectRoot, stdio: "inherit" },
-  );
+  execFileSync(args.manager, [verb, ...formatPackages(args.manager, args.packages)], {
+    cwd: args.projectRoot,
+    stdio: "inherit",
+  });
 };

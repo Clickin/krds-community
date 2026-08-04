@@ -71,9 +71,7 @@ export function SearchSuggestions({
 
   const announce = (nextItems: SearchSuggestion[]) => {
     setStatus(
-      nextItems.length > 0
-        ? `${nextItems.length}개의 추천 검색어가 표시되었습니다.`
-        : emptyMessage,
+      nextItems.length > 0 ? `${nextItems.length}개의 추천 검색어가 표시되었습니다.` : emptyMessage,
     );
   };
 
@@ -112,10 +110,7 @@ export function SearchSuggestions({
       return;
     }
     if (suggest) {
-      debounceTimer.current = window.setTimeout(
-        () => resolveSuggestions(query),
-        debounceMs,
-      );
+      debounceTimer.current = window.setTimeout(() => resolveSuggestions(query), debounceMs);
     } else {
       resolveSuggestions(query);
     }

@@ -4081,9 +4081,7 @@ import { Button } from "@krds-community/vue";
 import { ValidatedInput } from "@krds-community/vue/extra";
 
 const validateId = (value) =>
-  value.trim().length >= 4
-    ? { valid: true }
-    : { valid: false, message: "4자 이상 입력해 주세요." };
+  value.trim().length >= 4 ? { valid: true } : { valid: false, message: "4자 이상 입력해 주세요." };
 </script>
 
 <template>

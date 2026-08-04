@@ -19,25 +19,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - id: pages
-        uses: actions/configure-pages@v5
-      - uses: pnpm/action-setup@v4
+        uses: actions/configure-pages@v6.0.0
+      - uses: pnpm/action-setup@v6.0.10
         with:
-          version: 11.12.0
-      - uses: actions/setup-node@v4
+          version: 11.20.0
+      - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Provision Chrome for browser tests
+        uses: browser-actions/setup-chrome@v2.1.2
+        with:
+          install-dependencies: true
       - run: pnpm test:conformance:runtime
       - run: pnpm build
       - run: pnpm pages:build
         env:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path || '/' }}
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: apps/docs/dist
   deploy:
@@ -49,4 +53,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v5.0.0

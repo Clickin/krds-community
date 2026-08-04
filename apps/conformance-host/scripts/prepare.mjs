@@ -33,12 +33,11 @@ const catalog = buildCatalog(manifests);
 const extraCatalog = buildCatalog(extraManifests);
 const publicDirectory = resolve(appRoot, "public");
 await mkdir(publicDirectory, { recursive: true });
-await writeFile(
-  resolve(publicDirectory, "fixtures.json"),
-  `${JSON.stringify(catalog, null, 2)}\n`,
-);
+await writeFile(resolve(publicDirectory, "fixtures.json"), `${JSON.stringify(catalog, null, 2)}\n`);
 await writeFile(
   resolve(publicDirectory, "fixtures-extra.json"),
   `${JSON.stringify(extraCatalog, null, 2)}\n`,
 );
-console.log(`Prepared ${catalog.fixtures.length} executable fixtures (+${extraCatalog.fixtures.length} extra).`);
+console.log(
+  `Prepared ${catalog.fixtures.length} executable fixtures (+${extraCatalog.fixtures.length} extra).`,
+);

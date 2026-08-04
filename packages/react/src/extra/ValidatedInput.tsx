@@ -123,7 +123,8 @@ export function ValidatedInput({
   const statusClass = result === null ? "" : result.valid ? "is-success" : "is-error";
   const message =
     result === null ? hint : result.valid ? (result.message ?? successMessage) : result.message;
-  const messageClass = result === null ? "form-hint" : result.valid ? "form-hint-success" : "form-hint-invalid";
+  const messageClass =
+    result === null ? "form-hint" : result.valid ? "form-hint-success" : "form-hint-invalid";
 
   return (
     <div className={cx("krds-validated-input", className)}>

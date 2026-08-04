@@ -72,9 +72,8 @@ export class KrdsValidatedInputComponent implements OnDestroy {
   @Input() value = "";
   /** 검증 콜백 또는 문자열 규칙 ("required" | "min-length:<n>" | "email"). */
   @Input()
-  validate:
-    | ((value: string) => KrdsValidationResult | Promise<KrdsValidationResult>)
-    | string = () => ({ valid: true });
+  validate: ((value: string) => KrdsValidationResult | Promise<KrdsValidationResult>) | string =
+    () => ({ valid: true });
   /** 검증 시점. 기본 "focusout" (service_03_05 계약). */
   @Input() mode: KrdsValidatedInputMode = "focusout";
   /** keyup 모드 디바운스(ms). 기본 300. */
@@ -159,9 +158,7 @@ export class KrdsValidatedInputComponent implements OnDestroy {
     Promise.resolve(this.resolveValidation(this.value)).then(apply);
   }
 
-  private resolveValidation(
-    value: string,
-  ): KrdsValidationResult | Promise<KrdsValidationResult> {
+  private resolveValidation(value: string): KrdsValidationResult | Promise<KrdsValidationResult> {
     const rule = this.validate;
     if (typeof rule === "function") {
       return rule(value);

@@ -1,4 +1,12 @@
-import { For, createEffect, createMemo, createSignal, createUniqueId, mergeProps, splitProps } from "solid-js";
+import {
+  For,
+  createEffect,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  mergeProps,
+  splitProps,
+} from "solid-js";
 
 /**
  * 즉각 표시 필터·정렬 목록 (extra).
@@ -150,7 +158,11 @@ export function FilterableList(rawProps: FilterableListProps) {
               <label for={`${nativeProps.id}-sort`}>{props.sort.label}</label>
             </div>
             <div class="form-conts" style="display:flex;gap:0.5rem;align-items:flex-end">
-              <select id={`${nativeProps.id}-sort`} class="krds-form-select" title={props.sort.label}>
+              <select
+                id={`${nativeProps.id}-sort`}
+                class="krds-form-select"
+                title={props.sort.label}
+              >
                 <option value={props.sort.field}>{props.sort.label}</option>
               </select>
               <button

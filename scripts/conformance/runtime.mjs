@@ -240,10 +240,7 @@ if (selectedFrameworks.some((framework) => !frameworkIds.includes(framework))) {
 const catalog = directExecution
   ? JSON.parse(
       await readFile(
-        resolve(
-          repositoryRoot,
-          option("--catalog") ?? "apps/conformance-host/dist/fixtures.json",
-        ),
+        resolve(repositoryRoot, option("--catalog") ?? "apps/conformance-host/dist/fixtures.json"),
         "utf8",
       ),
     )

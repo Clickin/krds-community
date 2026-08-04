@@ -73,7 +73,10 @@ describe("interactive mode and dependency install", () => {
   });
 
   it("krds with no arguments prints help on a non-TTY", async () => {
-    const { stdout } = await execFileAsync(process.execPath, [cli], { cwd: root, encoding: "utf8" });
+    const { stdout } = await execFileAsync(process.execPath, [cli], {
+      cwd: root,
+      encoding: "utf8",
+    });
     expect(stdout).toContain("Usage:");
   });
 
@@ -92,7 +95,10 @@ describe("interactive mode and dependency install", () => {
       process.execPath,
       [cli, "component", "copy", "button", "--framework", "react", "--out", "out.tsx"],
       { cwd: dir, encoding: "utf8" },
-    ).then(() => null, (error) => error);
+    ).then(
+      () => null,
+      (error) => error,
+    );
     expect(error).toBeTruthy();
     expect(error!.stderr).toContain("Cannot detect a package manager");
     expect(error!.stderr).toContain("--exclude-required-component");
@@ -162,9 +168,14 @@ describe("interactive mode and dependency install", () => {
         "--exclude-required-component",
       ],
       { cwd: dir, encoding: "utf8" },
-    ).then(() => null, (error) => error);
+    ).then(
+      () => null,
+      (error) => error,
+    );
     expect(error).toBeTruthy();
-    expect(error!.stderr).toContain("--package-manager conflicts with --exclude-required-component.");
+    expect(error!.stderr).toContain(
+      "--package-manager conflicts with --exclude-required-component.",
+    );
   });
 
   it("rejects an unknown package manager", async () => {
@@ -185,7 +196,10 @@ describe("interactive mode and dependency install", () => {
         "bogus",
       ],
       { cwd: dir, encoding: "utf8" },
-    ).then(() => null, (error) => error);
+    ).then(
+      () => null,
+      (error) => error,
+    );
     expect(error).toBeTruthy();
     expect(error!.stderr).toContain("Unknown package manager");
   });
@@ -203,9 +217,14 @@ describe("interactive mode and dependency install", () => {
       process.execPath,
       [cli, "component", "copy", "button", "--framework", "react", "--out", "out.tsx"],
       { cwd: dir, encoding: "utf8" },
-    ).then((result) => [result, null], (error) => [null, error]);
+    ).then(
+      (result) => [result, null],
+      (error) => [null, error],
+    );
     const stdout = String(result?.stdout ?? error?.stdout ?? "");
-    expect(stdout).toContain("Installing @krds-community/styles, @krds-community/recipes with pnpm");
+    expect(stdout).toContain(
+      "Installing @krds-community/styles, @krds-community/recipes with pnpm",
+    );
   });
 
   it("skips install when running inside the KRDS repository", async () => {
@@ -273,13 +292,15 @@ describe("interactive mode and dependency install", () => {
       join(withoutRecipes, "package.json"),
       JSON.stringify({ dependencies: { "@krds-community/styles": "0.1.0" } }),
     );
-    await expect(missingDependencies(withoutRecipes, ["@krds-community/recipes"])).resolves.toEqual([
-      "@krds-community/recipes",
-    ]);
+    await expect(missingDependencies(withoutRecipes, ["@krds-community/recipes"])).resolves.toEqual(
+      ["@krds-community/recipes"],
+    );
   });
 
   it("formatPackages prefixes npm: only for deno", () => {
-    expect(formatPackages("deno", ["@krds-community/styles"])).toEqual(["npm:@krds-community/styles"]);
+    expect(formatPackages("deno", ["@krds-community/styles"])).toEqual([
+      "npm:@krds-community/styles",
+    ]);
     expect(formatPackages("pnpm", ["@krds-community/styles"])).toEqual(["@krds-community/styles"]);
   });
 });

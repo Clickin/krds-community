@@ -26,11 +26,7 @@ export const SearchSuggestionsStory: StoryObj<typeof meta> = {
 export const ValidatedInputStory: StoryObj<typeof meta> = {
   name: "ValidatedInput",
   render: () => (
-    <ValidatedInput
-      {...VALIDATED_INPUT_PROPS}
-      validate="min-length:4"
-      mode="focusout"
-    />
+    <ValidatedInput {...VALIDATED_INPUT_PROPS} validate="min-length:4" mode="focusout" />
   ),
 };
 

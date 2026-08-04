@@ -212,9 +212,7 @@ const runFramework = async (framework) => {
     framework,
     "--output",
     shardPath,
-    ...(catalogArgument
-      ? ["--catalog", resolve(repositoryRoot, catalogArgument)]
-      : []),
+    ...(catalogArgument ? ["--catalog", resolve(repositoryRoot, catalogArgument)] : []),
     ...(saveDiffs
       ? ["--save-diffs", "--diff-directory", resolve(dirname(outputPath), "conformance-diffs")]
       : []),

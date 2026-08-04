@@ -1,13 +1,4 @@
-import {
-  computed,
-  defineComponent,
-  h,
-  onUnmounted,
-  ref,
-  useId,
-  watch,
-  type PropType,
-} from "vue";
+import { computed, defineComponent, h, onUnmounted, ref, useId, watch, type PropType } from "vue";
 
 /**
  * 검색어 입력 시 실시간 추천 검색어를 제공하는 combobox 컴포넌트 (extra).
@@ -182,74 +173,66 @@ export const SearchSuggestions = defineComponent<SearchSuggestionsProps>({
     };
 
     return () => {
-      const rootClass = ["krds-search-suggestions", props.className]
-        .filter(Boolean)
-        .join(" ");
+      const rootClass = ["krds-search-suggestions", props.className].filter(Boolean).join(" ");
       const active = open.value && activeIndex.value >= 0;
-      return h(
-        "div",
-        { class: rootClass },
-        [
-          h("div", { class: "form-group" }, [
-            h("div", { class: "form-tit" }, [
-              h("label", { for: id.value }, props.label),
-            ]),
-            h("div", { class: "form-conts" }, [
-              h("input", {
-                id: id.value,
-                class: "krds-input",
-                type: "text",
-                name: props.name,
-                // value 속성은 비어 있지 않을 때만 렌더(공식 TextInput 계약과 동일).
-                value: value.value || undefined,
-                placeholder: props.placeholder,
-                disabled: props.disabled || undefined,
-                role: "combobox",
-                "aria-expanded": open.value,
-                "aria-controls": listboxId.value,
-                "aria-autocomplete": "list",
-                "aria-activedescendant": active ? optionId(activeIndex.value) : undefined,
-                "aria-describedby": statusId.value,
-                onInput,
-                onKeydown: onKeyDown,
-                onBlur: () => {
-                  open.value = false;
-                  activeIndex.value = -1;
-                },
-              }),
-            ]),
+      return h("div", { class: rootClass }, [
+        h("div", { class: "form-group" }, [
+          h("div", { class: "form-tit" }, [h("label", { for: id.value }, props.label)]),
+          h("div", { class: "form-conts" }, [
+            h("input", {
+              id: id.value,
+              class: "krds-input",
+              type: "text",
+              name: props.name,
+              // value 속성은 비어 있지 않을 때만 렌더(공식 TextInput 계약과 동일).
+              value: value.value || undefined,
+              placeholder: props.placeholder,
+              disabled: props.disabled || undefined,
+              role: "combobox",
+              "aria-expanded": open.value,
+              "aria-controls": listboxId.value,
+              "aria-autocomplete": "list",
+              "aria-activedescendant": active ? optionId(activeIndex.value) : undefined,
+              "aria-describedby": statusId.value,
+              onInput,
+              onKeydown: onKeyDown,
+              onBlur: () => {
+                open.value = false;
+                activeIndex.value = -1;
+              },
+            }),
           ]),
-          h(
-            "ul",
-            {
-              id: listboxId.value,
-              role: "listbox",
-              "aria-label": "추천 검색어",
-              class: "krds-suggestions-list",
-              hidden: !open.value,
-              // 목록 클릭 시 입력 필드 blur를 막아 onClick이 동작하도록 한다.
-              onMousedown: (event: MouseEvent) => event.preventDefault(),
-            },
-            items.value.map((item, index) =>
-              h(
-                "li",
-                {
-                  id: optionId(index),
-                  role: "option",
-                  "aria-selected": index === activeIndex.value,
-                  class:
-                    index === activeIndex.value
-                      ? "krds-suggestions-item is-active"
-                      : "krds-suggestions-item",
-                  onClick: () => selectItem(item),
-                },
-                item.label,
-              ),
+        ]),
+        h(
+          "ul",
+          {
+            id: listboxId.value,
+            role: "listbox",
+            "aria-label": "추천 검색어",
+            class: "krds-suggestions-list",
+            hidden: !open.value,
+            // 목록 클릭 시 입력 필드 blur를 막아 onClick이 동작하도록 한다.
+            onMousedown: (event: MouseEvent) => event.preventDefault(),
+          },
+          items.value.map((item, index) =>
+            h(
+              "li",
+              {
+                id: optionId(index),
+                role: "option",
+                "aria-selected": index === activeIndex.value,
+                class:
+                  index === activeIndex.value
+                    ? "krds-suggestions-item is-active"
+                    : "krds-suggestions-item",
+                onClick: () => selectItem(item),
+              },
+              item.label,
             ),
           ),
-          h("p", { id: statusId.value, class: "sr-only", "aria-live": "polite" }, status.value),
-        ],
-      );
+        ),
+        h("p", { id: statusId.value, class: "sr-only", "aria-live": "polite" }, status.value),
+      ]);
     };
   },
 });

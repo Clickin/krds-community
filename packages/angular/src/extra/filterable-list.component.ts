@@ -61,13 +61,19 @@ function createStableId(prefix: string): string {
             >
               <option
                 value=""
-                [attr.selected]="selectedValue(filter.id) !== null && selectedValue(filter.id) === '' ? '' : null"
-              >{{ allLabel }}</option>
+                [attr.selected]="
+                  selectedValue(filter.id) !== null && selectedValue(filter.id) === '' ? '' : null
+                "
+              >
+                {{ allLabel }}
+              </option>
               @for (option of filter.options; track option.value) {
                 <option
                   [value]="option.value"
                   [attr.selected]="selectedValue(filter.id) === option.value ? '' : null"
-                >{{ option.label }}</option>
+                >
+                  {{ option.label }}
+                </option>
               }
             </select>
           </div>

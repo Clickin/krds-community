@@ -62,9 +62,7 @@ const ruleValidator = (rule: string): ((value: string) => ValidationResult) => {
   if (minLength) {
     const n = Number(minLength[1]);
     return (value) =>
-      value.length >= n
-        ? { valid: true }
-        : { valid: false, message: `${n}자 이상 입력해 주세요.` };
+      value.length >= n ? { valid: true } : { valid: false, message: `${n}자 이상 입력해 주세요.` };
   }
   if (rule === "email") {
     return (value) =>
