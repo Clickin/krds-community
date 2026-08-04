@@ -17,7 +17,7 @@
     "test:reactivity": "vitest run tests/framework/react.test.tsx tests/framework/vue.test.ts tests/framework/svelte.test.ts tests/framework/solid.test.tsx tests/framework/angular.test.ts tests/framework/svelte-presets.test.ts",
     "test:ssr": "vitest run tests/framework/ssr-hydration",
     "test:browser": "playwright test",
-    "conformance:build": "pnpm --filter @krds-community/conformance --filter @krds-community/recipes --filter @krds-community/react --filter @krds-community/vue --filter @krds-community/svelte --filter @krds-community/solid --filter @krds-community/angular --filter @krds-community/astro build && pnpm --filter @krds-community/conformance-host build && pnpm --filter @krds-community/conformance-host-astro build",
+    "conformance:build": "pnpm --filter @krds-community/conformance --filter @krds-community/styles --filter @krds-community/recipes --filter @krds-community/react --filter @krds-community/vue --filter @krds-community/svelte --filter @krds-community/solid --filter @krds-community/angular --filter @krds-community/astro build && pnpm --filter @krds-community/conformance-host build && pnpm --filter @krds-community/conformance-host-astro build",
     "conformance:run": "node scripts/conformance/parallel.mjs",
     "conformance:run:framework": "node scripts/conformance/runtime.mjs",
     "conformance:extra:run": "node scripts/conformance/parallel.mjs --catalog apps/conformance-host/dist/fixtures-extra.json --output reports/conformance-extra-runtime.json",
