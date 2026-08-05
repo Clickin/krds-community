@@ -288,7 +288,8 @@ const runBrowserFramework = async (framework) => {
     child.stderr.on("data", (chunk) => (stderr += chunk));
     child.on("error", reject);
     child.on("close", (exitCode, signal) => {
-      if (signal) reject(new Error(`[${framework}] browser worker received ${signal}\n${stderr.trim()}`));
+      if (signal)
+        reject(new Error(`[${framework}] browser worker received ${signal}\n${stderr.trim()}`));
       else resolvePromise(exitCode);
     });
   });
@@ -310,15 +311,17 @@ try {
   // sequentially: concurrent Chromium instances (one per @web/test-runner)
   // contend for memory and the weaker frameworks lose their browser process.
   const reports = browserPath
-    ? (await Promise.resolve(
-        (async () => {
-          const collected = [];
-          for (const framework of frameworkIds) {
-            collected.push(await runBrowserFramework(framework));
-          }
-          return collected;
-        })(),
-      )).map(({ shard }) => shard)
+    ? (
+        await Promise.resolve(
+          (async () => {
+            const collected = [];
+            for (const framework of frameworkIds) {
+              collected.push(await runBrowserFramework(framework));
+            }
+            return collected;
+          })(),
+        )
+      ).map(({ shard }) => shard)
     : await Promise.all(frameworkIds.map(runFramework));
   if (
     reports.some(

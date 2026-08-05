@@ -11,7 +11,13 @@
 // The judgment (compareDom, compareVisualCaptures, contract checks, report
 // assembly) stays in Node; this file only performs captures.
 
-import { captureDomTree, captureSemantics, captureVisualSignature, captureAccessibilityTree, settle } from "../../scripts/conformance/browser-harness.mjs";
+import {
+  captureDomTree,
+  captureSemantics,
+  captureVisualSignature,
+  captureAccessibilityTree,
+  settle,
+} from "../../scripts/conformance/browser-harness.mjs";
 import { baseProps } from "../../apps/conformance-host/src/fixture-props.ts";
 import {
   contractGroupSelectors,
@@ -90,9 +96,7 @@ const selectSourceSubtree = (root, fixture) => {
   const candidates = [...root.querySelectorAll(fixture.sourceSelector)];
   const sourceIndex = fixture.sourceIndex ?? 0;
   if (candidates.length <= sourceIndex) {
-    throw new Error(
-      `Source selector did not resolve sourceIndex ${sourceIndex} for ${fixture.id}`,
-    );
+    throw new Error(`Source selector did not resolve sourceIndex ${sourceIndex} for ${fixture.id}`);
   }
   let selected = candidates[sourceIndex];
   if (fixture.sourceAncestorSelector) {
@@ -114,7 +118,9 @@ const resolveElement = (root, target, action) => {
     return found ?? root;
   }
   if (["keyboard-focus", "press", "fill", "select-option", "check", "uncheck"].includes(action)) {
-    return root.matches(interactiveSelector) ? root : (root.querySelector(interactiveSelector) ?? root);
+    return root.matches(interactiveSelector)
+      ? root
+      : (root.querySelector(interactiveSelector) ?? root);
   }
   return target === "root" ? root : root;
 };
@@ -153,9 +159,7 @@ const applyActions = async (root, state) => {
     events.push({
       type,
       target:
-        element.id ||
-        element.getAttribute("name") ||
-        element.tagName.toLocaleLowerCase("en-US"),
+        element.id || element.getAttribute("name") || element.tagName.toLocaleLowerCase("en-US"),
       ...("value" in control ? { value: String(control.value) } : {}),
       ...("checked" in control ? { checked: Boolean(control.checked) } : {}),
     });
@@ -194,7 +198,9 @@ const applyActions = async (root, state) => {
       } else if (step.action === "press") {
         const key = String(step.key ?? "Enter");
         element.focus();
-        element.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+        element.dispatchEvent(
+          new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }),
+        );
         element.dispatchEvent(new KeyboardEvent("keyup", { key, bubbles: true, cancelable: true }));
         // Native activation: Enter/Space on a focused button fires a click.
         if ((key === "Enter" || key === " ") && element.matches("button, [role='button']")) {
@@ -272,15 +278,18 @@ const captureContractSemantics = async (root, fixture) => {
   const groups = {};
   for (const group of contractGroupsFor(fixture.contract?.semanticElement)) {
     const selector = contractGroupSelectors[group];
-    const candidates = root.matches(selector)
-      ? [root]
-      : [...root.querySelectorAll(selector)];
+    const candidates = root.matches(selector) ? [root] : [...root.querySelectorAll(selector)];
     groups[group] = await Promise.all(candidates.map(captureSemantics));
   }
   return { root: rootSemantics, groups };
 };
 
-const captureBundle = async (root, state, fixture, { side = "upstream", normalizationRules = [] } = {}) => {
+const captureBundle = async (
+  root,
+  state,
+  fixture,
+  { side = "upstream", normalizationRules = [] } = {},
+) => {
   const { cleanup, events, actions } = await applyActions(root, state);
   await settle();
   const dom = await captureDomTree(root, { normalizationRules, snapshotSide: side });

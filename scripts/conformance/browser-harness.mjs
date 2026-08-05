@@ -20,8 +20,12 @@ export const settle = async () => {
  * Serialize the DOM under `root` into the same shape `captureDom` produced.
  * `root` must be an actual DOM element (not a locator).
  */
-export const captureDomTree = async (root, { normalizationRules = [], snapshotSide = "framework" } = {}) => {
-  const generatedAttribute = /^(?:data-v-|data-conformance-|_ng(?:content|host)-|ng-reflect-|data-svelte)/;
+export const captureDomTree = async (
+  root,
+  { normalizationRules = [], snapshotSide = "framework" } = {},
+) => {
+  const generatedAttribute =
+    /^(?:data-v-|data-conformance-|_ng(?:content|host)-|ng-reflect-|data-svelte)/;
   const referenceAttributes = new Set([
     "aria-controls",
     "aria-describedby",
@@ -131,9 +135,7 @@ export const captureDomTree = async (root, { normalizationRules = [], snapshotSi
       matchingRules
         .filter(
           (rule) =>
-            typeof rule.attribute === "string" &&
-            isRewrite(rule) &&
-            snapshotSide === "upstream",
+            typeof rule.attribute === "string" && isRewrite(rule) && snapshotSide === "upstream",
         )
         .map((rule) => [rule.attribute, String(rewriteValue(rule))]),
     );
@@ -195,9 +197,7 @@ export const captureSemantics = async (root) => {
     tag,
     role: element.getAttribute("role"),
     label,
-    attributes: Object.fromEntries(
-      [...element.attributes].map(({ name, value }) => [name, value]),
-    ),
+    attributes: Object.fromEntries([...element.attributes].map(({ name, value }) => [name, value])),
     computedStyle: {
       boxSizing: style.boxSizing,
       display: style.display,
@@ -316,8 +316,7 @@ const captureVisualSignatureTree = async (root) => {
     return normalized;
   };
   const styleValue = async (style, normalizeRootContext = false) => {
-    const clippedOut =
-      style.clip === "rect(0px, 0px, 0px, 0px)" || style.clipPath === "inset(50%)";
+    const clippedOut = style.clip === "rect(0px, 0px, 0px, 0px)" || style.clipPath === "inset(50%)";
     const positionDoesNotPaint =
       style.position === "static" || (style.position === "absolute" && clippedOut);
     const result = [];
@@ -479,10 +478,7 @@ const accessibleNameFrom = (element) => {
       .filter(Boolean);
     if (parts.length) return parts.join(" ");
   }
-  if (
-    element.matches("button, [role=button], a[href], summary") &&
-    element.textContent
-  ) {
+  if (element.matches("button, [role=button], a[href], summary") && element.textContent) {
     return element.textContent.replace(/\s+/g, " ").trim();
   }
   for (const attributeName of ["alt", "title", "placeholder", "value"]) {
@@ -516,11 +512,14 @@ export const captureAccessibilityTree = async (root) => {
     const role = implicitRole(element, tag, type);
     const name = accessibleNameFrom(element);
     const state = {};
-    const checked = ariaBooleanState(element, "checked") ?? (type === "checkbox" || type === "radio" ? Boolean("checked" in element ? element.checked : undefined) : undefined);
+    const checked =
+      ariaBooleanState(element, "checked") ??
+      (type === "checkbox" || type === "radio"
+        ? Boolean("checked" in element ? element.checked : undefined)
+        : undefined);
     if (checked !== undefined) state.checked = checked;
     const disabled =
-      ariaBooleanState(element, "disabled") ??
-      ("disabled" in element && Boolean(element.disabled));
+      ariaBooleanState(element, "disabled") ?? ("disabled" in element && Boolean(element.disabled));
     if (disabled) state.disabled = true;
     const expanded = ariaBooleanState(element, "expanded");
     if (expanded !== undefined) state.expanded = expanded;
@@ -528,7 +527,8 @@ export const captureAccessibilityTree = async (root) => {
     if (selected !== undefined) state.selected = selected;
     const pressed = ariaBooleanState(element, "pressed");
     if (pressed !== undefined) state.pressed = pressed;
-    const level = element.getAttribute("aria-level") ?? (tag.match(/^h[1-6]$/) ? tag[1] : undefined);
+    const level =
+      element.getAttribute("aria-level") ?? (tag.match(/^h[1-6]$/) ? tag[1] : undefined);
     if (level !== undefined) state.level = Number(level);
     const node = { role };
     if (name) node.name = name;
@@ -555,4 +555,3 @@ export const captureAccessibilityTree = async (root) => {
   };
   return serialize(root);
 };
-

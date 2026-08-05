@@ -22,11 +22,11 @@ accessibility requirement (AGENTS.md rule 8 — it must not).
 
 All references resolve within the same component subtree (verified: 0 unresolved).
 
-| Fixture(s) | Framework adds | Behavior |
-|---|---|---|
+| Fixture(s)                                              | Framework adds                                                                        | Behavior                                                              |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
 | `language-switcher`, `language-switcher-page`, `resize` | `id=generated-N` + `aria-controls=generated-N` on a toggle trigger → controlled panel | Triggers declare the collapse/expand target; valid disclosure pattern |
-| `header.default` | ~23× `id=generated-N` + `aria-controls=generated-N` (navigation, tabs, menus) | Each trigger references its own controlled panel in the same subtree |
-| `help-panel`, `tutorial-panel` | 6× `id=generated-N` + `aria-controls=generated-N` (disclosure triggers) | Same disclosure-pattern valid relationship |
+| `header.default`                                        | ~23× `id=generated-N` + `aria-controls=generated-N` (navigation, tabs, menus)         | Each trigger references its own controlled panel in the same subtree  |
+| `help-panel`, `tutorial-panel`                          | 6× `id=generated-N` + `aria-controls=generated-N` (disclosure triggers)               | Same disclosure-pattern valid relationship                            |
 
 **Recommended normalization**: on the **upstream** side, add the matching
 generated `id`/`aria-controls` reference tokens (so both sides carry the same
@@ -40,12 +40,12 @@ former (upstream-side rewrite) to mirror the existing
 These add/chagne accessible semantics that upstream lacks. Normalizing them away
 would weaken the framework's accessibility and is forbidden.
 
-| Fixture(s) | Framework adds | Why it matters |
-|---|---|---|
-| `tooltip`, `tooltip-box`, `tooltip-vertical` | `aria-labelledby=tooltip-popover-*` on the trigger | Enables the same accessible-name relationship KRDS upstream JS also sets (via `data-tooltip` → popover). See the parity verdict below — already identical, normalize. |
-| `file-upload` | `aria-label=파일선택` on the file input | Gives the file control an accessible name, equivalent to upstream's `<label for>`. See parity verdict — semantically identical, normalize. |
-| `structured-list-table` | `aria-label=` full table description on each row's control | Descriptive label upstream lacks → framework is MORE accessible. **Accept** (see parity verdict). |
-| `help-panel`, `tutorial-panel` | `tabindex=0` on the panel, `class=sr-only` elements | `sr-only` matches upstream (already present); `tabindex=0` is a framework-only keyboard model. `tabindex=0` cannot be normalized away — **accept** (see parity verdict). |
+| Fixture(s)                                   | Framework adds                                             | Why it matters                                                                                                                                                           |
+| -------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tooltip`, `tooltip-box`, `tooltip-vertical` | `aria-labelledby=tooltip-popover-*` on the trigger         | Enables the same accessible-name relationship KRDS upstream JS also sets (via `data-tooltip` → popover). See the parity verdict below — already identical, normalize.    |
+| `file-upload`                                | `aria-label=파일선택` on the file input                    | Gives the file control an accessible name, equivalent to upstream's `<label for>`. See parity verdict — semantically identical, normalize.                               |
+| `structured-list-table`                      | `aria-label=` full table description on each row's control | Descriptive label upstream lacks → framework is MORE accessible. **Accept** (see parity verdict).                                                                        |
+| `help-panel`, `tutorial-panel`               | `tabindex=0` on the panel, `class=sr-only` elements        | `sr-only` matches upstream (already present); `tabindex=0` is a framework-only keyboard model. `tabindex=0` cannot be normalized away — **accept** (see parity verdict). |
 
 ## Category 2 — screen-reader parity verdict (in-browser audit, Aug 2026)
 
@@ -54,16 +54,16 @@ and the framework DOM for screen-reader equivalence. "Align" means the framework
 and upstream expose the same accessible semantics; "accept" means aligning would
 require removing a framework accessibility feature (forbidden by AGENTS.md rule 8).
 
-| Item | Upstream SR semantics | Framework SR semantics | Verdict |
-|---|---|---|---|
-| `tooltip`, `tooltip-box`, `tooltip-vertical` | KRDS JS sets `aria-labelledby="tooltip-popover-<rand>"` on the trigger → popover has `<span class="sr-only">` | Same `aria-labelledby="tooltip-popover-*"` → popover | **Already identical semantics** — normalize the generated ids (Category 1 style). No framework change. |
-| `file-upload` | `<input type="file" hidden>` + `<label for>` (name "파일 선택") | `aria-label="파일선택"` on the input | **Equivalent semantics** — both give the file control an accessible name; only the string differs by a space. Normalize. |
-| `structured-list-table` | bare `<button class="krds-btn">` rows (no accessible name) | `aria-label=` full row description on each control | **Cannot align downstream** — upstream omits the name; matching it means removing accessibility. **Accept** (framework enhancement stands). |
-| `help-panel`, `tutorial-panel` | already 5× `<span class="sr-only">`, no `tabindex` on panel | same `sr-only` pattern + `tabindex=0` on the panel wrap | `sr-only`: already identical (normalize). `tabindex=0`: upstream lacks it — different keyboard model; removing may break the tab pattern. **Accept** unless maintainers redesign the tabs. |
+| Item                                         | Upstream SR semantics                                                                                         | Framework SR semantics                                  | Verdict                                                                                                                                                                                    |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tooltip`, `tooltip-box`, `tooltip-vertical` | KRDS JS sets `aria-labelledby="tooltip-popover-<rand>"` on the trigger → popover has `<span class="sr-only">` | Same `aria-labelledby="tooltip-popover-*"` → popover    | **Already identical semantics** — normalize the generated ids (Category 1 style). No framework change.                                                                                     |
+| `file-upload`                                | `<input type="file" hidden>` + `<label for>` (name "파일 선택")                                               | `aria-label="파일선택"` on the input                    | **Equivalent semantics** — both give the file control an accessible name; only the string differs by a space. Normalize.                                                                   |
+| `structured-list-table`                      | bare `<button class="krds-btn">` rows (no accessible name)                                                    | `aria-label=` full row description on each control      | **Cannot align downstream** — upstream omits the name; matching it means removing accessibility. **Accept** (framework enhancement stands).                                                |
+| `help-panel`, `tutorial-panel`               | already 5× `<span class="sr-only">`, no `tabindex` on panel                                                   | same `sr-only` pattern + `tabindex=0` on the panel wrap | `sr-only`: already identical (normalize). `tabindex=0`: upstream lacks it — different keyboard model; removing may break the tab pattern. **Accept** unless maintainers redesign the tabs. |
 
 **Bottom line:** the two items that genuinely differ in meaning
 (structured-list-table names, help-panel `tabindex=0`) reflect the framework
-being *more* accessible than upstream, so aligning downstream would violate
+being _more_ accessible than upstream, so aligning downstream would violate
 rule 8. These are **accepted** framework enhancements. The rest are already
 semantically identical and only need generated-id normalization.
 

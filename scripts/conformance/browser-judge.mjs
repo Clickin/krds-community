@@ -59,9 +59,7 @@ export const compareVisualSignatures = (upstreamSignature, frameworkSignature) =
     differingPixels: 0,
     skipped: passed,
     comparison: "dom-style",
-    ...(passed
-      ? {}
-      : { signatureError: "visual signatures differ", signatureDifference }),
+    ...(passed ? {} : { signatureError: "visual signatures differ", signatureDifference }),
   };
 };
 
@@ -147,7 +145,12 @@ export const runContractChecks = (fixture, semantics) => {
     "label-and-textarea",
   ]);
   if (semanticElement === "link[rel=icon]") {
-    if (root.tag !== "link" || !String(root.attributes?.rel ?? "").split(/\s+/).includes("icon")) {
+    if (
+      root.tag !== "link" ||
+      !String(root.attributes?.rel ?? "")
+        .split(/\s+/)
+        .includes("icon")
+    ) {
       errors.push("semantic element: expected link[rel=icon]");
     }
     for (const attribute of ["href", "sizes", "type"]) {
@@ -161,7 +164,9 @@ export const runContractChecks = (fixture, semantics) => {
     const expectedRole = expectedRoles[semanticElement];
     const expectedTag = expectedTags[semanticElement];
     if (expectedRole && actualRole !== expectedRole) {
-      errors.push(`semantic element: expected ${semanticElement}, received ${actualRole ?? root.tag}`);
+      errors.push(
+        `semantic element: expected ${semanticElement}, received ${actualRole ?? root.tag}`,
+      );
     } else if (expectedTag && !expectedTag.includes(root.tag)) {
       errors.push(`semantic element: expected ${semanticElement}, received ${root.tag}`);
     }
@@ -252,7 +257,9 @@ export const judgeState = (fixture, state, { upstream, framework, frameworkEvent
   };
   const visual = compareVisualSignatures(upstream.visualSignature, framework.visualSignature);
   const contractErrors = [
-    ...runContractChecks(fixture, framework.contractSemantics).map((error) => `framework: ${error}`),
+    ...runContractChecks(fixture, framework.contractSemantics).map(
+      (error) => `framework: ${error}`,
+    ),
     ...runContractChecks(fixture, upstream.contractSemantics).map((error) => `upstream: ${error}`),
   ];
   const literalAccessibility = upstream.accessibility;

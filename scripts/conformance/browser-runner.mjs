@@ -92,13 +92,15 @@ try {
   wtrExit = await new Promise((resolvePromise, reject) => {
     const wtrArgs = [resolve(repositoryRoot, "node_modules/@web/test-runner/dist/bin.js")];
     if (frameworkArgument) {
-      wtrArgs.push("--files", `tests/web-test-runner/conformance-wtr-${frameworkArgument}.test.mjs`);
+      wtrArgs.push(
+        "--files",
+        `tests/web-test-runner/conformance-wtr-${frameworkArgument}.test.mjs`,
+      );
     }
     const child = spawn(process.execPath, wtrArgs, {
-        cwd: repositoryRoot,
-        stdio: ["ignore", "pipe", "pipe"],
-      },
-    );
+      cwd: repositoryRoot,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
     child.stdout.resume();
     child.stderr.setEncoding("utf8");
     child.stderr.on("data", (chunk) => {
@@ -111,9 +113,7 @@ try {
     });
   });
   // Fetch captures while the collector is still accepting connections.
-  collectorPayloads = await fetch("http://127.0.0.1:8123/dump").then((response) =>
-    response.json(),
-  );
+  collectorPayloads = await fetch("http://127.0.0.1:8123/dump").then((response) => response.json());
 } finally {
   if (ownsCollector) await stopCollector();
 }
@@ -234,4 +234,3 @@ console.log(
   `Browser conformance ${strictConformance ? "passed" : "failed"}: ${passingStates}/${results.length} states.`,
 );
 if (!strictConformance) process.exitCode = 1;
-

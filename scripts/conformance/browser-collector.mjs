@@ -45,12 +45,18 @@ const server = createServer((request, response) => {
     return;
   }
   if (request.method === "GET" && request.url?.startsWith("/dump")) {
-    response.writeHead(200, { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" });
+    response.writeHead(200, {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    });
     response.end(JSON.stringify(payloads));
     return;
   }
   if (request.method === "GET" && request.url?.startsWith("/config")) {
-    response.writeHead(200, { "Access-Control-Allow-Origin": "*", "Content-Type": "application/json" });
+    response.writeHead(200, {
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json",
+    });
     response.end(JSON.stringify(config));
     return;
   }
@@ -63,8 +69,7 @@ export const startCollector = () =>
     server.listen(PORT, HOST, () => resolve({ host: HOST, port: PORT }));
   });
 
-export const stopCollector = () =>
-  new Promise((resolve) => server.close(() => resolve()));
+export const stopCollector = () => new Promise((resolve) => server.close(() => resolve()));
 
 export const getPayloads = () => payloads;
 export const setConfig = (value) => {
