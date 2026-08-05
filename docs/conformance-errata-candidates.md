@@ -146,19 +146,21 @@ failing states against the Playwright runtime path's 1080/1080. Diagnosed gaps
   `captureCorrectedAccessibility`, mirroring runtime.mjs `withCorrectedAttributes`);
   `judgeState` now passes on corrected-or-literal match. React path a11y
   failures dropped 25 -> 16 with no regression.
-- **Visual capture-fidelity (open, largest).** The browser path's
-  `captureVisualSignatureTree` measures children relative to
-  `root.getBoundingClientRect()` with no canonical-origin translation or
-  paint gutter. The Playwright path runs the same tree inside
-  `withCanonicalVisualOrigin`, which translates the root to the canonical
-  origin (`canonicalVisualOrigin`: x = paint gutter 4 when the root fills the
-  viewport, else bounds.x; y clamped) before measuring, and passes the upstream
-  origin to the framework capture. The browser worker renders upstream and
-  framework containers in the same document but at different offsets; without
-  the canonical-origin step the same layout can differ by large offsets (e.g.
-  accordion `children[0].children[1].rect.x` 0 vs -309). Fix = port
-  `withCanonicalVisualOrigin` into the browser capture path (translate both
-  roots to a shared canonical origin before capture).
+- **Visual capture-fidelity (open, largest).** Reproduced in-browser
+  (`tests/web-test-runner/_visdiag`) for `accordion-line.default`: upstream
+  and framework roots sit at the same x/fillsViewport=false and identical
+  widths, but the framework's collapsed accordion panel
+  (`children[0].children[1]`) measures a zero-size rect (`x:-309.34, w:0`
+  = `0 - rootRect.x`), while upstream renders it at full size. So the visual
+  gap is **not** a canonical-origin / paint-gutter problem — the Playwright
+  path and browser path share `captureVisualSignatureTree`. It is a
+  per-component _rendering-context_ difference: the framework's
+  collapsed/hidden panels, focus states, and other layout behaviors render
+  differently (zero-size hidden rects, ~24px `rect.y` shifts) in the browser
+  capture than in the Playwright host, across ~58 fixtures. Closing it needs a
+  fixture-by-fixture visual parity pass (e.g. reconciling collapsed-panel
+  layout the way the accordion hidden-vs-collapse errata does for the DOM),
+  not a single global normalization.
 - **DOM / contract (open).** In-browser DOM and contract semantics diverge from
   the Playwright capture environment beyond the accessibility corrections
   (e.g. file-upload DOM shape, accessible-role expectations). The browser path
