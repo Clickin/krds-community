@@ -78,3 +78,24 @@ semantically identical and only need generated-id normalization.
   decides whether they are acceptable framework enhancements (then the upstream
   contract / fixtures should be updated to match, or an errata+branch decision
   recorded).
+
+## CI conformance gate — 33 pre-existing visual failures (Aug 2026)
+
+The strict `test:conformance` gate fails on **33 states** (all `visual` only):
+
+- `tts.default` / `tts-size.default`, states `default`+`focus-visible`: **all 6 frameworks**
+- `tooltip-box` / `tooltip-vertical` / `tooltip`, state `focus-visible`: **vue, svelte, solid**
+
+Root cause (diagnosed): the framework and upstream TTS/tooltip render **identical
+icon markup** (`<i class="svg-icon ico-*">`), but the icon dimension is
+`--krds-icon--size-large = 2.4rem`, which is **rem / design-token dependent**. The
+two capture pages (upstream runtime document vs conformance-host) resolve the
+root font / token context slightly differently, so the same markup measures
+~24px on one side and ~28.25px on the other (and text-widths differ ~4px). The
+exact visual-signature comparison is stricter than this cross-page rem variance.
+
+It is **not a framework component bug** (markup is identical) and **not a
+user-visible regression** (the two pages are rendered in isolation). Fixing the
+gate deterministically requires normalizing the root font-size / design-token
+baseline across both capture pages, which is a conformance-harness change, not an
+errata. The 33 states are documented here as known pre-existing divergence.
