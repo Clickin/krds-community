@@ -284,6 +284,49 @@ const captureContractSemantics = async (root, fixture) => {
   return { root: rootSemantics, groups };
 };
 
+// Mirror of runtime.mjs `withCorrectedAttributes`: apply the errata
+// accessibility rewrite rules to the live DOM, capture the (corrected) a11y
+// tree, then restore every touched attribute. Produces the "corrected upstream"
+// accessibility that judgeState accepts a framework against.
+const captureCorrectedAccessibility = async (root, normalizationRules) => {
+  const rewrites = (normalizationRules ?? []).filter(
+    (rule) =>
+      typeof rule?.attribute === "string" &&
+      rule.attribute !== "data-listener-attached" &&
+      rule.attribute !== "onclick" &&
+      (rule?.operation === "rewrite" ||
+        Object.prototype.hasOwnProperty.call(rule ?? {}, "rewriteValue")),
+  );
+  if (rewrites.length === 0) return null;
+  const restorations = [];
+  try {
+    for (const rule of rewrites) {
+      const matches = root.matches(rule.selector)
+        ? [root, ...root.querySelectorAll(rule.selector)]
+        : [...root.querySelectorAll(rule.selector)];
+      const expected = Object.prototype.hasOwnProperty.call(rule, "rewriteValue")
+        ? String(rule.rewriteValue)
+        : String(rule.value);
+      for (const candidate of matches) {
+        restorations.push({
+          candidate,
+          name: rule.attribute,
+          existed: candidate.hasAttribute(rule.attribute),
+          value: candidate.getAttribute(rule.attribute),
+        });
+        if (expected === null) candidate.removeAttribute(rule.attribute);
+        else candidate.setAttribute(rule.attribute, expected);
+      }
+    }
+    return await captureAccessibilityTree(root);
+  } finally {
+    for (const { candidate, name, existed, value } of restorations) {
+      if (existed) candidate.setAttribute(name, value);
+      else candidate.removeAttribute(name);
+    }
+  }
+};
+
 const captureBundle = async (
   root,
   state,
@@ -357,6 +400,10 @@ export const captureFixture = async (framework, adapter, fixture) => {
           side: "upstream",
           normalizationRules: compiledErrata[fixture.id] ?? [],
         });
+        upstream.correctedAccessibility = await captureCorrectedAccessibility(
+          upstreamRoot,
+          compiledErrata[fixture.id] ?? [],
+        );
         const frameworkCapture = await captureBundle(frameworkRoot, state, fixture, {
           side: "framework",
           normalizationRules: [],

@@ -387,12 +387,29 @@ export const judgeState = (fixture, state, { upstream, framework, frameworkEvent
     ),
     ...runContractChecks(fixture, upstream.contractSemantics).map((error) => `upstream: ${error}`),
   ];
+  // Mirrors runtime.mjs: the framework may carry accessibility the literal
+  // upstream lacks (or generated references), so accessory equality is accepted
+  // when the framework's tree matches the *errata-corrected* upstream tree.
   const literalAccessibility = upstream.accessibility;
+  const correctedAccessibility = upstream.correctedAccessibility;
   const frameworkAccessibility = framework.accessibility;
-  const accessibilityPassed =
+  const literalAccessibilityMatch =
     JSON.stringify(literalAccessibility) === JSON.stringify(frameworkAccessibility);
+  const correctedAccessibilityMatch =
+    correctedAccessibility != null &&
+    JSON.stringify(correctedAccessibility) === JSON.stringify(frameworkAccessibility);
+  const accessibilityCorrected =
+    correctedAccessibility != null &&
+    JSON.stringify(literalAccessibility) !== JSON.stringify(correctedAccessibility);
+  const accessibilityPassed = correctedAccessibilityMatch || literalAccessibilityMatch;
   const accessibility = accessibilityPassed
-    ? { passed: true }
+    ? {
+        passed: true,
+        literalPassed: literalAccessibilityMatch,
+        expected: correctedAccessibilityMatch ? correctedAccessibility : literalAccessibility,
+        actual: frameworkAccessibility,
+        ...(accessibilityCorrected ? { correctedByErrata: [] } : {}),
+      }
     : {
         passed: false,
         literalPassed: false,
