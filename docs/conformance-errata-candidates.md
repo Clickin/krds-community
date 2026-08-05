@@ -130,3 +130,37 @@ content all match; only a hidden sr-only space / one text width differs). They
 remain open because the gate uses exact signature equality; a principled
 whitespace-width tolerance on rect measurement (not `text` content) would close
 them deterministically.
+
+## Browser conformance path parity vs the Playwright runtime (Aug 2026)
+
+`parallel.mjs --browser` (the in @web/test-runner capture path) reports ~617
+failing states against the Playwright runtime path's 1080/1080. Diagnosed gaps
+(branch `chore/remove-playwright-family`):
+
+- **Accessibility acceptance (fixed).** `browser-judge.judgeState` compared a
+  static literal accessibility tree, missing the Playwright runtime's
+  `correctedAccessibilityMatch` (a framework is accepted when its literal tree
+  matches the _errata-corrected_ upstream tree). Ported: the worker applies the
+  errata accessibility rewrite rules to the live DOM, captures the corrected
+  tree, restores (`tests/web-test-runner/conformance-worker.mjs`
+  `captureCorrectedAccessibility`, mirroring runtime.mjs `withCorrectedAttributes`);
+  `judgeState` now passes on corrected-or-literal match. React path a11y
+  failures dropped 25 -> 16 with no regression.
+- **Visual capture-fidelity (open, largest).** The browser path's
+  `captureVisualSignatureTree` measures children relative to
+  `root.getBoundingClientRect()` with no canonical-origin translation or
+  paint gutter. The Playwright path runs the same tree inside
+  `withCanonicalVisualOrigin`, which translates the root to the canonical
+  origin (`canonicalVisualOrigin`: x = paint gutter 4 when the root fills the
+  viewport, else bounds.x; y clamped) before measuring, and passes the upstream
+  origin to the framework capture. The browser worker renders upstream and
+  framework containers in the same document but at different offsets; without
+  the canonical-origin step the same layout can differ by large offsets (e.g.
+  accordion `children[0].children[1].rect.x` 0 vs -309). Fix = port
+  `withCanonicalVisualOrigin` into the browser capture path (translate both
+  roots to a shared canonical origin before capture).
+- **DOM / contract (open).** In-browser DOM and contract semantics diverge from
+  the Playwright capture environment beyond the accessibility corrections
+  (e.g. file-upload DOM shape, accessible-role expectations). The browser path
+  applies errata `normalization.whitelist` to the upstream DOM capture
+  (`captureDomTree`) but not equivalently everywhere the runtime does.
