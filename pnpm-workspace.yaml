@@ -8,9 +8,15 @@ catalog:
   # Keep only repository-wide build and test tool versions centralized.
   "@astrojs/react": https://pkg.pr.new/@astrojs/react@ae356b5
   "@astrojs/starlight": 0.41.5
+  '@esm-bundle/chai': 4.3.4-fix.0
+  '@remcovaes/web-test-runner-vite-plugin': ^1.4.1
   "@types/node": 26.1.1
   "@types/prompts": ^2.4.9
+  '@web/dev-server-esbuild': ^2.0.0
+  '@web/test-runner': 1.0.0
+  '@web/test-runner-chrome': 1.0.1
   commander: ^14.0.3
+  esbuild: ^0.28.1
   postcss: ^8.5.23
   prompts: ^2.4.2
   tsdown: ^0.22.14

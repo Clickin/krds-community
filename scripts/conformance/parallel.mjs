@@ -13,6 +13,7 @@ const arguments_ = process.argv.slice(2);
 let outputArgument;
 let saveDiffs = false;
 let catalogArgument;
+let browserPath = false;
 
 for (let index = 0; index < arguments_.length; index += 1) {
   const argument = arguments_[index];
@@ -32,6 +33,10 @@ for (let index = 0; index < arguments_.length; index += 1) {
     if (!value || value.startsWith("--")) throw new Error("--output requires a file path");
     outputArgument = value;
     index += 1;
+    continue;
+  }
+  if (argument === "--browser") {
+    browserPath = true;
     continue;
   }
   throw new Error(
@@ -261,8 +266,60 @@ const runFramework = async (framework) => {
   return report;
 };
 
+const runBrowserFramework = async (framework) => {
+  const browserRunner = resolve(repositoryRoot, "scripts/conformance/browser-runner.mjs");
+  const shardPath = resolve(temporaryDirectory, `${framework}.browser.json`);
+  const args = [
+    browserRunner,
+    "--framework",
+    framework,
+    "--output",
+    shardPath,
+    ...(catalogArgument ? ["--catalog", resolve(repositoryRoot, catalogArgument)] : []),
+  ];
+  let stderr = "";
+  const code = await new Promise((resolvePromise, reject) => {
+    const child = spawn(process.execPath, args, {
+      cwd: repositoryRoot,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    child.stdout.resume();
+    child.stderr.setEncoding("utf8");
+    child.stderr.on("data", (chunk) => (stderr += chunk));
+    child.on("error", reject);
+    child.on("close", (exitCode, signal) => {
+      if (signal) reject(new Error(`[${framework}] browser worker received ${signal}\n${stderr.trim()}`));
+      else resolvePromise(exitCode);
+    });
+  });
+  let shard;
+  try {
+    shard = JSON.parse(await readFile(shardPath, "utf8"));
+  } catch (error) {
+    throw new Error(
+      `[${framework}] browser worker did not produce a readable report: ${
+        error instanceof Error ? error.message : String(error)
+      }\n${stderr.trim()}`,
+    );
+  }
+  return { shard, code };
+};
+
 try {
-  const reports = await Promise.all(frameworkIds.map(runFramework));
+  // Browser workers each own their own collector + browser. Run them
+  // sequentially: concurrent Chromium instances (one per @web/test-runner)
+  // contend for memory and the weaker frameworks lose their browser process.
+  const reports = browserPath
+    ? (await Promise.resolve(
+        (async () => {
+          const collected = [];
+          for (const framework of frameworkIds) {
+            collected.push(await runBrowserFramework(framework));
+          }
+          return collected;
+        })(),
+      )).map(({ shard }) => shard)
+    : await Promise.all(frameworkIds.map(runFramework));
   if (
     reports.some(
       (report) =>

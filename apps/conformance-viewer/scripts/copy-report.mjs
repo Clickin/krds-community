@@ -1,7 +1,22 @@
-import { copyFile, mkdir, readFile, rm } from "node:fs/promises";
+import { access, copyFile, mkdir, readFile, rm } from "node:fs/promises";
 
 const source = "../../reports/conformance-runtime.json";
 const destination = "public/reports/conformance-runtime.json";
+
+// The Pages deploy builds this workspace without a conformance run, so the
+// report may legitimately be absent. The viewer is an SPA that fetches the
+// report at runtime; a missing report builds fine and degrades to "no evidence"
+// in the UI. Only copy/validate when CI has produced the report first.
+let reportExists = true;
+try {
+  await access(source);
+} catch {
+  reportExists = false;
+  await rm("public/reports", { recursive: true, force: true });
+  console.log(`${source} not present; building viewer without runtime evidence.`);
+}
+if (!reportExists) process.exit(0);
+
 const report = JSON.parse(await readFile(source, "utf8"));
 const frameworkEvidence =
   Array.isArray(report.frameworks) &&
