@@ -1,13 +1,10 @@
-import { createServer } from "node:http";
+import { spawn } from "node:child_process";
 import { readFile, readdir, stat } from "node:fs/promises";
-import { extname, join, normalize, resolve } from "node:path";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { chromium } from "playwright";
 import { loadManifests } from "../packages/conformance/dist/index.js";
+import { startCollector, stopCollector, setConfig, getPayloads } from "./conformance/browser-collector.mjs";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const storybookStaticRoot = resolve(
-  process.env.STORYBOOK_STATIC_ROOT ?? join(root, "storybook-static"),
-);
 const frameworkIds = ["react", "vue", "svelte", "solid", "angular"];
 const packageSources = Object.fromEntries(
   frameworkIds.map((framework) => [
@@ -155,36 +152,6 @@ const assertManifestContracts = async (manifests) => {
   return failures;
 };
 
-const serveStatic = async (directory) => {
-  const server = createServer(async (request, response) => {
-    try {
-      const requestPath = decodeURIComponent((request.url ?? "/").split("?")[0]);
-      const relativePath = normalize(requestPath).replace(/^([.][.][\\/])+/, "");
-      const candidate = join(directory, relativePath === "/" ? "index.html" : relativePath);
-      const file = await stat(candidate);
-      const filePath = file.isDirectory() ? join(candidate, "index.html") : candidate;
-      response.writeHead(200, { "Content-Type": contentType(extname(filePath)) });
-      response.end(await readFile(filePath));
-    } catch {
-      response.writeHead(404);
-      response.end("Not found");
-    }
-  });
-  await new Promise((resolvePromise) => server.listen(0, "127.0.0.1", resolvePromise));
-  const address = server.address();
-  return { server, baseUrl: `http://127.0.0.1:${address.port}` };
-};
-
-const contentType = (extension) =>
-  ({
-    ".html": "text/html; charset=utf-8",
-    ".js": "text/javascript; charset=utf-8",
-    ".css": "text/css; charset=utf-8",
-    ".json": "application/json; charset=utf-8",
-    ".svg": "image/svg+xml",
-    ".png": "image/png",
-  })[extension] ?? "application/octet-stream";
-
 const findAxe = async () => {
   const candidates = [
     join(root, "node_modules", "axe-core", "axe.min.js"),
@@ -201,219 +168,74 @@ const findAxe = async () => {
   throw new Error("axe-core is required for strict conformance checks");
 };
 
-const findInventoryStory = async (baseUrl, framework) => {
-  const response = await fetch(`${baseUrl}/${framework}/index.json`);
-  if (!response.ok) throw new Error(`${framework}: Storybook index is unavailable`);
-  const index = await response.json();
-  const entry = Object.values(index.entries).find(
-    (candidate) =>
-      candidate.exportName === "Inventory" && candidate.importPath.includes("AllComponents"),
-  );
-  if (!entry) throw new Error(`${framework}: full inventory story is missing`);
-  return entry.id;
-};
 
-const checkRenderedInventories = async (manifests) => {
-  const { server, baseUrl } = await serveStatic(storybookStaticRoot);
-  const axePath = await findAxe();
-  const browser = await chromium.launch({ headless: true });
-  const failures = [];
-  const fixtureFailures = Object.fromEntries(frameworkIds.map((framework) => [framework, {}]));
-  const fixtureContracts = (
+// Runs the in-browser Storybook inventory audit via @web/test-runner + Chrome
+// (no Playwright). The browser workers (tests/web-test-runner/storybook-audit.test.mjs)
+// load each framework inventory in a same-origin iframe, run the rendering /
+// accessibility / keyboard / axe / mobile-overflow checks, and POST findings to
+// the HTTP collector. Node aggregates the collector payloads here.
+const collectFixtureContracts = async (manifests) =>
+  (
     await Promise.all(manifests.map(async (manifest) => (await readFixtureData(manifest)).fixtures))
   ).flat();
+
+const checkRenderedInventories = async (manifests) => {
+  const axeSource = await readFile(await findAxe(), "utf8");
+  const fixtureContracts = await collectFixtureContracts(manifests);
+  const failures = [];
+  const fixtureFailures = Object.fromEntries(frameworkIds.map((framework) => [framework, {}]));
+  const collectorHost = "127.0.0.1";
+  const collectorPort = process.env.KRDS_BROWSER_COLLECTOR_PORT ?? "8123";
+  const collectorBase = `http://${collectorHost}:${collectorPort}`;
   try {
-    for (const framework of frameworkIds) {
-      const storyId = await findInventoryStory(baseUrl, framework);
-      const page = await browser.newPage();
-      const consoleErrors = [];
-      const markFixtureFailure = (fixtureId, message) => {
-        const current = fixtureFailures[framework][fixtureId] ?? [];
-        if (!current.includes(message)) current.push(message);
-        fixtureFailures[framework][fixtureId] = current;
-        failures.push(message);
-      };
-      page.on("console", (message) => {
-        if (message.type() === "error") consoleErrors.push(message.text());
+    await startCollector();
+    setConfig({
+      fixtureContracts,
+      manifestCount: manifests.length,
+      axeContent: Buffer.from(axeSource, "utf8").toString("base64"),
+    });
+    const worker = resolve(root, "tests/web-test-runner/storybook-audit.test.mjs");
+    let stderr = "";
+    const wtrExit = await new Promise((resolvePromise, reject) => {
+      const child = spawn(
+        "pnpm",
+        ["-w", "exec", "web-test-runner", "--files", worker],
+        {
+          cwd: root,
+          env: {
+            ...process.env,
+            KRDS_BROWSER_COLLECTOR_PORT: collectorPort,
+            VITE_STORYBOOK_COLLECTOR: collectorBase,
+          },
+          stdio: ["ignore", "inherit", "pipe"],
+        },
+      );
+      child.stderr.setEncoding("utf8");
+      child.stderr.on("data", (chunk) => {
+        stderr += chunk;
       });
-      page.on("pageerror", (error) => consoleErrors.push(error.message));
-      const url = `${baseUrl}/${framework}/iframe.html?id=${encodeURIComponent(storyId)}&viewMode=story`;
-      console.log(`Checking ${framework}: ${url}`);
-      try {
-        await page.goto(url, { waitUntil: "networkidle" });
-        await page.waitForFunction(
-          () => document.querySelectorAll('[class*="krds-"]').length > 0,
-          null,
-          { timeout: 10_000 },
-        );
-        // Let fonts finish loading so axe computes final colors.
-        await page.evaluate(() => document.fonts?.ready);
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        const rootLocator = page.locator("#storybook-root");
-        for (const fixture of fixtureContracts) {
-          try {
-            const fixtureRoot = fixture.sourceSelector === 'link[rel="icon"]' ? page : rootLocator;
-            const count = await fixtureRoot.locator(fixture.sourceSelector).count();
-            if (count === 0) {
-              markFixtureFailure(
-                fixture.id,
-                `${framework}: ${fixture.id}: official selector not rendered (${fixture.sourceSelector})`,
-              );
-            }
-          } catch (error) {
-            markFixtureFailure(
-              fixture.id,
-              `${framework}: ${fixture.id}: invalid official selector (${fixture.sourceSelector}): ${
-                error instanceof Error ? error.message : String(error)
-              }`,
-            );
-          }
-        }
-        const bodyText = await page.locator("body").innerText();
-        if (/couldn't find story|failed to render|error occurred/i.test(bodyText)) {
-          failures.push(`${framework}: Storybook reported a render error`);
-        }
-        const renderedElements = await page.locator('[class*="krds-"]').count();
-        if (renderedElements < manifests.length / 2) {
-          failures.push(
-            `${framework}: inventory rendered too few KRDS elements (${renderedElements})`,
-          );
-        }
-        const semanticFindings = await page.evaluate(() => {
-          const root = document.querySelector("#storybook-root") ?? document;
-          const findings = [];
-          const nativeButtonRoles = root.querySelectorAll('button[role="button"]').length;
-          if (nativeButtonRoles)
-            findings.push(`${nativeButtonRoles} native buttons repeat role=button`);
-
-          for (const element of root.querySelectorAll("[aria-expanded]")) {
-            const controls = element.getAttribute("aria-controls");
-            if (!controls || !document.getElementById(controls)) {
-              findings.push("aria-expanded is missing a valid aria-controls target");
-            }
-          }
-
-          for (const tablist of root.querySelectorAll('[role="tablist"]')) {
-            const tabs = tablist.querySelectorAll('[role="tab"]');
-            if (!tabs.length) findings.push("tablist has no tab descendants");
-            for (const tab of tabs) {
-              const controls = tab.getAttribute("aria-controls");
-              if (!controls || !document.getElementById(controls)) {
-                findings.push("tab is missing a valid aria-controls target");
-              }
-            }
-          }
-
-          for (const table of root.querySelectorAll("table")) {
-            if (table.closest('[aria-hidden="true"]')) continue;
-            if (!table.querySelector("caption") && !table.getAttribute("aria-label")) {
-              findings.push("table is missing caption or accessible name");
-            }
-            if (!table.querySelector("th")) findings.push("table is missing a header cell");
-          }
-
-          for (const control of root.querySelectorAll("input, select, textarea")) {
-            if (control.type === "hidden" || control.getAttribute("aria-hidden") === "true")
-              continue;
-            const id = control.getAttribute("id");
-            const hasLabel = Boolean(
-              control.getAttribute("aria-label") ||
-              control.getAttribute("aria-labelledby") ||
-              (id && document.querySelector(`label[for="${CSS.escape(id)}"]`)) ||
-              control.closest("label"),
-            );
-            if (!hasLabel) findings.push(`${control.tagName.toLowerCase()} is missing a label`);
-          }
-          return findings;
-        });
-        for (const finding of semanticFindings) failures.push(`${framework}: ${finding}`);
-
-        await page.evaluate(() => {
-          const root = document.querySelector("#storybook-root") ?? document.body;
-          root.setAttribute("tabindex", "-1");
-          root.focus();
-          if (document.activeElement !== root) {
-            const candidate = Array.from(
-              root.querySelectorAll(
-                'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"]),[contenteditable="true"]',
-              ),
-            ).find((element) => {
-              const rect = element.getBoundingClientRect();
-              const style = getComputedStyle(element);
-              return (
-                rect.width > 0 &&
-                rect.height > 0 &&
-                style.visibility !== "hidden" &&
-                style.display !== "none"
-              );
-            });
-            candidate?.focus();
-          }
-        });
-        const keyboardFindings = [];
-        for (let index = 0; index < 12; index += 1) {
-          await page.keyboard.press("Tab");
-          const focusState = await page.evaluate(() => {
-            const active = document.activeElement;
-            return {
-              isBody: active === document.body,
-              isFocusable: Boolean(
-                active &&
-                (active.matches(
-                  'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])',
-                ) ||
-                  active.matches('[contenteditable="true"]')),
-              ),
-              isVisible: Boolean(active && active.matches(":focus-visible")),
-            };
-          });
-          if (focusState.isBody || !focusState.isFocusable || !focusState.isVisible) {
-            keyboardFindings.push(`tab ${index + 1} did not produce a visible focus target`);
-            break;
-          }
-        }
-        for (const finding of keyboardFindings) failures.push(`${framework}: ${finding}`);
-
-        await page.addScriptTag({ path: axePath });
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const violations = await page.evaluate(async () => {
-          const result = await window.axe.run(
-            document.querySelector("#storybook-root") ?? document,
-            { resultTypes: ["violations"] },
-          );
-          return result.violations.map((violation) => ({
-            id: violation.id,
-            count: violation.nodes.length,
-            targets: violation.nodes.slice(0, 3).map((node) => node.target),
-          }));
-        });
-        if (violations.length)
-          failures.push(`${framework}: axe violations ${JSON.stringify(violations)}`);
-
-        await page.setViewportSize({ width: 390, height: 844 });
-        await page.reload({ waitUntil: "networkidle" });
-        const mobileOverflow = await page.evaluate(
-          () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
-        );
-        if (mobileOverflow) failures.push(`${framework}: mobile inventory has horizontal overflow`);
-      } catch (error) {
-        failures.push(`${framework}: ${error instanceof Error ? error.message : String(error)}`);
-        const bodyText = await page
-          .locator("body")
-          .innerText()
-          .catch(() => "");
-        if (bodyText) failures.push(`${framework}: body=${bodyText.slice(0, 500)}`);
+      child.on("error", reject);
+      child.on("close", (code, signal) => {
+        if (signal) reject(new Error(`web-test-runner received ${signal}\n${stderr.trim()}`));
+        else resolvePromise(code ?? 0);
+      });
+    });
+    if (wtrExit !== 0) {
+      throw new Error(`web-test-runner exited with ${wtrExit}\n${stderr.trim()}`);
+    }
+    const payloads = getPayloads();
+    for (const payload of payloads) {
+      if (payload?.kind !== "storybook-audit" || !payload.framework) continue;
+      for (const message of payload.messages ?? []) {
+        failures.push(message);
       }
-      if (consoleErrors.length)
-        failures.push(`${framework}: browser errors ${JSON.stringify(consoleErrors)}`);
-      await page.close();
     }
   } finally {
-    await browser.close();
-    await new Promise((resolvePromise) => server.close(resolvePromise));
+    await stopCollector().catch(() => {});
   }
   return { failures, fixtureFailures };
 };
+
 
 const main = async () => {
   const manifests = await loadManifests(join(root, "conformance", "manifests"));
