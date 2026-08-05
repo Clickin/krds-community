@@ -58,7 +58,10 @@ export function Tts(rawProps: TtsProps) {
       <span class="krds-tts-icon" aria-hidden="true">
         <i class={checked() ? "svg-icon ico-pause" : "svg-icon ico-volume"} />
       </span>
-      <span class="krds-tts-text">{content()}</span>
+      <Show when={true}>
+        {" "}
+        <span class="krds-tts-text">{content()}</span>
+      </Show>
     </button>
   );
 }

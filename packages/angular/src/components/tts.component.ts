@@ -18,7 +18,7 @@ import { createStableId } from "../kinds";
         <i class="svg-icon ico-volume"></i>
       </span>
       @if (effectiveKind !== "tts-icon") {
-        <span class="krds-tts-text">{{ label }}</span>
+        {{ " " }}<span class="krds-tts-text">{{ label }}</span>
       }
     </button>
   `,
