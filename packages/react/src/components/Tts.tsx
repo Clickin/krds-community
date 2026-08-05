@@ -46,7 +46,6 @@ export function Tts({
       </span>
       {iconOnly ? null : (
         <>
-          {" "}
           <span className="krds-tts-text">{children ?? text}</span>
         </>
       )}
