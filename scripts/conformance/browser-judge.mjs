@@ -69,18 +69,33 @@ const signaturesEqualWithinWhitespace = (a, b, spaceW, path, diff) => {
       ok = false;
     } else {
       for (let i = 0; i < at.length; i++) {
-        for (const bit of [
-          ...new Set([...Object.keys(at[i] ?? {}), ...Object.keys(bt[i] ?? {})]),
-        ]) {
-          const av = at[i][bit];
-          const bv = bt[i][bit];
-          if (typeof av === "number" && typeof bv === "number" && rectGeometry[bit]) {
+        const rectA = at[i] ?? {};
+        const rectB = bt[i] ?? {};
+        for (const name of Object.keys(rectA)) {
+          const av = rectA[name];
+          const bv = rectB[name];
+          if (typeof av === "number" && typeof bv === "number" && rectGeometry[name]) {
             if (Math.abs(av - bv) > spaceW) {
-              diff.push([`${path}.rects[${i}].${bit}`, av, bv]);
+              diff.push([`${path}.rects[${i}].${name}`, av, bv]);
               ok = false;
             }
           } else if (av !== bv) {
-            diff.push([`${path}.rects[${i}].${bit}`, av, bv]);
+            diff.push([`${path}.rects[${i}].${name}`, av, bv]);
+            ok = false;
+          }
+        }
+        // keys only present on B
+        for (const name of Object.keys(rectB)) {
+          if (name in rectA) continue;
+          const av = rectA[name];
+          const bv = rectB[name];
+          if (typeof av === "number" && typeof bv === "number" && rectGeometry[name]) {
+            if (Math.abs(av - bv) > spaceW) {
+              diff.push([`${path}.rects[${i}].${name}`, av, bv]);
+              ok = false;
+            }
+          } else if (av !== bv) {
+            diff.push([`${path}.rects[${i}].${name}`, av, bv]);
             ok = false;
           }
         }
@@ -89,13 +104,26 @@ const signaturesEqualWithinWhitespace = (a, b, spaceW, path, diff) => {
     return ok;
   }
   let ok = true;
-  const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-  for (const key of keys) {
+  for (const key of Object.keys(a)) {
     if (key === "rootSpaceWidth") continue;
     const av = a[key];
     const bv = b[key];
     if (key === "rect" && av && bv && typeof av === "object" && typeof bv === "object") {
-      for (const bit of new Set([...Object.keys(av), ...Object.keys(bv)])) {
+      for (const bit of Object.keys(av)) {
+        const ra = av[bit];
+        const rb = bv[bit];
+        if (typeof ra === "number" && typeof rb === "number" && rectGeometry[bit]) {
+          if (Math.abs(ra - rb) > spaceW) {
+            diff.push([`${path}.rect.${bit}`, ra, rb]);
+            ok = false;
+          }
+        } else if (ra !== rb) {
+          diff.push([`${path}.rect.${bit}`, ra, rb]);
+          ok = false;
+        }
+      }
+      for (const bit of Object.keys(bv)) {
+        if (bit in av) continue;
         const ra = av[bit];
         const rb = bv[bit];
         if (typeof ra === "number" && typeof rb === "number" && rectGeometry[bit]) {
@@ -110,12 +138,17 @@ const signaturesEqualWithinWhitespace = (a, b, spaceW, path, diff) => {
       }
       continue;
     }
-    if (!(key in a && key in b)) {
+    if (!(key in b)) {
       diff.push([`${path}.${key}`, av, bv]);
       ok = false;
       continue;
     }
     if (!signaturesEqualWithinWhitespace(av, bv, spaceW, `${path}.${key}`, diff)) ok = false;
+  }
+  for (const key of Object.keys(b)) {
+    if (key in a || key === "rootSpaceWidth") continue;
+    diff.push([`${path}.${key}`, a[key], b[key]]);
+    ok = false;
   }
   return ok;
 };
