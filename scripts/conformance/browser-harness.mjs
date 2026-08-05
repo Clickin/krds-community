@@ -420,7 +420,30 @@ const captureVisualSignatureTree = async (root) => {
       children,
     };
   };
-  return serialize(root);
+  // Measure the rendered width of a single space at the root font. Text nodes
+  // carry normalized `text` content, but leading/trailing whitespace in the
+  // upstream source can shift the measured rect by one space width that the
+  // frameworks do not reproduce. The comparator uses this as the maximum
+  // allowable horizontal drift for rect width/position on identical text.
+  const measureRootSpace = () => {
+    try {
+      const style = getComputedStyle(root);
+      const probe = document.createElement("span");
+      probe.style.cssText = `position:absolute;visibility:hidden;white-space:pre;pointer-events:none;font:${style.font};`;
+      probe.textContent = "\u00a0";
+      document.body.appendChild(probe);
+      const width = probe.getBoundingClientRect().width;
+      probe.remove();
+      return Math.round(width * 64) / 64;
+    } catch {
+      return 1 / 64;
+    }
+  };
+  const signature = await serialize(root);
+  if (signature && typeof signature === "object") {
+    signature.rootSpaceWidth = measureRootSpace();
+  }
+  return signature;
 };
 
 /**

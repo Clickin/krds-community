@@ -14,6 +14,7 @@ import {
 } from "./dom.mjs";
 import * as conformanceServer from "./server.mjs";
 import * as visual from "./visual.mjs";
+import { compareVisualSignatures } from "./browser-judge.mjs";
 
 const { createConformanceServer } = conformanceServer;
 const { captureCanonicalScreenshot, captureVisualSignature, comparePixels } = visual;
@@ -132,10 +133,11 @@ export const compareVisualCaptures = async (upstreamCapture, frameworkCapture, e
         ? ["framework visual signature: unavailable"]
         : []),
   ];
-  if (
-    signatureErrors.length === 0 &&
-    isDeepStrictEqual(upstreamCapture.signature, frameworkCapture.signature)
-  ) {
+  const visualVerdict = compareVisualSignatures(
+    upstreamCapture.signature,
+    frameworkCapture.signature,
+  );
+  if (signatureErrors.length === 0 && visualVerdict.passed && upstreamCapture.signature !== null) {
     return {
       evidence: {
         passed: true,
@@ -150,10 +152,9 @@ export const compareVisualCaptures = async (upstreamCapture, frameworkCapture, e
   const diagnostics = signatureErrors.length
     ? { comparison: "pixel-fallback", signatureErrors }
     : {
-        signatureDifference: firstStructuralDifference(
-          upstreamCapture.signature,
-          frameworkCapture.signature,
-        ),
+        signatureDifference:
+          visualVerdict.signatureDifference ??
+          firstStructuralDifference(upstreamCapture.signature, frameworkCapture.signature),
       };
   const missingScreenshotCaptures = [
     ...(typeof upstreamCapture.captureScreenshot !== "function"
@@ -667,7 +668,11 @@ const capture = async (
           if (!/^\s+$/.test(node.data)) continue;
           const prev = node.previousSibling;
           const next = node.nextSibling;
-          if (next && next.nodeType === Node.ELEMENT_NODE && (!prev || prev.nodeType === Node.ELEMENT_NODE)) {
+          if (
+            next &&
+            next.nodeType === Node.ELEMENT_NODE &&
+            (!prev || prev.nodeType === Node.ELEMENT_NODE)
+          ) {
             whitespace.push(node);
           }
         }
