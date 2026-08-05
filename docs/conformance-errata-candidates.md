@@ -96,7 +96,7 @@ classes:
    nodes becomes a real gap only one side reproduces. Fixed in the conformance
    harness (`scripts/conformance/runtime.mjs` `capture()`, its only user-visible
    behavior): every capture page gets `.krds-tts-icon{display:inline-flex;
-   align-items:center}` and whitespace-only text nodes between two elements are
+align-items:center}` and whitespace-only text nodes between two elements are
    removed. This dropped the gate to 17 states. These are structurally-neutral
    layout normalizations, not visual thresholds (rule 8).
 
