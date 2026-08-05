@@ -166,3 +166,14 @@ failing states against the Playwright runtime path's 1080/1080. Diagnosed gaps
   (e.g. file-upload DOM shape, accessible-role expectations). The browser path
   applies errata `normalization.whitelist` to the upstream DOM capture
   (`captureDomTree`) but not equivalently everywhere the runtime does.
+
+## playwright removal — remaining references gating the dependency drop
+
+`scripts/crawl-official-krds.mjs` is a one-off manual KRDS-site crawler (not
+referenced by any package script or CI workflow) that still imports
+`chromium` from `playwright`. It is out of the CI/conformance/storybook paths
+and only matters when the `playwright` package itself is removed; it can be
+migrated to `playwright-core` (identical API, no bundled browsers) at that
+point. `scripts/conformance/visual.d.mts`'s `import type { Locator } from
+"playwright"` and `scripts/conformance/runtime.mjs` are gated on the
+browser-path parity work above.
