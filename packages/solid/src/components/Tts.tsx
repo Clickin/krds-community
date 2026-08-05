@@ -1,4 +1,4 @@
-import { createSignal, mergeProps, splitProps, type JSX } from "solid-js";
+import { Show, createSignal, mergeProps, splitProps, type JSX } from "solid-js";
 
 export interface TtsProps {
   class?: string;
