@@ -1077,7 +1077,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
   } else if (componentId === "tts-icon") {
     defaults = { label: "" };
   } else if (componentId === "tts-size") {
-    defaults = { size: "xsmall", label: "Xsmall TTS", children: " Xsmall TTS" };
+    defaults = { size: "xsmall", label: "Xsmall TTS", children: "Xsmall TTS" };
   } else if (componentId === "file-upload") {
     const commonName = "위임장(주민등록법 시행령 별지 제15호의2호서식) [hwp, 17KB] ";
     defaults = {
