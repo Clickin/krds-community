@@ -642,6 +642,38 @@ const capture = async (
     await applyStateProps(root, state.props);
     actionCleanup = await applyActions(page, root, actions);
     await page.evaluate(() => document.fonts.ready);
+    {
+      // 1. An `inline` wrapper around an `inline-flex` .svg-icon child gains a
+      //    ~4px baseline strut that inflates its measured width on the upstream
+      //    page but not in framework JSX. Mirror the KRDS layout (icon container
+      //    = inline-flex, centered) on every capture page.
+      // 2. Whitespace-only text nodes between two element nodes are upstream
+      //    pretty-printed newlines or framework literal spaces (`{" "}`); in an
+      //    inline layout they become a real gap only one side reproduces. Drop
+      //    them so both measure identically. Flowing text is preserved.
+      // Run on every capture (idempotent) because pages re-navigate between
+      // states; a Page-level flag would miss the freshly-loaded document.
+      await page.evaluate(() => {
+        if (!document.querySelector("#krds-conformance-layout")) {
+          const style = document.createElement("style");
+          style.id = "krds-conformance-layout";
+          style.textContent = `.krds-tts-icon{display:inline-flex!important;align-items:center!important}`;
+          document.head.appendChild(style);
+        }
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const whitespace = [];
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          if (!/^\s+$/.test(node.data)) continue;
+          const prev = node.previousSibling;
+          const next = node.nextSibling;
+          if (next && next.nodeType === Node.ELEMENT_NODE && (!prev || prev.nodeType === Node.ELEMENT_NODE)) {
+            whitespace.push(node);
+          }
+        }
+        for (const node of whitespace) node.parentNode.removeChild(node);
+      });
+    }
     // Let hover/focus paint settle: under heavy parallel load a single
     // animation frame can resolve before the style recalc, leaving the
     // element in its un-hovered state.
