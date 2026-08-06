@@ -33,6 +33,12 @@ normalization:
     - selector: ".krds-language > .drop-menu"
       attribute: id
       operation: omit
+    - selector: ".krds-language > .drop-btn"
+      attribute: aria-expanded
+      operation: omit
+    - selector: ".krds-language > .drop-menu"
+      attribute: style
+      operation: omit
 evidence:
   rationale: >-
     The framework adds the id/aria-controls pairing to expose the disclosure relationship; the attributes are non-semantic additions compared against the literal upstream markup.

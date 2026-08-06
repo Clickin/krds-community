@@ -1,4 +1,4 @@
-import { adapter } from "../../apps/conformance-host/src/adapters/svelte.ts";
+import { adapter } from "../../apps/conformance-host/dist/assets/svelte-adapter.mjs";
 import { captureFixture, catalog, emitFixtureCapture } from "./conformance-worker.mjs";
 
 describe("svelte in-browser conformance capture", () => {

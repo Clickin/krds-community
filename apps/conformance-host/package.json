@@ -10,7 +10,7 @@
     "./protocol": "./src/protocol.ts"
   },
   "scripts": {
-    "build": "node scripts/prepare.mjs && vite build",
+    "build": "node scripts/prepare.mjs && vite build && vite build --config vite.adapters.config.ts",
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

@@ -20,7 +20,10 @@ export default {
       plugins: [normativeStylesOnly, svelte(), solid()],
     }),
   ],
-  files: ["tests/web-test-runner/conformance-wtr-*.test.mjs"],
+  files: [
+    "tests/web-test-runner/conformance-wtr-*.test.mjs",
+    "tests/web-test-runner/conformance-visual-wtr.test.mjs",
+  ],
   nodeResolve: false,
   esbuildTarget: "chrome120",
   concurrency: 5,

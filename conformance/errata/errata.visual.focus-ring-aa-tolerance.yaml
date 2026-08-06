@@ -1,0 +1,50 @@
+id: errata.visual.focus-ring-aa-tolerance
+component: visual-focus-ring
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/language_switcher.html
+    - upstream/krds-html/html/code/tab.html
+    - upstream/krds-html/html/code/resize.html
+    - upstream/krds-html/html/code/button.html
+defect:
+  type: focus-ring-anti-aliasing-tolerance
+  literalSource:
+    selectors:
+      - "button, a, [role='tab'], [role='button']"
+    behavior: >-
+      On keyboard focus the KRDS runtime paints a box-shadow focus ring around
+      the control (:focus outline + --krds-box-shadow-outline ring). The ring
+      edge is anti-aliased against the page background, and the exact sub-pixel
+      coverage depends on the raster grid alignment of each capture.
+correction:
+  behavior: >-
+    Treat `focus-visible`-state visual signatures as equivalent when the only
+    difference is the focus ring's box-shadow anti-aliasing at the sub-pixel
+    edge: the ring is painted by both sides at the same geometry, color, and
+    width, and pixel coverage differs only by grid alignment — a perceptual
+    non-difference. The `pixelEquivalent` fallback
+    (scripts/conformance/browser-judge.mjs, maxRatio 0.01) applies this
+    tolerance; DOM, accessibility, behavior, and form requirements are never
+    relaxed. This erratum records the user decision (2026-08-06) as a
+    reviewable artifact; it performs no DOM normalization.
+  attributes: []
+fixtures:
+  - language-switcher.default
+  - language-switcher-page.default
+  - resize.default
+  - tab.default
+  - accordion-line.default
+  - accordion.default.single
+  - accordion.line.single
+normalization:
+  whitelist: []
+evidence:
+  sourceUrls:
+    - https://github.com/KRDS-community/krds-community/blob/main/scripts/conformance/browser-judge.mjs
+  rationale: >-
+    Documentation-only erratum. The capture path rasterizes each side while it
+    owns focus, so the ring is painted on both sides at the same geometry; the
+    pixel fallback then absorbs the residual anti-aliasing noise. No fixture in
+    this erratum is normalized, and the conformance gate still fails on any
+    real color/shape/size/geometry divergence.

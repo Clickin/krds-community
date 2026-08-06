@@ -36,6 +36,25 @@ normalization:
     - selector: ".btn-conts-expand"
       attribute: aria-label
       operation: omit
+    - selector: ".btn-conts-expand"
+      attribute: aria-expanded
+      operation: omit
+    - selector: ".krds-help-panel"
+      attribute: hidden
+      operation: omit
+      rule: "framework hides the closed panel with the hidden attribute the upstream literal lacks"
+    - selector: ".expand-wrap"
+      attribute: inert
+      operation: omit
+      rule: "framework disables the collapsed panel with inert; the upstream literal lacks it (same effect as its own hidden state)"
+    - selector: ".krds-info-list"
+      attribute: role
+      operation: omit
+      rule: "framework statically adds role=list, which upstream's own krds_infoList runtime adds on init; redundant with native ul semantics"
+    - selector: ".krds-info-list li"
+      attribute: role
+      operation: omit
+      rule: "framework statically adds role=listitem, which upstream's own krds_infoList runtime adds on init; redundant with native li semantics"
 
 evidence:
   rationale: >-

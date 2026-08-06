@@ -50,7 +50,7 @@ describe("docs route coverage", () => {
 
   it("does not emit root-relative internal links that bypass the configured base", async () => {
     const files = [
-      resolve(docsRoot, "content/docs/index.md"),
+      resolve(docsRoot, "content/docs/index.mdx"),
       resolve(docsRoot, "content/docs/components/index.mdx"),
       resolve(docsRoot, "content/docs/service-patterns/index.md"),
       resolve(docsRoot, "content/docs/basic-patterns/index.md"),

@@ -8,9 +8,18 @@
 // bypassing WTR's serialization.
 
 import { createServer } from "node:http";
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const HOST = "127.0.0.1";
 const PORT = Number(process.env.KRDS_BROWSER_COLLECTOR_PORT ?? 8123);
+// Served raw (bypassing the vite dev transform, which rewrites inline module
+// scripts into html-proxy modules the worker cannot execute).
+const astroDistRoot = resolve(
+  fileURLToPath(new URL(".", import.meta.url)),
+  "../../apps/conformance-host-astro/dist",
+);
 
 const payloads = [];
 let config = {};
@@ -42,6 +51,28 @@ const server = createServer((request, response) => {
         response.end(String(error));
       }
     });
+    return;
+  }
+  if (request.method === "GET" && request.url?.startsWith("/astro-dist/")) {
+    const relative = decodeURIComponent(request.url.slice("/astro-dist/".length));
+    // ponytail: localhost-only dev server; still refuse traversal.
+    if (relative.includes("..") || /[^a-zA-Z0-9._/-]/.test(relative)) {
+      response.writeHead(400, { "Access-Control-Allow-Origin": "*" });
+      response.end("bad path");
+      return;
+    }
+    readFile(resolve(astroDistRoot, relative))
+      .then((body) => {
+        response.writeHead(200, {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "text/html",
+        });
+        response.end(body);
+      })
+      .catch(() => {
+        response.writeHead(404, { "Access-Control-Allow-Origin": "*" });
+        response.end("not found");
+      });
     return;
   }
   if (request.method === "GET" && request.url?.startsWith("/dump")) {

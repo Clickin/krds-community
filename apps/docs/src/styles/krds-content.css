@@ -1,0 +1,231 @@
+/* KRDS theming for Starlight content components (callouts, cards, badges,
+ * link buttons) — scoped to .sl-markdown-content so the chrome stays
+ * Starlight and prose (headings, paragraphs, code, lists, tables) is
+ * untouched.
+ *
+ * Tokens are indirection-custom properties switched per theme, mirroring
+ * theme.css: light theme -> mode-light tokens, high-contrast theme ->
+ * mode-high-contrast tokens. Do not import the recipes runtime here —
+ * styles only, resolving the same token references the recipes use. */
+@layer starlight.components {
+  .sl-markdown-content {
+    --krds-content-border-accent: var(--krds-mode-high-contrast-color-border-primary);
+    --krds-content-border-soft: var(--krds-mode-high-contrast-color-border-gray-light);
+    --krds-content-bg-card: var(--krds-mode-high-contrast-color-background-white);
+    --krds-content-bg-subtle: var(--krds-mode-high-contrast-color-background-gray-subtler);
+    --krds-content-text-basic: var(--krds-mode-high-contrast-color-text-basic);
+    --krds-content-accent-primary: var(--krds-mode-high-contrast-color-element-primary);
+    --krds-content-fill-primary: var(--krds-mode-high-contrast-color-button-primary-fill);
+    --krds-content-text-on-primary: var(--krds-mode-high-contrast-color-action-white);
+    --krds-content-border-info: var(--krds-mode-high-contrast-color-border-information);
+    --krds-content-border-point: var(--krds-mode-high-contrast-color-border-point);
+    --krds-content-border-warning: var(--krds-mode-high-contrast-color-border-warning);
+    --krds-content-border-danger: var(--krds-mode-high-contrast-color-border-danger);
+    --krds-content-text-info: var(--krds-mode-high-contrast-color-text-information);
+    --krds-content-text-point: var(--krds-mode-high-contrast-color-text-point);
+    --krds-content-text-warning: var(--krds-mode-high-contrast-color-text-warning);
+    --krds-content-text-danger: var(--krds-mode-high-contrast-color-text-danger);
+  }
+
+  :root[data-theme='light'] .sl-markdown-content {
+    --krds-content-border-accent: var(--krds-mode-light-color-border-primary);
+    --krds-content-border-soft: var(--krds-mode-light-color-border-gray-light);
+    --krds-content-bg-card: var(--krds-mode-light-color-background-white);
+    --krds-content-bg-subtle: var(--krds-mode-light-color-background-gray-subtler);
+    --krds-content-text-basic: var(--krds-mode-light-color-text-basic);
+    --krds-content-accent-primary: var(--krds-mode-light-color-element-primary);
+    --krds-content-fill-primary: var(--krds-mode-light-color-button-primary-fill);
+    --krds-content-text-on-primary: var(--krds-mode-light-color-action-white);
+    --krds-content-border-info: var(--krds-mode-light-color-border-information);
+    --krds-content-border-point: var(--krds-mode-light-color-border-point);
+    --krds-content-border-warning: var(--krds-mode-light-color-border-warning);
+    --krds-content-border-danger: var(--krds-mode-light-color-border-danger);
+    --krds-content-text-info: var(--krds-mode-light-color-text-information);
+    --krds-content-text-point: var(--krds-mode-light-color-text-point);
+    --krds-content-text-warning: var(--krds-mode-light-color-text-warning);
+    --krds-content-text-danger: var(--krds-mode-light-color-text-danger);
+  }
+
+  /* --- Callouts / Asides ------------------------------------------------ */
+  .sl-markdown-content .starlight-aside {
+    border-inline-start: 4px solid var(--krds-content-border-accent);
+    border-radius: var(--krds-semantic-radius-small1);
+    background: var(--krds-content-bg-subtle);
+    color: var(--krds-content-text-basic);
+  }
+
+  .sl-markdown-content .starlight-aside--note {
+    --sl-color-asides-border: var(--krds-content-border-info);
+    --sl-color-asides-text-accent: var(--krds-content-text-info);
+  }
+
+  .sl-markdown-content .starlight-aside--tip {
+    --sl-color-asides-border: var(--krds-content-border-point);
+    --sl-color-asides-text-accent: var(--krds-content-text-point);
+  }
+
+  .sl-markdown-content .starlight-aside--caution {
+    --sl-color-asides-border: var(--krds-content-border-warning);
+    --sl-color-asides-text-accent: var(--krds-content-text-warning);
+  }
+
+  .sl-markdown-content .starlight-aside--danger {
+    --sl-color-asides-border: var(--krds-content-border-danger);
+    --sl-color-asides-text-accent: var(--krds-content-text-danger);
+  }
+
+  /* --- Cards / CardGrid ------------------------------------------------- */
+  /* Layout fallbacks for the Starlight user components (Card, CardGrid,
+     LinkButton): Astro's build drops the scoped styles of components imported
+     through the `@astrojs/starlight/components` barrel (dev keeps them), so
+     these pages would render unstyled cards in the built site without them.
+     Values mirror Starlight 0.41.5; the KRDS theming stays below. */
+  .sl-markdown-content article.card {
+    padding: clamp(1rem, calc(0.125rem + 3vw), 2.5rem);
+    flex-direction: column;
+    gap: clamp(0.5rem, calc(0.125rem + 1vw), 1rem);
+  }
+
+  .sl-markdown-content article.card .title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+    font-size: var(--sl-text-h4);
+    color: var(--krds-content-text-basic);
+    line-height: var(--sl-line-height-headings);
+  }
+
+  .sl-markdown-content article.card .icon {
+    border: 1px solid var(--sl-card-border);
+    background-color: var(--sl-card-bg);
+    padding: 0.2em;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .sl-markdown-content article.card .body {
+    margin: 0;
+    font-size: clamp(var(--sl-text-sm), calc(0.5rem + 1vw), var(--sl-text-body));
+  }
+
+  .sl-markdown-content .card-grid {
+    display: grid;
+    grid-template-columns: 100%;
+    gap: 1rem;
+  }
+
+  .sl-markdown-content .card-grid > * {
+    margin-top: 0 !important;
+  }
+
+  @media (min-width: 50rem) {
+    .sl-markdown-content .card-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  .sl-markdown-content article.card {
+    /* Flatten Starlight's 4n color rotation to a single KRDS accent. The
+       article.card form outranks `.card:nth-child(4n+N)` (0,2,0) from
+       Card.astro so the var re-declaration below actually lands. */
+    --sl-card-border: var(--krds-content-accent-primary);
+    --sl-card-bg: var(--krds-content-bg-subtle);
+    border: 1px solid var(--krds-content-border-soft);
+    border-radius: var(--krds-semantic-radius-large1);
+    background: var(--krds-content-bg-card);
+  }
+
+  /* --- Badges ----------------------------------------------------------- */
+  .sl-markdown-content .sl-badge {
+    border-radius: var(--krds-semantic-radius-max);
+  }
+
+  .sl-markdown-content .sl-badge.default {
+    --sl-color-bg-badge: var(--krds-content-fill-primary);
+    --sl-color-border-badge: var(--krds-content-accent-primary);
+    --sl-color-text-badge: var(--krds-content-text-on-primary);
+  }
+
+  .sl-markdown-content .sl-badge.note {
+    --sl-color-bg-badge: var(--krds-content-border-info);
+    --sl-color-border-badge: var(--krds-content-border-info);
+    --sl-color-text-badge: var(--krds-content-text-on-primary);
+  }
+
+  .sl-markdown-content .sl-badge.success {
+    --sl-color-bg-badge: var(--krds-mode-high-contrast-color-element-success);
+    --sl-color-border-badge: var(--krds-mode-high-contrast-color-border-success);
+    --sl-color-text-badge: var(--krds-content-text-on-primary);
+  }
+
+  .sl-markdown-content .sl-badge.caution {
+    --sl-color-bg-badge: var(--krds-mode-high-contrast-color-element-warning);
+    --sl-color-border-badge: var(--krds-content-border-warning);
+    --sl-color-text-badge: var(--krds-content-text-on-primary);
+  }
+
+  .sl-markdown-content .sl-badge.danger {
+    --sl-color-bg-badge: var(--krds-mode-high-contrast-color-element-danger);
+    --sl-color-border-badge: var(--krds-content-border-danger);
+    --sl-color-text-badge: var(--krds-content-text-on-primary);
+  }
+
+  .sl-markdown-content .sl-badge.tip {
+    --sl-color-bg-badge: var(--krds-content-border-point);
+    --sl-color-border-badge: var(--krds-content-border-point);
+    --sl-color-text-badge: var(--krds-content-text-on-primary);
+  }
+
+  :root[data-theme='light'] .sl-markdown-content .sl-badge.success {
+    --sl-color-bg-badge: var(--krds-mode-light-color-element-success);
+    --sl-color-border-badge: var(--krds-mode-light-color-border-success);
+  }
+
+  :root[data-theme='light'] .sl-markdown-content .sl-badge.caution {
+    --sl-color-bg-badge: var(--krds-mode-light-color-element-warning);
+    --sl-color-border-badge: var(--krds-mode-light-color-border-warning);
+  }
+
+  :root[data-theme='light'] .sl-markdown-content .sl-badge.danger {
+    --sl-color-bg-badge: var(--krds-mode-light-color-element-danger);
+    --sl-color-border-badge: var(--krds-mode-light-color-border-danger);
+  }
+
+  /* --- LinkButton ------------------------------------------------------- */
+  .sl-markdown-content .sl-link-button {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: var(--krds-semantic-radius-medium2);
+    display: inline-flex;
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
+    gap: 0.5em;
+    line-height: 1.1875;
+    outline-offset: 0.25rem;
+    padding: 0.4375rem 1.125rem;
+    text-decoration: none;
+  }
+
+  .sl-markdown-content .sl-link-button svg {
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 50rem) {
+    .sl-markdown-content .sl-link-button {
+      font-size: var(--sl-text-base);
+      padding: 0.9375rem 1.25rem;
+    }
+  }
+
+  .sl-markdown-content .sl-link-button.primary {
+    background: var(--krds-content-fill-primary);
+    border-color: var(--krds-content-fill-primary);
+    color: var(--krds-content-text-on-primary);
+  }
+
+  .sl-markdown-content .sl-link-button.primary:hover {
+    color: var(--krds-content-text-on-primary);
+  }
+}

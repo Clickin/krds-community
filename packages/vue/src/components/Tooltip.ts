@@ -50,7 +50,10 @@ export const Tooltip = defineComponent({
             class: "krds-tooltip-popover",
             "aria-hidden": "true",
           },
-          [create("span", { class: "sr-only" }, props.label), props.message],
+          // A literal separator space between the sr-only label and the message
+          // mirrors the react contract (`</span> {message}`): the accessible
+          // name recites the two runs as space-separated (KRDS accname).
+          [create("span", { class: "sr-only" }, props.label), " ", props.message],
         ),
       ]);
     };
@@ -105,7 +108,7 @@ export const TooltipBox = defineComponent({
             class: "krds-tooltip-popover",
             "aria-hidden": "true",
           },
-          [create("span", { class: "sr-only" }, props.label), props.message],
+          [create("span", { class: "sr-only" }, props.label), " ", props.message],
         ),
       ]);
     };
@@ -160,7 +163,7 @@ export const TooltipVertical = defineComponent({
             class: "krds-tooltip-popover",
             "aria-hidden": "true",
           },
-          [create("span", { class: "sr-only" }, props.label), props.message],
+          [create("span", { class: "sr-only" }, props.label), " ", props.message],
         ),
       ]);
     };

@@ -107,7 +107,18 @@ export default defineConfig({
       },
     },
     ssr: {
-      noExternal: ["@krds-community/angular"],
+      // Keep framework packages in vite's SSR pipeline so their `styles.css`
+      // imports are transformed instead of hitting Node's ESM loader in dev.
+      noExternal: [
+        "@krds-community/angular",
+        "@krds-community/react",
+        "@krds-community/vue",
+        "@krds-community/svelte",
+        "@krds-community/solid",
+        "@krds-community/astro",
+        "@krds-community/recipes",
+        "@krds-community/tokens",
+      ],
     },
   },
 });

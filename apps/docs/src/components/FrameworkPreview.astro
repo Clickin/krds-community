@@ -19,6 +19,7 @@
 
 import { Code } from 'astro:components';
 import { krdsShikiHighContrast, krdsShikiLight } from '../theme/krds-shiki';
+import '../styles/framework-tabs.css';
 import AngularIcon from './icons/AngularIcon.astro';
 import AstroIcon from './icons/AstroIcon.astro';
 import ReactIcon from './icons/ReactIcon.astro';
@@ -67,7 +68,7 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
   <div class="preview-grid">
     <section class="source-pane" aria-label="소스 코드">
       <div class="pane-toolbar source-toolbar">
-        <div class="framework-tabs" role="tablist" aria-label="프레임워크 선택">
+        <div class="framework-tabs" role="tablist" aria-label="프레임워크 선택" data-framework-tabs data-sync-key="framework">
           <button type="button" role="tab" id={`${uid}-react-tab`} aria-controls={`${uid}-react`} aria-selected="true" tabindex="0" data-framework="react"><ReactIcon class="tab-icon" /><span>React</span></button>
           <button type="button" role="tab" id={`${uid}-vue-tab`} aria-controls={`${uid}-vue`} aria-selected="false" tabindex="-1" data-framework="vue"><VueIcon class="tab-icon" /><span>Vue</span></button>
           <button type="button" role="tab" id={`${uid}-svelte-tab`} aria-controls={`${uid}-svelte`} aria-selected="false" tabindex="-1" data-framework="svelte"><SvelteIcon class="tab-icon" /><span>Svelte</span></button>
@@ -88,6 +89,7 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
 
     <section class="preview-pane" aria-label="컴포넌트 미리보기">
       <div class="pane-toolbar preview-toolbar"><span>Preview</span></div>
+      <p class="astro-note" data-astro-note hidden>Astro 컴포넌트는 정적 SSR로 렌더링됩니다 (반응형 island 아님).</p>
       <div class="preview-stage">
         <div class="preview-viewport" data-preview-panel data-framework="react"><slot name="react" /></div>
         <div class="preview-viewport" data-preview-panel data-framework="vue" hidden><slot name="vue" /></div>
@@ -101,52 +103,22 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
 </section>
 
 <script>
-  const STORAGE_KEY = 'krds-community:docs:framework';
-  const readStored = () => { try { return window.localStorage.getItem(STORAGE_KEY); } catch { return null; } };
-  const writeStored = (fw: string) => { try { window.localStorage.setItem(STORAGE_KEY, fw); } catch { } };
-  const selectFramework = (root: HTMLElement, framework: string) => {
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
-    const target = tabs.find((t) => t.dataset.framework === framework);
-    if (!target) return false;
-    tabs.forEach((t) => { const sel = t === target; t.setAttribute('aria-selected', String(sel)); t.tabIndex = sel ? 0 : -1; });
-    root.dataset.framework = framework;
-    root.querySelectorAll<HTMLElement>('[data-source-panel]').forEach((p) => { p.hidden = p.dataset.framework !== framework; });
-    root.querySelectorAll<HTMLElement>('[data-preview-panel]').forEach((p) => { p.hidden = p.dataset.framework !== framework; });
-    return true;
-  };
-  const applyAll = (framework: string) => { document.querySelectorAll<HTMLElement>('[data-framework-preview]').forEach((r) => selectFramework(r, framework)); };
-  const initialize = (root: HTMLElement) => {
-    if (root.dataset.ready === 'true') return;
-    root.dataset.ready = 'true';
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
-    const copy = root.querySelector<HTMLButtonElement>('[data-copy-source]');
-    tabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => { const f = tab.dataset.framework; if (f) { applyAll(f); writeStored(f); } });
-      tab.addEventListener('keydown', (e) => {
-        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
-        e.preventDefault();
-        const ti = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (index + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-        const t = tabs[ti]; const f = t?.dataset.framework;
-        if (t && f) { t.focus(); applyAll(f); writeStored(f); }
-      });
-    });
-    copy?.addEventListener('click', async () => {
-      const active = root.querySelector<HTMLElement>('[data-source-panel]:not([hidden])');
-      await navigator.clipboard.writeText(active?.textContent ?? '');
-      copy.textContent = '복사됨';
-      setTimeout(() => { copy.textContent = '복사'; }, 1200);
-    });
-    const stored = readStored();
-    const available = tabs.map((t) => t.dataset.framework).filter(Boolean) as string[];
-    if (stored && available.includes(stored)) selectFramework(root, stored);
-  };
-  const initAll = () => { document.querySelectorAll<HTMLElement>('[data-framework-preview]').forEach(initialize); };
-  if (document.documentElement.dataset.krdsFrameworkSync !== 'true') {
-    document.documentElement.dataset.krdsFrameworkSync = 'true';
-    window.addEventListener('storage', (e) => { if (e.key === STORAGE_KEY && e.newValue) applyAll(e.newValue); });
-  }
-  initAll();
-  document.addEventListener('astro:page-load', initAll);
+  import '../scripts/framework-sync.ts';
+
+  // Copy button: reads the currently visible source panel. Delegated so it
+  // also covers tabsets added by Astro view transitions.
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('[data-copy-source]');
+    if (!button) return;
+    const root = button.closest<HTMLElement>('[data-framework-preview]');
+    const active = root?.querySelector<HTMLElement>('[data-source-panel]:not([hidden])');
+    if (!active) return;
+    await navigator.clipboard.writeText(active.textContent ?? '');
+    button.textContent = '복사됨';
+    setTimeout(() => {
+      button.textContent = '복사';
+    }, 1200);
+  });
 </script>
 
 <style>
@@ -175,10 +147,17 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
 
   .preview-grid {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     border: 1px solid var(--krds-mode-light-color-border-secondary-light);
     border-radius: 1rem;
     background: var(--krds-mode-light-color-background-white);
     box-shadow: 0 1.25rem 3rem color-mix(in srgb, var(--krds-mode-light-color-text-basic) 10%, transparent);
+  }
+
+  @media (min-width: 60rem) {
+    .preview-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
   }
 
   .pane-toolbar {
@@ -197,60 +176,6 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
     text-transform: uppercase;
   }
 
-  .framework-tabs {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: 0.2rem;
-    overflow-x: auto;
-    scrollbar-width: thin;
-  }
-
-  .framework-tabs button {
-    display: inline-flex;
-    min-height: 2.35rem;
-    align-items: center;
-    gap: 0.35rem;
-    padding-inline: 0.7rem;
-    border: 1px solid transparent;
-    border-radius: 0.5rem;
-    background: transparent;
-    color: var(--sl-color-gray-2);
-    font: inherit;
-    font-size: 0.78rem;
-    font-weight: 650;
-    letter-spacing: 0;
-    text-transform: none;
-    white-space: nowrap;
-    cursor: pointer;
-  }
-
-  .framework-tabs button[aria-selected='true'] {
-    border-color: var(--sl-color-hairline-light);
-    border-bottom-color: var(--sl-color-accent-high);
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    background: var(--sl-color-bg-inline-code);
-    color: var(--sl-color-text-accent);
-  }
-
-  .framework-tabs button:hover:not([aria-selected='true']) {
-    background: var(--sl-color-bg-inline-code);
-    color: var(--sl-color-text);
-  }
-
-  .framework-tabs button:focus-visible,
-  .quiet-action:focus-visible {
-    outline: 2px solid var(--sl-color-accent-high);
-    outline-offset: 2px;
-  }
-
-  .framework-tabs .tab-icon {
-    flex: none;
-    width: 1em;
-    height: 1em;
-  }
-
   .quiet-action {
     display: inline-flex;
     min-height: 2.35rem;
@@ -267,9 +192,23 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
     cursor: pointer;
   }
 
+  .quiet-action:focus-visible {
+    outline: 2px solid var(--sl-color-accent-high);
+    outline-offset: 2px;
+  }
+
   .quiet-action:hover {
     border-color: var(--krds-mode-light-color-border-primary);
     color: var(--krds-mode-light-color-text-primary);
+  }
+
+  .astro-note {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--krds-mode-light-color-border-gray-light);
+    background: var(--krds-mode-light-color-background-gray-subtle);
+    color: var(--krds-mode-light-color-text-subtle);
+    font-size: 0.78rem;
   }
 
   .source-panel {
@@ -295,6 +234,13 @@ const uid = `fp-${title?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'example'}
   .preview-pane {
     border-top: 1px solid var(--krds-mode-light-color-border-gray-light);
     background: var(--krds-mode-light-color-background-gray-subtler);
+  }
+
+  @media (min-width: 60rem) {
+    .preview-pane {
+      border-top: 0;
+      border-left: 1px solid var(--krds-mode-light-color-border-gray-light);
+    }
   }
 
   .preview-toolbar span {

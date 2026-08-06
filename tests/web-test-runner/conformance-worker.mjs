@@ -16,6 +16,7 @@ import {
   captureSemantics,
   captureVisualSignature,
   captureAccessibilityTree,
+  rasterizeRootToImageData,
   settle,
 } from "../../scripts/conformance/browser-harness.mjs";
 import { baseProps } from "../../apps/conformance-host/src/fixture-props.ts";
@@ -39,6 +40,22 @@ export const catalog = await fetch("/apps/conformance-host/dist/fixtures.json").
 
 const styleUrl = "/packages/styles/dist/index.css";
 const scriptUrl = "/upstream/krds-html/resources/cdn/krds.min.js";
+
+// Mirror the runtime fixture page viewport (desktop 1280x800): give
+// document.body a definite box so #fixture-root's height:100% resolves to the
+// Same layout context the runtime fixture page renders into. All catalog fixtures share this
+// viewport.
+const configureViewport = () => {
+  const { documentElement, body } = document;
+  documentElement.style.width = "1280px";
+  documentElement.style.height = "800px";
+  documentElement.style.margin = "0";
+  body.style.width = "1280px";
+  body.style.height = "800px";
+  body.style.margin = "0";
+  body.style.display = "block";
+  body.style.boxSizing = "border-box";
+};
 
 const waitForKrdsReady = async () => {
   // KRDS init script may need a tick to wire up behaviors; settle twice so
@@ -67,13 +84,44 @@ let upstreamAssetsInjected = false;
 const ensureUpstreamAssets = () => {
   if (upstreamAssetsInjected) return;
   upstreamAssetsInjected = true;
+  configureViewport();
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = styleUrl;
   document.head.appendChild(link);
+  // Mirror the runtime fixture page: disable animations/transitions so the
+  // capture lands on the settled layout state, not a mid-transition frame.
+  const style = document.createElement("style");
+  style.textContent =
+    "*,*::before,*::after{animation:none!important;transition:none!important}" +
+    "#fixture-root{display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+    "min-width:0;min-height:0;width:100%;height:100%}" +
+    '#fixture-root[data-layout-context="viewport-height"]{height:100%}' +
+    "#fixture-root>.krds-form-check,#fixture-root>.krds-form-chip{width:fit-content}";
+  document.head.appendChild(style);
   const script = document.createElement("script");
   script.src = scriptUrl;
+  script.dataset.krdsLoaded = "false";
+  script.addEventListener("load", () => {
+    script.dataset.krdsLoaded = "true";
+  });
   document.head.appendChild(script);
+  krdsScript = script;
+};
+
+// The upstream init batch (accordion/tab/dropdown/help-panel wiring) listens
+// for DOMContentLoaded once per script load. renderUpstream re-dispatches that
+// event after injecting the fixture content, so the injected markup gets its
+// runtime handlers — but only if the script has actually executed; a re-dispatch
+// before the script loads is silently lost and the upstream fixture stays in
+// its literal (uninitialized) state. Wait for the script before dispatching.
+let krdsScript;
+const waitForKrdsScript = async () => {
+  if (!krdsScript) return;
+  if (krdsScript.dataset.krdsLoaded === "true") return;
+  await new Promise((resolve) => {
+    krdsScript.addEventListener("load", resolve, { once: true });
+  });
 };
 
 // A fresh, styled container that mirrors the Node upstream runtime document.
@@ -274,9 +322,45 @@ const applyActions = async (root, state) => {
 };
 
 const captureContractSemantics = async (root, fixture) => {
-  const rootSemantics = await captureSemantics(root);
+  const semanticElement = fixture.contract?.semanticElement;
+  // Mirror the runtime contract-root resolution: for composite contracts (e.g.
+  // button-and-region) or input contracts, the compared root is the first
+  // interactive descendant, not the containing wrapper — otherwise the
+  // `accessibleRole` check would see a generic container instead of the
+  // controlled control.
+  const contractSelector =
+    {
+      alert: '[role="alert"]',
+      button: 'button, [role="button"]',
+      contentinfo: 'footer, [role="contentinfo"]',
+      dialog: 'dialog, [role="dialog"]',
+      "details-summary": "details",
+      link: 'a[href], [role="link"]',
+      list: 'ul, ol, [role="list"]',
+      navigation: 'nav, [role="navigation"]',
+      table: 'table, [role="table"]',
+    }[semanticElement] ??
+    (semanticElement?.includes("-and-") || semanticElement?.startsWith("input[")
+      ? interactiveSelector
+      : undefined);
+  const scopeMatchesContract = contractSelector === undefined || root.matches(contractSelector);
+  const contractDescendant = contractSelector ? [...root.querySelectorAll(contractSelector)] : [];
+  // Some contract roots wrap the source subtree (e.g. critical-alerts: the
+  // .main-urgent-wrap[role=alert] is the parent of the .krds-critical-alerts
+  // list), so also climb to a self-or-ancestor match.
+  const contractAncestor = contractSelector === undefined ? null : root.closest(contractSelector);
+  const contractRoot =
+    scopeMatchesContract || contractDescendant.length > 0
+      ? scopeMatchesContract
+        ? root
+        : contractDescendant[0]
+      : (contractAncestor ?? root);
+  const rootSemantics = await captureSemantics(contractRoot);
+  // Groups stay scoped to the source root (the runtime scopes them to the
+  // contract scope), so sibling controls like panel/label/tooltip are still
+  // found even when the compared root is an interior interactive descendant.
   const groups = {};
-  for (const group of contractGroupsFor(fixture.contract?.semanticElement)) {
+  for (const group of contractGroupsFor(semanticElement)) {
     const selector = contractGroupSelectors[group];
     const candidates = root.matches(selector) ? [root] : [...root.querySelectorAll(selector)];
     groups[group] = await Promise.all(candidates.map(captureSemantics));
@@ -284,10 +368,75 @@ const captureContractSemantics = async (root, fixture) => {
   return { root: rootSemantics, groups };
 };
 
-// Mirror of runtime.mjs `withCorrectedAttributes`: apply the errata
-// accessibility rewrite rules to the live DOM, capture the (corrected) a11y
-// tree, then restore every touched attribute. Produces the "corrected upstream"
-// accessibility that judgeState accepts a framework against.
+// Mirror of the runtime algorithm: apply the errata
+// Mirror of the runtime algorithm: apply the errata
+// accessibility rewrite rules to the live DOM, run `capture` under the
+// corrected tree, then restore every touched attribute. Yields the
+// "corrected upstream" snapshot (a11y tree and/or contract semantics) that
+// judgeState accepts a framework against.
+const withCorrectedAttributes = async (root, normalizationRules, capture) => {
+  // Correction rules either rewrite an attribute to a concrete value or
+  // relocate/omit it (e.g. `relocated-to-focusable-tab`, `omitted`,
+  // `non-semantic-runtime-bookkeeping`). The latter remove the attribute from
+  // the source element so the corrected snapshot reflects where it belongs.
+  const corrections = (normalizationRules ?? []).filter(
+    (rule) =>
+      typeof rule?.selector === "string" &&
+      typeof rule?.attribute === "string" &&
+      rule.attribute !== "onclick",
+  );
+  const plans = corrections.map((rule) => {
+    const isRewrite =
+      rule?.operation === "rewrite" ||
+      Object.prototype.hasOwnProperty.call(rule ?? {}, "rewriteValue");
+    const ruleText = String(rule?.rule ?? "");
+    // A stable/must-reference rule contributes a relationship, not a value
+    // rewrite; leave the literal attribute alone (whitespace-normalized names
+    // reconcile it). Bookkeeping attributes are dropped outright.
+    const omit = isRewrite
+      ? false
+      : /relocated-to|omitted|non-semantic|bookkeeping|data-listener/.test(ruleText) ||
+        rule.attribute === "data-listener-attached";
+    const expected = isRewrite
+      ? Object.prototype.hasOwnProperty.call(rule, "rewriteValue")
+        ? rule.rewriteValue
+        : rule.value
+      : null;
+    return { rule, omit, expected: omit ? null : expected };
+  });
+  const actionable = plans.filter(
+    (plan) => plan.omit || (plan.expected !== undefined && plan.expected !== null),
+  );
+  if (actionable.length === 0) return capture();
+  const restorations = [];
+  try {
+    for (const plan of actionable) {
+      const { rule, omit, expected } = plan;
+      const within = root.matches(rule.selector)
+        ? [root, ...root.querySelectorAll(rule.selector)]
+        : [...root.querySelectorAll(rule.selector)];
+      const ancestor = root.closest(rule.selector);
+      const matches = ancestor && !within.includes(ancestor) ? [ancestor, ...within] : within;
+      for (const candidate of matches) {
+        restorations.push({
+          candidate,
+          name: rule.attribute,
+          existed: candidate.hasAttribute(rule.attribute),
+          value: candidate.getAttribute(rule.attribute),
+        });
+        if (omit || expected === null) candidate.removeAttribute(rule.attribute);
+        else candidate.setAttribute(rule.attribute, String(expected));
+      }
+    }
+    return await capture();
+  } finally {
+    for (const { candidate, name, existed, value } of restorations) {
+      if (existed) candidate.setAttribute(name, value);
+      else candidate.removeAttribute(name);
+    }
+  }
+};
+
 const captureCorrectedAccessibility = async (root, normalizationRules) => {
   const rewrites = (normalizationRules ?? []).filter(
     (rule) =>
@@ -298,15 +447,55 @@ const captureCorrectedAccessibility = async (root, normalizationRules) => {
         Object.prototype.hasOwnProperty.call(rule ?? {}, "rewriteValue")),
   );
   if (rewrites.length === 0) return null;
+  return withCorrectedAttributes(root, normalizationRules, () => captureAccessibilityTree(root));
+};
+
+// Side-agnostic accessibility normalization for the FRAMEWORK side. The DOM
+// comparison applies `normalization.whitelist` omissions to BOTH sides (only
+// rewrites are upstream-only); the accessibility capture previously normalized
+// only the upstream side, so a framework that correctly implements an errata
+// correction (e.g. an aria-label the whitelist declares a non-semantic
+// addition) would fail against the omission-normalized upstream. Applying the
+// same side-agnostic omissions to the framework's tree restores parity.
+const captureAccessibilityWithOmissions = async (root, normalizationRules) => {
+  // Reference/relationship and state attributes (aria-labelledby/describedby/
+  // controls/owns, aria-expanded, for, headers) carry accessible names and
+  // states in the accessibility tree; the whitelist omits them only to
+  // reconcile the DOM's generated id TOKENS, and both sides expose them via
+  // the runtime. Stripping them from the a11y tree would erase semantics the
+  // corrected-upstream also keeps, so they are preserved. Only genuinely
+  // non-semantic additions a framework puts on a control (e.g. an aria-label
+  // the whitelist declares out-of-scope on a select) are normalized away, like
+  // the DOM does on both sides.
+  const preservedAttributes = new Set([
+    "aria-controls",
+    "aria-describedby",
+    "aria-expanded",
+    "aria-labelledby",
+    "aria-owns",
+    "for",
+    "headers",
+  ]);
+  const isRewrite = (rule) =>
+    rule?.operation === "rewrite" ||
+    Object.prototype.hasOwnProperty.call(rule ?? {}, "rewriteValue");
+  const isOmission = (rule) =>
+    !isRewrite(rule) &&
+    rule?.operation !== "ignore-element" &&
+    rule?.operation !== "ignore-subtree" &&
+    !preservedAttributes.has(rule?.attribute) &&
+    (rule?.operation === "omit" ||
+      (typeof rule?.attribute === "string" && typeof rule?.rule === "string"));
+  const omitRules = (normalizationRules ?? []).filter(isOmission);
+  if (omitRules.length === 0) return captureAccessibilityTree(root);
   const restorations = [];
   try {
-    for (const rule of rewrites) {
-      const matches = root.matches(rule.selector)
+    for (const rule of omitRules) {
+      const within = root.matches(rule.selector)
         ? [root, ...root.querySelectorAll(rule.selector)]
         : [...root.querySelectorAll(rule.selector)];
-      const expected = Object.prototype.hasOwnProperty.call(rule, "rewriteValue")
-        ? String(rule.rewriteValue)
-        : String(rule.value);
+      const ancestor = root.closest(rule.selector);
+      const matches = ancestor && !within.includes(ancestor) ? [ancestor, ...within] : within;
       for (const candidate of matches) {
         restorations.push({
           candidate,
@@ -314,8 +503,7 @@ const captureCorrectedAccessibility = async (root, normalizationRules) => {
           existed: candidate.hasAttribute(rule.attribute),
           value: candidate.getAttribute(rule.attribute),
         });
-        if (expected === null) candidate.removeAttribute(rule.attribute);
-        else candidate.setAttribute(rule.attribute, expected);
+        candidate.removeAttribute(rule.attribute);
       }
     }
     return await captureAccessibilityTree(root);
@@ -339,7 +527,13 @@ const captureBundle = async (
   const semantics = await captureSemantics(root);
   const visualSignature = await captureVisualSignature(root);
   const contractSemantics = await captureContractSemantics(root, fixture);
-  const accessibility = await captureAccessibilityTree(root);
+  // The framework side applies the side-agnostic whitelist omissions to match
+  // how captureDomTree normalizes both sides; the upstream side stays raw and
+  // gets its corrected tree computed separately (captureCorrectedAccessibility).
+  const accessibility =
+    side === "framework"
+      ? await captureAccessibilityWithOmissions(root, normalizationRules)
+      : await captureAccessibilityTree(root);
   cleanup();
   return { dom, semantics, visualSignature, contractSemantics, accessibility, events, actions };
 };
@@ -353,7 +547,119 @@ const mountFramework = async (adapter, fixture, state) => {
   return { container, mounted, props };
 };
 
-const renderUpstream = (fixture) => {
+// The astro components are compiled by the consumer's Astro pipeline, so
+// instead of a client adapter this mount transplants the prebuilt SSG page
+// (conformance-host-astro: one static page per fixture×state) into the worker
+// document. The page's stylesheet is injected once; the #fixture-root markup
+// goes into a fresh container styled by the same `#fixture-root` rules as the
+// upstream side.
+const injectedAstroStylesheets = new Set();
+const injectedAstroModules = new Set();
+const injectAstroStylesheet = (href) =>
+  new Promise((resolve, reject) => {
+    if (injectedAstroStylesheets.has(href)) {
+      resolve();
+      return;
+    }
+    injectedAstroStylesheets.add(href);
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    link.addEventListener("load", () => resolve(), { once: true });
+    link.addEventListener(
+      "error",
+      () => reject(new Error(`astro stylesheet failed to load: ${href}`)),
+      { once: true },
+    );
+    document.head.appendChild(link);
+  });
+
+const mountAstroFixture = async (fixture, state) => {
+  // The vite dev server rewrites the SSG page's inline module scripts into
+  // html-proxy modules it cannot serve standalone, so the raw page is fetched
+  // from the Node collector (which serves the built dist untouched).
+  const pageUrl = `${collectorOrigin}/astro-dist/${encodeURIComponent(fixture.id)}/${encodeURIComponent(state.id)}/index.html`;
+  const response = await fetch(pageUrl);
+  if (!response.ok) {
+    throw new Error(`astro SSG page not found: ${pageUrl} (run pnpm conformance:build)`);
+  }
+  const parsed = new DOMParser().parseFromString(await response.text(), "text/html");
+  const sourceRoot = parsed.querySelector("#fixture-root");
+  if (!sourceRoot) {
+    throw new Error(`astro SSG page has no #fixture-root: ${pageUrl}`);
+  }
+  const stylesheets = [...parsed.querySelectorAll('link[rel="stylesheet"][href]')].map((link) =>
+    link.getAttribute("href"),
+  );
+  await Promise.all(stylesheets.map(injectAstroStylesheet));
+  // Astro compiles each component's client script into a module inside the
+  // component markup. The worker document serves the page through the vite
+  // dev server, which rewrites inline module scripts into external
+  // `?html-proxy` module srcs; both forms are handled here. innerHTML
+  // insertion never executes scripts, so modules are re-injected through
+  // createElement (which does execute them). Keep injected scripts as the
+  // last child of the container: the accordion module locates its data
+  // script via nextElementSibling.
+  const moduleBodies = [...sourceRoot.querySelectorAll('script[type="module"]:not([src])')].map(
+    (script) => script.textContent ?? "",
+  );
+  const moduleSrcs = [...sourceRoot.querySelectorAll('script[type="module"][src]')].map(
+    (script) => script.getAttribute("src"),
+  );
+  const container = document.createElement("div");
+  container.id = "fixture-root";
+  for (const attribute of sourceRoot.attributes) {
+    container.setAttribute(attribute.name, attribute.value);
+  }
+  container.innerHTML = sourceRoot.innerHTML;
+  document.body.appendChild(container);
+  const injected = [];
+  // Astro compiles component behavior into inline modules inside the markup.
+  // Their document-scoped listeners would also fire for clicks on the
+  // upstream fixture (mounting the framework side first means the module is
+  // already listening while the upstream capture runs), toggling the wrong
+  // accordion. Rewrite the two document-wide entry points (`addEventListener`,
+  // load-time `querySelectorAll` init scans) to the injected container, so a
+  // per-mount module only observes its own markup; document-level lookups
+  // (getElementById, body classes, activeElement) stay untouched.
+  const uid = `krds-astro-${Math.random().toString(36).slice(2)}`;
+  for (const body of moduleBodies) {
+    const scoped = body
+      .replaceAll("document.addEventListener(", "container.addEventListener(")
+      .replaceAll("document.querySelectorAll(", "container.querySelectorAll(");
+    const script = document.createElement("script");
+    script.type = "module";
+    script.dataset.krdsAstroScope = uid;
+    script.textContent = `(() => { const container = document.querySelector('[data-krds-astro-scope="${uid}"]')?.parentElement; if (!container) return; ${scoped} })()`;
+    container.appendChild(script);
+    injected.push(script);
+  }
+  for (const src of moduleSrcs) {
+    if (injectedAstroModules.has(src)) continue;
+    injectedAstroModules.add(src);
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = src;
+    container.appendChild(script);
+    injected.push(
+      new Promise((resolve) => {
+        script.addEventListener("load", () => resolve(), { once: true });
+        script.addEventListener("error", () => resolve(), { once: true });
+      }).then(() => undefined),
+    );
+  }
+  if (injected.length) {
+    // Module scripts execute asynchronously (deferred semantics); wait for
+    // src-based modules to load plus a couple of macrotask turns for the
+    // inline ones before listeners are relied on.
+    await Promise.all(injected.filter((entry) => entry instanceof Promise));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+  return container;
+};
+
+const renderUpstream = async (fixture) => {
   ensureUpstreamAssets();
   const container = createFixtureContainer(fixture, { layoutContext: fixture.layoutContext });
   const sourcePath = `/${fixture.sourcePath.replace(/^\/+/, "")}`;
@@ -364,7 +670,9 @@ const renderUpstream = (fixture) => {
   container.innerHTML = stripPageWrapper(raw);
   // KRDS initializes its interactive components (accordion, tabs, etc.) on
   // `window` DOMContentLoaded, which already fired before this content was
-  // injected. Re-dispatch so the injected markup gets its event handlers.
+  // injected. Re-dispatch after the init script has executed so the injected
+  // markup gets its event handlers and runtime state.
+  await waitForKrdsScript();
   window.dispatchEvent(new Event("DOMContentLoaded"));
   return container;
 };
@@ -382,41 +690,75 @@ export const captureFixture = async (framework, adapter, fixture) => {
     let upstreamContainer;
     let frameworkContainer;
     try {
-      upstreamContainer = renderUpstream(fixture);
+      upstreamContainer = await renderUpstream(fixture);
       await waitForKrdsReady();
       const upstreamRoot = selectSourceSubtree(upstreamContainer, fixture);
-      if (framework !== "astro") {
-        const mountedState = await mountFramework(adapter, fixture, state);
+      // The astro package ships .astro sources (compiled by the consumer's
+      // Astro pipeline), so it has no browser adapter like the other
+      // frameworks. Its framework side is the prebuilt SSG output of
+      // conformance-host-astro: one static page per fixture×state. Fetch the
+      // page, inject its stylesheet, and transplant its #fixture-root markup
+      // into the worker document, then run the identical capture flow.
+      const mountedState =
+        framework === "astro" ? null : await mountFramework(adapter, fixture, state);
+      if (framework === "astro") {
+        frameworkContainer = await mountAstroFixture(fixture, state);
+      } else {
         frameworkContainer = mountedState.container;
-        await settle();
-        let frameworkRoot;
-        try {
-          frameworkRoot = selectSourceSubtree(frameworkContainer, fixture);
-        } catch (error) {
-          mountedState.mounted.dispose();
-          throw error;
-        }
-        const upstream = await captureBundle(upstreamRoot, state, fixture, {
-          side: "upstream",
-          normalizationRules: compiledErrata[fixture.id] ?? [],
-        });
-        upstream.correctedAccessibility = await captureCorrectedAccessibility(
-          upstreamRoot,
-          compiledErrata[fixture.id] ?? [],
-        );
-        const frameworkCapture = await captureBundle(frameworkRoot, state, fixture, {
-          side: "framework",
-          normalizationRules: [],
-        });
-        mountedState.mounted.dispose();
-        const verdict = judgeState(fixture, state, {
-          upstream,
-          framework: frameworkCapture,
-          frameworkEvents: frameworkCapture.events,
-        });
-        record.status = verdict.status;
-        record.checks = verdict.checks;
       }
+      await settle();
+      let frameworkRoot;
+      try {
+        frameworkRoot = selectSourceSubtree(frameworkContainer, fixture);
+      } catch (error) {
+        mountedState?.mounted.dispose();
+        throw error;
+      }
+      const upstream = await captureBundle(upstreamRoot, state, fixture, {
+        side: "upstream",
+        normalizationRules: compiledErrata[fixture.id] ?? [],
+      });
+      // Rasterize the upstream root while it still owns focus: the KRDS
+      // `:focus` fill + ring are computed styles of the *live* focused
+      // element. Rasterizing both sides after the framework capture would
+      // paint only the framework trigger with its focus styles, and the
+      // upstream side (whose trigger lost focus to the framework's) would
+      // rasterize without them — a capture artifact, not a render
+      // divergence. Capturing each side while it owns focus keeps the
+      // focus paint symmetric.
+      const upstreamPix = await rasterizeRootToImageData(upstreamRoot);
+      upstream.correctedAccessibility = await captureCorrectedAccessibility(
+        upstreamRoot,
+        compiledErrata[fixture.id] ?? [],
+      );
+      upstream.correctedContractSemantics = await withCorrectedAttributes(
+        upstreamRoot,
+        compiledErrata[fixture.id] ?? [],
+        () => captureContractSemantics(upstreamRoot, fixture),
+      );
+      const frameworkCapture = await captureBundle(frameworkRoot, state, fixture, {
+        side: "framework",
+        // Mirror the runtime: same errata normalization rules are applied to
+        // both sides (omissions/stable-id normalization are side-agnostic;
+        // rewrites stay upstream-only via snapshotSide).
+        normalizationRules: compiledErrata[fixture.id] ?? [],
+      });
+      // Deterministically commit the focus/paint state on the framework
+      // root before rasterizing, so a focus-visible ring is rendered
+      // identically on the upstream and framework side (otherwise `:focus`
+      // paint timing can flag an otherwise-equivalent pair as a pixel
+      // difference).
+      await settle();
+      const frameworkPix = await rasterizeRootToImageData(frameworkRoot);
+      mountedState?.mounted.dispose();
+      const verdict = judgeState(fixture, state, {
+        upstream,
+        framework: frameworkCapture,
+        frameworkEvents: frameworkCapture.events,
+        pixelData: { upstream: upstreamPix, framework: frameworkPix },
+      });
+      record.status = verdict.status;
+      record.checks = verdict.checks;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       record.status = "failing";

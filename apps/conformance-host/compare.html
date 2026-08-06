@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KRDS upstream vs framework 비교</title>
+    <style>
+      /* KRDS는 1rem = 10px 기준(html 62.5%)으로 설계됨. upstream/framework의
+         rem 기반 기하(아코디언 화살표 등)를 동일한 기준으로 렌더링하기 위해
+         html 루트 폰트만 62.5%로 고정하고, 페이지 자체 타이포는 body에 둔다. */
+      html {
+        font-size: 62.5%;
+      }
+      body {
+        margin: 0;
+        background: #f4f4f4;
+        font: 1.4rem/1.4 "Pretendard GOV", sans-serif;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: white;
+        border-bottom: 1px solid #e0e0e0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      header strong {
+        margin-right: 4px;
+      }
+      header select,
+      header button {
+        padding: 4px 8px;
+        font: inherit;
+      }
+      .caption {
+        padding: 4px 12px;
+        font-size: 12px;
+        color: #666;
+        font-family: ui-monospace, Menlo, monospace;
+        border-top: 1px solid #eee;
+        min-height: 16px;
+        word-break: break-all;
+      }
+      .panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 12px 16px;
+      }
+      .panel {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        min-height: 400px;
+      }
+      .panel .label {
+        padding: 6px 12px;
+        font-weight: 600;
+        color: #555;
+        border-bottom: 1px solid #eee;
+        background: #fafafa;
+      }
+      .panel .stage {
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+        min-height: 320px;
+      }
+      .panel .stage #fixture-root {
+        display: contents;
+      }
+      @media (max-width: 900px) {
+        .panels {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>컴포넌트:</strong>
+      <select id="fixture-select"></select>
+      <strong>상태:</strong>
+      <select id="state-select"></select>
+      <button id="focus-up" type="button">upstream 링 보기</button>
+      <button id="focus-fw" type="button">프레임워크 링 보기</button>
+    </header>
+    <div class="panels">
+      <div class="panel">
+        <div class="label">upstream (KRDS)</div>
+        <div class="stage" id="upstream-panel"></div>
+        <div class="caption" id="up-caption"></div>
+      </div>
+      <div class="panel">
+        <div class="label" id="framework-label">framework</div>
+        <div class="stage" id="framework-panel"></div>
+        <div class="caption" id="fw-caption"></div>
+      </div>
+    </div>
+    <script type="module" src="/src/compare.ts"></script>
+  </body>
+</html>

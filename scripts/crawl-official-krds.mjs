@@ -1,7 +1,7 @@
 import { mkdir, writeFile, stat, rm } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { chromium } from "playwright";
+import { chromium } from "playwright-core";
 import { JSDOM } from "jsdom";
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -142,9 +142,9 @@ async function main() {
   await mkdir(join(OUTPUT_DIR, "basic-patterns"), { recursive: true });
   await mkdir(join(OUTPUT_DIR, "assets"), { recursive: true });
 
-  const browser = await chromium.launch();
+  const launchOptions = process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {};
+  const browser = await chromium.launch(launchOptions);
   const page = await browser.newPage();
-
   const pageMap = new Map(); // originalUrl -> { section, localPath, title, status, rawHtml }
   const assetMap = new Map(); // originalUrl -> { localPath, buffer, mimeType, sizeBytes, status }
 

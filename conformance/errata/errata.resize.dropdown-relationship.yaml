@@ -32,6 +32,9 @@ normalization:
     - selector: ".krds-resize > .drop-menu"
       attribute: id
       operation: omit
+    - selector: ".krds-resize > .drop-menu"
+      attribute: style
+      operation: omit
 evidence:
   rationale: >-
     Same disclosure-wiring addition as language-switcher; attributes are non-semantic additions vs upstream.

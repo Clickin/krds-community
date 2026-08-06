@@ -19,6 +19,7 @@
 
 import { Code } from 'astro:components';
 import { krdsShikiHighContrast, krdsShikiLight } from '../theme/krds-shiki';
+import '../styles/framework-tabs.css';
 import AngularIcon from './icons/AngularIcon.astro';
 import AstroIcon from './icons/AstroIcon.astro';
 import ReactIcon from './icons/ReactIcon.astro';
@@ -65,7 +66,7 @@ const uid = `pe-${kind}-${(title ?? 'example').toLowerCase().replace(/[^a-z0-9�
   </header>
 
   {available.length > 1 && (
-    <div class="framework-tabs" role="tablist" aria-label="프레임워크 선택">
+    <div class="framework-tabs" role="tablist" aria-label="프레임워크 선택" data-framework-tabs data-sync-key="framework">
       {available.map(({ id, label, Icon }, index) => (
         <button
           type="button"
@@ -119,87 +120,7 @@ const uid = `pe-${kind}-${(title ?? 'example').toLowerCase().replace(/[^a-z0-9�
 </section>
 
 <script>
-  const STORAGE_KEY = 'krds-community:docs:framework';
-  const readStored = () => {
-    try {
-      return window.localStorage.getItem(STORAGE_KEY);
-    } catch {
-      return null;
-    }
-  };
-  const writeStored = (fw: string) => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, fw);
-    } catch {}
-  };
-  const selectFramework = (root: HTMLElement, framework: string) => {
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
-    const target = tabs.find((t) => t.dataset.framework === framework);
-    if (!target) return false;
-    tabs.forEach((t) => {
-      const selected = t === target;
-      t.setAttribute('aria-selected', String(selected));
-      t.tabIndex = selected ? 0 : -1;
-    });
-    root.dataset.framework = framework;
-    root.querySelectorAll<HTMLElement>('[data-practice-panel]').forEach((p) => {
-      p.hidden = p.dataset.framework !== framework;
-    });
-    root.querySelectorAll<HTMLElement>('[data-code-panel]').forEach((p) => {
-      p.hidden = p.dataset.framework !== framework;
-    });
-    return true;
-  };
-  const applyAll = (framework: string) => {
-    document
-      .querySelectorAll<HTMLElement>('[data-practice-example], [data-framework-preview]')
-      .forEach((root) => selectFramework(root, framework));
-  };
-  const initialize = (root: HTMLElement) => {
-    if (root.dataset.ready === 'true') return;
-    root.dataset.ready = 'true';
-    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"][data-framework]'));
-    tabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => {
-        const framework = tab.dataset.framework;
-        if (framework) {
-          applyAll(framework);
-          writeStored(framework);
-        }
-      });
-      tab.addEventListener('keydown', (event) => {
-        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-        event.preventDefault();
-        const next =
-          event.key === 'Home'
-            ? 0
-            : event.key === 'End'
-              ? tabs.length - 1
-              : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-        const target = tabs[next];
-        const framework = target?.dataset.framework;
-        if (target && framework) {
-          target.focus();
-          applyAll(framework);
-          writeStored(framework);
-        }
-      });
-    });
-    const stored = readStored();
-    const available = tabs.map((t) => t.dataset.framework).filter(Boolean) as string[];
-    if (stored && available.includes(stored)) selectFramework(root, stored);
-  };
-  const initAll = () => {
-    document.querySelectorAll<HTMLElement>('[data-practice-example]').forEach(initialize);
-  };
-  if (document.documentElement.dataset.krdsFrameworkSync !== 'true') {
-    document.documentElement.dataset.krdsFrameworkSync = 'true';
-    window.addEventListener('storage', (event) => {
-      if (event.key === STORAGE_KEY && event.newValue) applyAll(event.newValue);
-    });
-  }
-  initAll();
-  document.addEventListener('astro:page-load', initAll);
+  import '../scripts/framework-sync.ts';
 </script>
 
 <style>
@@ -244,40 +165,6 @@ const uid = `pe-${kind}-${(title ?? 'example').toLowerCase().replace(/[^a-z0-9�
     margin: 0;
     font-size: 0.875rem;
     color: var(--krds-mode-light-color-text-basic);
-  }
-
-  .framework-tabs {
-    display: flex;
-    gap: 0.25rem;
-    padding: 0.625rem 1rem 0;
-  }
-
-  .framework-tabs [role='tab'] {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.75rem;
-    border: 0;
-    border-radius: 0.5rem 0.5rem 0 0;
-    background: transparent;
-    color: var(--krds-mode-light-color-text-subtle);
-    font-size: 0.8125rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .framework-tabs [role='tab']:hover {
-    color: var(--krds-mode-light-color-text-basic);
-  }
-
-  .framework-tabs [role='tab'][aria-selected='true'] {
-    background: var(--krds-mode-light-color-surface-secondary);
-    color: var(--krds-mode-light-color-text-basic);
-  }
-
-  .tab-icon {
-    width: 1rem;
-    height: 1rem;
   }
 
   .practice-stage {

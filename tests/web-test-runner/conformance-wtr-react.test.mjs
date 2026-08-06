@@ -1,4 +1,4 @@
-import { adapter } from "../../apps/conformance-host/src/adapters/react.ts";
+import { adapter } from "../../apps/conformance-host/dist/assets/react-adapter.mjs";
 import { captureFixture, catalog, emitFixtureCapture } from "./conformance-worker.mjs";
 
 describe("react in-browser conformance capture", () => {

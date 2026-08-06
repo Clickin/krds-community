@@ -19,7 +19,9 @@ description: 같은 KRDS 패턴 과업을 React, Vue, Svelte, SolidJS, Angular, 
 | Svelte     | `$state`, `$derived`, `bind:value`, `onsubmit`                        | Astro `client:load` island에서 Svelte hydration       |
 | SolidJS    | `createSignal`, reactive props, `onInput`                             | Astro `client:load` island에서 SolidJS hydration      |
 | Angular    | standalone component, `ngModel`, `ngSubmit`                           | Astro `client:load` island에서 Angular hydration      |
-| Astro      | frontmatter `patternId`, native `submit`·`click`·`change`, HTML forms | 서버 렌더링 + 필요한 상호작용만 native script enhance |
+| Astro      | frontmatter `patternId`, native `submit`·`click`·`change`, HTML forms | 정적 SSR(zero-JS) — Starlight/문서 네이티브용 |
+
+Astro 탭은 반응형 island가 아니라 정적 SSR(zero-JS) 예제입니다. 문서·예제 탐색기처럼 서버에서 완성된 마크업이 필요한 용도에 적합하며, 상호작용이 필요한 부분만 native script로 보강합니다.
 
 ## React 최적화 진단 절차
 

@@ -132,7 +132,6 @@ const results = [];
 // deferred accessibility/behavior) via browser-judge.mjs and shipped the small
 // `checks` verdicts. Node only assembles the report here.
 for (const framework of activeFrameworks) {
-  if (framework === "astro") continue; // SSG output capture is deferred.
   const byFixture = fixturesByFramework.get(framework);
   if (!byFixture) continue;
   for (const [fixtureId, records] of byFixture) {
@@ -172,9 +171,7 @@ for (const framework of activeFrameworks) {
   }
 }
 
-const frameworkEvidence = activeFrameworks
-  .filter((framework) => framework !== "astro")
-  .map((framework) => {
+const frameworkEvidence = activeFrameworks.map((framework) => {
     const frameworkResults = results.filter((result) => result.framework === framework);
     const fixtureResults = [...fixtureById.values()].map((fixture) => {
       const states = frameworkResults.filter((result) => result.fixtureId === fixture.id);

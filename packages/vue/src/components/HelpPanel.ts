@@ -92,7 +92,7 @@ export const HelpPanel = defineComponent({
           class: ["krds-help-panel", open.value ? "expand" : undefined, className],
         },
         [
-          create("div", { class: "help-panel-wrap", tabindex: 0 }, [
+          create("div", { class: "help-panel-wrap", tabindex: open.value ? 0 : undefined }, [
             create("div", { class: "help-conts-area" }, [
               create("div", { class: ["krds-tab-area", "layer"] }, [
                 create("div", { class: ["tab", "line"] }, [

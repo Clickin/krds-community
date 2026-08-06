@@ -234,7 +234,7 @@ describe("Solid core component contracts", () => {
     expect(host.querySelector("#spread-query-hint")?.textContent).toBe("After hint");
     expect(tabs().map((tab) => tab.textContent)).toEqual([
       "First renamed",
-      "Second renamedselected now",
+      "Second renamed selected now",
     ]);
     expect(tabs()[0].getAttribute("aria-selected")).toBe("false");
     expect(tabs()[1].getAttribute("aria-selected")).toBe("true");

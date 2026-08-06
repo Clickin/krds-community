@@ -1,4 +1,4 @@
-import { adapter } from "../../apps/conformance-host/src/adapters/solid.ts";
+import { adapter } from "../../apps/conformance-host/dist/assets/solid-adapter.mjs";
 import { captureFixture, catalog, emitFixtureCapture } from "./conformance-worker.mjs";
 
 describe("solid in-browser conformance capture", () => {

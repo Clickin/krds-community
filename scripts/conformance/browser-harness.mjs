@@ -2,10 +2,9 @@
 //
 // The capture bodies that used to run inside Playwright `locator.evaluate`
 // callbacks live here as pure functions that take a `root` DOM element
-// directly. Node callers (Playwright runtime.mjs) keep the old wrappers, which
-// now just delegate into these functions via `locator.evaluate`. The in-browser
-// @web/test-runner path imports this module as a plain ESM script and calls the
-// functions directly, eliminating the CDP round-trip.
+// directly. The in-browser @web/test-runner conformance path imports this
+// module as a plain ESM script and calls the functions directly, with no Node
+// middle layer or CDP round-trip.
 //
 // This file must remain importable both in Node and in the browser as a
 // `<script type="module">`, so it must not import any Node built-ins and must
@@ -377,6 +376,7 @@ const captureVisualSignatureTree = async (root) => {
       };
     }
     if (!(node instanceof Element) || node.matches("script, style")) return null;
+    const nodeDisplay = getComputedStyle(node).display;
     const state = {};
     if ("value" in node && typeof node.value === "string") state.value = node.value;
     if ("checked" in node && typeof node.checked === "boolean") state.checked = node.checked;
@@ -402,7 +402,14 @@ const captureVisualSignatureTree = async (root) => {
       component;
     return {
       tag: node.tagName.toLocaleLowerCase("en-US"),
-      rect: rectValue(node.getBoundingClientRect()),
+      // A `display:none` element has no laid-out position; `getBoundingClientRect`
+      // returns all zeros and `rectValue` would report a phantom -rootRect.x
+      // offset. Report a zero rect so the pixel fallback (not phantom geometry)
+      // decides visual equivalence for non-painting collapsed content.
+      rect:
+        nodeDisplay === "none" && node !== root
+          ? { x: 0, y: 0, width: 0, height: 0 }
+          : rectValue(node.getBoundingClientRect()),
       scroll: [node.scrollLeft, node.scrollTop, node.scrollWidth, node.scrollHeight],
       style,
       ...(Object.keys(state).length ? { state } : {}),
@@ -497,12 +504,31 @@ const accessibleNameFrom = (element) => {
     const parts = element
       .getAttribute("aria-labelledby")
       .split(/\s+/)
-      .map((id) => element.ownerDocument?.getElementById(id)?.textContent?.trim())
-      .filter(Boolean);
-    if (parts.length) return parts.join(" ");
+      .map((id) => element.ownerDocument?.getElementById(id)?.textContent)
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (parts) return parts;
   }
-  if (element.matches("button, [role=button], a[href], summary") && element.textContent) {
-    return element.textContent.replace(/\s+/g, " ").trim();
+  if (element.matches("button, [role=button], a[href], summary")) {
+    // The accessible name recites distinct inline text runs (e.g. a title
+    // `<span>` followed by a description) as space-separated, mirroring the
+    // browser's accname computation (and Playwright's ariaSnapshot). A plain
+    // `textContent` concatenates them without a space, so collect text runs
+    // and join them the way an assistive technology hears them.
+    const runs = [];
+    const collect = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node.textContent) runs.push(node.textContent);
+        return;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      if (node instanceof HTMLSlotElement) return;
+      for (const child of node.childNodes) collect(child);
+    };
+    collect(element);
+    if (runs.length) return runs.join(" ").replace(/\s+/g, " ").trim();
   }
   for (const attributeName of ["alt", "title", "placeholder", "value"]) {
     if (element.getAttribute(attributeName)) return element.getAttribute(attributeName);
@@ -577,4 +603,93 @@ export const captureAccessibilityTree = async (root) => {
     return [node];
   };
   return serialize(root);
+};
+
+/**
+ * Rasterize a rendered DOM root to RGBA pixel data. Used as a visual-
+ * equivalence fallback when the geometric visual signature differs (sub-pixel
+ * noise, `display:none` panels that still paint) — two roots pass if ≥ 99% of
+ * their pixels agree, mirroring the Playwright pixel fallback the runtime path
+ * previously used.
+ *
+ * Implementation note: the SVG is fed to the canvas as a same-origin
+ * `data:` URL (not a Blob URL) — Blob URLs taint the canvas for foreignObject
+ * content and `getImageData` throws `SecurityError`; `data:` URLs render and
+ * stay untainted in headless Chromium. Returns `null` on any load/render
+ * failure so callers keep their strict judgment rather than guessing.
+ */
+export const rasterizeRootToImageData = async (root, { scale = 1 } = {}) => {
+  const inlineComputedStyles = (clone) => {
+    const originals = [root];
+    const copied = [clone];
+    let oi = 0;
+    while (oi < originals.length) {
+      const original = originals[oi];
+      const copy = copied[oi];
+      oi += 1;
+      const computed = getComputedStyle(original);
+      for (const property of computed) {
+        copy.style.setProperty(property, computed.getPropertyValue(property));
+      }
+      for (let i = 0; i < original.childElementCount; i += 1) {
+        originals.push(original.children[i]);
+        copied.push(copy.children[i]);
+      }
+    }
+  };
+  const rect = root.getBoundingClientRect();
+  const innerWidth = Math.max(1, Math.round(rect.width * scale));
+  const innerHeight = Math.max(1, Math.round(rect.height * scale));
+  if (innerWidth === 0 || innerHeight === 0) return null;
+  await document.fonts.ready;
+  const clone = root.cloneNode(true);
+  inlineComputedStyles(clone);
+  // The root's focus ring / box-shadow paints ~4px outside its border box. If
+  // we crop exactly to the border box, the ring's anti-aliased edge lands on
+  // the canvas boundary and rounds differently for upstream vs framework.
+  // Snap the root AND its outlines to a whole-pixel origin by rendering into a
+  // slightly larger grid with a clean gutter around the border box.
+  const ringGutter = 8;
+  const width = innerWidth + ringGutter * 2;
+  const height = innerHeight + ringGutter * 2;
+  clone.style.margin = "0";
+  clone.style.left = "0";
+  clone.style.top = "0";
+  clone.style.position = "absolute";
+  clone.style.width = `${innerWidth}px`;
+  clone.style.height = `${innerHeight}px`;
+  clone.style.boxSizing = "border-box";
+  const wrapper = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
+  wrapper.style.position = "relative";
+  wrapper.style.width = `${width}px`;
+  wrapper.style.height = `${height}px`;
+  wrapper.style.margin = "0";
+  wrapper.style.padding = "0";
+  // Box-shadow is relative to the border box, so any fractional border-box
+  // offset would alias the ring edge. anchor is the whole-pixel placement of
+  // the clone's origin inside the gutter, zeroing the sub-pixel page offset.
+  clone.style.top = `${ringGutter}px`;
+  clone.style.left = `${ringGutter}px`;
+  wrapper.appendChild(clone);
+  const html = new XMLSerializer().serializeToString(wrapper);
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" ` +
+    `viewBox="0 0 ${width} ${height}"><foreignObject width="100%" height="100%">` +
+    `${html}</foreignObject></svg>`;
+  const dataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  if (!context) return null;
+  try {
+    const image = new Image();
+    image.src = dataUrl;
+    await image.decode();
+    context.clearRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
+    return { width, height, data: context.getImageData(0, 0, width, height).data };
+  } catch {
+    return null;
+  }
 };

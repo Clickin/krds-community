@@ -146,8 +146,7 @@ export function Tooltip({
         )}
         aria-hidden={visible ? "false" : "true"}
       >
-        <span className="sr-only">{label ?? children}</span>
-        {message}
+        <span className="sr-only">{label ?? children}</span> {message}
       </div>
     </>
   );

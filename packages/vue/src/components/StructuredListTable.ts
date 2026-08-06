@@ -49,7 +49,9 @@ export const StructuredListTable = defineComponent({
                     id: selectionId,
                     class: "chk",
                     type: "checkbox",
-                    "aria-label": props.selectAllLabel ?? "전체 선택",
+                    // Name comes from the visible <label for>, not aria-label:
+                    // the control-labels errata omits checkbox aria-labels, so
+                    // an aria-label here would strip the select-all's name.
                   }),
                   create("label", { for: selectionId }, props.selectAllLabel),
                 ]),

@@ -166,7 +166,7 @@ import { createStableId } from "../kinds";
 })
 export class KrdsTutorialPanelComponent {
   @Input() id = createStableId("krds-tutorial-panel");
-  @Input() open = true;
+  @Input() open = false;
   @Input() tabs: Array<{ id: string; label: string; panelId?: string; value?: string }> = [];
   @Input() activeTab = "tutorial";
   @Input() selectedLabel = "선택됨";

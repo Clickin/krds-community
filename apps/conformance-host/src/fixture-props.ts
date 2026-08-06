@@ -976,7 +976,6 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
     const helpDescription =
       "전자문서지갑에서는 전자증명서 출력기능을 제공하지 않으며, 스마트폰 화면을 캡쳐하여 사용할 수 없습니다. 다만, 발급받은 전자증명서를 열람용으로 다운로드할 수는 있습니다.";
     defaults = {
-      open: true,
       activeTab: componentId === "tutorial-panel" ? "tutorial" : "help",
       tabs: [
         { id: "helperTab01", label: "도움", panelId: "helperTabpanel01", value: "help" },

@@ -1,4 +1,11 @@
+/* Pin the Starlight layer order before anything else: this bundle's own
+   `@layer starlight.components` block would otherwise become the first
+   appearance of the layer, putting every later Starlight layer (content,
+   utils, …) above it in the cascade. The order statement is allowed before
+   @import. */
+@layer starlight.base, starlight.reset, starlight.core, starlight.content, starlight.components, starlight.utils;
 @import "./krds-chrome-scoped.css";
+@import "./krds-content.css";
 @import "@krds-community/tokens/css";
 
 :root,

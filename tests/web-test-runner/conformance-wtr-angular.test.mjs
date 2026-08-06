@@ -1,4 +1,4 @@
-import { adapter } from "../../apps/conformance-host/src/adapters/angular.ts";
+import { adapter } from "../../apps/conformance-host/dist/assets/angular-adapter.mjs";
 import { captureFixture, catalog, emitFixtureCapture } from "./conformance-worker.mjs";
 
 describe("angular in-browser conformance capture", () => {
