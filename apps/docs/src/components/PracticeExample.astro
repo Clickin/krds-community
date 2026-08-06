@@ -173,6 +173,12 @@ const uid = `pe-${kind}-${(title ?? 'example').toLowerCase().replace(/[^a-z0-9ê°
     min-height: 5rem;
     padding: 1.5rem;
     background: var(--krds-mode-light-color-surface-secondary-subtle, var(--krds-mode-light-color-background-subtle));
+    /* The inline KRDS demos (Astro barrel) size themselves for a 10px rem
+       root, but the docs page keeps a 16px root (theme.css neutralizes the
+       foundation's html rule). Zoom the stage back to the design scale and
+       widen it so the rendered box still fills the section. */
+    zoom: 0.625;
+    width: 160%;
   }
 
   .practice-panel:not([hidden]) {

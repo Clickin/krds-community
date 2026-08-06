@@ -67,10 +67,15 @@ export default defineConfig({
             { label: "전체 컴포넌트", link: "/components/" },
             ...categoryGroups.map((g) => ({
               label: g.label,
+              // Each category sub-group keeps its own open state and starts
+              // collapsed (Starlight still auto-opens the one containing the
+              // current page).
+              collapsed: true,
               items: [{ autogenerate: { directory: `components/${g.category}` } }],
             })),
             {
               label: "공식 사이트 전용(미구현)",
+              collapsed: true,
               items: [{ autogenerate: { directory: "components/live-only" } }],
             },
           ],

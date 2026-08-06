@@ -2,8 +2,12 @@
    `@layer starlight.components` block would otherwise become the first
    appearance of the layer, putting every later Starlight layer (content,
    utils, …) above it in the cascade. The order statement is allowed before
-   @import. */
-@layer starlight.base, starlight.reset, starlight.core, starlight.content, starlight.components, starlight.utils;
+   @import.
+   `components` (the @krds-community/styles foundation, pulled in by the
+   @krds-community/astro barrel used for inline MDX demos) is pinned FIRST so
+   its Eric-Meyer reset and page-level rules can never outrank Starlight's
+   base/content layers. */
+@layer components, starlight.base, starlight.reset, starlight.core, starlight.content, starlight.components, starlight.utils;
 @import "./krds-chrome-scoped.css";
 @import "./krds-content.css";
 @import "@krds-community/tokens/css";
@@ -57,4 +61,19 @@
 /* Make room for the absolutely-positioned masthead band above the nav row. */
 .page > header {
   padding-top: 3.2rem;
+}
+
+/* The @krds-community/astro barrel (used for inline MDX component demos)
+   imports the KRDS foundation css, which sets `html { font-size: 62.5% }`
+   and `body { font-size: 1.7rem }` for its rem scale. Those page-level rules
+   must not leak onto the docs page — restore the Starlight root and body
+   typography so rem-based layout and prose stay intact. The foundation's own
+   components render inside the framework preview iframes, which carry their
+   own copy of the foundation css. */
+html {
+  font-size: 100%;
+}
+body {
+  font-size: var(--sl-text-base, 1rem);
+  line-height: var(--sl-line-height, 1.75);
 }
