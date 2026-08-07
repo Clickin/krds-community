@@ -1,0 +1,5 @@
+id: top-button
+status: no-upstream
+contract:
+  semanticElement: button
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

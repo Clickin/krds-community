@@ -1,0 +1,5 @@
+id: card
+status: no-upstream
+contract:
+  semanticElement: article
+  accessibility: [semantic-element, accessible-name]

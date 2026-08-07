@@ -78,6 +78,28 @@ const assertManifestContracts = async (manifests) => {
 
   for (const manifest of manifests) {
     const { text, fixtures } = await readFixtureData(manifest);
+    if (manifest.status === "no-upstream") {
+      if (manifest.fixtureCount !== 0) {
+        failures.push(`${manifest.id}: no-upstream manifest must declare zero fixtures`);
+      }
+      if ((manifest.sourceFiles ?? []).length > 0) {
+        failures.push(`${manifest.id}: no-upstream manifest must declare no upstream.files`);
+      }
+      if (!/^contract:\s*$/m.test(text) || !/^\s+semanticElement:\s*\S+/m.test(text)) {
+        failures.push(`${manifest.id}: semantic contract is missing`);
+      }
+      if (!/^\s+accessibility:\s*\[/m.test(text)) {
+        failures.push(`${manifest.id}: accessibility contract is missing`);
+      }
+      const componentName = pascalCase(manifest.id);
+      for (const [framework, sourcePath] of Object.entries(packageSources)) {
+        const source = await getSource(sourcePath);
+        if (!source.includes(componentName)) {
+          failures.push(`${manifest.id}: ${framework} export is missing (${componentName})`);
+        }
+      }
+      continue;
+    }
     if (manifest.status !== "passing") failures.push(`${manifest.id}: status=${manifest.status}`);
     if (manifest.schemaValid === false) {
       for (const error of manifest.validationErrors ?? []) {

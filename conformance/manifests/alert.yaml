@@ -1,0 +1,5 @@
+id: alert
+status: no-upstream
+contract:
+  semanticElement: status
+  accessibility: [semantic-element, accessible-name]

@@ -1,0 +1,5 @@
+id: user-feedback
+status: no-upstream
+contract:
+  semanticElement: group
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

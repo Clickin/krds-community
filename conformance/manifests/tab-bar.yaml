@@ -1,0 +1,5 @@
+id: tab-bar
+status: no-upstream
+contract:
+  semanticElement: tablist
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible, selected-state]

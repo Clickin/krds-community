@@ -1,0 +1,5 @@
+id: progress-bar
+status: no-upstream
+contract:
+  semanticElement: progressbar
+  accessibility: [semantic-element, accessible-name]

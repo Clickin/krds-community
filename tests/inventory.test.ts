@@ -8,10 +8,12 @@ const root = resolve(import.meta.dirname, "..");
 const inventoryNames = [
   "Accordion",
   "AccordionLine",
+  "Alert",
   "Badge",
   "BadgeNumber",
   "BadgeSize",
   "Breadcrumb",
+  "BottomSheet",
   "Button",
   "ButtonHierarchy",
   "ButtonIcon",
@@ -20,11 +22,13 @@ const inventoryNames = [
   "ButtonWithIcon",
   "Calendar",
   "CalendarRange",
+  "Card",
   "Carousel",
   "CarouselBanner",
   "Checkbox",
   "CheckboxChip",
   "CheckboxSize",
+  "Chip",
   "CoachMark",
   "ContextualHelp",
   "CriticalAlerts",
@@ -36,6 +40,7 @@ const inventoryNames = [
   "Header",
   "HelpPanel",
   "Identifier",
+  "Infobox",
   "InPageNavigation",
   "LanguageSwitcher",
   "LanguageSwitcherPage",
@@ -46,23 +51,27 @@ const inventoryNames = [
   "Modal",
   "ModalSample",
   "Pagination",
+  "ProgressBar",
   "Radio",
   "RadioButton",
   "RadioChip",
   "RadioSize",
   "Resize",
+  "Search",
   "Select",
   "SelectSize",
   "SelectSorting",
   "SelectState",
   "SideNavigation",
   "SkipLink",
+  "Snackbar",
   "Spinner",
   "StepIndicator",
   "StructuredList",
   "StructuredListTable",
   "Switch",
   "Tab",
+  "TabBar",
   "Table",
   "Tag",
   "TagLink",
@@ -73,25 +82,56 @@ const inventoryNames = [
   "TextList",
   "TextListOrdered",
   "Textarea",
+  "Toast",
   "ToggleSwitch",
   "ToggleSwitchSize",
   "Tooltip",
   "TooltipBox",
   "TooltipVertical",
+  "TopButton",
   "Tts",
   "TtsIcon",
   "TtsSize",
   "TutorialPanel",
+  "UserFeedback",
 ] as const;
 
 describe("KRDS component inventory", () => {
   it("keeps every upstream manifest mapped to a mandatory fixture", async () => {
     const manifests = await loadManifests(resolve(root, "conformance/manifests"));
-    expect(manifests).toHaveLength(74);
-    expect(manifests.every((manifest) => manifest.status !== "unmapped")).toBe(true);
-    expect(manifests.every((manifest) => manifest.fixtureCount > 0)).toBe(true);
-    expect(manifests.every((manifest) => manifest.mandatoryFixtureCount > 0)).toBe(true);
-    expect(manifests.every((manifest) => manifest.accessibilityRequirements.length > 0)).toBe(true);
+    expect(manifests).toHaveLength(86);
+    const assessable = manifests.filter((manifest) => manifest.status !== "no-upstream");
+    expect(assessable).toHaveLength(74);
+    expect(assessable.every((manifest) => manifest.status !== "unmapped")).toBe(true);
+    expect(assessable.every((manifest) => manifest.fixtureCount > 0)).toBe(true);
+    expect(assessable.every((manifest) => manifest.mandatoryFixtureCount > 0)).toBe(true);
+    expect(assessable.every((manifest) => manifest.accessibilityRequirements.length > 0)).toBe(
+      true,
+    );
+    expect(
+      manifests
+        .filter((manifest) => manifest.status === "no-upstream")
+        .map((manifest) => manifest.id)
+        .sort(),
+    ).toEqual([
+      "alert",
+      "bottom-sheet",
+      "card",
+      "chip",
+      "infobox",
+      "progress-bar",
+      "search",
+      "snackbar",
+      "tab-bar",
+      "toast",
+      "top-button",
+      "user-feedback",
+    ]);
+    expect(
+      manifests
+        .filter((manifest) => manifest.status === "no-upstream")
+        .every((manifest) => manifest.fixtureCount === 0),
+    ).toBe(true);
   });
   it("loads executable fixture states with deterministic viewport and comparisons", async () => {
     const manifests = await loadFixtureManifests(resolve(root, "conformance/manifests"));

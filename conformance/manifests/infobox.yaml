@@ -1,0 +1,5 @@
+id: infobox
+status: no-upstream
+contract:
+  semanticElement: region
+  accessibility: [semantic-element, accessible-name]

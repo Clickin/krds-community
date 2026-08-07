@@ -1,0 +1,5 @@
+id: search
+status: no-upstream
+contract:
+  semanticElement: search
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

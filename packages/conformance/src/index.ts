@@ -14,6 +14,7 @@ export const statuses = [
   "blocked-upstream",
   "waived",
   "not-applicable",
+  "no-upstream",
 ] as const;
 export type ConformanceStatus = (typeof statuses)[number];
 
@@ -418,6 +419,7 @@ const parseManifest = async (path: string, projectRoot: string): Promise<Conform
   const id = stringValue(document.id);
   const rawStatus = stringValue(document.status) || "unmapped";
   const status = isStatus(rawStatus) ? rawStatus : "unmapped";
+  const exemptFromUpstream = status === "no-upstream";
   const upstream = recordValue(document.upstream);
   const upstreamVersion = stringValue(upstream.version);
   const sourceFiles = stringList(upstream.files);
@@ -508,9 +510,10 @@ const parseManifest = async (path: string, projectRoot: string): Promise<Conform
 
   if (!id || !/^[a-z0-9-]+$/.test(id)) validationErrors.push("id is missing or invalid");
   if (!isStatus(rawStatus)) validationErrors.push(`unknown status=${rawStatus}`);
-  if (!upstreamVersion) validationErrors.push("upstream.version is missing");
-  if (!sourceFiles.length) validationErrors.push("upstream.files is missing");
-  if (!fixtureCount) validationErrors.push("fixtures must contain at least one fixture");
+  if (!upstreamVersion && !exemptFromUpstream) validationErrors.push("upstream.version is missing");
+  if (!sourceFiles.length && !exemptFromUpstream) validationErrors.push("upstream.files is missing");
+  if (!fixtureCount && !exemptFromUpstream)
+    validationErrors.push("fixtures must contain at least one fixture");
   if (new Set(fixtureIds).size !== fixtureIds.length) {
     validationErrors.push("fixture ids must be unique within a manifest");
   }
@@ -714,14 +717,15 @@ export const buildReport = (
       providedEvidence?.find((candidate) => candidate.framework === framework),
     ),
   );
-  const fixtureCount = manifests.reduce((sum, manifest) => sum + manifest.fixtureCount, 0);
-  const mandatoryFixtureCount = manifests.reduce(
+  const assessable = manifests.filter((manifest) => manifest.status !== "no-upstream");
+  const fixtureCount = assessable.reduce((sum, manifest) => sum + manifest.fixtureCount, 0);
+  const mandatoryFixtureCount = assessable.reduce(
     (sum, manifest) => sum + manifest.mandatoryFixtureCount,
     0,
   );
-  const catalogErrata = uniqueSorted(manifests.flatMap((manifest) => manifest.errata ?? []));
+  const catalogErrata = uniqueSorted(assessable.flatMap((manifest) => manifest.errata ?? []));
   const catalogUnresolvedSelectors = uniqueSorted(
-    manifests.flatMap((manifest) => manifest.unresolvedSelectors ?? []),
+    assessable.flatMap((manifest) => manifest.unresolvedSelectors ?? []),
   );
   const errataCount = catalogErrata.length;
   const unresolvedCount = catalogUnresolvedSelectors.length;
@@ -729,7 +733,7 @@ export const buildReport = (
     const resultsById = new Map(
       frameworkEvidence.fixtureResults.map((result) => [result.fixtureId, result]),
     );
-    const expected = manifests.flatMap((manifest) =>
+    const expected = assessable.flatMap((manifest) =>
       expectedFixtureIds(manifest).map((fixtureId) => ({ fixtureId, manifest })),
     );
     const passingEvidenceCount = frameworkEvidence.fixtureResults.filter(
@@ -741,7 +745,7 @@ export const buildReport = (
     const unverifiedEvidenceCount =
       frameworkEvidence.fixtureResults.length - passingEvidenceCount - failingEvidenceCount;
     const hasMissingEvidence = expected.some((fixture) => !resultsById.has(fixture.fixtureId));
-    const hasCatalogFailure = manifests.some(
+    const hasCatalogFailure = assessable.some(
       (manifest) => !manifestCanPass(manifest) && manifest.status === "passing",
     );
     const hasFailure =
@@ -763,7 +767,7 @@ export const buildReport = (
           : completePassingEvidence && frameworkEvidence.status === "passing"
             ? "passing"
             : "implemented";
-    const strictPassing = manifests.filter((manifest) => {
+    const strictPassing = assessable.filter((manifest) => {
       const expectedIds = expectedFixtureIds(manifest);
       return (
         manifestCanPass(manifest) &&
@@ -773,8 +777,8 @@ export const buildReport = (
     }).length;
     return {
       framework: frameworkEvidence.framework,
-      inventory: manifests.length,
-      implemented: manifests.filter((manifest) =>
+      inventory: assessable.length,
+      implemented: assessable.filter((manifest) =>
         ["implemented", "passing", "deviating", "waived"].includes(manifest.status),
       ).length,
       strictPassing: evidenceStatus === "passing" ? strictPassing : 0,
@@ -799,7 +803,7 @@ export const buildReport = (
   });
   const strictConformance =
     providedEvidence !== undefined &&
-    manifests.length > 0 &&
+    assessable.length > 0 &&
     summaries.every(
       (summary) =>
         summary.evidenceStatus === "passing" &&
@@ -824,6 +828,7 @@ export const buildReport = (
       "framework별 fixture evidence가 없거나 unverified이면 엄격 conformance는 false입니다.",
       "implemented, waived, deviating, unresolved fixture는 엄격 통과로 계산하지 않습니다.",
       "Accordion 접근성에는 KRDS Vue 참고 구현과 동일하게 aria-expanded, aria-controls, aria-labelledby 관계가 포함됩니다.",
+      "no-upstream 컴포넌트(toast, snackbar, alert, infobox, progress-bar, search, chip, top-button, user-feedback, card, bottom-sheet, tab-bar)는 upstream HTML이 없어 conformance 측정에서 제외됩니다.",
       ...(upstreamMatches
         ? []
         : ["runtime evidence upstream revision mismatch; evidence is unverified."]),

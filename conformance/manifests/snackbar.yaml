@@ -1,0 +1,5 @@
+id: snackbar
+status: no-upstream
+contract:
+  semanticElement: alert
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]

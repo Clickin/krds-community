@@ -1,0 +1,5 @@
+id: chip
+status: no-upstream
+contract:
+  semanticElement: checkbox
+  accessibility: [semantic-element, accessible-name, keyboard, focus-visible]
