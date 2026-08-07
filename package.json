@@ -39,6 +39,7 @@
     "upstream:sync": "node scripts/upstream.mjs sync",
     "upstream:diff": "node scripts/upstream.mjs diff",
     "upstream:extract": "node scripts/upstream.mjs extract",
+    "figma:audit": "node scripts/figma-audit.mjs",
     "docs:previews": "node apps/docs/scripts/prepare-previews.mjs",
     "docs:dev": "pnpm --dir apps/docs dev",
     "docs:build": "pnpm docs:previews && pnpm --filter @krds-community/docs build",

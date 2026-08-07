@@ -28,6 +28,7 @@ apps/docs/public/host/
 apps/docs/public/storybook/
 .playwright-cli/
 .pnpm-store/
+reports/
 /reports
 /audit-input
 /package/**/dist
