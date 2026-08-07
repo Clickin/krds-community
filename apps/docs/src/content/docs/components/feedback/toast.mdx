@@ -1,0 +1,263 @@
+---
+title: 토스트
+description: 토스트는 사용자 행동에 대한 결과를 일시적으로 표시했다 사라지는 알림 메시지를 표시하는데 사용한다.
+category: feedback
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Toast as ReactToast } from "@krds-community/react";
+import { Toast as VueToast } from "@krds-community/vue";
+import { Toast as SvelteToast } from "@krds-community/svelte";
+import { Toast as SolidToast } from "@krds-community/solid";
+import { AngularToast } from "@docs/angular-previews.ts";
+import { Toast as AstroToast } from "@krds-community/astro";
+
+<FrameworkPreview title="토스트">
+  <ReactToast slot="react" message="저장되었습니다." defaultOpen client:only="react" />
+  <VueToast slot="vue" message="저장되었습니다." defaultOpen client:only="vue" />
+  <SvelteToast slot="svelte" message="저장되었습니다." defaultOpen client:only="svelte" />
+  <SolidToast slot="solid" message="저장되었습니다." defaultOpen client:only="solid-js" />
+  <AngularToast slot="angular" message="저장되었습니다." defaultOpen client:only="@analogjs/astro-angular" />
+  <AstroToast slot="astro" message="저장되었습니다." defaultOpen />
+
+```tsx fw=react
+import { Toast } from "@krds-community/react";
+
+export function Example() {
+  return <Toast message="저장되었습니다." defaultOpen />;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Toast } from "@krds-community/vue";
+</script>
+
+<template>
+  <Toast message="저장되었습니다." defaultOpen />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Toast } from '@krds-community/svelte';
+</script>
+
+<Toast message="저장되었습니다." defaultOpen />
+```
+
+```tsx fw=solid
+import { Toast } from "@krds-community/solid";
+
+export function Example() {
+  return <Toast message="저장되었습니다." defaultOpen />;
+}
+```
+
+```ts fw=angular
+import { KrdsToastComponent } from '@krds-community/angular';
+
+// template
+<krds-toast message="저장되었습니다." defaultOpen />
+```
+
+```astro fw=astro
+---
+import { Toast } from '@krds-community/astro';
+---
+
+<Toast message="저장되었습니다." defaultOpen />
+```
+
+</FrameworkPreview>
+
+{/* krds-official:component_12_05 */}
+
+## 공식 문서
+
+토스트는 사용자 행동에 대한 결과를 일시적으로 표시했다 사라지는 알림 메시지를 표시하는데 사용한다.알림 메시지는 사용자가 인지할 수 있는 시간만큼 충분이 표시되어야 한다.
+
+### 구조
+
+1. **컨테이너** 메시지를 담고 일시적으로 표시되었다가 사라지는 영역
+2. **본문** 사용자 행동에 대한 구체적인 설명 텍스트로 짧은 한 문장으로 구성
+
+### 용례
+
+#### 사용하기 적합한 경우
+
+- 사용자 행동에 대한 즉각적인 피드백을 안내하는 경우
+- 긴급공지 혹은 모달을 사용하는 것이 적합하다.
+
+#### 사용하기 적합하지 않은 경우
+
+- 중요하거나 긴급한 메시지를 전달해야 하는 경우
+- 긴급공지 혹은 모달을 사용하는 것이 적합하다.
+- 사용자의 추가 행동을 함께 제공해야 하는 경우
+- 메시지와 함께 사용자의 추가 행동을 제공해야 하는 경우 스낵바를 사용하는 것이 적합하다.
+- 한 문장 이상의 긴 설명을 제공해야 하는 경우
+- 토스트는 한 줄 이내의 짧은 설명을 제공할 때 사용하기 적합하며, 더 긴 설명이 필요하다면 모달을 사용하는 것이 적합하다.
+- 개별 입력 양식에 대한 오류, 성공, 경고 메시지를 제공하는 경우
+- 개별 입력 양식에 대한 메시지는 입력 폼이 제공되는 화면의 각 요소에 인 라인 텍스트 방식으로 제공하는 것이 사용자가 인지하기에 더 적합하다.
+
+### 사용성 가이드라인
+
+**토스트는 화면 중앙 하단에 표시한다.**
+토스트는 화면의 중앙 하단에 다른 요소 위에 배치하며, 하단 탭 바나 플로팅 버튼 등 주요 탐색 요소와 겹치지 않게 표시하여야 한다.
+**명확하고 간결하게 알림 메시지를 제공한다.**
+사용자 행동에 대한 결과를 명확하고 간결하게 한 줄의 메시지로 제공한다. 결과 전달에 있어 두줄 이상의 설명 또는 사용자의 추가 행동이 필요한 경우 스낵바를 사용하는 것이 적합하다.
+**모범 사례**
+
+<PracticeExample kind="good" title="명확하고 간결하게 알림 메시지를 제공한다.">
+  <div slot="react">
+    <ReactToast message="저장되었습니다." defaultOpen client:only="react" />
+  </div>
+  <div slot="vue">
+    <VueToast message="저장되었습니다." defaultOpen client:only="vue" />
+  </div>
+  <div slot="svelte">
+    <SvelteToast message="저장되었습니다." defaultOpen client:only="svelte" />
+  </div>
+  <div slot="solid">
+    <SolidToast message="저장되었습니다." defaultOpen client:only="solid-js" />
+  </div>
+  <div slot="angular">
+    <AngularToast message="저장되었습니다." defaultOpen client:only="@analogjs/astro-angular" />
+  </div>
+  <div slot="astro">
+    <AstroToast message="저장되었습니다." defaultOpen />
+  </div>
+
+```tsx fw=react
+import { Toast } from "@krds-community/react";
+
+export function Example() {
+  return <Toast message="저장되었습니다." defaultOpen />;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Toast } from "@krds-community/vue";
+</script>
+
+<template>
+  <Toast message="저장되었습니다." defaultOpen />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Toast } from '@krds-community/svelte';
+</script>
+
+<Toast message="저장되었습니다." defaultOpen />
+```
+
+```tsx fw=solid
+import { Toast } from "@krds-community/solid";
+
+export function Example() {
+  return <Toast message="저장되었습니다." defaultOpen />;
+}
+```
+
+```ts fw=angular
+import { KrdsToastComponent } from '@krds-community/angular';
+
+// template
+<krds-toast message="저장되었습니다." defaultOpen />
+```
+
+```astro fw=astro
+---
+import { Toast } from '@krds-community/astro';
+---
+
+<Toast message="저장되었습니다." defaultOpen />
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample kind="bad" title="두 줄 이상의 설명은 피한다.">
+  <div slot="react">
+    <ReactToast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen client:only="react" />
+  </div>
+  <div slot="vue">
+    <VueToast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen client:only="vue" />
+  </div>
+  <div slot="svelte">
+    <SvelteToast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen client:only="svelte" />
+  </div>
+  <div slot="solid">
+    <SolidToast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen client:only="solid-js" />
+  </div>
+  <div slot="angular">
+    <AngularToast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen client:only="@analogjs/astro-angular" />
+  </div>
+  <div slot="astro">
+    <AstroToast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />
+  </div>
+
+```tsx fw=react
+import { Toast } from "@krds-community/react";
+
+export function Example() {
+  return <Toast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Toast } from "@krds-community/vue";
+</script>
+
+<template>
+  <Toast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Toast } from '@krds-community/svelte';
+</script>
+
+<Toast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />
+```
+
+```tsx fw=solid
+import { Toast } from "@krds-community/solid";
+
+export function Example() {
+  return <Toast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />;
+}
+```
+
+```ts fw=angular
+import { KrdsToastComponent } from '@krds-community/angular';
+
+// template
+<krds-toast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />
+```
+
+```astro fw=astro
+---
+import { Toast } from '@krds-community/astro';
+---
+
+<Toast message="저장되었습니다. 이제 메인 화면으로 이동하여 변경된 내용을 확인할 수 있습니다." defaultOpen />
+```
+
+</PracticeExample>
+
+**메시지 노출 시간을 적절하게 설정한다.**
+토스트는 일시적으로 나타났다 사라지는 메시지로 사용자가 메시지의 내용을 충분히 인지할 수 있는 시간 만큼 노출 되었다가 사라져야 한다. 정보형 메시지는 2초 ~ 3초가 적정하며, 주의·경고형 메시지는 3초 ~ 4초가 적정하다.
+
+- 정보형 메시지 (2초~3초)
+- 인증 완료, 저장 완료, 파일 업로드 완료 등
+- 주의·경고형 메시지
+- 인증 실패 (반복 시 모달로 표시 권장), 임시 저장 실패, 파일 업로드 실패 등
+  {/* /krds-official:component_12_05 */}

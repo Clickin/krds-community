@@ -1,0 +1,132 @@
+---
+title: 검색
+description: KRDS 검색 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: input
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import { Search as ReactSearch } from "@krds-community/react";
+import { Search as VueSearch } from "@krds-community/vue";
+import { Search as SvelteSearch } from "@krds-community/svelte";
+import { Search as SolidSearch } from "@krds-community/solid";
+import { AngularSearch } from "@docs/angular-previews.ts";
+import { Search as AstroSearch } from "@krds-community/astro";
+
+> 이 컴포넌트는 공식 웹사이트/고정 스냅샷에 포함되지 않은 Figma v1.0.0 기반 커뮤니티 구현입니다. conformance 측정에서 제외됩니다.
+
+<FrameworkPreview title="검색">
+  <ReactSearch slot="react" placeholder="검색어를 입력해 주세요" client:only="react" />
+  <VueSearch slot="vue" placeholder="검색어를 입력해 주세요" client:only="vue" />
+  <SvelteSearch slot="svelte" placeholder="검색어를 입력해 주세요" client:only="svelte" />
+  <SolidSearch slot="solid" placeholder="검색어를 입력해 주세요" client:only="solid-js" />
+  <AngularSearch slot="angular" placeholder="검색어를 입력해 주세요" client:only="@analogjs/astro-angular" />
+  <AstroSearch slot="astro" placeholder="검색어를 입력해 주세요" />
+
+```tsx fw=react
+import { Search } from "@krds-community/react";
+
+export function Example() {
+  return <Search placeholder="검색어를 입력해 주세요"></Search>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Search } from "@krds-community/vue";
+</script>
+
+<template>
+  <Search placeholder="검색어를 입력해 주세요"></Search>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Search } from '@krds-community/svelte';
+</script>
+
+<Search placeholder="검색어를 입력해 주세요"></Search>
+```
+
+```tsx fw=solid
+import { Search } from "@krds-community/solid";
+
+export function Example() {
+  return <Search placeholder="검색어를 입력해 주세요"></Search>;
+}
+```
+
+```ts fw=angular
+import { KrdsSearchComponent } from '@krds-community/angular';
+
+// template
+<krds-search placeholder="검색어를 입력해 주세요"></krds-search>
+```
+
+```astro fw=astro
+---
+import { Search } from '@krds-community/astro';
+---
+
+<Search placeholder="검색어를 입력해 주세요"></Search>
+```
+
+</FrameworkPreview>
+
+## 구조
+
+검색은 검색어 입력 필드와 검색 실행 버튼을 하나의 그룹으로 제공하는 컴포넌트로, 서비스 내 콘텐츠를 빠르게 찾을 수 있도록 돕는다.
+
+```html
+<div class="krds-search">
+  <div class="search-input-wrap">
+    <input type="search" class="krds-input" placeholder="검색어를 입력해 주세요" aria-label="검색어" />
+  </div>
+  <button type="button" class="krds-btn large primary">검색</button>
+</div>
+```
+
+- `.krds-search` — 검색 컴포넌트 컨테이너. `size` 값이 클래스로 함께 적용된다.
+- `.search-input-wrap` — 검색어 입력 영역. `type="search"` 입력 필드가 렌더되고, Enter 키로도 검색이 실행된다.
+- 검색 버튼 — `buttonLabel` 텍스트의 버튼. 클릭 시 입력된 검색어를 `onSearch` 콜백으로 전달한다.
+
+| prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| size | "xlarge" \| "large" \| "medium" | "large" | 검색 입력 필드 크기 |
+| placeholder | string | "검색어를 입력해 주세요" | 입력 필드에 표시되는 안내 텍스트 |
+| onSearch | (value: string) => void | — | 검색 실행 시 입력 값을 전달하는 콜백 (선택) |
+| buttonLabel | ReactNode | "검색" | 검색 버튼 텍스트 |
+
+## 용례
+
+#### 사용하기 적합한 경우
+
+- 서비스 내 콘텐츠나 정보를 키워드로 찾아야 할 때
+- 공공 서비스의 민원·조회·신청 대상 목록에서 특정 항목을 빠르게 찾을 때
+- 목록이 길어 스크롤보다 검색이 효율적인 화면에 배치할 때
+
+#### 사용하기 적합하지 않은 경우
+
+- 정해진 항목 중 하나를 고르는 경우 — 선택(select) 컴포넌트를 사용해야 한다.
+- 입력 즉시 결과가 필터링되는 단순 목록 필터에 별도 버튼이 필요한 경우
+- 검색 기능이 실제로 연결되지 않은 상태로 장식용 입력 필드를 배치하는 경우
+
+## 사용성 가이드라인
+
+**접근 가능한 이름을 제공한다.**
+입력 필드에 `aria-label="검색어"`를 제공하여 스크린 리더 사용자가 입력 필드의 용도를 알 수 있도록 한다. placeholder는 접근 가능한 이름을 대체하지 않는다.
+
+- KWCAG 2.2 적절한 대체 텍스트 제공
+- WCAG 2.1 Info and Relationships (A)
+
+**키보드로 검색을 실행할 수 있어야 한다.**
+입력 필드에서 Enter 키를 눌러 검색을 실행할 수 있도록 하고, 검색 버튼에도 키보드 포커스가 명확히 표시되어야 한다. 검색 결과는 새 탭이 아닌 같은 화면 흐름에서 제공한다.
+
+- KWCAG 2.2 키보드 사용 보장
+- WCAG 2.1 Keyboard (A)
+
+**검색 대상과 범위를 명확히 안내한다.**
+placeholder나 인접 텍스트로 검색 대상을 안내하고, 검색 결과가 없을 때는 "검색 결과가 없습니다"와 같은 결과 안내를 제공한다.
+
+**검색 버튼 라벨은 명확하게 제공한다.**
+아이콘만으로 검색 버튼을 표현하지 않고 "검색" 텍스트를 함께 제공하여 버튼의 용도를 누구나 이해할 수 있도록 한다.

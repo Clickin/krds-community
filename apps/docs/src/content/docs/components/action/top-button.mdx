@@ -1,0 +1,131 @@
+---
+title: 최상단 이동
+description: KRDS 최상단 이동 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: action
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import { TopButton as ReactTopButton } from "@krds-community/react";
+import { TopButton as VueTopButton } from "@krds-community/vue";
+import { TopButton as SvelteTopButton } from "@krds-community/svelte";
+import { TopButton as SolidTopButton } from "@krds-community/solid";
+import { AngularTopButton } from "@docs/angular-previews.ts";
+import { TopButton as AstroTopButton } from "@krds-community/astro";
+
+> 이 컴포넌트는 공식 웹사이트/고정 스냅샷에 포함되지 않은 Figma v1.0.0 기반 커뮤니티 구현입니다. conformance 측정에서 제외됩니다.
+
+<FrameworkPreview title="최상단 이동">
+  <ReactTopButton slot="react" client:only="react" />
+  <VueTopButton slot="vue" client:only="vue" />
+  <SvelteTopButton slot="svelte" client:only="svelte" />
+  <SolidTopButton slot="solid" client:only="solid-js" />
+  <AngularTopButton slot="angular" client:only="@analogjs/astro-angular" />
+  <AstroTopButton slot="astro" />
+
+```tsx fw=react
+import { TopButton } from "@krds-community/react";
+
+export function Example() {
+  return <TopButton></TopButton>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TopButton } from "@krds-community/vue";
+</script>
+
+<template>
+  <TopButton></TopButton>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TopButton } from '@krds-community/svelte';
+</script>
+
+<TopButton></TopButton>
+```
+
+```tsx fw=solid
+import { TopButton } from "@krds-community/solid";
+
+export function Example() {
+  return <TopButton></TopButton>;
+}
+```
+
+```ts fw=angular
+import { KrdsTopButtonComponent } from '@krds-community/angular';
+
+// template
+<krds-top-button></krds-top-button>
+```
+
+```astro fw=astro
+---
+import { TopButton } from '@krds-community/astro';
+---
+
+<TopButton></TopButton>
+```
+
+</FrameworkPreview>
+
+## 구조
+
+최상단 이동은 긴 화면을 스크롤한 사용자가 페이지 상단으로 빠르게 돌아갈 수 있도록 돕는 컴포넌트로, 위쪽 화살표 아이콘이 포함된 버튼으로 구성된다.
+
+```html
+<div class="krds-top-button">
+  <button type="button" class="krds-btn medium icon" aria-label="맨 위로">
+    <i class="svg-icon ico-go-top" aria-hidden="true"></i>
+    <span>TOP</span>
+  </button>
+</div>
+```
+
+- `.krds-top-button` — 최상단 이동 버튼 컨테이너.
+- 버튼 — `aria-label="맨 위로"`를 갖는 아이콘 버튼. `type="label"`이면 "TOP" 텍스트가 함께 표시된다. 클릭 시 `onClick` 콜백이 실행된다.
+
+| prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| type | "basic" \| "label" | "basic" | 버튼 형태. basic은 아이콘만, label은 아이콘과 "TOP" 텍스트를 함께 표시한다 |
+| onClick | () => void | — | 클릭 시 실행되는 콜백. 스크롤 이동 동작은 이 콜백으로 구현한다 |
+| ariaLabel | string | "맨 위로" | 버튼에 제공되는 접근 가능한 이름 |
+| label | string | "TOP" | `type="label"`일 때 표시되는 텍스트 |
+
+## 용례
+
+#### 사용하기 적합한 경우
+
+- 콘텐츠가 길어 여러 번 스크롤해야 하는 페이지에서 사용자가 상단으로 빠르게 이동할 수 있게 할 때
+- 본문 하단 등 스크롤의 끝 지점에 배치하여 이동 수단을 제공할 때
+- 모바일 환경에서 위로 스크롤하기 어려운 긴 콘텐츠에 사용할 때
+
+#### 사용하기 적합하지 않은 경우
+
+- 화면을 스크롤하지 않아도 되는 짧은 페이지에 사용하는 경우
+- 화면 하단 고정 내비게이션(탭바)과 함께 배치해 화면 요소가 겹치는 경우
+- 상단 이동이 본문 안의 링크로 충분히 제공되는 경우
+
+## 사용성 가이드라인
+
+**버튼의 용도를 명확히 제공한다.**
+`aria-label="맨 위로"`를 기본으로 제공하여 스크린 리더 사용자가 버튼의 용도를 알 수 있도록 한다. `type="label"`을 사용하면 시각적으로도 용도가 명확해진다.
+
+- KWCAG 2.2 적절한 대체 텍스트 제공
+- WCAG 2.1 Name, Role, Value (A)
+
+**키보드와 포커스 동작을 보장한다.**
+버튼은 Tab으로 포커스할 수 있고 Enter/스페이스바로 동작해야 하며, 포커스 링이 명확히 표시되어야 한다. 클릭 시에는 포커스가 함께 페이지 상단으로 이동하도록 구현하는 것을 권장한다.
+
+- KWCAG 2.2 키보드 사용 보장
+- WCAG 2.1 Keyboard (A)
+
+**다른 콘텐츠를 가리지 않도록 배치한다.**
+고정 배치 시 화면 하단에서 다른 콘텐츠나 조작 요소를 가리지 않는 위치에 두고, 필요한 경우 스크롤 위치에 따라 표시 여부를 조절한다.
+
+**스크롤 이동은 부드럽게 제공한다.**
+상단 이동 시 즉시 이동보다 부드러운 스크롤을 권장한다. 사용자가 이동 중에도 화면 흐름을 인지할 수 있도록 한다. `prefers-reduced-motion` 환경에서는 애니메이션을 줄여 제공한다.

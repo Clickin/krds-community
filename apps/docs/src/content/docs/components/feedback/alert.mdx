@@ -1,0 +1,135 @@
+---
+title: 알림
+description: KRDS 알림 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: feedback
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import { Alert as ReactAlert } from "@krds-community/react";
+import { Alert as VueAlert } from "@krds-community/vue";
+import { Alert as SvelteAlert } from "@krds-community/svelte";
+import { Alert as SolidAlert } from "@krds-community/solid";
+import { AngularAlert } from "@docs/angular-previews.ts";
+import { Alert as AstroAlert } from "@krds-community/astro";
+
+> 이 컴포넌트는 공식 웹사이트/고정 스냅샷에 포함되지 않은 Figma v1.0.0 기반 커뮤니티 구현입니다. conformance 측정에서 제외됩니다.
+
+<FrameworkPreview title="알림">
+  <ReactAlert slot="react" state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요." client:only="react" />
+  <VueAlert slot="vue" state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요." client:only="vue" />
+  <SvelteAlert slot="svelte" state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요." client:only="svelte" />
+  <SolidAlert slot="solid" state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요." client:only="solid-js" />
+  <AngularAlert slot="angular" state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요." client:only="@analogjs/astro-angular" />
+  <AstroAlert slot="astro" state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요." />
+
+```tsx fw=react
+import { Alert } from "@krds-community/react";
+
+export function Example() {
+  return <Alert state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요."></Alert>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Alert } from "@krds-community/vue";
+</script>
+
+<template>
+  <Alert state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요."></Alert>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Alert } from '@krds-community/svelte';
+</script>
+
+<Alert state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요."></Alert>
+```
+
+```tsx fw=solid
+import { Alert } from "@krds-community/solid";
+
+export function Example() {
+  return <Alert state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요."></Alert>;
+}
+```
+
+```ts fw=angular
+import { KrdsAlertComponent } from '@krds-community/angular';
+
+// template
+<krds-alert state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요."></krds-alert>
+```
+
+```astro fw=astro
+---
+import { Alert } from '@krds-community/astro';
+---
+
+<Alert state="danger" title="오류가 발생했습니다." message="잠시 후 다시 시도해 주세요."></Alert>
+```
+
+</FrameworkPreview>
+
+## 구조
+
+알림은 사용자 행동의 결과나 시스템 상태를 인라인으로 전달하는 컴포넌트로, 상태 아이콘과 제목·본문 텍스트로 구성된다.
+
+```html
+<div class="krds-alert" role="status">
+  <i class="svg-icon alert-icon" aria-hidden="true"></i>
+  <strong class="alert-title">오류가 발생했습니다.</strong>
+  <p class="alert-body">잠시 후 다시 시도해 주세요.</p>
+</div>
+```
+
+- `.krds-alert` — 알림 컨테이너. `state`·`size` 값이 클래스로 함께 적용된다. `role="status"`를 갖는다.
+- `.alert-icon` — 상태를 나타내는 아이콘. `state`에 따라 danger/warning은 `ico-error-fill`, success는 `ico-success-fill`, information은 `ico-information-fill`이 렌더된다.
+- `.alert-title` — 알림 제목. `title` prop이 있을 때만 렌더된다.
+- `.alert-body` — 알림 본문. `message` prop은 필수다.
+
+| prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| state | "danger" \| "warning" \| "success" \| "information" | "danger" | 알림 상태 |
+| size | "with-title" \| "slim" | "slim" | 제목 포함 여부. "with-title"이면 제목 영역이 함께 표시된다 |
+| title | ReactNode | — | 알림 제목 (선택) |
+| message | ReactNode | — | 알림 본문 (필수) |
+
+## 용례
+
+#### 사용하기 적합한 경우
+
+- 폼 제출 결과, 저장 완료 등 사용자 행동에 대한 즉각적인 피드백을 전달할 때
+- 입력값 검증 오류 등 사용자가 바로 조치해야 하는 상태를 안내할 때
+- 서비스 이용 중 발생한 상태 변화를 해당 콘텐츠 근처에 간결하게 전달할 때
+
+#### 사용하기 적합하지 않은 경우
+
+- 긴급하거나 중대한 공지 — 긴급 공지(critical-alerts) 컴포넌트를 사용해야 한다.
+- 전체 화면을 덮는 경고 — 모달(modal)을 사용해야 한다.
+- 홍보 목적의 내용을 강조하거나 장식적으로 사용하는 경우
+
+## 사용성 가이드라인
+
+**알림 상태를 색상에만 의존해 전달하지 않는다.**
+state에 따른 색상 변화와 함께 아이콘과 텍스트로 상태를 함께 전달하여 색각 이상 사용자도 상태를 인지할 수 있도록 한다. 아이콘은 `aria-hidden="true"`로 처리하여 스크린 리더에 중복 정보가 전달되지 않게 한다.
+
+- KWCAG 2.2 색에 무관한 콘텐츠 인식
+- WCAG 2.1 Use of Color (A)
+
+**알림 콘텐츠는 간결하고 명확하게 작성한다.**
+본문은 한 문장 이내로 작성하고 사용자가 바로 이해할 수 있는 문구를 사용한다. 동일한 상태를 알리기 위해 여러 개의 알림을 나란히 배치하지 않는다.
+
+**접근 가능한 이름을 제공한다.**
+알림 컨테이너에 `role="status"`를 제공하여 스크린 리더 사용자가 알림의 목적을 이해할 수 있게 하고, 제목이 없을 때에도 본문 텍스트가 접근 가능한 이름으로 읽히도록 한다.
+
+- KWCAG 2.2 적절한 대체 텍스트 제공
+- WCAG 2.1 Info and Relationships (A)
+
+**명도 대비를 확보한다.**
+배경과 텍스트, 아이콘 간 명도 대비를 4.5:1(본문 텍스트) 이상으로 제공한다.
+
+- KWCAG 2.2 텍스트 콘텐츠의 명도 대비
+- WCAG 2.1 Contrast (Minimum) (AA)

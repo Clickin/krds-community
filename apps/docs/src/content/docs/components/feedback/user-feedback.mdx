@@ -1,0 +1,139 @@
+---
+title: 사용자 피드백
+description: KRDS 사용자 피드백 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: feedback
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import { UserFeedback as ReactUserFeedback } from "@krds-community/react";
+import { UserFeedback as VueUserFeedback } from "@krds-community/vue";
+import { UserFeedback as SvelteUserFeedback } from "@krds-community/svelte";
+import { UserFeedback as SolidUserFeedback } from "@krds-community/solid";
+import { AngularUserFeedback } from "@docs/angular-previews.ts";
+import { UserFeedback as AstroUserFeedback } from "@krds-community/astro";
+
+> 이 컴포넌트는 공식 웹사이트/고정 스냅샷에 포함되지 않은 Figma v1.0.0 기반 커뮤니티 구현입니다. conformance 측정에서 제외됩니다.
+
+<FrameworkPreview title="사용자 피드백">
+  <ReactUserFeedback slot="react" client:only="react" />
+  <VueUserFeedback slot="vue" client:only="vue" />
+  <SvelteUserFeedback slot="svelte" client:only="svelte" />
+  <SolidUserFeedback slot="solid" client:only="solid-js" />
+  <AngularUserFeedback slot="angular" client:only="@analogjs/astro-angular" />
+  <AstroUserFeedback slot="astro" />
+
+```tsx fw=react
+import { UserFeedback } from "@krds-community/react";
+
+export function Example() {
+  return <UserFeedback></UserFeedback>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { UserFeedback } from "@krds-community/vue";
+</script>
+
+<template>
+  <UserFeedback></UserFeedback>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { UserFeedback } from '@krds-community/svelte';
+</script>
+
+<UserFeedback></UserFeedback>
+```
+
+```tsx fw=solid
+import { UserFeedback } from "@krds-community/solid";
+
+export function Example() {
+  return <UserFeedback></UserFeedback>;
+}
+```
+
+```ts fw=angular
+import { KrdsUserFeedbackComponent } from '@krds-community/angular';
+
+// template
+<krds-user-feedback></krds-user-feedback>
+```
+
+```astro fw=astro
+---
+import { UserFeedback } from '@krds-community/astro';
+---
+
+<UserFeedback></UserFeedback>
+```
+
+</FrameworkPreview>
+
+## 구조
+
+사용자 피드백은 페이지나 서비스에 대한 만족도를 간단한 문항으로 수집하는 컴포넌트로, fieldset/legend로 질문을 그룹화하고 라디오 버튼과 제출 버튼으로 구성된다.
+
+```html
+<div class="krds-user-feedback">
+  <fieldset>
+    <legend class="feedback-title">이 페이지에 만족하시나요?</legend>
+    <div class="feedback-options">
+      <input type="radio" id="feedback-satisfied" name="krds-feedback" value="satisfied" />
+      <label for="feedback-satisfied">만족</label>
+      <input type="radio" id="feedback-dissatisfied" name="krds-feedback" value="dissatisfied" />
+      <label for="feedback-dissatisfied">불만족</label>
+    </div>
+    <button type="button" class="krds-btn small primary">제출</button>
+  </fieldset>
+</div>
+```
+
+- `.krds-user-feedback` — 사용자 피드백 컨테이너.
+- `fieldset`/`legend.feedback-title` — 질문을 그룹화하고 질문 텍스트를 제공한다.
+- `.feedback-options` — 응답 선택지 영역. `options` prop의 항목이 라디오 버튼으로 렌더된다.
+- 제출 버튼 — 선택된 값을 `onSubmit` 콜백으로 전달한다. 값이 선택되지 않으면 제출되지 않는다.
+
+| prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| title | ReactNode | "이 페이지에 만족하시나요?" | 질문 텍스트 |
+| options | `{ value: string; label: string }[]` | 만족/불만족 | 응답 선택지 목록 |
+| onSubmit | (value: string) => void | — | 제출 시 선택 값을 전달하는 콜백 (선택) |
+| submitLabel | ReactNode | "제출" | 제출 버튼 텍스트 |
+
+## 용례
+
+#### 사용하기 적합한 경우
+
+- 페이지나 서비스에 대한 만족도·도움 여부를 단일 문항으로 수집할 때
+- 정부 서비스 품질 개선을 위해 서비스 이용 경험에 대한 간단한 피드백을 받을 때
+- 응답이 선택 사항이며 짧은 시간에 완료할 수 있는 경우
+
+#### 사용하기 적합하지 않은 경우
+
+- 여러 문항·서술형 응답이 필요한 복잡한 설문 — 별도의 설문 시스템을 사용해야 한다.
+- 응답을 강제하거나 개인정보를 함께 수집하는 경우
+- 사용자의 행동 결과를 알리는 용도 — 알림(alert) 컴포넌트를 사용해야 한다.
+
+## 사용성 가이드라인
+
+**fieldset/legend로 질문을 그룹화한다.**
+스크린 리더 사용자가 선택지와 질문의 관계를 이해할 수 있도록 `fieldset`과 `legend`로 응답 그룹을 묶고, 선택지는 라디오 버튼으로 제공한다.
+
+- KWCAG 2.2 적절한 대체 텍스트 제공
+- WCAG 2.1 Info and Relationships (A)
+
+**키보드로 모든 조작이 가능해야 한다.**
+라디오 버튼은 방향 키로 선택지를 이동하고 스페이스바로 선택할 수 있도록 하며, 포커스가 선택지와 제출 버튼에 명확히 표시되어야 한다.
+
+- KWCAG 2.2 키보드 사용 보장
+- WCAG 2.1 Keyboard (A)
+
+**응답을 강제하지 않는다.**
+피드백 응답은 선택 사항으로 제공하고, 제출 전에 응답을 강요하지 않는다. 제출 후에는 감사 인사나 제출 완료 상태를 간결하게 안내한다.
+
+**선택지 라벨은 명확하게 제공한다.**
+"만족", "불만족"처럼 선택지의 의미를 바로 알 수 있는 라벨을 사용하고, 아이콘만으로 선택지를 표현하지 않는다.

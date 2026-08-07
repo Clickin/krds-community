@@ -118,11 +118,7 @@ const liveOnlyIds = new Set([
   "hidden-content",
   "range-slider",
   "back",
-  "bottom-sheet",
   "quantity-toggle",
-  "toast",
-  "snackbar",
-  "tab-bar",
   "splash-screen",
 ]);
 

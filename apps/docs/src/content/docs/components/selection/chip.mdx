@@ -1,0 +1,168 @@
+---
+title: 칩
+description: KRDS 칩 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, Astro 구현 예제와 설명
+category: selection
+---
+
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
+import { Chip as ReactChip } from "@krds-community/react";
+import { Chip as VueChip } from "@krds-community/vue";
+import { Chip as SvelteChip } from "@krds-community/svelte";
+import { Chip as SolidChip } from "@krds-community/solid";
+import { AngularChip } from "@docs/angular-previews.ts";
+import { Chip as AstroChip } from "@krds-community/astro";
+
+> 이 컴포넌트는 공식 웹사이트/고정 스냅샷에 포함되지 않은 Figma v1.0.0 기반 커뮤니티 구현입니다. conformance 측정에서 제외됩니다.
+
+<FrameworkPreview title="칩">
+  <ReactChip slot="react" options={[{value:"opt1",label:"옵션 1"},{value:"opt2",label:"옵션 2"},{value:"opt3",label:"옵션 3"}]} defaultSelected="opt1" client:only="react" />
+  <VueChip slot="vue" options={[{value:"opt1",label:"옵션 1"},{value:"opt2",label:"옵션 2"},{value:"opt3",label:"옵션 3"}]} defaultSelected="opt1" client:only="vue" />
+  <SvelteChip slot="svelte" options={[{value:"opt1",label:"옵션 1"},{value:"opt2",label:"옵션 2"},{value:"opt3",label:"옵션 3"}]} defaultSelected="opt1" client:only="svelte" />
+  <SolidChip slot="solid" options={[{value:"opt1",label:"옵션 1"},{value:"opt2",label:"옵션 2"},{value:"opt3",label:"옵션 3"}]} defaultSelected="opt1" client:only="solid-js" />
+  <AngularChip slot="angular" options={[{value:"opt1",label:"옵션 1"},{value:"opt2",label:"옵션 2"},{value:"opt3",label:"옵션 3"}]} defaultSelected="opt1" client:only="@analogjs/astro-angular" />
+  <AstroChip slot="astro" options={[{value:"opt1",label:"옵션 1"},{value:"opt2",label:"옵션 2"},{value:"opt3",label:"옵션 3"}]} defaultSelected="opt1" />
+
+```tsx fw=react
+import { Chip } from "@krds-community/react";
+
+const options = [
+  { value: "opt1", label: "옵션 1" },
+  { value: "opt2", label: "옵션 2" },
+  { value: "opt3", label: "옵션 3" },
+];
+
+export function Example() {
+  return <Chip options={options} defaultSelected="opt1"></Chip>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Chip } from "@krds-community/vue";
+
+const options = [
+  { value: "opt1", label: "옵션 1" },
+  { value: "opt2", label: "옵션 2" },
+  { value: "opt3", label: "옵션 3" },
+];
+</script>
+
+<template>
+  <Chip :options="options" defaultSelected="opt1"></Chip>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Chip } from '@krds-community/svelte';
+
+const options = [
+  { value: "opt1", label: "옵션 1" },
+  { value: "opt2", label: "옵션 2" },
+  { value: "opt3", label: "옵션 3" },
+];
+</script>
+
+<Chip options={options} defaultSelected="opt1"></Chip>
+```
+
+```tsx fw=solid
+import { Chip } from "@krds-community/solid";
+
+const options = [
+  { value: "opt1", label: "옵션 1" },
+  { value: "opt2", label: "옵션 2" },
+  { value: "opt3", label: "옵션 3" },
+];
+
+export function Example() {
+  return <Chip options={options} defaultSelected="opt1"></Chip>;
+}
+```
+
+```ts fw=angular
+import { KrdsChipComponent } from '@krds-community/angular';
+
+// options = [
+//   { value: "opt1", label: "옵션 1" },
+//   { value: "opt2", label: "옵션 2" },
+//   { value: "opt3", label: "옵션 3" },
+// ]
+
+// template
+<krds-chip [options]="options" defaultSelected="opt1"></krds-chip>
+```
+
+```astro fw=astro
+---
+import { Chip } from '@krds-community/astro';
+
+const options = [
+  { value: "opt1", label: "옵션 1" },
+  { value: "opt2", label: "옵션 2" },
+  { value: "opt3", label: "옵션 3" },
+];
+---
+
+<Chip options={options} defaultSelected="opt1"></Chip>
+```
+
+</FrameworkPreview>
+
+## 구조
+
+칩은 여러 옵션 중 하나 또는 여러 개를 선택하는 컴포넌트로, 화면 공간을 절약하면서 선택 상태를 시각적으로 전달한다.
+
+```html
+<div class="krds-chip" role="radiogroup" aria-label="선택">
+  <button type="button" class="krds-btn small text chip active" aria-pressed="true">옵션 1</button>
+  <button type="button" class="krds-btn small text chip" aria-pressed="false">옵션 2</button>
+</div>
+```
+
+- `.krds-chip` — 칩 그룹 컨테이너. `type="single"`이면 `role="radiogroup"`, `type="multi"`이면 `role="group"`이 적용된다.
+- `.krds-btn.small.text.chip` — 개별 칩 버튼. 선택된 칩은 `active` 클래스와 `aria-pressed="true"`를 갖는다. `disabled` 옵션은 비활성 상태로 렌더된다.
+
+| prop | 타입 | 기본값 | 설명 |
+|---|---|---|---|
+| type | "single" \| "multi" | "single" | 선택 방식. single은 하나만, multi는 여러 개를 선택할 수 있다 |
+| size | "large" \| "medium" | "medium" | 칩 크기 |
+| options | `{ value: string; label: string; disabled?: boolean }[]` | — | 칩 옵션 목록 (필수) |
+| selected | string \| string[] | — | 제어되는 선택 값 (선택) |
+| defaultSelected | string \| string[] | — | 초기 선택 값 (선택) |
+| onChange | (value: string \| string[]) => void | — | 선택 변경 시 값을 전달하는 콜백 (선택) |
+| ariaLabel | string | — | 칩 그룹에 제공되는 접근 가능한 이름 (선택) |
+
+## 용례
+
+#### 사용하기 적합한 경우
+
+- 검색 결과 필터 등 화면 공간을 절약하며 선택지를 제공할 때
+- 카테고리·구분 등 몇 개 안 되는 옵션 중 하나 또는 여러 개를 빠르게 고르게 할 때
+- 선택 결과가 즉시 화면에 반영되는 경우
+
+#### 사용하기 적합하지 않은 경우
+
+- 옵션이 많아 스크롤이 필요한 경우 — 선택(select) 컴포넌트를 사용해야 한다.
+- 선택지가 2개뿐인 단순 선택 — 라디오(radio) 또는 체크박스(checkbox)를 사용하는 것이 적합하다.
+- 텍스트 입력이 필요한 자유 응답이 필요한 경우
+
+## 사용성 가이드라인
+
+**접근 가능한 이름과 선택 상태를 제공한다.**
+칩 그룹에 `aria-label`을 제공하고, 개별 칩의 선택 상태는 `aria-pressed`로 전달한다. 선택 상태를 색상에만 의존하지 않고 `active` 클래스와 함께 시각적으로도 명확히 표현한다.
+
+- KWCAG 2.2 적절한 대체 텍스트 제공
+- WCAG 2.1 Name, Role, Value (A)
+
+**키보드로 선택할 수 있어야 한다.**
+각 칩은 버튼이므로 Tab으로 이동하고 Enter/스페이스바로 선택할 수 있어야 하며, 포커스가 칩에 명확히 표시되어야 한다. single 타입은 방향 키로 선택지를 이동하는 라디오 그룹 동작을 제공하는 것을 권장한다.
+
+- KWCAG 2.2 키보드 사용 보장
+- WCAG 2.1 Keyboard (A)
+
+**선택지 라벨은 명확하게 제공한다.**
+칩의 텍스트만으로 선택지를 이해할 수 있어야 한다. 축약어나 아이콘만으로 표현하지 않고, 필요한 경우 부가 설명을 함께 제공한다.
+
+**disabled 칩은 별도로 안내한다.**
+비활성 칩은 시각적으로 구분하고 포커스를 받지 않도록 한다. 비활성 사유가 필요한 경우 인접 텍스트로 안내한다.
