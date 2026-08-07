@@ -525,6 +525,16 @@ const renderInventoryComponent = (name: string) => {
       h(component, props),
     );
   }
+  if (name === "CoachMark") {
+    // 인벤토리 데모는 여러 컴포넌트를 한 DOM에 합성하므로, 코치마크의 h5/h6이
+    // 이전 컴포넌트의 h3과 단계를 건너뛰지 않도록 react 스토리와 동일하게
+    // sr-only h3/h4 스캐폴딩을 둔다 (heading-order 규칙).
+    return h("div", { class: "inventory-coach-mark" }, [
+      h("h3", { class: "sr-only" }, "단계별 안내"),
+      h("h4", { class: "sr-only" }, "코치마크 예시"),
+      h(component, props),
+    ]);
+  }
   if (name === "StructuredListTable") {
     return h("div", { class: "inventory-structured-list-table", style: "min-width:0" }, [
       h(component, props),

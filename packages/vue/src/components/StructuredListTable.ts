@@ -18,7 +18,7 @@ export const StructuredListTable = defineComponent({
     title: { type: String, default: undefined },
     columns: { type: Array as PropType<AdditionalTableColumn[]>, default: () => [] },
     rows: { type: Array as PropType<AdditionalTableRow[]>, default: () => [] },
-    selectAllLabel: { type: String, default: undefined },
+    selectAllLabel: { type: String, default: "전체선택" },
     actions: { type: Array as PropType<AdditionalAction[]>, default: () => [] },
     countLabel: { type: String, default: undefined },
     countOptions: { type: Array as PropType<string[]>, default: () => [] },
