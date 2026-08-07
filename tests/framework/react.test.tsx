@@ -1,7 +1,19 @@
 import { act, createElement, createRef, useState, type FormEvent, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CoachMark } from "../../packages/react/src/components/CoachMark.js";
+import { Toast } from "../../packages/react/src/components/Toast.js";
+import { Snackbar } from "../../packages/react/src/components/Snackbar.js";
+import { Alert } from "../../packages/react/src/components/Alert.js";
+import { Infobox } from "../../packages/react/src/components/Infobox.js";
+import { ProgressBar } from "../../packages/react/src/components/ProgressBar.js";
+import { Search } from "../../packages/react/src/components/Search.js";
+import { Chip } from "../../packages/react/src/components/Chip.js";
+import { TopButton } from "../../packages/react/src/components/TopButton.js";
+import { UserFeedback } from "../../packages/react/src/components/UserFeedback.js";
+import { Card } from "../../packages/react/src/components/Card.js";
+import { BottomSheet } from "../../packages/react/src/components/BottomSheet.js";
+import { TabBar } from "../../packages/react/src/components/TabBar.js";
 import {
   Accordion,
   Button,
@@ -62,6 +74,7 @@ function render(node: ReactNode) {
 }
 
 afterEach(() => {
+  vi.useRealTimers();
   if (root) {
     act(() => root?.unmount());
     root = undefined;
@@ -1383,5 +1396,240 @@ describe("React core component contracts", () => {
       "Current step",
       "Total steps",
     ]);
+  });
+});
+
+describe("no-upstream component contracts", () => {
+  it("renders an open toast with the status role and auto-closes with a closing phase", async () => {
+    const onOpenChange = vi.fn();
+    vi.useFakeTimers();
+    await render(
+      h(Toast, { message: "저장되었습니다.", open: true, onOpenChange, duration: 3000 }),
+    );
+    const toast = host.querySelector<HTMLElement>(".krds-toast")!;
+    expect(toast.getAttribute("role")).toBe("status");
+    expect(toast.querySelector(".toast-text")?.textContent).toBe("저장되었습니다.");
+    await act(async () => {
+      vi.advanceTimersByTime(3000);
+    });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    vi.useRealTimers();
+  });
+
+  it("uses alert role for warning tone and renders nothing when closed", async () => {
+    await render(h(Toast, { message: "주의", tone: "warning", open: true }));
+    expect(host.querySelector(".krds-toast")?.getAttribute("role")).toBe("alert");
+
+    await render(h(Toast, { message: "보이지 않음", open: false }));
+    expect(host.querySelector(".krds-toast")).toBeNull();
+  });
+
+  it("removes an uncontrolled toast after the closing animation", async () => {
+    vi.useFakeTimers();
+    await render(h(Toast, { message: "임시 저장 실패", tone: "warning", defaultOpen: true }));
+    const toast = host.querySelector<HTMLElement>(".krds-toast")!;
+    expect(toast).not.toBeNull();
+    await act(async () => {
+      vi.advanceTimersByTime(4000);
+    });
+    expect(host.querySelector(".krds-toast")?.classList.contains("closing")).toBe(true);
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(host.querySelector(".krds-toast")).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it("renders snackbar parts and fires action/close callbacks", async () => {
+    const onAction = vi.fn();
+    const onOpenChange = vi.fn();
+    vi.useFakeTimers();
+    await render(
+      h(Snackbar, {
+        title: "변경사항 저장",
+        message: "변경사항이 저장되었습니다.",
+        icon: "ico-sch",
+        actionLabel: "되돌리기",
+        onAction,
+        onOpenChange,
+        defaultOpen: true,
+      }),
+    );
+    const snackbar = host.querySelector<HTMLElement>(".krds-snackbar")!;
+    expect(snackbar.getAttribute("role")).toBe("alert");
+    expect(snackbar.querySelector(".snackbar-title")?.textContent).toBe("변경사항 저장");
+    expect(snackbar.querySelector(".snackbar-text")?.textContent).toBe(
+      "변경사항이 저장되었습니다.",
+    );
+    expect(snackbar.querySelector(".snackbar-icon.ico-sch")).not.toBeNull();
+    const action = snackbar.querySelector<HTMLButtonElement>(".snackbar-action")!;
+    act(() => action.click());
+    expect(onAction).toHaveBeenCalledTimes(1);
+
+    act(() => snackbar.querySelector<HTMLButtonElement>(".snackbar-close")!.click());
+    expect(snackbar.classList.contains("closing")).toBe(true);
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    vi.useRealTimers();
+  });
+
+  it("renders alert states with title/body and status role", async () => {
+    await render(h(Alert, { state: "danger", size: "with-title", title: "오류", message: "내용" }));
+    const alert = host.querySelector<HTMLElement>(".krds-alert")!;
+    expect(alert.getAttribute("role")).toBe("status");
+    expect(alert.classList.contains("danger")).toBe(true);
+    expect(alert.classList.contains("with-title")).toBe(true);
+    expect(alert.querySelector(".alert-title")?.textContent).toBe("오류");
+    expect(alert.querySelector(".alert-body")?.textContent).toBe("내용");
+    expect(alert.querySelector(".alert-icon.ico-error-fill")).not.toBeNull();
+  });
+
+  it("renders infobox region and progress bar with native progress", async () => {
+    await render(h(Infobox, { type: "primary", message: "안내 내용" }));
+    const infobox = host.querySelector<HTMLElement>(".krds-infobox")!;
+    expect(infobox.getAttribute("role")).toBe("region");
+    expect(infobox.getAttribute("aria-label")).toBe("알림");
+    expect(infobox.querySelector(".infobox-text")?.textContent).toBe("안내 내용");
+
+    await render(h(ProgressBar, { value: 70, max: 100, label: "진행률", state: "success" }));
+    const progress = host.querySelector<HTMLProgressElement>(".krds-progress")!;
+    expect(progress.tagName).toBe("PROGRESS");
+    expect(progress.value).toBe(70);
+    expect(progress.max).toBe(100);
+    expect(host.querySelector(".krds-progress-bar")?.classList.contains("success")).toBe(true);
+    expect(host.querySelector(".progress-label")?.textContent).toBe("진행률");
+  });
+
+  it("renders single/multi chip groups with aria-pressed toggles", async () => {
+    const options = [
+      { value: "a", label: "A" },
+      { value: "b", label: "B" },
+      { value: "c", label: "C" },
+    ];
+    const onChange = vi.fn();
+    await render(h(Chip, { type: "single", options, defaultSelected: "a", onChange }));
+    const singleGroup = host.querySelector<HTMLElement>(".krds-chip")!;
+    expect(singleGroup.getAttribute("role")).toBe("radiogroup");
+    const singleButtons = Array.from(singleGroup.querySelectorAll<HTMLButtonElement>(".chip"));
+    expect(singleButtons[0]?.getAttribute("aria-pressed")).toBe("true");
+    expect(singleButtons[0]?.classList.contains("active")).toBe(true);
+    act(() => singleButtons[2]!.click());
+    expect(onChange).toHaveBeenCalledWith("c");
+
+    await render(h(Chip, { type: "multi", options, defaultSelected: ["a"] }));
+    const multiGroup = host.querySelector<HTMLElement>(".krds-chip")!;
+    expect(multiGroup.getAttribute("role")).toBe("group");
+    const multiButtons = Array.from(multiGroup.querySelectorAll<HTMLButtonElement>(".chip"));
+    act(() => multiButtons[1]!.click());
+    expect(multiButtons[1]?.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("fires search and top-button callbacks", async () => {
+    const onSearch = vi.fn();
+    await render(h(Search, { placeholder: "검색어", onSearch }));
+    const input = host.querySelector<HTMLInputElement>(".krds-search input")!;
+    const valueSetter = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )!.set!;
+    act(() => {
+      valueSetter.call(input, "민원");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    act(() => host.querySelector<HTMLButtonElement>(".krds-search button")!.click());
+    expect(onSearch).toHaveBeenCalledWith("민원");
+
+    const onClick = vi.fn();
+    await render(h(TopButton, { onClick }));
+    const topButton = host.querySelector<HTMLButtonElement>(".krds-top-button button")!;
+    expect(topButton.getAttribute("aria-label")).toBe("맨 위로");
+    act(() => topButton.click());
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("submits user feedback with the selected option", async () => {
+    const onSubmit = vi.fn();
+    await render(h(UserFeedback, { onSubmit }));
+    expect(host.querySelector(".feedback-title")?.textContent).toBe("이 페이지에 만족하시나요?");
+    expect(host.querySelectorAll(".feedback-options input[type=radio]")).toHaveLength(2);
+    act(() => host.querySelectorAll<HTMLInputElement>(".feedback-options input")[0]!.click());
+    act(() => host.querySelector<HTMLButtonElement>(".krds-user-feedback button")!.click());
+    expect(onSubmit).toHaveBeenCalledWith("satisfied");
+  });
+
+  it("renders card content with title, description, badges, and actions", async () => {
+    const onAction = vi.fn();
+    await render(
+      h(Card, {
+        title: "카드 제목",
+        description: "카드 설명",
+        badges: ["새소식"],
+        actions: [{ label: "자세히 보기", onClick: onAction }],
+        image: "https://example.com/img.png",
+        imageAlt: "예시 이미지",
+      }),
+    );
+    const card = host.querySelector<HTMLElement>(".krds-card")!;
+    expect(card.classList.contains("vertical")).toBe(true);
+    expect(card.querySelector(".card-image")?.getAttribute("src")).toBe(
+      "https://example.com/img.png",
+    );
+    expect(card.querySelector(".card-title")?.textContent).toBe("카드 제목");
+    expect(card.querySelector(".card-description")?.textContent).toBe("카드 설명");
+    expect(card.querySelector(".card-badge")?.textContent).toBe("새소식");
+    act(() => card.querySelector<HTMLButtonElement>(".card-actions button")!.click());
+    expect(onAction).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens a bottom sheet dialog and removes it after closing animation", async () => {
+    const onOpenChange = vi.fn();
+    vi.useFakeTimers();
+    await render(
+      h(BottomSheet, {
+        defaultOpen: true,
+        title: "정렬 기준 선택",
+        onOpenChange,
+        children: "본문",
+      }),
+    );
+    const sheet = host.querySelector<HTMLElement>(".krds-bottom-sheet")!;
+    expect(sheet.getAttribute("role")).toBe("dialog");
+    expect(sheet.getAttribute("aria-modal")).toBe("true");
+    expect(sheet.querySelector(".bottom-sheet-title")?.textContent).toBe("정렬 기준 선택");
+    expect(sheet.querySelector(".bottom-sheet-body")?.textContent).toBe("본문");
+
+    act(() => sheet.querySelector<HTMLButtonElement>(".bottom-sheet-close")!.click());
+    expect(sheet.classList.contains("closing")).toBe(true);
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    vi.useRealTimers();
+  });
+
+  it("renders a tab bar with the selected item marked", async () => {
+    const onChange = vi.fn();
+    await render(
+      h(TabBar, {
+        items: [
+          { id: "home", label: "홈", href: "#", icon: "ico-sch", badge: "3" },
+          { id: "search", label: "검색" },
+        ],
+        defaultSelected: "home",
+        onChange,
+      }),
+    );
+    const nav = host.querySelector<HTMLElement>(".krds-tab-bar")!;
+    expect(nav.getAttribute("aria-label")).toBe("주요 메뉴");
+    const items = Array.from(nav.querySelectorAll<HTMLElement>(".tab-bar-item"));
+    expect(items).toHaveLength(2);
+    expect(items[0]?.tagName).toBe("A");
+    expect(items[0]?.getAttribute("aria-current")).toBe("page");
+    expect(items[0]?.classList.contains("active")).toBe(true);
+    expect(items[0]?.querySelector(".tab-bar-badge")?.textContent).toBe("3");
+    act(() => items[1]!.click());
+    expect(onChange).toHaveBeenCalledWith("search");
   });
 });

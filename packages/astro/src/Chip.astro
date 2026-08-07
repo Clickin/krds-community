@@ -1,0 +1,112 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface ChipOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+export interface Props {
+  type?: 'single' | 'multi';
+  size?: 'large' | 'medium';
+  options: ChipOption[];
+  selected?: string | string[];
+  defaultSelected?: string | string[];
+  ariaLabel?: string;
+  class?: string;
+}
+
+const {
+  type = 'single',
+  size = 'medium',
+  options,
+  selected,
+  defaultSelected,
+  ariaLabel = '선택',
+  class: className,
+} = Astro.props;
+
+const controlled = selected !== undefined;
+const selectedValue = selected ?? defaultSelected;
+const isSelected = (value: string) =>
+  Array.isArray(selectedValue) ? selectedValue.includes(value) : selectedValue === value;
+---
+
+<div
+  class={cx('krds-chip', type, size, className)}
+  role={type === 'single' ? 'radiogroup' : 'group'}
+  aria-label={ariaLabel}
+  data-controlled={controlled || undefined}
+>
+  {options.map((option) => (
+    <button
+      type="button"
+      class:list={['krds-btn', 'small', 'text', 'chip', isSelected(option.value) && 'active']}
+      aria-pressed={isSelected(option.value) ? 'true' : 'false'}
+      data-value={option.value}
+      disabled={option.disabled}
+    >
+      {option.label}
+    </button>
+  ))}
+</div>
+
+<script>
+  const enhancedChips = new WeakSet<HTMLElement>();
+
+  function enhanceChips() {
+    document.querySelectorAll<HTMLElement>('.krds-chip').forEach((chip) => {
+      if (enhancedChips.has(chip)) return;
+      enhancedChips.add(chip);
+
+      const isMulti = chip.getAttribute('role') === 'group';
+      const controlled = chip.hasAttribute('data-controlled');
+      const selectedButtons = () =>
+        Array.from(chip.querySelectorAll<HTMLButtonElement>('.chip.active'));
+      const currentValues = () =>
+        selectedButtons().map((button) => button.getAttribute('data-value') ?? '');
+
+      chip.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest<HTMLButtonElement>('.chip');
+        if (!button || button.disabled) return;
+
+        let values: string | string[];
+        if (isMulti) {
+          const value = button.getAttribute('data-value') ?? '';
+          const current = currentValues();
+          values = current.includes(value)
+            ? current.filter((item) => item !== value)
+            : [...current, value];
+        } else {
+          values = button.getAttribute('data-value') ?? '';
+        }
+
+        if (!controlled) {
+          if (isMulti) {
+            button.classList.toggle('active');
+            button.setAttribute(
+              'aria-pressed',
+              button.classList.contains('active') ? 'true' : 'false',
+            );
+          } else {
+            selectedButtons().forEach((item) => {
+              item.classList.remove('active');
+              item.setAttribute('aria-pressed', 'false');
+            });
+            button.classList.add('active');
+            button.setAttribute('aria-pressed', 'true');
+          }
+        }
+
+        chip.dispatchEvent(
+          new CustomEvent('krds:change', { bubbles: true, detail: { value: values } }),
+        );
+      });
+    });
+  }
+
+  enhanceChips();
+  document.addEventListener('astro:page-load', enhanceChips);
+</script>

@@ -1,0 +1,23 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  type?: 'primary' | 'secondary';
+  size?: 'default' | 'slim';
+  message?: string;
+  'aria-label'?: string;
+  class?: string;
+}
+
+const {
+  type = 'primary',
+  size = 'default',
+  message,
+  'aria-label': ariaLabel = '알림',
+  class: className,
+} = Astro.props;
+---
+
+<div class={cx('krds-infobox', type, size, className)} role="region" aria-label={ariaLabel}>
+  <p class="infobox-text">{message}</p>
+</div>

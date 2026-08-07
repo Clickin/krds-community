@@ -1,0 +1,26 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  state?: 'danger' | 'warning' | 'success' | 'information';
+  size?: 'with-title' | 'slim';
+  title?: string;
+  message?: string;
+  class?: string;
+}
+
+const { state = 'danger', size = 'slim', title, message, class: className } = Astro.props;
+
+const stateIcon =
+  state === 'success'
+    ? 'ico-success-fill'
+    : state === 'information'
+      ? 'ico-information-fill'
+      : 'ico-error-fill';
+---
+
+<div class={cx('krds-alert', state, size, className)} role="status">
+  <i class={cx('svg-icon', 'alert-icon', stateIcon)} aria-hidden="true"></i>
+  {title && <strong class="alert-title">{title}</strong>}
+  <p class="alert-body">{message}</p>
+</div>

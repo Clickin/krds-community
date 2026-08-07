@@ -1,0 +1,55 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  size?: 'xlarge' | 'large' | 'medium';
+  placeholder?: string;
+  buttonLabel?: string;
+  class?: string;
+}
+
+const {
+  size = 'large',
+  placeholder = '검색어를 입력해 주세요',
+  buttonLabel = '검색',
+  class: className,
+} = Astro.props;
+---
+
+<div class={cx('krds-search', size, className)}>
+  <div class="search-input-wrap">
+    <input type="search" class="krds-input" placeholder={placeholder} aria-label="검색어" />
+  </div>
+  <button type="button" class="krds-btn large primary" aria-label={buttonLabel}>
+    {buttonLabel}
+  </button>
+</div>
+
+<script>
+  const enhancedSearches = new WeakSet<HTMLElement>();
+
+  function enhanceSearches() {
+    document.querySelectorAll<HTMLElement>('.krds-search').forEach((search) => {
+      if (enhancedSearches.has(search)) return;
+      enhancedSearches.add(search);
+      const input = search.querySelector<HTMLInputElement>('input[type="search"]');
+      const button = search.querySelector<HTMLButtonElement>('button');
+      if (!input) return;
+      const submit = () => {
+        search.dispatchEvent(
+          new CustomEvent('krds:search', { bubbles: true, detail: { value: input.value } }),
+        );
+      };
+      button?.addEventListener('click', submit);
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          submit();
+        }
+      });
+    });
+  }
+
+  enhanceSearches();
+  document.addEventListener('astro:page-load', enhanceSearches);
+</script>

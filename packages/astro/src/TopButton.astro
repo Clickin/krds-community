@@ -1,0 +1,36 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  type?: 'basic' | 'label';
+  ariaLabel?: string;
+  label?: string;
+  class?: string;
+}
+
+const { type = 'basic', ariaLabel = '맨 위로', label = 'TOP', class: className } = Astro.props;
+---
+
+<div class={cx('krds-top-button', className)}>
+  <button type="button" class="krds-btn medium icon" aria-label={ariaLabel}>
+    <i class="svg-icon ico-go-top"></i>
+    {type === 'label' && <span>{label}</span>}
+  </button>
+</div>
+
+<script>
+  const enhancedTopButtons = new WeakSet<HTMLElement>();
+
+  function enhanceTopButtons() {
+    document.querySelectorAll<HTMLElement>('.krds-top-button').forEach((root) => {
+      if (enhancedTopButtons.has(root)) return;
+      enhancedTopButtons.add(root);
+      root.addEventListener('click', () => {
+        root.dispatchEvent(new CustomEvent('krds:topbuttonclick', { bubbles: true }));
+      });
+    });
+  }
+
+  enhanceTopButtons();
+  document.addEventListener('astro:page-load', enhanceTopButtons);
+</script>

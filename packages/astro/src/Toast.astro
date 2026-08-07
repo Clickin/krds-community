@@ -1,0 +1,60 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  message?: string;
+  tone?: 'information' | 'warning';
+  open?: boolean;
+  defaultOpen?: boolean;
+  duration?: number;
+  class?: string;
+}
+
+const {
+  message,
+  tone = 'information',
+  open,
+  defaultOpen = false,
+  duration,
+  class: className,
+} = Astro.props;
+
+const rendered = open ?? defaultOpen;
+const autoCloseMs = duration ?? (tone === 'warning' ? 4000 : 3000);
+---
+
+{
+  rendered && (
+    <div
+      class={cx('krds-toast', className)}
+      role={tone === 'warning' ? 'alert' : 'status'}
+      data-duration={autoCloseMs}
+    >
+      <p class="toast-text">{message}</p>
+    </div>
+  )
+}
+
+<script>
+  const CLOSE_ANIMATION_MS = 200;
+  const enhancedToasts = new WeakSet<HTMLElement>();
+
+  function enhanceToasts() {
+    document.querySelectorAll<HTMLElement>('.krds-toast[data-duration]').forEach((toast) => {
+      if (enhancedToasts.has(toast)) return;
+      enhancedToasts.add(toast);
+      const duration = Number(toast.dataset.duration);
+      if (!Number.isFinite(duration) || duration <= 0) return;
+      window.setTimeout(() => {
+        toast.classList.add('closing');
+        window.setTimeout(() => {
+          toast.dispatchEvent(new CustomEvent('krds:close', { bubbles: true }));
+          toast.remove();
+        }, CLOSE_ANIMATION_MS);
+      }, duration);
+    });
+  }
+
+  enhanceToasts();
+  document.addEventListener('astro:page-load', enhanceToasts);
+</script>

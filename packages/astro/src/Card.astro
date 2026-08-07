@@ -1,0 +1,83 @@
+---
+import { cx } from '@krds-community/recipes';
+import Badge from './Badge.astro';
+import Checkbox from './Checkbox.astro';
+
+export interface CardAction {
+  label: string;
+}
+
+export interface Props {
+  type?: 'vertical' | 'horizontal';
+  image?: string;
+  imageAlt?: string;
+  title: string;
+  description?: string;
+  badges?: string[];
+  actions?: CardAction[];
+  checkbox?: { label?: string; checked?: boolean; disabled?: boolean };
+  class?: string;
+}
+
+const {
+  type = 'vertical',
+  image,
+  imageAlt = '',
+  title,
+  description,
+  badges,
+  actions,
+  checkbox,
+  class: className,
+} = Astro.props;
+---
+
+<article class={cx('krds-card', type, className)}>
+  <div class="card-top">
+    {image && <img class="card-image" src={image} alt={imageAlt} />}
+    {badges?.map((badge) => (
+      <Badge appearance="solid" class="card-badge">
+        {badge}
+      </Badge>
+    ))}
+    {checkbox && <Checkbox {...checkbox} />}
+  </div>
+  <div class="card-conts">
+    <h3 class="card-title">{title}</h3>
+    {description && <p class="card-description">{description}</p>}
+    {actions && actions.length > 0 && (
+      <div class="card-actions">
+        {actions.map((action) => (
+          <button type="button" class="krds-btn small primary" data-label={action.label}>
+            {action.label}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<script>
+  const enhancedCards = new WeakSet<HTMLElement>();
+
+  function enhanceCards() {
+    document.querySelectorAll<HTMLElement>('.krds-card').forEach((root) => {
+      if (enhancedCards.has(root)) return;
+      enhancedCards.add(root);
+      root.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const button = event.target.closest<HTMLButtonElement>('.card-actions button');
+        if (!button) return;
+        root.dispatchEvent(
+          new CustomEvent('krds:cardaction', {
+            bubbles: true,
+            detail: { label: button.getAttribute('data-label') },
+          }),
+        );
+      });
+    });
+  }
+
+  enhanceCards();
+  document.addEventListener('astro:page-load', enhanceCards);
+</script>

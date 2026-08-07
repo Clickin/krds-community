@@ -1,0 +1,65 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface FeedbackOption {
+  value: string;
+  label: string;
+}
+
+export interface Props {
+  title?: string;
+  options?: FeedbackOption[];
+  submitLabel?: string;
+  class?: string;
+}
+
+const {
+  title = '이 페이지에 만족하시나요?',
+  options = [
+    { value: 'satisfied', label: '만족' },
+    { value: 'dissatisfied', label: '불만족' },
+  ],
+  submitLabel = '제출',
+  class: className,
+} = Astro.props;
+
+const fieldName = `krds-feedback-${crypto.randomUUID()}`;
+---
+
+<div class={cx('krds-user-feedback', className)}>
+  <fieldset>
+    <legend class="feedback-title">{title}</legend>
+    <div class="feedback-options">
+      {options.map((option) => (
+        <label class="krds-form-check">
+          <input type="radio" name={fieldName} value={option.value} />
+          <span>{option.label}</span>
+        </label>
+      ))}
+    </div>
+    <button type="button" class="krds-btn small primary">{submitLabel}</button>
+  </fieldset>
+</div>
+
+<script>
+  const enhancedFeedback = new WeakSet<HTMLElement>();
+
+  function enhanceUserFeedback() {
+    document.querySelectorAll<HTMLElement>('.krds-user-feedback').forEach((root) => {
+      if (enhancedFeedback.has(root)) return;
+      enhancedFeedback.add(root);
+      const submit = root.querySelector<HTMLButtonElement>('button');
+      const radios = Array.from(root.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+      submit?.addEventListener('click', () => {
+        const selected = radios.find((radio) => radio.checked);
+        if (!selected) return;
+        root.dispatchEvent(
+          new CustomEvent('krds:submit', { bubbles: true, detail: { value: selected.value } }),
+        );
+      });
+    });
+  }
+
+  enhanceUserFeedback();
+  document.addEventListener('astro:page-load', enhanceUserFeedback);
+</script>

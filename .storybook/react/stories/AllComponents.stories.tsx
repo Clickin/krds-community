@@ -13,9 +13,11 @@ import {
 import {
   Accordion,
   AccordionLine,
+  Alert,
   Badge,
   BadgeNumber,
   BadgeSize,
+  BottomSheet,
   Breadcrumb,
   Button,
   ButtonHierarchy,
@@ -25,11 +27,13 @@ import {
   ButtonWithIcon,
   Calendar,
   CalendarRange,
+  Card,
   Carousel,
   CarouselBanner,
   Checkbox,
   CheckboxChip,
   CheckboxSize,
+  Chip,
   CoachMark,
   ContextualHelp,
   CriticalAlerts,
@@ -41,6 +45,7 @@ import {
   Header,
   HelpPanel,
   Identifier,
+  Infobox,
   InPageNavigation,
   LanguageSwitcher,
   LanguageSwitcherPage,
@@ -51,23 +56,27 @@ import {
   Modal,
   ModalSample,
   Pagination,
+  ProgressBar,
   Radio,
   RadioButton,
   RadioChip,
   RadioSize,
   Resize,
+  Search,
   Select,
   SelectSize,
   SelectSorting,
   SelectState,
   SideNavigation,
   SkipLink,
+  Snackbar,
   Spinner,
   StepIndicator,
   StructuredList,
   StructuredListTable,
   Switch,
   Tab,
+  TabBar,
   Table,
   Tag,
   TagLink,
@@ -78,15 +87,18 @@ import {
   TextInputState,
   TextList,
   TextListOrdered,
+  Toast,
   ToggleSwitch,
   ToggleSwitchSize,
   Tooltip,
   TooltipBox,
   TooltipVertical,
+  TopButton,
   Tts,
   TtsIcon,
   TtsSize,
   TutorialPanel,
+  UserFeedback,
 } from "@krds-community/react";
 
 const links = [
@@ -657,6 +669,17 @@ export const AccordionLineStory: StoryObj<typeof meta> = {
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const AlertStory: StoryObj<typeof meta> = {
+  name: "알림",
+  render: () => (
+    <Alert
+      state="danger"
+      title="오류가 발생했습니다."
+      message="처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요."
+    />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const BadgeStory: StoryObj<typeof meta> = {
   name: "배지",
   render: () => <Badge label="배지" />,
@@ -675,6 +698,15 @@ export const BadgeSizeStory: StoryObj<typeof meta> = {
 export const BreadcrumbStory: StoryObj<typeof meta> = {
   name: "브레드크럼",
   render: () => <Breadcrumb items={links} label="현재 경로" />,
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const BottomSheetStory: StoryObj<typeof meta> = {
+  name: "바텀 시트",
+  render: () => (
+    <BottomSheet open title="정렬 기준 선택" description="원하는 정렬 기준을 선택하세요.">
+      정렬 기준 내용
+    </BottomSheet>
+  ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const ButtonHierarchyStory: StoryObj<typeof meta> = {
@@ -749,6 +781,19 @@ export const CalendarRangeStory: StoryObj<typeof meta> = {
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const CardStory: StoryObj<typeof meta> = {
+  name: "카드",
+  render: () => (
+    <Card
+      type="vertical"
+      title="서비스 안내 카드"
+      description="서비스 이용 방법을 안내합니다."
+      badges={["안내"]}
+      actions={[{ label: "자세히 보기" }]}
+    />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const CarouselStory: StoryObj<typeof meta> = {
   name: "캐러셀",
   render: () => (
@@ -789,6 +834,21 @@ export const CheckboxSizeStory: StoryObj<typeof meta> = {
   name: "체크박스 크기",
   render: () => (
     <CheckboxSize id="inventory-checkbox-size" label={CHECKBOX_LABEL_LARGE} size="large" />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const ChipStory: StoryObj<typeof meta> = {
+  name: "칩",
+  render: () => (
+    <Chip
+      options={[
+        { value: "all", label: "전체" },
+        { value: "notice", label: "공지" },
+        { value: "event", label: "행사" },
+      ]}
+      defaultSelected="all"
+      ariaLabel="칩 선택"
+    />
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
@@ -975,6 +1035,13 @@ export const IdentifierStory: StoryObj<typeof meta> = {
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const InfoboxStory: StoryObj<typeof meta> = {
+  name: "인포박스",
+  render: () => (
+    <Infobox type="primary" message="정부 서비스 이용에 도움이 되는 안내입니다." />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const InPageNavigationStory: StoryObj<typeof meta> = {
   name: "페이지 내 네비게이션",
   render: () => (
@@ -1079,6 +1146,11 @@ export const PaginationStory: StoryObj<typeof meta> = {
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const ProgressBarStory: StoryObj<typeof meta> = {
+  name: "진행률",
+  render: () => <ProgressBar value={70} label="처리 진행률" />,
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const RadioButtonStory: StoryObj<typeof meta> = {
   name: "라디오 버튼",
   render: () => (
@@ -1111,6 +1183,16 @@ export const ResizeStory: StoryObj<typeof meta> = {
       defaultValue="default"
       selectedLabel="현재 선택"
       resetLabel="기본값으로 재설정"
+    />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const SearchStory: StoryObj<typeof meta> = {
+  name: "검색",
+  render: () => (
+    <Search
+      placeholder="검색어를 입력해 주세요"
+      onSearch={(value) => console.log("검색:", value)}
     />
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
@@ -1169,6 +1251,18 @@ export const SkipLinkStory: StoryObj<typeof meta> = {
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const SnackbarStory: StoryObj<typeof meta> = {
+  name: "스낵바",
+  render: () => (
+    <Snackbar
+      message="변경사항이 저장되었습니다."
+      actionLabel="되돌리기"
+      closeLabel="닫기"
+      open
+    />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const SpinnerStory: StoryObj<typeof meta> = {
   name: "스피너",
   render: () => <Spinner label="처리 중" />,
@@ -1221,6 +1315,20 @@ export const StructuredListTableStory: StoryObj<typeof meta> = {
 export const SwitchStory: StoryObj<typeof meta> = {
   name: "스위치",
   render: () => <Switch id="inventory-switch" label="스위치" name="switch" />,
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const TabBarStory: StoryObj<typeof meta> = {
+  name: "탭 바",
+  render: () => (
+    <TabBar
+      items={[
+        { id: "home", label: "홈" },
+        { id: "guide", label: "가이드" },
+        { id: "notice", label: "공지" },
+      ]}
+      defaultSelected="home"
+    />
+  ),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const TableStory: StoryObj<typeof meta> = {
@@ -1289,6 +1397,11 @@ export const TextListOrderedStory: StoryObj<typeof meta> = {
   render: () => <TextListOrdered items={["첫 항목", "둘째 항목"]} />,
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const ToastStory: StoryObj<typeof meta> = {
+  name: "토스트",
+  render: () => <Toast message="저장되었습니다." defaultOpen duration={60000} />,
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const ToggleSwitchStory: StoryObj<typeof meta> = {
   name: "토글 스위치",
   render: () => <ToggleSwitch id="inventory-toggle" label="토글" name="toggle" />,
@@ -1314,6 +1427,11 @@ export const TooltipBoxStory: StoryObj<typeof meta> = {
 export const TooltipVerticalStory: StoryObj<typeof meta> = {
   name: "수직 툴팁",
   render: () => <TooltipVertical message="세로 툴팁">세로 툴팁</TooltipVertical>,
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const TopButtonStory: StoryObj<typeof meta> = {
+  name: "상단 이동",
+  render: () => <TopButton onClick={() => console.log("맨 위로 이동")} />,
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const TtsStory: StoryObj<typeof meta> = {
@@ -1355,6 +1473,20 @@ export const TutorialPanelStory: StoryObj<typeof meta> = {
       ]}
       stopLabel="튜토리얼 종료"
       collapseLabel="튜토리얼 접기"
+    />
+  ),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const UserFeedbackStory: StoryObj<typeof meta> = {
+  name: "사용자 피드백",
+  render: () => (
+    <UserFeedback
+      title="이 페이지에 만족하시나요?"
+      options={[
+        { value: "satisfied", label: "만족" },
+        { value: "dissatisfied", label: "불만족" },
+      ]}
+      onSubmit={(value) => console.log("피드백:", value)}
     />
   ),
   parameters: { layout: "padded", a11y: { test: "error" } },

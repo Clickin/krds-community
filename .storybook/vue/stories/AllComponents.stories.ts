@@ -15,10 +15,12 @@ import {
 } from "../../shared/story-props";
 
 const names = [
+  "Alert",
   "Badge",
   "BadgeNumber",
   "BadgeSize",
   "Breadcrumb",
+  "BottomSheet",
   "ButtonHierarchy",
   "ButtonIcon",
   "ButtonSize",
@@ -26,10 +28,12 @@ const names = [
   "ButtonWithIcon",
   "Calendar",
   "CalendarRange",
+  "Card",
   "Carousel",
   "CarouselBanner",
   "CheckboxChip",
   "CheckboxSize",
+  "Chip",
   "CoachMark",
   "ContextualHelp",
   "CriticalAlerts",
@@ -41,6 +45,7 @@ const names = [
   "Header",
   "HelpPanel",
   "Identifier",
+  "Infobox",
   "InPageNavigation",
   "LanguageSwitcher",
   "LanguageSwitcherPage",
@@ -51,21 +56,25 @@ const names = [
   "Modal",
   "ModalSample",
   "Pagination",
+  "ProgressBar",
   "RadioButton",
   "RadioChip",
   "RadioSize",
   "Resize",
+  "Search",
   "Select",
   "SelectSize",
   "SelectSorting",
   "SelectState",
   "SideNavigation",
   "SkipLink",
+  "Snackbar",
   "Spinner",
   "StepIndicator",
   "StructuredList",
   "StructuredListTable",
   "Tab",
+  "TabBar",
   "Table",
   "Tag",
   "TagLink",
@@ -73,15 +82,18 @@ const names = [
   "TextInputIcon",
   "TextList",
   "TextListOrdered",
+  "Toast",
   "ToggleSwitch",
   "ToggleSwitchSize",
   "Tooltip",
   "TooltipBox",
   "TooltipVertical",
+  "TopButton",
   "Tts",
   "TtsIcon",
   "TtsSize",
   "TutorialPanel",
+  "UserFeedback",
 ] as const;
 const common = {
   label: "레이블",
@@ -227,11 +239,21 @@ const inventoryProps = (name: string): Record<string, unknown> => {
   if (controlledKinds.has(name)) props["aria-controls"] = `${id}-controls`;
 
   switch (name) {
+    case "Alert":
+      props.state = "danger";
+      props.title = "오류가 발생했습니다.";
+      props.message = "처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+      break;
     case "Breadcrumb":
       props.items = [
         { id: "breadcrumb-home", label: "홈", href: "#breadcrumb-home" },
         { id: "breadcrumb-current", label: "현재 페이지", href: "#breadcrumb-current" },
       ];
+      break;
+    case "BottomSheet":
+      props.open = true;
+      props.title = "정렬 기준 선택";
+      props.description = "원하는 정렬 기준을 선택하세요.";
       break;
     case "Calendar":
     case "CalendarRange":
@@ -240,9 +262,25 @@ const inventoryProps = (name: string): Record<string, unknown> => {
       props.rangeStartDay = 10;
       props.rangeEndDay = 18;
       break;
+    case "Card":
+      props.type = "vertical";
+      props.title = "서비스 안내 카드";
+      props.description = "서비스 이용 방법을 안내합니다.";
+      props.badges = ["안내"];
+      props.actions = [{ label: "자세히 보기" }];
+      break;
     case "Carousel":
     case "CarouselBanner":
       props.slides = contractSlides;
+      break;
+    case "Chip":
+      props.options = [
+        { value: "all", label: "전체" },
+        { value: "notice", label: "공지" },
+        { value: "event", label: "행사" },
+      ];
+      props.defaultSelected = "all";
+      props.ariaLabel = "칩 선택";
       break;
     case "CoachMark":
       props.step = "1/2";
@@ -325,6 +363,10 @@ const inventoryProps = (name: string): Record<string, unknown> => {
         { title: "관련 서비스", links: [{ label: "서비스 안내", href: "#help-service" }] },
       ];
       break;
+    case "Infobox":
+      props.type = "primary";
+      props.message = "정부 서비스 이용에 도움이 되는 안내입니다.";
+      break;
     case "InPageNavigation":
       props.items = pageNavigationItems;
       props.actionLabel = "목차 열기";
@@ -356,12 +398,26 @@ const inventoryProps = (name: string): Record<string, unknown> => {
       props.nextLabel = "다음 페이지";
       props.message = "현재 페이지";
       break;
+    case "ProgressBar":
+      props.value = 70;
+      props.label = "처리 진행률";
+      break;
     case "Resize":
       props.defaultValue = "one";
+      break;
+    case "Search":
+      props.placeholder = "검색어를 입력해 주세요";
+      props.onSearch = (value: string) => console.log("검색:", value);
       break;
     case "SideNavigation":
       props.title = "서비스 메뉴";
       props.items = menuItems("side-navigation");
+      break;
+    case "Snackbar":
+      props.open = true;
+      props.message = "변경사항이 저장되었습니다.";
+      props.actionLabel = "되돌리기";
+      props.closeLabel = "닫기";
       break;
     case "StepIndicator":
       props.current = 1;
@@ -371,9 +427,26 @@ const inventoryProps = (name: string): Record<string, unknown> => {
       props.tabs = tabItems;
       props.selected = "one";
       break;
+    case "TabBar":
+      props.items = [
+        { id: "home", label: "홈" },
+        { id: "guide", label: "가이드" },
+        { id: "notice", label: "공지" },
+      ];
+      props.defaultSelected = "home";
+      break;
     case "TextList":
     case "TextListOrdered":
       props.items = ["첫 번째 항목", "두 번째 항목"];
+      break;
+    case "Toast":
+      delete props.open;
+      props.message = "저장되었습니다.";
+      props.defaultOpen = true;
+      props.duration = 60000;
+      break;
+    case "TopButton":
+      props.onClick = () => console.log("맨 위로 이동");
       break;
     case "TutorialPanel":
       props.open = true;
@@ -391,6 +464,14 @@ const inventoryProps = (name: string): Record<string, unknown> => {
           steps: ["안내를 읽습니다."],
         },
       ];
+      break;
+    case "UserFeedback":
+      props.title = "이 페이지에 만족하시나요?";
+      props.options = [
+        { value: "satisfied", label: "만족" },
+        { value: "dissatisfied", label: "불만족" },
+      ];
+      props.onSubmit = (value: string) => console.log("피드백:", value);
       break;
     default:
       break;
@@ -736,6 +817,11 @@ export const Inventory: StoryObj<typeof meta> = {
     },
   }),
 };
+export const Alert: StoryObj<typeof meta> = {
+  name: "알림",
+  render: () => renderInventoryComponent("Alert"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const Badge: StoryObj<typeof meta> = {
   name: "배지",
   render: () => renderInventoryComponent("Badge"),
@@ -754,6 +840,11 @@ export const BadgeSize: StoryObj<typeof meta> = {
 export const Breadcrumb: StoryObj<typeof meta> = {
   name: "브레드크럼",
   render: () => renderInventoryComponent("Breadcrumb"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const BottomSheet: StoryObj<typeof meta> = {
+  name: "바텀 시트",
+  render: () => renderInventoryComponent("BottomSheet"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const ButtonHierarchy: StoryObj<typeof meta> = {
@@ -791,6 +882,11 @@ export const CalendarRange: StoryObj<typeof meta> = {
   render: () => renderInventoryComponent("CalendarRange"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const Card: StoryObj<typeof meta> = {
+  name: "카드",
+  render: () => renderInventoryComponent("Card"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const Carousel: StoryObj<typeof meta> = {
   name: "캐러셀",
   render: () => renderInventoryComponent("Carousel"),
@@ -809,6 +905,11 @@ export const CheckboxChip: StoryObj<typeof meta> = {
 export const CheckboxSize: StoryObj<typeof meta> = {
   name: "체크박스 크기",
   render: () => renderInventoryComponent("CheckboxSize"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const Chip: StoryObj<typeof meta> = {
+  name: "칩",
+  render: () => renderInventoryComponent("Chip"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const CoachMark: StoryObj<typeof meta> = {
@@ -866,6 +967,11 @@ export const Identifier: StoryObj<typeof meta> = {
   render: () => renderInventoryComponent("Identifier"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const Infobox: StoryObj<typeof meta> = {
+  name: "인포박스",
+  render: () => renderInventoryComponent("Infobox"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const InPageNavigation: StoryObj<typeof meta> = {
   name: "페이지 내 네비게이션",
   render: () => renderInventoryComponent("InPageNavigation"),
@@ -906,6 +1012,11 @@ export const Pagination: StoryObj<typeof meta> = {
   render: () => renderInventoryComponent("Pagination"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const ProgressBar: StoryObj<typeof meta> = {
+  name: "진행률",
+  render: () => renderInventoryComponent("ProgressBar"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const RadioButton: StoryObj<typeof meta> = {
   name: "라디오 버튼",
   render: () => renderInventoryComponent("RadioButton"),
@@ -924,6 +1035,11 @@ export const RadioSize: StoryObj<typeof meta> = {
 export const Resize: StoryObj<typeof meta> = {
   name: "리사이즈",
   render: () => renderInventoryComponent("Resize"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const Search: StoryObj<typeof meta> = {
+  name: "검색",
+  render: () => renderInventoryComponent("Search"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const Select: StoryObj<typeof meta> = {
@@ -956,6 +1072,11 @@ export const SkipLink: StoryObj<typeof meta> = {
   render: () => renderInventoryComponent("SkipLink"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const Snackbar: StoryObj<typeof meta> = {
+  name: "스낵바",
+  render: () => renderInventoryComponent("Snackbar"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const Spinner: StoryObj<typeof meta> = {
   name: "스피너",
   render: () => renderInventoryComponent("Spinner"),
@@ -974,6 +1095,11 @@ export const StructuredList: StoryObj<typeof meta> = {
 export const StructuredListTable: StoryObj<typeof meta> = {
   name: "구조화된 테이블",
   render: () => renderInventoryComponent("StructuredListTable"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const TabBar: StoryObj<typeof meta> = {
+  name: "탭 바",
+  render: () => renderInventoryComponent("TabBar"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
 export const Table: StoryObj<typeof meta> = {
@@ -1021,6 +1147,11 @@ export const TextListOrdered: StoryObj<typeof meta> = {
   render: () => renderInventoryComponent("TextListOrdered"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const Toast: StoryObj<typeof meta> = {
+  name: "토스트",
+  render: () => renderInventoryComponent("Toast"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const ToggleSwitch: StoryObj<typeof meta> = {
   name: "토글 스위치",
   render: () => renderInventoryComponent("ToggleSwitch"),
@@ -1046,6 +1177,11 @@ export const TooltipVertical: StoryObj<typeof meta> = {
   render: () => renderInventoryComponent("TooltipVertical"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };
+export const TopButton: StoryObj<typeof meta> = {
+  name: "상단 이동",
+  render: () => renderInventoryComponent("TopButton"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
 export const Tts: StoryObj<typeof meta> = {
   name: "TTS",
   render: () => renderInventoryComponent("Tts"),
@@ -1064,5 +1200,10 @@ export const TtsSize: StoryObj<typeof meta> = {
 export const TutorialPanel: StoryObj<typeof meta> = {
   name: "튜토리얼 패널",
   render: () => renderInventoryComponent("TutorialPanel"),
+  parameters: { layout: "padded", a11y: { test: "error" } },
+};
+export const UserFeedback: StoryObj<typeof meta> = {
+  name: "사용자 피드백",
+  render: () => renderInventoryComponent("UserFeedback"),
   parameters: { layout: "padded", a11y: { test: "error" } },
 };

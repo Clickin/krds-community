@@ -1,0 +1,78 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  title?: string;
+  message?: string;
+  icon?: string;
+  actionLabel?: string;
+  closeLabel?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  message,
+  icon,
+  actionLabel,
+  closeLabel = '닫기',
+  open,
+  defaultOpen = false,
+  class: className,
+} = Astro.props;
+
+const rendered = open ?? defaultOpen;
+---
+
+{
+  rendered && (
+    <div class={cx('krds-snackbar', className)} role="alert">
+      {icon && <i class={cx('svg-icon', 'snackbar-icon', icon)} aria-hidden="true"></i>}
+      <div class="snackbar-conts">
+        {title && <strong class="snackbar-title">{title}</strong>}
+        <p class="snackbar-text">{message}</p>
+      </div>
+      {actionLabel && (
+        <button type="button" class="krds-btn small text snackbar-action">
+          {actionLabel}
+        </button>
+      )}
+      <button type="button" class="krds-btn small icon snackbar-close" aria-label={closeLabel}>
+        <i class="svg-icon ico-modal-close"></i>
+      </button>
+    </div>
+  )
+}
+
+<script>
+  const CLOSE_ANIMATION_MS = 200;
+
+  function closeSnackbar(root: HTMLElement) {
+    if (root.classList.contains('closing')) return;
+    root.classList.add('closing');
+    window.setTimeout(() => {
+      root.remove();
+    }, CLOSE_ANIMATION_MS);
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    const closeButton = event.target.closest<HTMLButtonElement>('.krds-snackbar .snackbar-close');
+    if (closeButton) {
+      const root = closeButton.closest<HTMLElement>('.krds-snackbar');
+      if (root) closeSnackbar(root);
+      return;
+    }
+    const actionButton = event.target.closest<HTMLButtonElement>(
+      '.krds-snackbar .snackbar-action',
+    );
+    if (actionButton) {
+      const root = actionButton.closest<HTMLElement>('.krds-snackbar');
+      if (root) {
+        root.dispatchEvent(new CustomEvent('krds:action', { bubbles: true }));
+      }
+    }
+  });
+</script>

@@ -3,10 +3,12 @@ import { Directive, ElementRef } from "@angular/core";
 import {
   KrdsAccordionComponent,
   KrdsAccordionLineComponent,
+  KrdsAlertComponent,
   KrdsBadgeComponent,
   KrdsBadgeNumberComponent,
   KrdsBadgeSizeComponent,
   KrdsBreadcrumbComponent,
+  KrdsBottomSheetComponent,
   KrdsButtonComponent,
   KrdsButtonHierarchyComponent,
   KrdsButtonIconComponent,
@@ -15,11 +17,13 @@ import {
   KrdsButtonWithIconComponent,
   KrdsCalendarComponent,
   KrdsCalendarRangeComponent,
+  KrdsCardComponent,
   KrdsCarouselComponent,
   KrdsCarouselBannerComponent,
   KrdsCheckboxComponent,
   KrdsCheckboxChipComponent,
   KrdsCheckboxSizeComponent,
+  KrdsChipComponent,
   KrdsCoachMarkComponent,
   KrdsContextualHelpComponent,
   KrdsCriticalAlertsComponent,
@@ -31,6 +35,7 @@ import {
   KrdsHeaderComponent,
   KrdsHelpPanelComponent,
   KrdsIdentifierComponent,
+  KrdsInfoboxComponent,
   KrdsInPageNavigationComponent,
   KrdsLanguageSwitcherComponent,
   KrdsLanguageSwitcherPageComponent,
@@ -41,23 +46,27 @@ import {
   KrdsModalComponent,
   KrdsModalSampleComponent,
   KrdsPaginationComponent,
+  KrdsProgressBarComponent,
   KrdsRadioButtonComponent,
   KrdsRadioChipComponent,
   KrdsRadioComponent,
   KrdsRadioSizeComponent,
   KrdsResizeComponent,
+  KrdsSearchComponent,
   KrdsSelectComponent,
   KrdsSelectSizeComponent,
   KrdsSelectSortingComponent,
   KrdsSelectStateComponent,
   KrdsSideNavigationComponent,
   KrdsSkipLinkComponent,
+  KrdsSnackbarComponent,
   KrdsSpinnerComponent,
   KrdsStepIndicatorComponent,
   KrdsStructuredListComponent,
   KrdsStructuredListTableComponent,
   KrdsSwitchComponent,
   KrdsTabComponent,
+  KrdsTabBarComponent,
   KrdsTableComponent,
   KrdsTagComponent,
   KrdsTagLinkComponent,
@@ -68,15 +77,18 @@ import {
   KrdsTextListComponent,
   KrdsTextListOrderedComponent,
   KrdsTextareaComponent,
+  KrdsToastComponent,
   KrdsToggleSwitchComponent,
   KrdsToggleSwitchSizeComponent,
   KrdsTooltipComponent,
   KrdsTooltipBoxComponent,
   KrdsTooltipVerticalComponent,
+  KrdsTopButtonComponent,
   KrdsTtsComponent,
   KrdsTtsIconComponent,
   KrdsTtsSizeComponent,
   KrdsTutorialPanelComponent,
+  KrdsUserFeedbackComponent,
 } from "@krds-community/angular";
 import { KrdsAdditionalComponent } from "../../../tests/framework/fixtures/additional-test.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -504,10 +516,12 @@ class AuditCriticalAlertsDirective {
 
 const aliasComponents = [
   KrdsAccordionLineComponent,
+  KrdsAlertComponent,
   KrdsBadgeComponent,
   KrdsBadgeNumberComponent,
   KrdsBadgeSizeComponent,
   KrdsBreadcrumbComponent,
+  KrdsBottomSheetComponent,
   KrdsButtonHierarchyComponent,
   KrdsButtonIconComponent,
   KrdsButtonSizeComponent,
@@ -515,10 +529,12 @@ const aliasComponents = [
   KrdsButtonWithIconComponent,
   KrdsCalendarComponent,
   KrdsCalendarRangeComponent,
+  KrdsCardComponent,
   KrdsCarouselComponent,
   KrdsCarouselBannerComponent,
   KrdsCheckboxChipComponent,
   KrdsCheckboxSizeComponent,
+  KrdsChipComponent,
   KrdsCoachMarkComponent,
   KrdsContextualHelpComponent,
   KrdsCriticalAlertsComponent,
@@ -530,6 +546,7 @@ const aliasComponents = [
   KrdsHeaderComponent,
   KrdsHelpPanelComponent,
   KrdsIdentifierComponent,
+  KrdsInfoboxComponent,
   KrdsInPageNavigationComponent,
   KrdsLanguageSwitcherComponent,
   KrdsLanguageSwitcherPageComponent,
@@ -540,21 +557,25 @@ const aliasComponents = [
   KrdsModalComponent,
   KrdsModalSampleComponent,
   KrdsPaginationComponent,
+  KrdsProgressBarComponent,
   KrdsRadioButtonComponent,
   KrdsRadioChipComponent,
   KrdsRadioSizeComponent,
   KrdsResizeComponent,
+  KrdsSearchComponent,
   KrdsSelectComponent,
   KrdsSelectSizeComponent,
   KrdsSelectSortingComponent,
   KrdsSelectStateComponent,
   KrdsSideNavigationComponent,
   KrdsSkipLinkComponent,
+  KrdsSnackbarComponent,
   KrdsSpinnerComponent,
   KrdsStepIndicatorComponent,
   KrdsStructuredListComponent,
   KrdsStructuredListTableComponent,
   KrdsTabComponent,
+  KrdsTabBarComponent,
   KrdsTableComponent,
   KrdsTagComponent,
   KrdsTagLinkComponent,
@@ -564,15 +585,18 @@ const aliasComponents = [
   KrdsTextInputStateComponent,
   KrdsTextListComponent,
   KrdsTextListOrderedComponent,
+  KrdsToastComponent,
   KrdsToggleSwitchComponent,
   KrdsToggleSwitchSizeComponent,
   KrdsTooltipComponent,
   KrdsTooltipBoxComponent,
   KrdsTooltipVerticalComponent,
+  KrdsTopButtonComponent,
   KrdsTtsComponent,
   KrdsTtsIconComponent,
   KrdsTtsSizeComponent,
   KrdsTutorialPanelComponent,
+  KrdsUserFeedbackComponent,
 ] as const;
 const sharedImports = [
   FormsModule,
@@ -622,6 +646,19 @@ export default meta;
 
 type Story = StoryObj;
 
+export const Alert: Story = {
+  name: "알림",
+  render: () => ({
+    template:
+      '<krds-alert [state]="state" [title]="title" [message]="message"></krds-alert>',
+    props: {
+      state: "danger",
+      title: "오류가 발생했습니다.",
+      message: "처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const Badge: Story = {
   name: "배지",
   render: () => ({
@@ -661,6 +698,18 @@ export const Breadcrumb: Story = {
   parameters: { fixtureId: "breadcrumb.default", a11y: { test: "error" } },
 };
 
+export const BottomSheet: Story = {
+  name: "바텀 시트",
+  render: () => ({
+    template:
+      '<krds-bottom-sheet [open]="true" [title]="title" [description]="description">정렬 기준 내용</krds-bottom-sheet>',
+    props: {
+      title: "정렬 기준 선택",
+      description: "원하는 정렬 기준을 선택하세요.",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const ButtonHierarchy: Story = {
   name: "버튼 계층",
   render: () => ({
@@ -784,6 +833,21 @@ export const CalendarRange: Story = {
   parameters: { fixtureId: "calendar-range.default", a11y: { test: "error" } },
 };
 
+export const Card: Story = {
+  name: "카드",
+  render: () => ({
+    template:
+      '<krds-card [type]="type" [title]="title" [description]="description" [badges]="badges" [actions]="actions"></krds-card>',
+    props: {
+      type: "vertical",
+      title: "서비스 안내 카드",
+      description: "서비스 이용 방법을 안내합니다.",
+      badges: ["안내"],
+      actions: [{ label: "자세히 보기" }],
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const Carousel: Story = {
   name: "캐러셀",
   render: () => ({
@@ -856,6 +920,23 @@ export const CheckboxSize: Story = {
   parameters: { fixtureId: "checkbox-size.default", a11y: { test: "error" } },
 };
 
+export const Chip: Story = {
+  name: "칩",
+  render: () => ({
+    template:
+      '<krds-chip [options]="options" [defaultSelected]="defaultSelected" [ariaLabel]="ariaLabel"></krds-chip>',
+    props: {
+      options: [
+        { value: "all", label: "전체" },
+        { value: "notice", label: "공지" },
+        { value: "event", label: "행사" },
+      ],
+      defaultSelected: "all",
+      ariaLabel: "칩 선택",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const CoachMark: Story = {
   name: "코치마크",
   render: () => ({
@@ -1084,6 +1165,17 @@ export const Identifier: Story = {
   parameters: { fixtureId: "identifier.default", a11y: { test: "error" } },
 };
 
+export const Infobox: Story = {
+  name: "인포박스",
+  render: () => ({
+    template: '<krds-infobox [type]="type" [message]="message"></krds-infobox>',
+    props: {
+      type: "primary",
+      message: "정부 서비스 이용에 도움이 되는 안내입니다.",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const InPageNavigation: Story = {
   name: "페이지 내 네비게이션",
   render: () => ({
@@ -1214,6 +1306,17 @@ export const Pagination: Story = {
   parameters: { fixtureId: "pagination.default", a11y: { test: "error" } },
 };
 
+export const ProgressBar: Story = {
+  name: "진행률",
+  render: () => ({
+    template: '<krds-progress-bar [value]="value" [label]="label"></krds-progress-bar>',
+    props: {
+      value: 70,
+      label: "처리 진행률",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const RadioButton: Story = {
   name: "라디오 버튼",
   render: () => ({
@@ -1284,6 +1387,18 @@ export const Resize: Story = {
   parameters: { fixtureId: "resize.default", a11y: { test: "error" } },
 };
 
+export const Search: Story = {
+  name: "검색",
+  render: () => ({
+    template:
+      '<krds-search [placeholder]="placeholder" (search)="onSearch($event)"></krds-search>',
+    props: {
+      placeholder: "검색어를 입력해 주세요",
+      onSearch: (value: string) => console.log("검색:", value),
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const Select: Story = {
   name: "셀렉트",
   render: () => ({
@@ -1368,6 +1483,19 @@ export const SkipLink: Story = {
   parameters: { fixtureId: "skip-link.default", a11y: { test: "error" } },
 };
 
+export const Snackbar: Story = {
+  name: "스낵바",
+  render: () => ({
+    template:
+      '<krds-snackbar [open]="true" [message]="message" [actionLabel]="actionLabel" [closeLabel]="closeLabel"></krds-snackbar>',
+    props: {
+      message: "변경사항이 저장되었습니다.",
+      actionLabel: "되돌리기",
+      closeLabel: "닫기",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const Spinner: Story = {
   name: "스피너",
   render: () => ({
@@ -1429,6 +1557,22 @@ export const StructuredListTable: Story = {
   parameters: { fixtureId: "structured-list-table.default", a11y: { test: "error" } },
 };
 
+export const TabBar: Story = {
+  name: "탭 바",
+  render: () => ({
+    template:
+      '<krds-tab-bar [items]="items" [defaultSelected]="defaultSelected"></krds-tab-bar>',
+    props: {
+      items: [
+        { id: "home", label: "홈" },
+        { id: "guide", label: "가이드" },
+        { id: "notice", label: "공지" },
+      ],
+      defaultSelected: "home",
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const Table: Story = {
   name: "테이블",
   render: () => ({
@@ -1550,6 +1694,18 @@ export const TextListOrdered: Story = {
   parameters: { fixtureId: "text-list-ordered.default", a11y: { test: "error" } },
 };
 
+export const Toast: Story = {
+  name: "토스트",
+  render: () => ({
+    template:
+      '<krds-toast [message]="message" [defaultOpen]="true" [duration]="duration"></krds-toast>',
+    props: {
+      message: "저장되었습니다.",
+      duration: 60000,
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const ToggleSwitch: Story = {
   name: "토글 스위치",
   render: () => ({
@@ -1610,6 +1766,16 @@ export const TooltipVertical: Story = {
   parameters: { fixtureId: "tooltip-vertical.default", a11y: { test: "error" } },
 };
 
+export const TopButton: Story = {
+  name: "상단 이동",
+  render: () => ({
+    template: '<krds-top-button (topClick)="onClick()"></krds-top-button>',
+    props: {
+      onClick: () => console.log("맨 위로 이동"),
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
+};
 export const Tts: Story = {
   name: "TTS",
   render: () => ({
@@ -1670,6 +1836,23 @@ export const TutorialPanel: Story = {
     },
   }),
   parameters: { fixtureId: "tutorial-panel.default", a11y: { test: "error" } },
+};
+
+export const UserFeedback: Story = {
+  name: "사용자 피드백",
+  render: () => ({
+    template:
+      '<krds-user-feedback [title]="title" [options]="options" (submit)="onSubmit($event)"></krds-user-feedback>',
+    props: {
+      title: "이 페이지에 만족하시나요?",
+      options: [
+        { value: "satisfied", label: "만족" },
+        { value: "dissatisfied", label: "불만족" },
+      ],
+      onSubmit: (value: string) => console.log("피드백:", value),
+    },
+  }),
+  parameters: { a11y: { test: "error" } },
 };
 
 export const Inventory: StoryObj<InventoryArgs> = {

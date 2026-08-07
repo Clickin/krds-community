@@ -4,14 +4,15 @@
   import { ACCORDION_ITEMS, ACCORDION_ITEM_SINGLE, ACCORDION_LINE_ITEMS, BUTTON_TEXT, CHECKBOX_LABEL_DEFAULT, CHECKBOX_LABEL_LARGE, RADIO_LABEL_DEFAULT, RADIO_LABEL_LARGE, TEXT_INPUT_PROPS, MODAL_PROPS } from '../../shared/story-props';
 
   const names = [
-    'Badge', 'BadgeNumber', 'BadgeSize', 'Breadcrumb', 'ButtonHierarchy', 'ButtonIcon', 'ButtonSize', 'ButtonText', 'ButtonWithIcon',
-    'Calendar', 'CalendarRange', 'Carousel', 'CarouselBanner', 'CheckboxChip', 'CheckboxSize', 'CoachMark', 'ContextualHelp', 'CriticalAlerts',
-    'DateInput', 'Disclosure', 'Favicon', 'FileUpload', 'HelpPanel', 'Identifier', 'InPageNavigation', 'LanguageSwitcher',
-    'LanguageSwitcherPage', 'Link', 'MainMenuMobile', 'MainMenuPc', 'Masthead', 'Modal', 'ModalSample', 'Pagination', 'RadioButton', 'RadioChip',
-    'RadioSize', 'Resize', 'Select', 'SelectSize', 'SelectSorting', 'SelectState', 'SideNavigation', 'SkipLink', 'Spinner', 'StepIndicator',
-    'StructuredList', 'StructuredListTable', 'Tab', 'Table', 'Tag', 'TagLink', 'Textarea', 'TextInputIcon', 'TextInputSize', 'TextInputState',
-    'TextList', 'TextListOrdered', 'ToggleSwitch', 'ToggleSwitchSize', 'Tooltip', 'TooltipBox', 'TooltipVertical', 'Tts', 'TtsIcon', 'TtsSize',
-    'TutorialPanel', 'AccordionLine',
+    'Alert',
+    'Badge', 'BadgeNumber', 'BadgeSize', 'BottomSheet', 'Breadcrumb', 'ButtonHierarchy', 'ButtonIcon', 'ButtonSize', 'ButtonText', 'ButtonWithIcon',
+    'Calendar', 'CalendarRange', 'Card', 'Carousel', 'CarouselBanner', 'CheckboxChip', 'CheckboxSize', 'Chip', 'CoachMark', 'ContextualHelp', 'CriticalAlerts',
+    'DateInput', 'Disclosure', 'Favicon', 'FileUpload', 'HelpPanel', 'Identifier', 'Infobox', 'InPageNavigation', 'LanguageSwitcher',
+    'LanguageSwitcherPage', 'Link', 'MainMenuMobile', 'MainMenuPc', 'Masthead', 'Modal', 'ModalSample', 'Pagination', 'ProgressBar', 'RadioButton', 'RadioChip',
+    'RadioSize', 'Resize', 'Search', 'Select', 'SelectSize', 'SelectSorting', 'SelectState', 'SideNavigation', 'SkipLink', 'Snackbar', 'Spinner', 'StepIndicator',
+    'StructuredList', 'StructuredListTable', 'Tab', 'TabBar', 'Table', 'Tag', 'TagLink', 'Textarea', 'TextInputIcon', 'TextInputSize', 'TextInputState',
+    'TextList', 'TextListOrdered', 'Toast', 'ToggleSwitch', 'ToggleSwitchSize', 'Tooltip', 'TooltipBox', 'TooltipVertical', 'TopButton', 'Tts', 'TtsIcon', 'TtsSize',
+    'TutorialPanel', 'UserFeedback', 'AccordionLine',
   ];
   const kindOf = (name: string) =>
     name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replace(/^-/, '');
@@ -229,6 +230,84 @@
 
   const propsFor = (name: string) => {
     if (name === 'AccordionLine') return { ...common, items: accordionLineItems };
+    if (name === 'Alert')
+      return {
+        ...common,
+        state: 'danger',
+        title: '오류가 발생했습니다.',
+        message: '처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+      };
+    if (name === 'BottomSheet')
+      return { ...common, title: '정렬 기준 선택', description: '원하는 정렬 기준을 선택하세요.' };
+    if (name === 'Card')
+      return {
+        ...common,
+        type: 'vertical',
+        title: '서비스 안내 카드',
+        description: '서비스 이용 방법을 안내합니다.',
+        badges: ['안내'],
+        actions: [{ label: '자세히 보기' }],
+      };
+    if (name === 'Chip')
+      return {
+        ...common,
+        options: [
+          { value: 'all', label: '전체' },
+          { value: 'notice', label: '공지' },
+          { value: 'event', label: '행사' },
+        ],
+        defaultSelected: 'all',
+        ariaLabel: '칩 선택',
+      };
+    if (name === 'Infobox')
+      return { ...common, type: 'primary', message: '정부 서비스 이용에 도움이 되는 안내입니다.' };
+    if (name === 'ProgressBar') return { ...common, value: 70, label: '처리 진행률' };
+    if (name === 'Search')
+      return {
+        ...common,
+        placeholder: '검색어를 입력해 주세요',
+        onSearch: (value: string) => console.log('검색:', value),
+      };
+    if (name === 'Snackbar')
+      return {
+        ...common,
+        open: true,
+        message: '변경사항이 저장되었습니다.',
+        actionLabel: '되돌리기',
+        closeLabel: '닫기',
+      };
+    if (name === 'TabBar')
+      return {
+        ...common,
+        items: [
+          { id: 'home', label: '홈' },
+          { id: 'guide', label: '가이드' },
+          { id: 'notice', label: '공지' },
+        ],
+        defaultSelected: 'home',
+      };
+    if (name === 'Toast') {
+      const props = {
+        ...common,
+        message: '저장되었습니다.',
+        defaultOpen: true,
+        duration: 60000,
+      };
+      delete props.open;
+      return props;
+    }
+    if (name === 'TopButton')
+      return { ...common, onClick: () => console.log('맨 위로 이동') };
+    if (name === 'UserFeedback')
+      return {
+        ...common,
+        title: '이 페이지에 만족하시나요?',
+        options: [
+          { value: 'satisfied', label: '만족' },
+          { value: 'dissatisfied', label: '불만족' },
+        ],
+        onSubmit: (value: string) => console.log('피드백:', value),
+      };
     if (name === 'CriticalAlerts') return { ...common, items: alertItems };
     if (name === 'HelpPanel') return { ...common, open: true, tabs: helpTabs, activeTab: 'help' };
     if (name === 'TutorialPanel') return { ...common, open: true, tabs: tutorialTabs, activeTab: 'tutorial' };

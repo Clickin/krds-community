@@ -13,10 +13,12 @@ import {
 } from "../../shared/story-props";
 
 const names = [
+  "Alert",
   "Badge",
   "BadgeNumber",
   "BadgeSize",
   "Breadcrumb",
+  "BottomSheet",
   "ButtonHierarchy",
   "ButtonIcon",
   "ButtonSize",
@@ -24,10 +26,12 @@ const names = [
   "ButtonWithIcon",
   "Calendar",
   "CalendarRange",
+  "Card",
   "Carousel",
   "CarouselBanner",
   "CheckboxChip",
   "CheckboxSize",
+  "Chip",
   "CoachMark",
   "ContextualHelp",
   "CriticalAlerts",
@@ -39,6 +43,7 @@ const names = [
   "Header",
   "HelpPanel",
   "Identifier",
+  "Infobox",
   "InPageNavigation",
   "LanguageSwitcher",
   "LanguageSwitcherPage",
@@ -49,21 +54,25 @@ const names = [
   "Modal",
   "ModalSample",
   "Pagination",
+  "ProgressBar",
   "RadioButton",
   "RadioChip",
   "RadioSize",
   "Resize",
+  "Search",
   "Select",
   "SelectSize",
   "SelectSorting",
   "SelectState",
   "SideNavigation",
   "SkipLink",
+  "Snackbar",
   "Spinner",
   "StepIndicator",
   "StructuredList",
   "StructuredListTable",
   "Tab",
+  "TabBar",
   "Table",
   "Tag",
   "TagLink",
@@ -71,15 +80,18 @@ const names = [
   "TextInputIcon",
   "TextList",
   "TextListOrdered",
+  "Toast",
   "ToggleSwitch",
   "ToggleSwitchSize",
   "Tooltip",
   "TooltipBox",
   "TooltipVertical",
+  "TopButton",
   "Tts",
   "TtsIcon",
   "TtsSize",
   "TutorialPanel",
+  "UserFeedback",
 ] as const;
 type FixtureItem = {
   id?: string;
@@ -441,6 +453,31 @@ const fixtureProps = (
     },
     files: common.files.map((file) => ({ ...file, id: `${prefix}-${file.id}` })),
   };
+  if (name === "Alert") {
+    scopedProps.state = "danger";
+    scopedProps.title = "오류가 발생했습니다.";
+    scopedProps.message = "처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+  }
+  if (name === "BottomSheet") {
+    scopedProps.title = "정렬 기준 선택";
+    scopedProps.description = "원하는 정렬 기준을 선택하세요.";
+  }
+  if (name === "Card") {
+    scopedProps.type = "vertical";
+    scopedProps.title = "서비스 안내 카드";
+    scopedProps.description = "서비스 이용 방법을 안내합니다.";
+    scopedProps.badges = ["안내"];
+    scopedProps.actions = [{ label: "자세히 보기" }];
+  }
+  if (name === "Chip") {
+    scopedProps.options = [
+      { value: "all", label: "전체" },
+      { value: "notice", label: "공지" },
+      { value: "event", label: "행사" },
+    ];
+    scopedProps.defaultSelected = "all";
+    scopedProps.ariaLabel = "칩 선택";
+  }
   if (name === "CriticalAlerts")
     scopedProps.items = scopeItems(prefix, [
       {
@@ -478,19 +515,64 @@ const fixtureProps = (
       helpPanelTabs.map((tab) => [tab.id, `${tab.label} 내용`]),
     );
   }
+  if (name === "Infobox") {
+    scopedProps.type = "primary";
+    scopedProps.message = "정부 서비스 이용에 도움이 되는 안내입니다.";
+  }
+  if (name === "ProgressBar") {
+    scopedProps.value = 70;
+    scopedProps.label = "처리 진행률";
+  }
+  if (name === "Search") {
+    scopedProps.placeholder = "검색어를 입력해 주세요";
+    scopedProps.onSearch = (value: string) => console.log("검색:", value);
+  }
+  if (name === "Snackbar") {
+    scopedProps.open = true;
+    scopedProps.message = "변경사항이 저장되었습니다.";
+    scopedProps.actionLabel = "되돌리기";
+    scopedProps.closeLabel = "닫기";
+  }
+  if (name === "TabBar") {
+    scopedProps.items = [
+      { id: "home", label: "홈" },
+      { id: "guide", label: "가이드" },
+      { id: "notice", label: "공지" },
+    ];
+    scopedProps.defaultSelected = "home";
+  }
+  if (name === "Toast") {
+    delete scopedProps.open;
+    scopedProps.message = "저장되었습니다.";
+    scopedProps.defaultOpen = true;
+    scopedProps.duration = 60000;
+  }
+  if (name === "TopButton") {
+    scopedProps.onClick = () => console.log("맨 위로 이동");
+  }
+  if (name === "UserFeedback") {
+    scopedProps.title = "이 페이지에 만족하시나요?";
+    scopedProps.options = [
+      { value: "satisfied", label: "만족" },
+      { value: "dissatisfied", label: "불만족" },
+    ];
+    scopedProps.onSubmit = (value: string) => console.log("피드백:", value);
+  }
   return scopedProps;
 };
 
 const renderComponent = (name: string, root: HTMLElement) => {
   root.style.cssText =
     "display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;width:100%;max-width:45rem;min-width:0;box-sizing:border-box;overflow-wrap:anywhere";
+  const props = fixtureProps(name);
+  if (name === "BottomSheet") props.open = true;
   render(
     () =>
       createComponent(
         (Components as Record<string, unknown>)[name] as (
           props: Record<string, unknown>,
         ) => JSX.Element,
-        fixtureProps(name),
+        props,
       ),
     root,
   );
@@ -637,6 +719,10 @@ export const Inventory: StoryObj<typeof meta> = {
   },
 };
 // 컴포넌트별 개별 스토리
+export const Alert: StoryObj<typeof meta> = {
+  name: "알림",
+  render: () => renderComponent("Alert", document.createElement("div")),
+};
 export const Badge: StoryObj<typeof meta> = {
   name: "배지",
   render: () => renderComponent("Badge", document.createElement("div")),
@@ -652,6 +738,10 @@ export const BadgeSize: StoryObj<typeof meta> = {
 export const Breadcrumb: StoryObj<typeof meta> = {
   name: "브레드크럼",
   render: () => renderComponent("Breadcrumb", document.createElement("div")),
+};
+export const BottomSheet: StoryObj<typeof meta> = {
+  name: "바텀 시트",
+  render: () => renderComponent("BottomSheet", document.createElement("div")),
 };
 export const ButtonHierarchy: StoryObj<typeof meta> = {
   name: "버튼 계층",
@@ -681,6 +771,10 @@ export const CalendarRange: StoryObj<typeof meta> = {
   name: "캘린더 범위",
   render: () => renderComponent("CalendarRange", document.createElement("div")),
 };
+export const Card: StoryObj<typeof meta> = {
+  name: "카드",
+  render: () => renderComponent("Card", document.createElement("div")),
+};
 export const Carousel: StoryObj<typeof meta> = {
   name: "캐러셀",
   render: () => renderComponent("Carousel", document.createElement("div")),
@@ -696,6 +790,10 @@ export const CheckboxChip: StoryObj<typeof meta> = {
 export const CheckboxSize: StoryObj<typeof meta> = {
   name: "체크박스 크기",
   render: () => renderComponent("CheckboxSize", document.createElement("div")),
+};
+export const Chip: StoryObj<typeof meta> = {
+  name: "칩",
+  render: () => renderComponent("Chip", document.createElement("div")),
 };
 export const CoachMark: StoryObj<typeof meta> = {
   name: "코치마크",
@@ -741,6 +839,10 @@ export const Identifier: StoryObj<typeof meta> = {
   name: "식별자",
   render: () => renderComponent("Identifier", document.createElement("div")),
 };
+export const Infobox: StoryObj<typeof meta> = {
+  name: "인포박스",
+  render: () => renderComponent("Infobox", document.createElement("div")),
+};
 export const InPageNavigation: StoryObj<typeof meta> = {
   name: "페이지 내 네비게이션",
   render: () => renderComponent("InPageNavigation", document.createElement("div")),
@@ -773,6 +875,10 @@ export const Pagination: StoryObj<typeof meta> = {
   name: "페이지네이션",
   render: () => renderComponent("Pagination", document.createElement("div")),
 };
+export const ProgressBar: StoryObj<typeof meta> = {
+  name: "진행률",
+  render: () => renderComponent("ProgressBar", document.createElement("div")),
+};
 export const RadioButton: StoryObj<typeof meta> = {
   name: "라디오 버튼",
   render: () => renderComponent("RadioButton", document.createElement("div")),
@@ -788,6 +894,10 @@ export const RadioSize: StoryObj<typeof meta> = {
 export const Resize: StoryObj<typeof meta> = {
   name: "크기 조절",
   render: () => renderComponent("Resize", document.createElement("div")),
+};
+export const Search: StoryObj<typeof meta> = {
+  name: "검색",
+  render: () => renderComponent("Search", document.createElement("div")),
 };
 export const Select: StoryObj<typeof meta> = {
   name: "셀렉트",
@@ -813,6 +923,10 @@ export const SkipLink: StoryObj<typeof meta> = {
   name: "스킵 링크",
   render: () => renderComponent("SkipLink", document.createElement("div")),
 };
+export const Snackbar: StoryObj<typeof meta> = {
+  name: "스낵바",
+  render: () => renderComponent("Snackbar", document.createElement("div")),
+};
 export const Spinner: StoryObj<typeof meta> = {
   name: "스피너",
   render: () => renderComponent("Spinner", document.createElement("div")),
@@ -828,6 +942,10 @@ export const StructuredList: StoryObj<typeof meta> = {
 export const StructuredListTable: StoryObj<typeof meta> = {
   name: "구조화된 테이블",
   render: () => renderComponent("StructuredListTable", document.createElement("div")),
+};
+export const TabBar: StoryObj<typeof meta> = {
+  name: "탭 바",
+  render: () => renderComponent("TabBar", document.createElement("div")),
 };
 export const Table: StoryObj<typeof meta> = {
   name: "테이블",
@@ -857,6 +975,10 @@ export const TextListOrdered: StoryObj<typeof meta> = {
   name: "순서 있는 텍스트 목록",
   render: () => renderComponent("TextListOrdered", document.createElement("div")),
 };
+export const Toast: StoryObj<typeof meta> = {
+  name: "토스트",
+  render: () => renderComponent("Toast", document.createElement("div")),
+};
 export const ToggleSwitch: StoryObj<typeof meta> = {
   name: "토글 스위치",
   render: () => renderComponent("ToggleSwitch", document.createElement("div")),
@@ -877,6 +999,10 @@ export const TooltipVertical: StoryObj<typeof meta> = {
   name: "수직 툴팁",
   render: () => renderComponent("TooltipVertical", document.createElement("div")),
 };
+export const TopButton: StoryObj<typeof meta> = {
+  name: "상단 이동",
+  render: () => renderComponent("TopButton", document.createElement("div")),
+};
 export const Tts: StoryObj<typeof meta> = {
   name: "TTS",
   render: () => renderComponent("Tts", document.createElement("div")),
@@ -892,4 +1018,8 @@ export const TtsSize: StoryObj<typeof meta> = {
 export const TutorialPanel: StoryObj<typeof meta> = {
   name: "튜토리얼 패널",
   render: () => renderComponent("TutorialPanel", document.createElement("div")),
+};
+export const UserFeedback: StoryObj<typeof meta> = {
+  name: "사용자 피드백",
+  render: () => renderComponent("UserFeedback", document.createElement("div")),
 };

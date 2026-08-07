@@ -1,0 +1,103 @@
+---
+import { cx } from '@krds-community/recipes';
+import Badge from './Badge.astro';
+
+export interface TabBarItem {
+  id: string;
+  label: string;
+  href?: string;
+  icon?: string;
+  badge?: string;
+}
+
+export interface Props {
+  items: TabBarItem[];
+  selected?: string;
+  defaultSelected?: string;
+  ariaLabel?: string;
+  class?: string;
+}
+
+const {
+  items,
+  selected,
+  defaultSelected,
+  ariaLabel = '주요 메뉴',
+  class: className,
+} = Astro.props;
+
+const controlled = selected !== undefined;
+const selectedId = selected ?? defaultSelected;
+---
+
+<nav
+  class={cx('krds-tab-bar', className)}
+  aria-label={ariaLabel}
+  data-controlled={controlled || undefined}
+>
+  {items.map((item) => {
+    const active = item.id === selectedId;
+    const itemClass = cx('tab-bar-item', active && 'active');
+    const content = (
+      <>
+        {item.icon && <i class={cx('svg-icon', 'tab-bar-icon', item.icon)}></i>}
+        <span class="tab-bar-label">{item.label}</span>
+        {item.badge && (
+          <Badge tone="danger" appearance="solid" class="tab-bar-badge">
+            {item.badge}
+          </Badge>
+        )}
+      </>
+    );
+    return item.href ? (
+      <a
+        href={item.href}
+        class={itemClass}
+        data-id={item.id}
+        aria-current={active ? 'page' : undefined}
+      >
+        {content}
+      </a>
+    ) : (
+      <button
+        type="button"
+        class={itemClass}
+        data-id={item.id}
+        aria-current={active ? 'page' : undefined}
+      >
+        {content}
+      </button>
+    );
+  })}
+</nav>
+
+<script>
+  const enhancedTabBars = new WeakSet<HTMLElement>();
+
+  function enhanceTabBars() {
+    document.querySelectorAll<HTMLElement>('.krds-tab-bar').forEach((bar) => {
+      if (enhancedTabBars.has(bar)) return;
+      enhancedTabBars.add(bar);
+      const controlled = bar.hasAttribute('data-controlled');
+      bar.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const item = event.target.closest<HTMLElement>('.tab-bar-item');
+        if (!item) return;
+        if (item.tagName === 'A') event.preventDefault();
+        const id = item.getAttribute('data-id') ?? '';
+        if (!controlled) {
+          bar.querySelectorAll<HTMLElement>('.tab-bar-item.active').forEach((element) => {
+            element.classList.remove('active');
+            element.removeAttribute('aria-current');
+          });
+          item.classList.add('active');
+          item.setAttribute('aria-current', 'page');
+        }
+        bar.dispatchEvent(new CustomEvent('krds:change', { bubbles: true, detail: { id } }));
+      });
+    });
+  }
+
+  enhanceTabBars();
+  document.addEventListener('astro:page-load', enhanceTabBars);
+</script>

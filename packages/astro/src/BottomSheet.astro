@@ -1,0 +1,149 @@
+---
+import { cx } from '@krds-community/recipes';
+
+export interface Props {
+  open?: boolean;
+  defaultOpen?: boolean;
+  title?: string;
+  description?: string;
+  closeLabel?: string;
+  class?: string;
+}
+
+const {
+  open,
+  defaultOpen = false,
+  title,
+  description,
+  closeLabel = '닫기',
+  class: className,
+} = Astro.props;
+
+const rendered = open ?? defaultOpen;
+const sheetId = `krds-bottom-sheet-${crypto.randomUUID()}`;
+const titleId = `${sheetId}-title`;
+const hasBodySlot = Astro.slots.has('default');
+---
+
+{
+  rendered && (
+    <div
+      id={sheetId}
+      class={cx('krds-bottom-sheet', className)}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={title ? titleId : undefined}
+    >
+      <div class="bottom-sheet-overlay" data-close></div>
+      <div class="bottom-sheet-panel" role="document">
+        <button
+          type="button"
+          class="bottom-sheet-handle"
+          aria-hidden="true"
+          tabindex="-1"
+        ></button>
+        {title && (
+          <div class="bottom-sheet-header">
+            <h2 id={titleId} class="bottom-sheet-title">
+              {title}
+            </h2>
+            {description && <p class="bottom-sheet-description">{description}</p>}
+          </div>
+        )}
+        <div class="bottom-sheet-body">{hasBodySlot && <slot />}</div>
+        <button
+          type="button"
+          class="krds-btn medium icon bottom-sheet-close"
+          aria-label={closeLabel}
+        >
+          <i class="svg-icon ico-modal-close"></i>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const CLOSE_ANIMATION_MS = 200;
+  const enhancedSheets = new WeakSet<HTMLElement>();
+  const sheetFocusableSelector = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(',');
+
+  function enhanceSheets() {
+    document
+      .querySelectorAll<HTMLElement>('.krds-bottom-sheet[role="dialog"]')
+      .forEach((sheet) => {
+        if (enhancedSheets.has(sheet)) return;
+        enhancedSheets.add(sheet);
+
+        const panel = sheet.querySelector<HTMLElement>('.bottom-sheet-panel');
+        const returnTarget =
+          document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+        const focusableElements = () =>
+          panel
+            ? Array.from(panel.querySelectorAll<HTMLElement>(sheetFocusableSelector)).filter(
+                (element) =>
+                  !element.hasAttribute('hidden') && element.getAttribute('aria-hidden') !== 'true',
+              )
+            : [];
+
+        const closeSheet = (reason: string) => {
+          if (sheet.classList.contains('closing')) return;
+          sheet.classList.add('closing');
+          window.setTimeout(() => {
+            sheet.dispatchEvent(
+              new CustomEvent('krds:bottomsheetclose', {
+                bubbles: true,
+                detail: { id: sheet.id, reason },
+              }),
+            );
+            sheet.remove();
+            if (returnTarget?.isConnected) returnTarget.focus({ preventScroll: true });
+          }, CLOSE_ANIMATION_MS);
+        };
+
+        sheet.querySelectorAll<HTMLButtonElement>('.bottom-sheet-close').forEach((button) => {
+          button.addEventListener('click', () => closeSheet('close'));
+        });
+        sheet.querySelectorAll<HTMLElement>('[data-close]').forEach((element) => {
+          element.addEventListener('click', () => closeSheet('overlay'));
+        });
+        sheet.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            closeSheet('escape');
+            return;
+          }
+          if (event.key !== 'Tab') return;
+          const focusables = focusableElements();
+          if (!focusables.length) {
+            event.preventDefault();
+            (panel ?? sheet).focus({ preventScroll: true });
+            return;
+          }
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        });
+
+        const initial = focusableElements()[0] ?? panel;
+        if (initial) initial.focus({ preventScroll: true });
+      });
+  }
+
+  enhanceSheets();
+  document.addEventListener('astro:page-load', enhanceSheets);
+</script>
