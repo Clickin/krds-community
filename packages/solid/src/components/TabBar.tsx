@@ -1,4 +1,4 @@
-import { For, Show, createSignal, mergeProps, splitProps, type JSX } from "solid-js";
+import { For, Show, createSignal, mergeProps, splitProps } from "solid-js";
 import { Badge } from "./Badge.js";
 
 export interface TabBarItem {

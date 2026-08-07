@@ -31,9 +31,21 @@ export function BottomSheet({
   const open = controlledOpen ?? uncontrolledOpen;
   const [rendered, setRendered] = useState(open === true);
   const [closing, setClosing] = useState(false);
+  const [previousOpen, setPreviousOpen] = useState(open);
   const panelRef = useRef<HTMLDivElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
   const wasVisibleRef = useRef(open && rendered);
+
+  if (open === true && previousOpen !== true) {
+    setPreviousOpen(open);
+    setRendered(true);
+    setClosing(false);
+  } else if (open === false && previousOpen !== false && rendered) {
+    setPreviousOpen(open);
+    setClosing(true);
+  } else if (open !== previousOpen) {
+    setPreviousOpen(open);
+  }
 
   const close = () => {
     if (controlledOpen === undefined) setUncontrolledOpen(false);
@@ -48,19 +60,13 @@ export function BottomSheet({
     );
 
   useEffect(() => {
-    if (open === true) {
-      setClosing(false);
-      setRendered(true);
-      return;
-    }
-    if (!rendered) return;
-    setClosing(true);
+    if (!closing || !rendered) return;
     const timer = setTimeout(() => {
       setRendered(false);
       setClosing(false);
     }, CLOSE_ANIMATION_MS);
     return () => clearTimeout(timer);
-  }, [open, rendered]);
+  }, [closing, rendered]);
 
   useEffect(() => {
     const panel = panelRef.current;

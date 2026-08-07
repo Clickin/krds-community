@@ -13,8 +13,29 @@ const internalLinkPattern =
   /\]\(\/(?:storybook|conformance|components|service-patterns|basic-patterns|guides|getting-started)/;
 
 describe("docs route coverage", () => {
-  it("publishes one fixture-backed page for every catalog component", () => {
-    expect(componentExamples.length).toBe(componentNavigation.length);
+  it("publishes one fixture-backed page for every upstream catalog component", () => {
+    expect(componentNavigation.length).toBe(88);
+    expect(componentExamples.length).toBe(76);
+    const upstreamIds = new Set(componentExamples.map((component) => component.id));
+    expect(
+      componentNavigation
+        .filter((component) => !upstreamIds.has(component.id))
+        .map((component) => component.id)
+        .sort(),
+    ).toEqual([
+      "alert",
+      "bottom-sheet",
+      "card",
+      "chip",
+      "infobox",
+      "progress-bar",
+      "search",
+      "snackbar",
+      "tab-bar",
+      "toast",
+      "top-button",
+      "user-feedback",
+    ]);
     for (const component of componentExamples) {
       expect(component.fixture.states.length).toBeGreaterThan(0);
     }

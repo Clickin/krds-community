@@ -128,7 +128,7 @@ const findSet = (document, setName) => {
   return match;
 };
 
-const renderDump = (setNode, setName) => {
+const renderDump = (setNode) => {
   const variants = collectVariants(setNode);
   const firstVariant = (setNode.children ?? []).find((child) => child.type === "COMPONENT");
   const lines = [`# ${setNode.name} (normalized: ${normalizeSetName(setNode.name)})`, ""];
@@ -245,7 +245,7 @@ const main = async () => {
         console.error(`COMPONENT_SET "${dumpSet}"를 찾을 수 없습니다.`);
         process.exit(1);
       }
-      console.log(renderDump(setNode, dumpSet));
+      console.log(renderDump(setNode));
       process.exit(0);
     }
     const result = await audit(fileKey, resolvedToken, resolve(ROOT_DIR, outDir));

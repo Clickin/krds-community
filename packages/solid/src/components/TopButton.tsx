@@ -1,4 +1,4 @@
-import { Show, mergeProps, splitProps, type JSX } from "solid-js";
+import { Show, mergeProps, splitProps } from "solid-js";
 
 export interface TopButtonProps {
   class?: string;

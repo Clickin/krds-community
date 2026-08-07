@@ -1,4 +1,4 @@
-import { createSignal, mergeProps, splitProps, type JSX } from "solid-js";
+import { createSignal, mergeProps, splitProps } from "solid-js";
 
 export interface SearchProps {
   class?: string;

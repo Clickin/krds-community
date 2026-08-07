@@ -70,6 +70,7 @@ export const componentNavigation = [
   { id: "progress-bar", title: "프로그레스 바", category: "feedback" },
   { id: "spinner", title: "스피너", category: "feedback" },
   { id: "toast", title: "토스트", category: "feedback" },
+  { id: "snackbar", title: "스낵바", category: "feedback" },
   { id: "user-feedback", title: "만족도 조사", category: "feedback" },
   // --- help ---
   { id: "help-panel", title: "도움 패널", category: "help" },

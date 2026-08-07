@@ -27,44 +27,46 @@ export function Toast({
     controlled ? controlledOpen === true : defaultOpen === true,
   );
   const [closing, setClosing] = useState(false);
+  const [previousOpen, setPreviousOpen] = useState(controlledOpen);
+
+  if (controlledOpen === true && previousOpen !== true) {
+    setPreviousOpen(controlledOpen);
+    setRendered(true);
+    setClosing(false);
+  } else if (controlledOpen === false && previousOpen !== false && rendered) {
+    setPreviousOpen(controlledOpen);
+    setClosing(true);
+  } else if (controlledOpen !== previousOpen) {
+    setPreviousOpen(controlledOpen);
+  }
 
   useEffect(() => {
-    if (controlledOpen === true) {
-      setClosing(false);
-      setRendered(true);
-      const timer = setTimeout(
-        () => {
-          if (controlled) onOpenChange?.(false);
-          else setClosing(true);
-        },
-        duration ?? (tone === "warning" ? 4000 : 3000),
-      );
-      return () => clearTimeout(timer);
-    }
-    if (!rendered) return;
-    if (controlledOpen === false) {
-      setClosing(true);
-      const timer = setTimeout(() => {
-        setRendered(false);
-        setClosing(false);
-      }, CLOSE_ANIMATION_MS);
-      return () => clearTimeout(timer);
-    }
-    if (!controlled) {
-      const timer = setTimeout(
-        () => setClosing(true),
-        duration ?? (tone === "warning" ? 4000 : 3000),
-      );
-      return () => clearTimeout(timer);
-    }
-  }, [controlledOpen, controlled, rendered, duration, tone, onOpenChange]);
+    if (controlledOpen !== true) return;
+    const timer = setTimeout(
+      () => {
+        if (controlled) onOpenChange?.(false);
+        else setClosing(true);
+      },
+      duration ?? (tone === "warning" ? 4000 : 3000),
+    );
+    return () => clearTimeout(timer);
+  }, [controlledOpen, controlled, duration, tone, onOpenChange]);
 
   useEffect(() => {
-    if (!closing || !rendered || controlled) return;
+    if (controlled || controlledOpen !== undefined || !rendered) return;
+    const timer = setTimeout(
+      () => setClosing(true),
+      duration ?? (tone === "warning" ? 4000 : 3000),
+    );
+    return () => clearTimeout(timer);
+  }, [controlled, controlledOpen, rendered, duration, tone]);
+
+  useEffect(() => {
+    if (!closing || !rendered) return;
     const timer = setTimeout(() => {
       setRendered(false);
       setClosing(false);
-      onOpenChange?.(false);
+      if (!controlled) onOpenChange?.(false);
     }, CLOSE_ANIMATION_MS);
     return () => clearTimeout(timer);
   }, [closing, rendered, controlled, onOpenChange]);

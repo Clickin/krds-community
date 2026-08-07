@@ -1,4 +1,4 @@
-import { For, Show, createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
+import { For, createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
 
 export interface FeedbackOption {
   value: string;

@@ -33,7 +33,6 @@ export const Chip = defineComponent({
     change: (_value: string | string[]) => true,
   },
   setup(props, { attrs, emit }) {
-    const isMulti = computed(() => props.type === "multi");
     const localSelected = ref<string | string[]>(
       props.defaultSelected ?? (props.type === "multi" ? [] : ""),
     );

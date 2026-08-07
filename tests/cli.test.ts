@@ -25,13 +25,15 @@ beforeAll(async () => {
 }, 120_000);
 
 describe("component CLI framework support", () => {
-  it("lists Astro with the complete 74-component inventory + 3 extras", async () => {
+  it("lists Astro with the complete 86-component inventory (74 upstream + 12 no-upstream) + 3 extras", async () => {
     const { stdout } = await execFileAsync(process.execPath, [cli, "component", "list"], {
       cwd: root,
       encoding: "utf8",
     });
 
-    expect(stdout).toContain("astro (74, extra 3)");
+    expect(stdout).toContain("astro (86, extra 3)");
+    expect(stdout).toContain("toast");
+    expect(stdout).toContain("snackbar");
     expect(stdout).toContain("search-suggestions  [extra]");
     expect(stdout).toContain("validated-input  [extra]");
     expect(stdout).toContain("filterable-list  [extra]");

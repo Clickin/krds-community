@@ -10,10 +10,11 @@ const fixtureAlias: Record<string, string> = {
   radio: "radio-button",
   switch: "toggle-switch",
 };
-export const componentExamples = componentNavigation.map((component) => {
+export const componentExamples = componentNavigation.flatMap((component) => {
   const fixture = fixtureCatalog.fixtures.find(
     (candidate) => candidate.componentId === (fixtureAlias[component.id] ?? component.id),
   );
-  if (!fixture) throw new Error(`Missing fixture for docs component: ${component.id}`);
-  return { ...component, fixture };
+  // no-upstream 컴포넌트(커뮤니티 구현)는 conformance fixture가 없으므로 카탈로그에서 제외한다.
+  if (!fixture) return [];
+  return [{ ...component, fixture }];
 });

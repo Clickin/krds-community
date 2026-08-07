@@ -1,4 +1,4 @@
-import { For, createSignal, mergeProps, splitProps, type JSX } from "solid-js";
+import { For, createSignal, mergeProps, splitProps } from "solid-js";
 
 export interface ChipOption {
   value: string;
