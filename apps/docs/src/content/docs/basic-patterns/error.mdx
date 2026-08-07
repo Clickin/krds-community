@@ -4,6 +4,25 @@ description: 완료하지 못한 문제를 알리고 본래 과업을 이어가�
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { Modal as ReactModal } from "@krds-community/react";
+import { Modal as VueModal } from "@krds-community/vue";
+import { Modal as SvelteModal } from "@krds-community/svelte";
+import { Modal as SolidModal } from "@krds-community/solid";
+import { AngularModal } from "@docs/angular-previews.ts";
+import { Modal as AstroModal } from "@krds-community/astro";
 
 <PatternReference patternId="error" />
 
@@ -24,11 +43,639 @@ import PatternReference from "../../../components/PatternReference.astro";
 **빠르게 인지할 수 있도록 표현한다.**
 오류 메시지의 크기, 색상, 위치 등은 사용자가 빠르게 오류 발생 정보를 인지할 수 있게 표현해야 한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="빠르게 인지할 수 있도록 표현한다."
+>
+  <div slot="react">
+    <div style={{ maxWidth: "480px" }}>
+      <ReactTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 480px">
+      <VueTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 480px">
+      <SvelteTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ maxWidth: "480px" }}>
+      <SolidTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 480px">
+      <AstroTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 480px">
+      <AngularTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width: 480px">
+    <TextInput
+      name="name"
+      label="이름"
+      placeholder="이름을 입력해 주세요"
+      state="error"
+      hint="이름을 입력해 주세요."
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="max-width: 480px">
+  <TextInput
+    name="name"
+    label="이름"
+    placeholder="이름을 입력해 주세요"
+    state="error"
+    hint="이름을 입력해 주세요."
+  />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        state="error"
+        hint="이름을 입력해 주세요."
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width: 480px">
+  <krds-text-input
+    name="name"
+    label="이름"
+    placeholder="이름을 입력해 주세요"
+    state="error"
+    hint="이름을 입력해 주세요."
+  ></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="max-width: 480px">
+  <TextInput
+    name="name"
+    label="이름"
+    placeholder="이름을 입력해 주세요"
+    state="error"
+    hint="이름을 입력해 주세요."
+  />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="오류를 인지하기 어렵게 표현한다."
+>
+  <div slot="react">
+    <div style={{ maxWidth: "480px" }}>
+      <ReactTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 480px">
+      <VueTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 480px">
+      <SvelteTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ maxWidth: "480px" }}>
+      <SolidTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 480px">
+      <AstroTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 480px">
+      <AngularTextInput
+        name="name"
+        label="이름"
+        placeholder="이름을 입력해 주세요"
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width: 480px">
+    <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width: 480px">
+  <krds-text-input name="name" label="이름" placeholder="이름을 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="max-width: 480px">
+  <TextInput name="name" label="이름" placeholder="이름을 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
 **발생한 오류 및 문제를 분명하게 설명한다.**
 사용자가 어떤 종류의 오류가 어떤 지점에서 발생했는지 명확히 이해할 수 있어야 오류를 수정할 수 있다.
 
 **오류를 수정할 수 있는 방법을 제공한다.**
 오류의 내용이 복잡한 경우, 문제를 수정할 수 있는 방법을 함께 제공하면 효과적으로 오류를 수정할 수 있다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="오류를 수정할 수 있는 방법을 제공한다."
+>
+  <div slot="react">
+    <ReactModal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueModal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteModal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidModal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroModal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+    />
+  </div>
+  <div slot="angular">
+    <AngularModal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { Modal } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <Modal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Modal } from "@krds-community/vue";
+</script>
+
+<template>
+  <Modal
+    open="true"
+    title="요청을 처리하지 못했습니다"
+    description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+    cancelLabel="취소"
+    confirmLabel="다시 시도"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Modal } from "@krds-community/svelte";
+</script>
+
+<Modal
+  open="true"
+  title="요청을 처리하지 못했습니다"
+  description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+  cancelLabel="취소"
+  confirmLabel="다시 시도"
+/>
+```
+
+```tsx fw=solid
+import { Modal } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <Modal
+      open="true"
+      title="요청을 처리하지 못했습니다"
+      description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+      cancelLabel="취소"
+      confirmLabel="다시 시도"
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsModalComponent } from "@krds-community/angular";
+
+// template
+<krds-modal
+  open="true"
+  title="요청을 처리하지 못했습니다"
+  description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+  cancelLabel="취소"
+  confirmLabel="다시 시도"
+></krds-modal>
+```
+
+```astro fw=astro
+---
+import { Modal } from "@krds-community/astro";
+---
+
+<Modal
+  open="true"
+  title="요청을 처리하지 못했습니다"
+  description="잠시 후 다시 시도해 주세요. 문제가 계속되면 고객센터로 문의해 주세요."
+  cancelLabel="취소"
+  confirmLabel="다시 시도"
+/>
+```
+
+</PracticeExample>
+
 **정중한 문체를 사용한다.**
 오류 메시지는 사용자에게 부정적인 상황을 알려주는 정보이므로, 정중한 문체를 사용하여 사용자를 안심시켜야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="정중한 문체를 사용한다."
+>
+  <div slot="react">
+    <ReactModal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueModal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteModal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidModal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroModal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+    />
+  </div>
+  <div slot="angular">
+    <AngularModal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { Modal } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <Modal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Modal } from "@krds-community/vue";
+</script>
+
+<template>
+  <Modal
+    open="true"
+    title="입력하신 정보를 확인해 주세요"
+    description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+    cancelLabel="확인"
+    confirmLabel="입력하기"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Modal } from "@krds-community/svelte";
+</script>
+
+<Modal
+  open="true"
+  title="입력하신 정보를 확인해 주세요"
+  description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+  cancelLabel="확인"
+  confirmLabel="입력하기"
+/>
+```
+
+```tsx fw=solid
+import { Modal } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <Modal
+      open="true"
+      title="입력하신 정보를 확인해 주세요"
+      description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+      cancelLabel="확인"
+      confirmLabel="입력하기"
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsModalComponent } from "@krds-community/angular";
+
+// template
+<krds-modal
+  open="true"
+  title="입력하신 정보를 확인해 주세요"
+  description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+  cancelLabel="확인"
+  confirmLabel="입력하기"
+></krds-modal>
+```
+
+```astro fw=astro
+---
+import { Modal } from "@krds-community/astro";
+---
+
+<Modal
+  open="true"
+  title="입력하신 정보를 확인해 주세요"
+  description="제출에 필요한 항목이 입력되지 않았습니다. 확인 후 다시 시도해 주세요."
+  cancelLabel="확인"
+  confirmLabel="입력하기"
+/>
+```
+
+</PracticeExample>

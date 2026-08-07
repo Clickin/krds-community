@@ -4,6 +4,49 @@ description: 의미적으로 관련된 데이터를 일관된 형식으로 배�
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Table as ReactTable } from "@krds-community/react";
+import { Table as VueTable } from "@krds-community/vue";
+import { Table as SvelteTable } from "@krds-community/svelte";
+import { Table as SolidTable } from "@krds-community/solid";
+import { AngularTable } from "@docs/angular-previews.ts";
+import { Table as AstroTable } from "@krds-community/astro";
+import { StructuredList as ReactStructuredList } from "@krds-community/react";
+import { StructuredList as VueStructuredList } from "@krds-community/vue";
+import { StructuredList as SvelteStructuredList } from "@krds-community/svelte";
+import { StructuredList as SolidStructuredList } from "@krds-community/solid";
+import { AngularStructuredList } from "@docs/angular-previews.ts";
+import { StructuredList as AstroStructuredList } from "@krds-community/astro";
+import { Pagination as ReactPagination } from "@krds-community/react";
+import { Pagination as VuePagination } from "@krds-community/vue";
+import { Pagination as SveltePagination } from "@krds-community/svelte";
+import { Pagination as SolidPagination } from "@krds-community/solid";
+import { AngularPagination } from "@docs/angular-previews.ts";
+import { Pagination as AstroPagination } from "@krds-community/astro";
+import { TextList as ReactTextList } from "@krds-community/react";
+import { TextList as VueTextList } from "@krds-community/vue";
+import { TextList as SvelteTextList } from "@krds-community/svelte";
+import { TextList as SolidTextList } from "@krds-community/solid";
+import { AngularTextList } from "@docs/angular-previews.ts";
+import { TextList as AstroTextList } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Select as ReactSelect } from "@krds-community/react";
+import { Select as VueSelect } from "@krds-community/vue";
+import { Select as SvelteSelect } from "@krds-community/svelte";
+import { Select as SolidSelect } from "@krds-community/solid";
+import { AngularSelect } from "@docs/angular-previews.ts";
+import { Select as AstroSelect } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
 
 <PatternReference patternId="list" />
 
@@ -23,12 +66,1431 @@ import PatternReference from "../../../components/PatternReference.astro";
 
 **중요한 항목은 목록의 상단에 배치한다.** 사용자는 목록의 좌측 상단 영역에 먼저 주의를 기울인다. 그러므로 먼저 보여주어야 할 중요한 내용은 좌측 상단에 배치한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="중요한 항목은 목록의 상단에 배치한다."
+>
+  <div slot="react">
+    <ReactTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { Table } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <Table
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Table } from "@krds-community/vue";
+</script>
+
+<template>
+  <Table
+    caption="공지사항 목록"
+    :columns="[
+      { key: 'notice', label: '구분' },
+      { key: 'title', label: '제목' },
+      { key: 'date', label: '작성일' },
+    ]"
+    :rows="[
+      { notice: '공지', title: '시스템 점검 안내', date: '2026.08.01' },
+      { notice: '일반', title: '신청 서비스 이용 안내', date: '2026.07.28' },
+      { notice: '일반', title: '여름철 휴무 안내', date: '2026.07.15' },
+    ]"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Table } from "@krds-community/svelte";
+</script>
+
+<Table
+  caption="공지사항 목록"
+  columns={[
+    { key: "notice", label: "구분" },
+    { key: "title", label: "제목" },
+    { key: "date", label: "작성일" },
+  ]}
+  rows={[
+    { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+    { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+    { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+  ]}
+/>
+```
+
+```tsx fw=solid
+import { Table } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <Table
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+      ]}
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTableComponent } from "@krds-community/angular";
+
+// template
+<krds-table
+  caption="공지사항 목록"
+  [columns]="[
+    { key: 'notice', label: '구분' },
+    { key: 'title', label: '제목' },
+    { key: 'date', label: '작성일' },
+  ]"
+  [rows]="[
+    { notice: '공지', title: '시스템 점검 안내', date: '2026.08.01' },
+    { notice: '일반', title: '신청 서비스 이용 안내', date: '2026.07.28' },
+    { notice: '일반', title: '여름철 휴무 안내', date: '2026.07.15' },
+  ]"
+></krds-table>
+```
+
+```astro fw=astro
+---
+import { Table } from "@krds-community/astro";
+---
+
+<Table
+  caption="공지사항 목록"
+  columns={[
+    { key: "notice", label: "구분" },
+    { key: "title", label: "제목" },
+    { key: "date", label: "작성일" },
+  ]}
+  rows={[
+    { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+    { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+    { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+  ]}
+/>
+```
+
+</PracticeExample>
+
 **항목을 의미 있는 단위로 구분하고 논리적인 순서에 따라 정렬한다.** 논리적인 순서에 따라 정렬하면 사용자가 내용을 빠르게 훑어보고 쉽게 이해할 수 있다.
 
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="항목을 의미 있는 단위로 구분하지 않고 논리적인 순서 없이 나열한다."
+>
+  <div slot="react">
+    <ReactTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularTable
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { Table } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <Table
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Table } from "@krds-community/vue";
+</script>
+
+<template>
+  <Table
+    caption="공지사항 목록"
+    :columns="[
+      { key: 'notice', label: '구분' },
+      { key: 'title', label: '제목' },
+      { key: 'date', label: '작성일' },
+    ]"
+    :rows="[
+      { notice: '일반', title: '여름철 휴무 안내', date: '2026.07.15' },
+      { notice: '일반', title: '신청 서비스 이용 안내', date: '2026.07.28' },
+      { notice: '공지', title: '시스템 점검 안내', date: '2026.08.01' },
+      { notice: '일반', title: '개인정보 처리방침 개정 안내', date: '2026.06.20' },
+    ]"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Table } from "@krds-community/svelte";
+</script>
+
+<Table
+  caption="공지사항 목록"
+  columns={[
+    { key: "notice", label: "구분" },
+    { key: "title", label: "제목" },
+    { key: "date", label: "작성일" },
+  ]}
+  rows={[
+    { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+    { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+    { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+    { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+  ]}
+/>
+```
+
+```tsx fw=solid
+import { Table } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <Table
+      caption="공지사항 목록"
+      columns={[
+        { key: "notice", label: "구분" },
+        { key: "title", label: "제목" },
+        { key: "date", label: "작성일" },
+      ]}
+      rows={[
+        { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+        { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+        { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+        { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+      ]}
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTableComponent } from "@krds-community/angular";
+
+// template
+<krds-table
+  caption="공지사항 목록"
+  [columns]="[
+    { key: 'notice', label: '구분' },
+    { key: 'title', label: '제목' },
+    { key: 'date', label: '작성일' },
+  ]"
+  [rows]="[
+    { notice: '일반', title: '여름철 휴무 안내', date: '2026.07.15' },
+    { notice: '일반', title: '신청 서비스 이용 안내', date: '2026.07.28' },
+    { notice: '공지', title: '시스템 점검 안내', date: '2026.08.01' },
+    { notice: '일반', title: '개인정보 처리방침 개정 안내', date: '2026.06.20' },
+  ]"
+></krds-table>
+```
+
+```astro fw=astro
+---
+import { Table } from "@krds-community/astro";
+---
+
+<Table
+  caption="공지사항 목록"
+  columns={[
+    { key: "notice", label: "구분" },
+    { key: "title", label: "제목" },
+    { key: "date", label: "작성일" },
+  ]}
+  rows={[
+    { notice: "일반", title: "여름철 휴무 안내", date: "2026.07.15" },
+    { notice: "일반", title: "신청 서비스 이용 안내", date: "2026.07.28" },
+    { notice: "공지", title: "시스템 점검 안내", date: "2026.08.01" },
+    { notice: "일반", title: "개인정보 처리방침 개정 안내", date: "2026.06.20" },
+  ]}
+/>
+```
+
+</PracticeExample>
+
 **항목을 명확하게 구분한다.** 목록을 구성하고 있는 항목들이 서로 명확하게 구분될 수 있도록 항목 간에 충분한 간격을 제공해야 한다. 필요한 경우 구분선을 사용하거나 항목 컨테이너에 테두리, 배경색을 표현할 수 있으나 목록 유형, 데이터 복잡성에 따라 시각적 복잡성을 증가시킬 수 있으므로 유의한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="항목을 명확하게 구분한다."
+>
+  <div slot="react">
+    <ReactStructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueStructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteStructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidStructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroStructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+      dateLabel="작성일"
+      dateValue="2026.08.01"
+      tags={[]}
+      actionLabel="자세히 보기"
+      shareLabel="공유"
+      favoriteLabel="관심"
+    />
+  </div>
+  <div slot="angular">
+    <AngularStructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { StructuredList } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <StructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { StructuredList } from "@krds-community/vue";
+</script>
+
+<template>
+  <StructuredList
+    aria-label="구조화 목록"
+    :items="[
+      {
+        id: 'notice-1',
+        title: '2026년 민방위 교육 일정 안내',
+        description: '연 1회 실시되는 민방위 교육 일정을 안내합니다.',
+      },
+      {
+        id: 'notice-2',
+        title: '주민등록증 발급 신청 안내',
+        description: '거주지 주민센터에서 방문 신청이 가능합니다.',
+      },
+      {
+        id: 'notice-3',
+        title: '지방세 납부 안내',
+        description: '재산세는 매년 9월과 12월에 부과됩니다.',
+      },
+    ]"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { StructuredList } from "@krds-community/svelte";
+</script>
+
+<StructuredList
+  aria-label="구조화 목록"
+  items={[
+    {
+      id: "notice-1",
+      title: "2026년 민방위 교육 일정 안내",
+      description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+    },
+    {
+      id: "notice-2",
+      title: "주민등록증 발급 신청 안내",
+      description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+    },
+    {
+      id: "notice-3",
+      title: "지방세 납부 안내",
+      description: "재산세는 매년 9월과 12월에 부과됩니다.",
+    },
+  ]}
+/>
+```
+
+```tsx fw=solid
+import { StructuredList } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <StructuredList
+      aria-label="구조화 목록"
+      items={[
+        {
+          id: "notice-1",
+          title: "2026년 민방위 교육 일정 안내",
+          description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+        },
+        {
+          id: "notice-2",
+          title: "주민등록증 발급 신청 안내",
+          description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+        },
+        {
+          id: "notice-3",
+          title: "지방세 납부 안내",
+          description: "재산세는 매년 9월과 12월에 부과됩니다.",
+        },
+      ]}
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsStructuredListComponent } from "@krds-community/angular";
+
+// template
+<krds-structured-list
+  aria-label="구조화 목록"
+  [items]="[
+    {
+      id: 'notice-1',
+      title: '2026년 민방위 교육 일정 안내',
+      description: '연 1회 실시되는 민방위 교육 일정을 안내합니다.',
+    },
+    {
+      id: 'notice-2',
+      title: '주민등록증 발급 신청 안내',
+      description: '거주지 주민센터에서 방문 신청이 가능합니다.',
+    },
+    {
+      id: 'notice-3',
+      title: '지방세 납부 안내',
+      description: '재산세는 매년 9월과 12월에 부과됩니다.',
+    },
+  ]"
+></krds-structured-list>
+```
+
+```astro fw=astro
+---
+import { StructuredList } from "@krds-community/astro";
+---
+
+<StructuredList
+  aria-label="구조화 목록"
+  items={[
+    {
+      id: "notice-1",
+      title: "2026년 민방위 교육 일정 안내",
+      description: "연 1회 실시되는 민방위 교육 일정을 안내합니다.",
+    },
+    {
+      id: "notice-2",
+      title: "주민등록증 발급 신청 안내",
+      description: "거주지 주민센터에서 방문 신청이 가능합니다.",
+    },
+    {
+      id: "notice-3",
+      title: "지방세 납부 안내",
+      description: "재산세는 매년 9월과 12월에 부과됩니다.",
+    },
+  ]}
+  dateLabel="작성일"
+  dateValue="2026.08.01"
+  tags={[]}
+  actionLabel="자세히 보기"
+  shareLabel="공유"
+  favoriteLabel="관심"
+/>
+```
+
+</PracticeExample>
 
 **강조를 위한 시각적 표현을 과도하게 사용하지 않는다.** 아이콘, 배지, 태그 등의 컴포넌트를 적절하게 사용하면 사용자의 효율적인 정보처리를 도울 수 있지만 지나치면 오히려 주의가 분산될 수 있다.
 
 **긴 목록은 페이지 등으로 단위를 나누어 제공한다.** 긴 목록은 페이지로 구분하는 등 적절하게 단위를 나누어, 한 번에 지나치게 많은 정보를 제공하지 않아야 한다. 긴 화면을 스크롤 하는 것보다 페이지네이션을 이용하여 분할된 화면을 탐색하는 것이 더욱 효과적이다. 페이지네이션이 포함된 긴 목록은 사용자들이 다음 행동을 결정하기 위해 각 항목에 제공되는 정보를 확인하고 비교할 수 있도록 최소 10개 이상의 항목을 기본으로 표시해야 한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="긴 목록은 페이지 등으로 단위를 나누어 제공한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <ReactTextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+        client:only="react"
+      />
+      <ReactPagination current={1} items={[1, 2, 3]} client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <VueTextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+        client:only="vue"
+      />
+      <VuePagination current={1} items={[1, 2, 3]} client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <SvelteTextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+        client:only="svelte"
+      />
+      <SveltePagination current={1} items={[1, 2, 3]} client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <SolidTextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+        client:only="solid-js"
+      />
+      <SolidPagination current={1} items={[1, 2, 3]} client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <AstroTextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+      />
+      <AstroPagination current={1} items={[1, 2, 3]} />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <AngularTextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+      <AngularPagination current={1} items={[1, 2, 3]} client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Pagination, TextList } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <TextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+      />
+      <Pagination current={1} items={[1, 2, 3]} />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Pagination, TextList } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+    <TextList
+      aria-label="공지사항 목록"
+      :items="[
+        '시스템 점검 안내',
+        '데이터 활용 공모전 개최 안내',
+        '주민등록증 발급 신청 안내',
+        '지방세 납부 안내',
+        '민방위 교육 일정 안내',
+        '여름철 휴무 안내',
+        '공공 데이터 개방 현황 보고',
+        '전자 문서 지갑 서비스 오픈',
+        '신청 서비스 이용 안내',
+        '개인정보 처리방침 개정 안내',
+      ]"
+    />
+    <Pagination :current="1" :items="[1, 2, 3]" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Pagination, TextList } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <TextList
+    aria-label="공지사항 목록"
+    items={[
+      "시스템 점검 안내",
+      "데이터 활용 공모전 개최 안내",
+      "주민등록증 발급 신청 안내",
+      "지방세 납부 안내",
+      "민방위 교육 일정 안내",
+      "여름철 휴무 안내",
+      "공공 데이터 개방 현황 보고",
+      "전자 문서 지갑 서비스 오픈",
+      "신청 서비스 이용 안내",
+      "개인정보 처리방침 개정 안내",
+    ]}
+  />
+  <Pagination current={1} items={[1, 2, 3]} />
+</div>
+```
+
+```tsx fw=solid
+import { Pagination, TextList } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <TextList
+        aria-label="공지사항 목록"
+        items={[
+          "시스템 점검 안내",
+          "데이터 활용 공모전 개최 안내",
+          "주민등록증 발급 신청 안내",
+          "지방세 납부 안내",
+          "민방위 교육 일정 안내",
+          "여름철 휴무 안내",
+          "공공 데이터 개방 현황 보고",
+          "전자 문서 지갑 서비스 오픈",
+          "신청 서비스 이용 안내",
+          "개인정보 처리방침 개정 안내",
+        ]}
+      />
+      <Pagination current={1} items={[1, 2, 3]} />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsPaginationComponent, KrdsTextListComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <krds-text-list
+    aria-label="공지사항 목록"
+    [items]="[
+      '시스템 점검 안내',
+      '데이터 활용 공모전 개최 안내',
+      '주민등록증 발급 신청 안내',
+      '지방세 납부 안내',
+      '민방위 교육 일정 안내',
+      '여름철 휴무 안내',
+      '공공 데이터 개방 현황 보고',
+      '전자 문서 지갑 서비스 오픈',
+      '신청 서비스 이용 안내',
+      '개인정보 처리방침 개정 안내',
+    ]"
+  ></krds-text-list>
+  <krds-pagination [current]="1" [items]="[1, 2, 3]"></krds-pagination>
+</div>
+```
+
+```astro fw=astro
+---
+import { Pagination, TextList } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <TextList
+    aria-label="공지사항 목록"
+    items={[
+      "시스템 점검 안내",
+      "데이터 활용 공모전 개최 안내",
+      "주민등록증 발급 신청 안내",
+      "지방세 납부 안내",
+      "민방위 교육 일정 안내",
+      "여름철 휴무 안내",
+      "공공 데이터 개방 현황 보고",
+      "전자 문서 지갑 서비스 오픈",
+      "신청 서비스 이용 안내",
+      "개인정보 처리방침 개정 안내",
+    ]}
+  />
+  <Pagination current={1} items={[1, 2, 3]} />
+</div>
+```
+
+</PracticeExample>
+
 **필터링 또는 검색 기능을 제공한다.** 항목 개수가 많은 경우, 페이지네이션만으로 정보를 탐색하는 데 한계가 있으므로 필터링이나 검색 기능을 제공하여 빠른 내용 탐색이 가능하도록 만들어야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="필터링 또는 검색 기능을 제공한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
+        <div style={{ flex: 1 }}>
+          <ReactTextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" client:only="react" />
+        </div>
+        <ReactButton variant="primary" client:only="react">검색</ReactButton>
+      </div>
+      <ReactSelect
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+        client:only="react"
+      />
+      <ReactTextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <div style="display: flex; gap: 8px; align-items: flex-end">
+        <div style="flex: 1">
+          <VueTextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" client:only="vue" />
+        </div>
+        <VueButton variant="primary" client:only="vue">검색</VueButton>
+      </div>
+      <VueSelect
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+        client:only="vue"
+      />
+      <VueTextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <div style="display: flex; gap: 8px; align-items: flex-end">
+        <div style="flex: 1">
+          <SvelteTextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" client:only="svelte" />
+        </div>
+        <SvelteButton variant="primary" client:only="svelte">검색</SvelteButton>
+      </div>
+      <SvelteSelect
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+        client:only="svelte"
+      />
+      <SvelteTextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
+        <div style={{ flex: 1 }}>
+          <SolidTextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" client:only="solid-js" />
+        </div>
+        <SolidButton variant="primary" client:only="solid-js">검색</SolidButton>
+      </div>
+      <SolidSelect
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+        client:only="solid-js"
+      />
+      <SolidTextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <div style="display: flex; gap: 8px; align-items: flex-end">
+        <div style="flex: 1">
+          <AstroTextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" />
+        </div>
+        <AstroButton variant="primary">검색</AstroButton>
+      </div>
+      <AstroSelect
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+      />
+      <AstroTextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <div style="display: flex; gap: 8px; align-items: flex-end">
+        <div style="flex: 1">
+          <AngularTextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" client:only="@analogjs/astro-angular" />
+        </div>
+        <AngularButton variant="primary" label="검색" client:only="@analogjs/astro-angular">검색</AngularButton>
+      </div>
+      <AngularSelect
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+        client:only="@analogjs/astro-angular"
+      />
+      <AngularTextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, Select, TextInput, TextList } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+        <div style={{ flex: 1 }}>
+          <TextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" />
+        </div>
+        <Button variant="primary">검색</Button>
+      </div>
+      <Select
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+      />
+      <TextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+      />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, Select, TextInput, TextList } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+    <div style="display: flex; gap: 8px; align-items: flex-end">
+      <div style="flex: 1">
+        <TextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" />
+      </div>
+      <Button variant="primary">검색</Button>
+    </div>
+    <Select
+      label="구분"
+      title="전체"
+      :options="[
+        { value: 'all', label: '전체' },
+        { value: 'notice', label: '공지' },
+        { value: 'event', label: '행사' },
+      ]"
+    />
+    <TextList
+      aria-label="검색 결과"
+      :items="['시스템 점검 안내', '데이터 활용 공모전 개최 안내']"
+    />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, Select, TextInput, TextList } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <div style="display: flex; gap: 8px; align-items: flex-end">
+    <div style="flex: 1">
+      <TextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" />
+    </div>
+    <Button variant="primary">검색</Button>
+  </div>
+  <Select
+    label="구분"
+    title="전체"
+    options={[
+      { value: "all", label: "전체" },
+      { value: "notice", label: "공지" },
+      { value: "event", label: "행사" },
+    ]}
+  />
+  <TextList
+    aria-label="검색 결과"
+    items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+  />
+</div>
+```
+
+```tsx fw=solid
+import { Button, Select, TextInput, TextList } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
+        <div style={{ flex: 1 }}>
+          <TextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" />
+        </div>
+        <Button variant="primary">검색</Button>
+      </div>
+      <Select
+        label="구분"
+        title="전체"
+        options={[
+          { value: "all", label: "전체" },
+          { value: "notice", label: "공지" },
+          { value: "event", label: "행사" },
+        ]}
+      />
+      <TextList
+        aria-label="검색 결과"
+        items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+      />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import {
+  KrdsButtonComponent,
+  KrdsSelectComponent,
+  KrdsTextInputComponent,
+  KrdsTextListComponent,
+} from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <div style="display: flex; gap: 8px; align-items: flex-end">
+    <div style="flex: 1">
+      <krds-text-input name="search" label="검색어" placeholder="검색어를 입력해 주세요"></krds-text-input>
+    </div>
+    <krds-button variant="primary" label="검색"></krds-button>
+  </div>
+  <krds-select
+    label="구분"
+    title="전체"
+    [options]="[
+      { value: 'all', label: '전체' },
+      { value: 'notice', label: '공지' },
+      { value: 'event', label: '행사' },
+    ]"
+  ></krds-select>
+  <krds-text-list
+    aria-label="검색 결과"
+    [items]="['시스템 점검 안내', '데이터 활용 공모전 개최 안내']"
+  ></krds-text-list>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, Select, TextInput, TextList } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <div style="display: flex; gap: 8px; align-items: flex-end">
+    <div style="flex: 1">
+      <TextInput name="search" label="검색어" placeholder="검색어를 입력해 주세요" />
+    </div>
+    <Button variant="primary">검색</Button>
+  </div>
+  <Select
+    label="구분"
+    title="전체"
+    options={[
+      { value: "all", label: "전체" },
+      { value: "notice", label: "공지" },
+      { value: "event", label: "행사" },
+    ]}
+  />
+  <TextList
+    aria-label="검색 결과"
+    items={["시스템 점검 안내", "데이터 활용 공모전 개최 안내"]}
+  />
+</div>
+```
+
+</PracticeExample>

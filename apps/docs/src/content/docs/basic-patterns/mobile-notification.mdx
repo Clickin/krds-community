@@ -4,6 +4,37 @@ description: 업무 진행 상태나 서비스의 중요한 변화를 적시에 
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { ButtonIcon as ReactButtonIcon } from "@krds-community/react";
+import { ButtonIcon as VueButtonIcon } from "@krds-community/vue";
+import { ButtonIcon as SvelteButtonIcon } from "@krds-community/svelte";
+import { ButtonIcon as SolidButtonIcon } from "@krds-community/solid";
+import { AngularButtonIcon } from "@docs/angular-previews.ts";
+import { ButtonIcon as AstroButtonIcon } from "@krds-community/astro";
+import { Badge as ReactBadge } from "@krds-community/react";
+import { Badge as VueBadge } from "@krds-community/vue";
+import { Badge as SvelteBadge } from "@krds-community/svelte";
+import { Badge as SolidBadge } from "@krds-community/solid";
+import { AngularBadge } from "@docs/angular-previews.ts";
+import { Badge as AstroBadge } from "@krds-community/astro";
+import { Modal as ReactModal } from "@krds-community/react";
+import { Modal as VueModal } from "@krds-community/vue";
+import { Modal as SvelteModal } from "@krds-community/svelte";
+import { Modal as SolidModal } from "@krds-community/solid";
+import { AngularModal } from "@docs/angular-previews.ts";
+import { Modal as AstroModal } from "@krds-community/astro";
+import { ToggleSwitch as ReactToggleSwitch } from "@krds-community/react";
+import { ToggleSwitch as VueToggleSwitch } from "@krds-community/vue";
+import { ToggleSwitch as SvelteToggleSwitch } from "@krds-community/svelte";
+import { ToggleSwitch as SolidToggleSwitch } from "@krds-community/solid";
+import { AngularToggleSwitch } from "@docs/angular-previews.ts";
+import { ToggleSwitch as AstroToggleSwitch } from "@krds-community/astro";
+import { CriticalAlerts as ReactCriticalAlerts } from "@krds-community/react";
+import { CriticalAlerts as VueCriticalAlerts } from "@krds-community/vue";
+import { CriticalAlerts as SvelteCriticalAlerts } from "@krds-community/svelte";
+import { CriticalAlerts as SolidCriticalAlerts } from "@krds-community/solid";
+import { AngularCriticalAlerts } from "@docs/angular-previews.ts";
+import { CriticalAlerts as AstroCriticalAlerts } from "@krds-community/astro";
 
 <PatternReference patternId="mobile-notification" />
 
@@ -29,11 +60,647 @@ import PatternReference from "../../../components/PatternReference.astro";
 **단순한 문장으로 전달한다.**
 알림 문구는 사용자가 지금 무엇을 해야 하는지를 한 문장으로 명확히 안내한다. 수식·감탄·홍보성 표현은 배제하고, 핵심 동사+목적지 구조로 작성한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="단순한 문장으로 전달한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <ReactButtonIcon label="알림" client:only="react" />
+      <ReactBadge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개" client:only="react">
+        3
+      </ReactBadge>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <VueButtonIcon label="알림" client:only="vue" />
+      <VueBadge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개" client:only="vue">
+        3
+      </VueBadge>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <SvelteButtonIcon label="알림" client:only="svelte" />
+      <SvelteBadge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개" client:only="svelte">
+        3
+      </SvelteBadge>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <SolidButtonIcon label="알림" client:only="solid-js" />
+      <SolidBadge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개" client:only="solid-js">
+        3
+      </SolidBadge>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <AstroButtonIcon label="알림" />
+      <AstroBadge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">
+        3
+      </AstroBadge>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <AngularButtonIcon label="알림" client:only="@analogjs/astro-angular" />
+      <AngularBadge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개" client:only="@analogjs/astro-angular">
+        3
+      </AngularBadge>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Badge, ButtonIcon } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <ButtonIcon label="알림" />
+      <Badge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">
+        3
+      </Badge>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Badge, ButtonIcon } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; gap: .5rem; align-items: center">
+    <ButtonIcon label="알림" />
+    <Badge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">3</Badge>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Badge, ButtonIcon } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; gap: .5rem; align-items: center">
+  <ButtonIcon label="알림" />
+  <Badge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">3</Badge>
+</div>
+```
+
+```tsx fw=solid
+import { Badge, ButtonIcon } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <ButtonIcon label="알림" />
+      <Badge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">
+        3
+      </Badge>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsBadgeComponent, KrdsButtonIconComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; gap: .5rem; align-items: center">
+  <krds-button-icon label="알림"></krds-button-icon>
+  <krds-badge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">3</krds-badge>
+</div>
+```
+
+```astro fw=astro
+---
+import { Badge, ButtonIcon } from "@krds-community/astro";
+---
+
+<div style="display: flex; gap: .5rem; align-items: center">
+  <ButtonIcon label="알림" />
+  <Badge tone="danger" appearance="solid" size="medium" label="미확인 알림 3개">
+    3
+  </Badge>
+</div>
+```
+
+</PracticeExample>
+
 **민감정보의 노출은 최대한 줄인다.**
 주민번호, 계좌번호, 인증코드, 건강정보 등 민감정보는 직접 노출하지 않는다. 불가피할 경우 마스킹(끝 2~4자리만 노출) 하고, 세부 내용은 앱 내부 인증 후에만 확인하도록 한다. 메시지에는 "상세 정보는 앱에서 확인하세요."처럼 안전한 확인 경로를 함께 제시한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="민감정보의 노출은 최대한 줄인다."
+>
+  <div slot="react">
+    <ReactModal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueModal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteModal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidModal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroModal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+    />
+  </div>
+  <div slot="angular">
+    <AngularModal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { Modal } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <Modal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Modal } from "@krds-community/vue";
+</script>
+
+<template>
+  <Modal
+    open="true"
+    title="입금 알림"
+    description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+    cancelLabel="닫기"
+    confirmLabel="확인"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Modal } from "@krds-community/svelte";
+</script>
+
+<Modal
+  open="true"
+  title="입금 알림"
+  description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+  cancelLabel="닫기"
+  confirmLabel="확인"
+/>
+```
+
+```tsx fw=solid
+import { Modal } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <Modal
+      open="true"
+      title="입금 알림"
+      description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+      cancelLabel="닫기"
+      confirmLabel="확인"
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsModalComponent } from "@krds-community/angular";
+
+// template
+<krds-modal
+  open="true"
+  title="입금 알림"
+  description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+  cancelLabel="닫기"
+  confirmLabel="확인"
+></krds-modal>
+```
+
+```astro fw=astro
+---
+import { Modal } from "@krds-community/astro";
+---
+
+<Modal
+  open="true"
+  title="입금 알림"
+  description="계좌 ****-****-1234에 입금되었습니다. 상세 정보는 앱에서 확인하세요."
+  cancelLabel="닫기"
+  confirmLabel="확인"
+/>
+```
+
+</PracticeExample>
 
 **긴급·중요·일반·기타의 우선순위 체계를 정하여 사용한다.**
 알림은 긴급(즉시 조치 필요) > 중요(기한/보안 관련) > 일반(안내/피드백) > 기타(홍보/소식) 순으로 분류하고, 우선순위에 따라 채널과 컴포넌트를 달리한다. 긴급은 경보 수준의 푸시+앱 진입 시 모달로, 중요는 푸시+상단 배너(기한 표기), 일반은 토스트/스낵바로 흐름을 방해하지 않게, 기타는 알림함/요약 다이제스트로 처리한다. 이 우선순위는 중복 발송 억제, 소리/진동 정책, 야간 모드까지 연결되어 일관되게 적용한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="긴급·중요·일반·기타의 우선순위 체계를 정하여 사용한다."
+>
+  <div slot="react">
+    <ReactCriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueCriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteCriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidCriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroCriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularCriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { CriticalAlerts } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <CriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { CriticalAlerts } from "@krds-community/vue";
+</script>
+
+<template>
+  <CriticalAlerts
+    tone="danger"
+    :items="[
+      {
+        badge: 'danger',
+        badgeLabel: '긴급',
+        message: '서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.',
+        linkLabel: '자세히 보기',
+        href: '#',
+      },
+    ]"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { CriticalAlerts } from "@krds-community/svelte";
+</script>
+
+<CriticalAlerts
+  tone="danger"
+  items={[
+    {
+      badge: "danger",
+      badgeLabel: "긴급",
+      message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+      linkLabel: "자세히 보기",
+      href: "#",
+    },
+  ]}
+/>
+```
+
+```tsx fw=solid
+import { CriticalAlerts } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <CriticalAlerts
+      tone="danger"
+      items={[
+        {
+          badge: "danger",
+          badgeLabel: "긴급",
+          message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+          linkLabel: "자세히 보기",
+          href: "#",
+        },
+      ]}
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsCriticalAlertsComponent } from "@krds-community/angular";
+
+// template
+<krds-critical-alerts
+  tone="danger"
+  [items]="[
+    {
+      badge: 'danger',
+      badgeLabel: '긴급',
+      message: '서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.',
+      linkLabel: '자세히 보기',
+      href: '#',
+    },
+  ]"
+></krds-critical-alerts>
+```
+
+```astro fw=astro
+---
+import { CriticalAlerts } from "@krds-community/astro";
+---
+
+<CriticalAlerts
+  tone="danger"
+  items={[
+    {
+      badge: "danger",
+      badgeLabel: "긴급",
+      message: "서버 점검으로 일부 서비스가 중단되었습니다. 즉시 확인해 주세요.",
+      linkLabel: "자세히 보기",
+      href: "#",
+    },
+  ]}
+/>
+```
+
+</PracticeExample>
+
 **알림동의, 제어 기능을 제공한다.**
 최초 실행 시 카테고리별(중요/일반/마케팅 등) 알림 옵트인을 명확히 선택할 수 있어야 하며, 이후에도 설정 > 알림에서 카테고리별 on/off, 푸시 미리보기, 야간 '방해 금지' 시간대 등을 간단히 변경할 수 있어야 한다. 중요한 운영/보안 알림은 필수 채널과 선택 채널을 분리해 표기한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="알림동의, 제어 기능을 제공한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <ReactToggleSwitch name="important" label="중요 알림" checked client:only="react" />
+      <ReactToggleSwitch name="general" label="일반 알림" checked client:only="react" />
+      <ReactToggleSwitch name="marketing" label="마케팅 알림" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <VueToggleSwitch name="important" label="중요 알림" checked client:only="vue" />
+      <VueToggleSwitch name="general" label="일반 알림" checked client:only="vue" />
+      <VueToggleSwitch name="marketing" label="마케팅 알림" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <SvelteToggleSwitch name="important" label="중요 알림" checked client:only="svelte" />
+      <SvelteToggleSwitch name="general" label="일반 알림" checked client:only="svelte" />
+      <SvelteToggleSwitch name="marketing" label="마케팅 알림" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <SolidToggleSwitch name="important" label="중요 알림" checked client:only="solid-js" />
+      <SolidToggleSwitch name="general" label="일반 알림" checked client:only="solid-js" />
+      <SolidToggleSwitch name="marketing" label="마케팅 알림" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <AstroToggleSwitch name="important" label="중요 알림" checked />
+      <AstroToggleSwitch name="general" label="일반 알림" checked />
+      <AstroToggleSwitch name="marketing" label="마케팅 알림" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <AngularToggleSwitch name="important" label="중요 알림" checked={true} client:only="@analogjs/astro-angular" />
+      <AngularToggleSwitch name="general" label="일반 알림" checked={true} client:only="@analogjs/astro-angular" />
+      <AngularToggleSwitch name="marketing" label="마케팅 알림" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { ToggleSwitch } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <ToggleSwitch name="important" label="중요 알림" checked />
+      <ToggleSwitch name="general" label="일반 알림" checked />
+      <ToggleSwitch name="marketing" label="마케팅 알림" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { ToggleSwitch } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+    <ToggleSwitch name="important" label="중요 알림" checked />
+    <ToggleSwitch name="general" label="일반 알림" checked />
+    <ToggleSwitch name="marketing" label="마케팅 알림" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { ToggleSwitch } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <ToggleSwitch name="important" label="중요 알림" checked />
+  <ToggleSwitch name="general" label="일반 알림" checked />
+  <ToggleSwitch name="marketing" label="마케팅 알림" />
+</div>
+```
+
+```tsx fw=solid
+import { ToggleSwitch } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <ToggleSwitch name="important" label="중요 알림" checked />
+      <ToggleSwitch name="general" label="일반 알림" checked />
+      <ToggleSwitch name="marketing" label="마케팅 알림" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsToggleSwitchComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <krds-toggle-switch name="important" label="중요 알림" [checked]="true"></krds-toggle-switch>
+  <krds-toggle-switch name="general" label="일반 알림" [checked]="true"></krds-toggle-switch>
+  <krds-toggle-switch name="marketing" label="마케팅 알림"></krds-toggle-switch>
+</div>
+```
+
+```astro fw=astro
+---
+import { ToggleSwitch } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <ToggleSwitch name="important" label="중요 알림" checked />
+  <ToggleSwitch name="general" label="일반 알림" checked />
+  <ToggleSwitch name="marketing" label="마케팅 알림" />
+</div>
+```
+
+</PracticeExample>

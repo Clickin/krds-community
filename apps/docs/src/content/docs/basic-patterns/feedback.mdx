@@ -4,6 +4,37 @@ description: 페이지나 기능 이용 경험에 대한 평가와 제안을 수
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { RadioButton as ReactRadioButton } from "@krds-community/react";
+import { RadioButton as VueRadioButton } from "@krds-community/vue";
+import { RadioButton as SvelteRadioButton } from "@krds-community/svelte";
+import { RadioButton as SolidRadioButton } from "@krds-community/solid";
+import { AngularRadioButton } from "@docs/angular-previews.ts";
+import { RadioButton as AstroRadioButton } from "@krds-community/astro";
+import { Checkbox as ReactCheckbox } from "@krds-community/react";
+import { Checkbox as VueCheckbox } from "@krds-community/vue";
+import { Checkbox as SvelteCheckbox } from "@krds-community/svelte";
+import { Checkbox as SolidCheckbox } from "@krds-community/solid";
+import { AngularCheckbox } from "@docs/angular-previews.ts";
+import { Checkbox as AstroCheckbox } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Textarea as ReactTextarea } from "@krds-community/react";
+import { Textarea as VueTextarea } from "@krds-community/vue";
+import { Textarea as SvelteTextarea } from "@krds-community/svelte";
+import { Textarea as SolidTextarea } from "@krds-community/solid";
+import { AngularTextarea } from "@docs/angular-previews.ts";
+import { Textarea as AstroTextarea } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
 
 <PatternReference patternId="feedback" />
 
@@ -32,8 +63,589 @@ import PatternReference from "../../../components/PatternReference.astro";
 
 **사용자 피드백은 폐쇄형 질문으로 시작한다.** 사용자가 쉽고 빠르게 사용자 피드백 요소에 접근할 수 있도록 선택 가능한 값이 1개로 정해져 있는 폐쇄형 질문을 기본 평가 질문으로 제공해야 한다. 사용자가 직접 의견을 작성하도록 하는 개방형 질문이 평가의 시작 질문으로 제공되면 사용자는 피드백을 남기는 데 많은 노력이 필요하다고 판단하여 의견 남기기를 시도하지 않을 수 있다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="사용자 피드백은 폐쇄형 질문으로 시작한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <ReactRadioButton name="feedback" value="satisfied" label="만족" client:only="react" />
+      <ReactRadioButton name="feedback" value="dissatisfied" label="불만족" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <VueRadioButton name="feedback" value="satisfied" label="만족" client:only="vue" />
+      <VueRadioButton name="feedback" value="dissatisfied" label="불만족" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <SvelteRadioButton name="feedback" value="satisfied" label="만족" client:only="svelte" />
+      <SvelteRadioButton name="feedback" value="dissatisfied" label="불만족" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <SolidRadioButton name="feedback" value="satisfied" label="만족" client:only="solid-js" />
+      <SolidRadioButton name="feedback" value="dissatisfied" label="불만족" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <AstroRadioButton name="feedback" value="satisfied" label="만족" />
+      <AstroRadioButton name="feedback" value="dissatisfied" label="불만족" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <AngularRadioButton name="feedback" value="satisfied" label="만족" client:only="@analogjs/astro-angular" />
+      <AngularRadioButton name="feedback" value="dissatisfied" label="불만족" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { RadioButton } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <RadioButton name="feedback" value="satisfied" label="만족" />
+      <RadioButton name="feedback" value="dissatisfied" label="불만족" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { RadioButton } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>이용하신 경험이 어떠셨나요?</strong>
+    <RadioButton name="feedback" value="satisfied" label="만족" />
+    <RadioButton name="feedback" value="dissatisfied" label="불만족" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { RadioButton } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>이용하신 경험이 어떠셨나요?</strong>
+  <RadioButton name="feedback" value="satisfied" label="만족" />
+  <RadioButton name="feedback" value="dissatisfied" label="불만족" />
+</div>
+```
+
+```tsx fw=solid
+import { RadioButton } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <RadioButton name="feedback" value="satisfied" label="만족" />
+      <RadioButton name="feedback" value="dissatisfied" label="불만족" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsRadioButtonComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>이용하신 경험이 어떠셨나요?</strong>
+  <krds-radio-button name="feedback" value="satisfied" label="만족"></krds-radio-button>
+  <krds-radio-button name="feedback" value="dissatisfied" label="불만족"></krds-radio-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { RadioButton } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>이용하신 경험이 어떠셨나요?</strong>
+  <RadioButton name="feedback" value="satisfied" label="만족" />
+  <RadioButton name="feedback" value="dissatisfied" label="불만족" />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="사용자 피드백을 개방형 질문으로 시작한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <ReactTextarea
+        name="opinion"
+        label="의견"
+        placeholder="의견을 입력해 주세요"
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <VueTextarea
+        name="opinion"
+        label="의견"
+        placeholder="의견을 입력해 주세요"
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <SvelteTextarea
+        name="opinion"
+        label="의견"
+        placeholder="의견을 입력해 주세요"
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <SolidTextarea
+        name="opinion"
+        label="의견"
+        placeholder="의견을 입력해 주세요"
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <AstroTextarea
+        name="opinion"
+        label="의견"
+        placeholder="의견을 입력해 주세요"
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <AngularTextarea
+        name="opinion"
+        label="의견"
+        placeholder="의견을 입력해 주세요"
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Textarea } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <Textarea name="opinion" label="의견" placeholder="의견을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Textarea } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>의견을 자유롭게 남겨 주세요.</strong>
+    <Textarea name="opinion" label="의견" placeholder="의견을 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Textarea } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>의견을 자유롭게 남겨 주세요.</strong>
+  <Textarea name="opinion" label="의견" placeholder="의견을 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { Textarea } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>의견을 자유롭게 남겨 주세요.</strong>
+      <Textarea name="opinion" label="의견" placeholder="의견을 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextareaComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>의견을 자유롭게 남겨 주세요.</strong>
+  <krds-textarea name="opinion" label="의견" placeholder="의견을 입력해 주세요"></krds-textarea>
+</div>
+```
+
+```astro fw=astro
+---
+import { Textarea } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>의견을 자유롭게 남겨 주세요.</strong>
+  <Textarea name="opinion" label="의견" placeholder="의견을 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
 **평가의 선택지를 최소화한다.** 평가의 선택지 개수가 늘어날수록 사용자가 응답을 선택하는 데 걸리는 시간과 함께 의도하지 않은 응답을 선택하는 실수 역시 증가한다. 가능한 한 2가지 선택지로 간결하게 구성된 감정 평가 방식을 사용하고, 별점을 사용하는 경우에는 선택지가 5개를 초과하지 않도록 한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="평가의 선택지를 최소화한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <ReactRadioButton name="emotion" value="satisfied" label="만족" client:only="react" />
+      <ReactRadioButton name="emotion" value="dissatisfied" label="불만족" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <VueRadioButton name="emotion" value="satisfied" label="만족" client:only="vue" />
+      <VueRadioButton name="emotion" value="dissatisfied" label="불만족" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <SvelteRadioButton name="emotion" value="satisfied" label="만족" client:only="svelte" />
+      <SvelteRadioButton name="emotion" value="dissatisfied" label="불만족" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <SolidRadioButton name="emotion" value="satisfied" label="만족" client:only="solid-js" />
+      <SolidRadioButton name="emotion" value="dissatisfied" label="불만족" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <AstroRadioButton name="emotion" value="satisfied" label="만족" />
+      <AstroRadioButton name="emotion" value="dissatisfied" label="불만족" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <AngularRadioButton name="emotion" value="satisfied" label="만족" client:only="@analogjs/astro-angular" />
+      <AngularRadioButton name="emotion" value="dissatisfied" label="불만족" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { RadioButton } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <RadioButton name="emotion" value="satisfied" label="만족" />
+      <RadioButton name="emotion" value="dissatisfied" label="불만족" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { RadioButton } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>이용하신 경험이 어떠셨나요?</strong>
+    <RadioButton name="emotion" value="satisfied" label="만족" />
+    <RadioButton name="emotion" value="dissatisfied" label="불만족" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { RadioButton } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>이용하신 경험이 어떠셨나요?</strong>
+  <RadioButton name="emotion" value="satisfied" label="만족" />
+  <RadioButton name="emotion" value="dissatisfied" label="불만족" />
+</div>
+```
+
+```tsx fw=solid
+import { RadioButton } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>이용하신 경험이 어떠셨나요?</strong>
+      <RadioButton name="emotion" value="satisfied" label="만족" />
+      <RadioButton name="emotion" value="dissatisfied" label="불만족" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsRadioButtonComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>이용하신 경험이 어떠셨나요?</strong>
+  <krds-radio-button name="emotion" value="satisfied" label="만족"></krds-radio-button>
+  <krds-radio-button name="emotion" value="dissatisfied" label="불만족"></krds-radio-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { RadioButton } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>이용하신 경험이 어떠셨나요?</strong>
+  <RadioButton name="emotion" value="satisfied" label="만족" />
+  <RadioButton name="emotion" value="dissatisfied" label="불만족" />
+</div>
+```
+
+</PracticeExample>
+
 **맞춤 영역의 질문을 간결하게 구성한다.** 맞춤 영역에 제공되는 추가적인 질문은 최대 3개만 사용한다. 심도 깊은 평가나 의견이 필요한 경우 별도 화면이나 채널을 활용해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="맞춤 영역의 질문을 간결하게 구성한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <ReactCheckbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." client:only="react" />
+      <ReactCheckbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." client:only="react" />
+      <ReactTextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" client:only="react" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" client:only="react">제출</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <VueCheckbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." client:only="vue" />
+      <VueCheckbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." client:only="vue" />
+      <VueTextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" client:only="vue" />
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" client:only="vue">제출</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <SvelteCheckbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." client:only="svelte" />
+      <SvelteCheckbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." client:only="svelte" />
+      <SvelteTextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" client:only="svelte" />
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" client:only="svelte">제출</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <SolidCheckbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." client:only="solid-js" />
+      <SolidCheckbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." client:only="solid-js" />
+      <SolidTextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" client:only="solid-js" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" client:only="solid-js">제출</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <AstroCheckbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." />
+      <AstroCheckbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." />
+      <AstroTextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" />
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary">제출</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <AngularCheckbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." client:only="@analogjs/astro-angular" />
+      <AngularCheckbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." client:only="@analogjs/astro-angular" />
+      <AngularTextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="제출" client:only="@analogjs/astro-angular">제출</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, Checkbox, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <Checkbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." />
+      <Checkbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." />
+      <TextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">제출</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, Checkbox, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+    <Checkbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." />
+    <Checkbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." />
+    <TextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" />
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary">제출</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, Checkbox, TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+  <Checkbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." />
+  <Checkbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." />
+  <TextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">제출</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, Checkbox, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+      <Checkbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." />
+      <Checkbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." />
+      <TextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">제출</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import {
+  KrdsButtonComponent,
+  KrdsCheckboxComponent,
+  KrdsTextInputComponent,
+} from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+  <krds-checkbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다."></krds-checkbox>
+  <krds-checkbox name="content" label="더 많은 정보가 제공되었으면 좋겠다."></krds-checkbox>
+  <krds-text-input name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요"></krds-text-input>
+  <div style="display: flex; justify-content: flex-end">
+    <krds-button variant="primary" label="제출"></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, Checkbox, TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>추가로 확인하고 싶은 내용을 알려주세요.</strong>
+  <Checkbox name="speed" label="서비스 속도가 빨라졌으면 좋겠다." />
+  <Checkbox name="content" label="더 많은 정보가 제공되었으면 좋겠다." />
+  <TextInput name="opinion" label="기타 의견" placeholder="의견을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">제출</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
 
 **맞춤 영역의 질문에 대한 응답 방식을 유연하게 구성한다.** 사용자가 서비스 운영자에게 전달하고자 하는 의견을 표현하는 데 적합한 질문과 응답 방식을 사용한다. 개방형 질문은 폐쇄형 질문에서 미처 표현하지 못한 사용자의 의견을 수집하는 데 효과적이다. 그러나 개방형 질문으로 인해 사용자가 부담을 느낄 수 있으므로 개방형 질문을 사용하는 경우 가장 마지막 질문으로 사용하는 것이 좋다.

@@ -4,6 +4,37 @@ description: 서비스 이용 중 작동 방식과 과업 흐름에 관한 도�
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Tooltip as ReactTooltip } from "@krds-community/react";
+import { Tooltip as VueTooltip } from "@krds-community/vue";
+import { Tooltip as SvelteTooltip } from "@krds-community/svelte";
+import { Tooltip as SolidTooltip } from "@krds-community/solid";
+import { AngularTooltip } from "@docs/angular-previews.ts";
+import { Tooltip as AstroTooltip } from "@krds-community/astro";
+import { ButtonIcon as ReactButtonIcon } from "@krds-community/react";
+import { ButtonIcon as VueButtonIcon } from "@krds-community/vue";
+import { ButtonIcon as SvelteButtonIcon } from "@krds-community/svelte";
+import { ButtonIcon as SolidButtonIcon } from "@krds-community/solid";
+import { AngularButtonIcon } from "@docs/angular-previews.ts";
+import { ButtonIcon as AstroButtonIcon } from "@krds-community/astro";
+import { ContextualHelp as ReactContextualHelp } from "@krds-community/react";
+import { ContextualHelp as VueContextualHelp } from "@krds-community/vue";
+import { ContextualHelp as SvelteContextualHelp } from "@krds-community/svelte";
+import { ContextualHelp as SolidContextualHelp } from "@krds-community/solid";
+import { AngularContextualHelp } from "@docs/angular-previews.ts";
+import { ContextualHelp as AstroContextualHelp } from "@krds-community/astro";
+import { HelpPanel as ReactHelpPanel } from "@krds-community/react";
+import { HelpPanel as VueHelpPanel } from "@krds-community/vue";
+import { HelpPanel as SvelteHelpPanel } from "@krds-community/svelte";
+import { HelpPanel as SolidHelpPanel } from "@krds-community/solid";
+import { AngularHelpPanel } from "@docs/angular-previews.ts";
+import { HelpPanel as AstroHelpPanel } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
 
 <PatternReference patternId="help" />
 
@@ -67,6 +98,266 @@ import PatternReference from "../../../components/PatternReference.astro";
 1. 날짜, 숫자의 입력 형식을 안내함
 2. 입력 가능한 텍스트의 자릿수를 표시함
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="플레이스홀더를 레이블이나 도움말의 대체 수단으로 사용하지 않는다."
+>
+  <div slot="react">
+    <div style={{ maxWidth: "480px" }}>
+      <ReactTextInput
+        name="phone"
+        label="휴대전화 번호"
+        placeholder="010-0000-0000"
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 480px">
+      <VueTextInput
+        name="phone"
+        label="휴대전화 번호"
+        placeholder="010-0000-0000"
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 480px">
+      <SvelteTextInput
+        name="phone"
+        label="휴대전화 번호"
+        placeholder="010-0000-0000"
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ maxWidth: "480px" }}>
+      <SolidTextInput
+        name="phone"
+        label="휴대전화 번호"
+        placeholder="010-0000-0000"
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 480px">
+      <AstroTextInput
+        name="phone"
+        label="휴대전화 번호"
+        placeholder="010-0000-0000"
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 480px">
+      <AngularTextInput
+        name="phone"
+        label="휴대전화 번호"
+        placeholder="010-0000-0000"
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput name="phone" label="휴대전화 번호" placeholder="010-0000-0000" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width: 480px">
+    <TextInput name="phone" label="휴대전화 번호" placeholder="010-0000-0000" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="max-width: 480px">
+  <TextInput name="phone" label="휴대전화 번호" placeholder="010-0000-0000" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput name="phone" label="휴대전화 번호" placeholder="010-0000-0000" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width: 480px">
+  <krds-text-input name="phone" label="휴대전화 번호" placeholder="010-0000-0000"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="max-width: 480px">
+  <TextInput name="phone" label="휴대전화 번호" placeholder="010-0000-0000" />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="플레이스홀더를 레이블 대체 수단으로 사용한다."
+>
+  <div slot="react">
+    <div style={{ maxWidth: "480px" }}>
+      <ReactTextInput
+        name="phone"
+        placeholder="휴대전화 번호를 입력해 주세요"
+        client:only="react"
+      />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 480px">
+      <VueTextInput
+        name="phone"
+        placeholder="휴대전화 번호를 입력해 주세요"
+        client:only="vue"
+      />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 480px">
+      <SvelteTextInput
+        name="phone"
+        placeholder="휴대전화 번호를 입력해 주세요"
+        client:only="svelte"
+      />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ maxWidth: "480px" }}>
+      <SolidTextInput
+        name="phone"
+        placeholder="휴대전화 번호를 입력해 주세요"
+        client:only="solid-js"
+      />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 480px">
+      <AstroTextInput
+        name="phone"
+        placeholder="휴대전화 번호를 입력해 주세요"
+      />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 480px">
+      <AngularTextInput
+        name="phone"
+        placeholder="휴대전화 번호를 입력해 주세요"
+        client:only="@analogjs/astro-angular"
+      />
+    </div>
+  </div>
+
+```tsx fw=react
+import { TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput name="phone" placeholder="휴대전화 번호를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width: 480px">
+    <TextInput name="phone" placeholder="휴대전화 번호를 입력해 주세요" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="max-width: 480px">
+  <TextInput name="phone" placeholder="휴대전화 번호를 입력해 주세요" />
+</div>
+```
+
+```tsx fw=solid
+import { TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <TextInput name="phone" placeholder="휴대전화 번호를 입력해 주세요" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width: 480px">
+  <krds-text-input name="phone" placeholder="휴대전화 번호를 입력해 주세요"></krds-text-input>
+</div>
+```
+
+```astro fw=astro
+---
+import { TextInput } from "@krds-community/astro";
+---
+
+<div style="max-width: 480px">
+  <TextInput name="phone" placeholder="휴대전화 번호를 입력해 주세요" />
+</div>
+```
+
+</PracticeExample>
+
 #### 인라인 텍스트
 
 **사용자가 작업을 완료하는 데 필요한 중요한 정보는 인라인 텍스트로 제공한다.** 사용자 요청에 의한 도움말은 사용자에 따라 발견이 어려울 수 있으므로 반드시 확인해야 하는 중요한 정보는 도움이 필요한 요소에 인접한 위치에 인라인 텍스트로 제공하는 것이 적합하다.
@@ -75,9 +366,346 @@ import PatternReference from "../../../components/PatternReference.astro";
 
 **컨트롤 요소에 대한 레이블과 같이 간단한 추가 정보를 제공하는 데 툴팁을 사용한다.** 인라인 텍스트에 비해 중요도가 낮고 도움 정보가 1~2단어로 구성되어 있거나 한 문장으로 간결한 경우에는 툴팁을 사용한다. 예를 들어, 텍스트 레이블이 없는 아이콘 단독 컨트롤 요소에 레이블을 표시하고자 하는 경우에는 툴팁을 사용한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="컨트롤 요소에 대한 레이블과 같이 간단한 추가 정보를 제공하는 데 툴팁을 사용한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <ReactButtonIcon label="검색" client:only="react" />
+      <ReactTooltip label="검색" message="검색 기능" client:only="react">
+        검색
+      </ReactTooltip>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <VueButtonIcon label="검색" client:only="vue" />
+      <VueTooltip label="검색" message="검색 기능" client:only="vue">
+        검색
+      </VueTooltip>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <SvelteButtonIcon label="검색" client:only="svelte" />
+      <SvelteTooltip label="검색" message="검색 기능" client:only="svelte">
+        검색
+      </SvelteTooltip>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <SolidButtonIcon label="검색" client:only="solid-js" />
+      <SolidTooltip label="검색" message="검색 기능" client:only="solid-js">
+        검색
+      </SolidTooltip>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <AstroButtonIcon label="검색" />
+      <AstroTooltip label="검색" message="검색 기능">
+        검색
+      </AstroTooltip>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; gap: .5rem; align-items: center">
+      <AngularButtonIcon label="검색" client:only="@analogjs/astro-angular" />
+      <AngularTooltip label="검색" message="검색 기능" client:only="@analogjs/astro-angular">
+        검색
+      </AngularTooltip>
+    </div>
+  </div>
+
+```tsx fw=react
+import { ButtonIcon, Tooltip } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <ButtonIcon label="검색" />
+      <Tooltip label="검색" message="검색 기능">
+        검색
+      </Tooltip>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { ButtonIcon, Tooltip } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; gap: .5rem; align-items: center">
+    <ButtonIcon label="검색" />
+    <Tooltip label="검색" message="검색 기능">검색</Tooltip>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { ButtonIcon, Tooltip } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; gap: .5rem; align-items: center">
+  <ButtonIcon label="검색" />
+  <Tooltip label="검색" message="검색 기능">검색</Tooltip>
+</div>
+```
+
+```tsx fw=solid
+import { ButtonIcon, Tooltip } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
+      <ButtonIcon label="검색" />
+      <Tooltip label="검색" message="검색 기능">
+        검색
+      </Tooltip>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonIconComponent, KrdsTooltipComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; gap: .5rem; align-items: center">
+  <krds-button-icon label="검색"></krds-button-icon>
+  <krds-tooltip label="검색" message="검색 기능">검색</krds-tooltip>
+</div>
+```
+
+```astro fw=astro
+---
+import { ButtonIcon, Tooltip } from "@krds-community/astro";
+---
+
+<div style="display: flex; gap: .5rem; align-items: center">
+  <ButtonIcon label="검색" />
+  <Tooltip label="검색" message="검색 기능">검색</Tooltip>
+</div>
+```
+
+</PracticeExample>
+
 #### 맥락적 도움말
 
 **컴포넌트의 상태나 관련된 상세 정보를 제공하는 데 맥락적 도움말을 사용한다.** 컴포넌트나 레이블 옆에 배치되어 해당 요소에 관한 부가적인 정보나 사용자가 알았을 때 도움이 되는 정보 또는 사용자의 과업을 적극적으로 돕기 위한 정보 제공에 맥락적 도움말을 사용한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="컴포넌트의 상태나 관련된 상세 정보를 제공하는 데 맥락적 도움말을 사용한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+      <div>
+        <p style={{ margin: "0 0 .5rem" }}>
+          <strong>환불 계좌</strong>
+        </p>
+        <p style={{ margin: 0 }}>환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <ReactContextualHelp label="도움말" title="입금 안내" defaultOpen client:only="react">
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </ReactContextualHelp>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; gap: 1rem; align-items: flex-start">
+      <div>
+        <p style="margin: 0 0 .5rem">
+          <strong>환불 계좌</strong>
+        </p>
+        <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <VueContextualHelp label="도움말" title="입금 안내" defaultOpen client:only="vue">
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </VueContextualHelp>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; gap: 1rem; align-items: flex-start">
+      <div>
+        <p style="margin: 0 0 .5rem">
+          <strong>환불 계좌</strong>
+        </p>
+        <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <SvelteContextualHelp label="도움말" title="입금 안내" open client:only="svelte">
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </SvelteContextualHelp>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+      <div>
+        <p style={{ margin: "0 0 .5rem" }}>
+          <strong>환불 계좌</strong>
+        </p>
+        <p style={{ margin: 0 }}>환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <SolidContextualHelp label="도움말" title="입금 안내" defaultOpen client:only="solid-js">
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </SolidContextualHelp>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; gap: 1rem; align-items: flex-start">
+      <div>
+        <p style="margin: 0 0 .5rem">
+          <strong>환불 계좌</strong>
+        </p>
+        <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <AstroContextualHelp label="도움말" title="입금 안내" open>
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </AstroContextualHelp>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; gap: 1rem; align-items: flex-start">
+      <div>
+        <p style="margin: 0 0 .5rem">
+          <strong>환불 계좌</strong>
+        </p>
+        <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <AngularContextualHelp
+        label="도움말"
+        title="입금 안내"
+        open={true}
+        client:only="@analogjs/astro-angular"
+      >
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </AngularContextualHelp>
+    </div>
+  </div>
+
+```tsx fw=react
+import { ContextualHelp } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+      <div>
+        <p style={{ margin: "0 0 .5rem" }}>
+          <strong>환불 계좌</strong>
+        </p>
+        <p style={{ margin: 0 }}>환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <ContextualHelp label="도움말" title="입금 안내" defaultOpen>
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </ContextualHelp>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { ContextualHelp } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; gap: 1rem; align-items: flex-start">
+    <div>
+      <p style="margin: 0 0 .5rem">
+        <strong>환불 계좌</strong>
+      </p>
+      <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+    </div>
+    <ContextualHelp label="도움말" title="입금 안내" defaultOpen>
+      입금은 영업일 기준 1~2일 소요됩니다.
+    </ContextualHelp>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { ContextualHelp } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; gap: 1rem; align-items: flex-start">
+  <div>
+    <p style="margin: 0 0 .5rem">
+      <strong>환불 계좌</strong>
+    </p>
+    <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+  </div>
+  <ContextualHelp label="도움말" title="입금 안내" open>
+    입금은 영업일 기준 1~2일 소요됩니다.
+  </ContextualHelp>
+</div>
+```
+
+```tsx fw=solid
+import { ContextualHelp } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+      <div>
+        <p style={{ margin: "0 0 .5rem" }}>
+          <strong>환불 계좌</strong>
+        </p>
+        <p style={{ margin: 0 }}>환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+      </div>
+      <ContextualHelp label="도움말" title="입금 안내" defaultOpen>
+        입금은 영업일 기준 1~2일 소요됩니다.
+      </ContextualHelp>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsContextualHelpComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; gap: 1rem; align-items: flex-start">
+  <div>
+    <p style="margin: 0 0 .5rem">
+      <strong>환불 계좌</strong>
+    </p>
+    <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+  </div>
+  <krds-contextual-help label="도움말" title="입금 안내" [open]="true">
+    입금은 영업일 기준 1~2일 소요됩니다.
+  </krds-contextual-help>
+</div>
+```
+
+```astro fw=astro
+---
+import { ContextualHelp } from "@krds-community/astro";
+---
+
+<div style="display: flex; gap: 1rem; align-items: flex-start">
+  <div>
+    <p style="margin: 0 0 .5rem">
+      <strong>환불 계좌</strong>
+    </p>
+    <p style="margin: 0">환불은 신청 시 입력한 계좌로 진행됩니다.</p>
+  </div>
+  <ContextualHelp label="도움말" title="입금 안내" open>
+    입금은 영업일 기준 1~2일 소요됩니다.
+  </ContextualHelp>
+</div>
+```
+
+</PracticeExample>
 
 #### 도움 패널
 
@@ -88,6 +716,191 @@ import PatternReference from "../../../components/PatternReference.astro";
 3. 선택적 입력 사항에 대한 입력을 결정하는 데 참고할 수 있는 정보
 4. 입력 필드에 값을 입력하는 방법
 5. 서비스에 대한 정의, 복잡한 용어 설명
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="도움말 콘텐츠의 양이 많거나 복잡한 과업에 도움 패널을 사용한다."
+>
+  <div slot="react">
+    <ReactHelpPanel
+      defaultOpen
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueHelpPanel
+      defaultOpen
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteHelpPanel
+      open
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidHelpPanel
+      defaultOpen
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroHelpPanel
+      open
+      title="도움말"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      selectedLabel="선택됨"
+      helpTitle="신청 방법 안내"
+      downloadLinks={[]}
+      relatedGroups={[]}
+      tutorialTitle="튜토리얼"
+      tasks={[]}
+      stopLabel="중지"
+      collapseLabel="접기"
+      label="도움 패널"
+    />
+  </div>
+  <div slot="angular">
+    <AngularHelpPanel
+      open={true}
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { HelpPanel } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <HelpPanel
+      defaultOpen
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { HelpPanel } from "@krds-community/vue";
+</script>
+
+<template>
+  <HelpPanel
+    defaultOpen
+    title="도움말"
+    label="도움 패널"
+    :tabs="[{ id: 'help', label: '도움말', panelId: 'help-panel', value: 'help' }]"
+    helpTitle="신청 방법 안내"
+    helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { HelpPanel } from "@krds-community/svelte";
+</script>
+
+<HelpPanel
+  open
+  title="도움말"
+  label="도움 패널"
+  tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+  helpTitle="신청 방법 안내"
+  helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+/>
+```
+
+```tsx fw=solid
+import { HelpPanel } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <HelpPanel
+      defaultOpen
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsHelpPanelComponent } from "@krds-community/angular";
+
+// template
+<krds-help-panel
+  [open]="true"
+  title="도움말"
+  label="도움 패널"
+  [tabs]="[{ id: 'help', label: '도움말', panelId: 'help-panel', value: 'help' }]"
+  helpTitle="신청 방법 안내"
+  helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
+></krds-help-panel>
+```
+
+```astro fw=astro
+---
+import { HelpPanel } from "@krds-community/astro";
+---
+
+<HelpPanel
+  open
+  title="도움말"
+  tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+  selectedLabel="선택됨"
+  helpTitle="신청 방법 안내"
+  downloadLinks={[]}
+  relatedGroups={[]}
+  tutorialTitle="튜토리얼"
+  tasks={[]}
+  stopLabel="중지"
+  collapseLabel="접기"
+  label="도움 패널"
+/>
+```
+
+</PracticeExample>
 
 #### 코치마크와 따라하기 패널
 

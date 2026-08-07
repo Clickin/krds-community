@@ -4,6 +4,37 @@ description: 계정·보안·알림·접근성·언어·데이터 설정을 조�
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { ToggleSwitch as ReactToggleSwitch } from "@krds-community/react";
+import { ToggleSwitch as VueToggleSwitch } from "@krds-community/vue";
+import { ToggleSwitch as SvelteToggleSwitch } from "@krds-community/svelte";
+import { ToggleSwitch as SolidToggleSwitch } from "@krds-community/solid";
+import { AngularToggleSwitch } from "@docs/angular-previews.ts";
+import { ToggleSwitch as AstroToggleSwitch } from "@krds-community/astro";
+import { RadioButton as ReactRadioButton } from "@krds-community/react";
+import { RadioButton as VueRadioButton } from "@krds-community/vue";
+import { RadioButton as SvelteRadioButton } from "@krds-community/svelte";
+import { RadioButton as SolidRadioButton } from "@krds-community/solid";
+import { AngularRadioButton } from "@docs/angular-previews.ts";
+import { RadioButton as AstroRadioButton } from "@krds-community/astro";
+import { TextInput as ReactTextInput } from "@krds-community/react";
+import { TextInput as VueTextInput } from "@krds-community/vue";
+import { TextInput as SvelteTextInput } from "@krds-community/svelte";
+import { TextInput as SolidTextInput } from "@krds-community/solid";
+import { AngularTextInput } from "@docs/angular-previews.ts";
+import { TextInput as AstroTextInput } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
+import { Tooltip as ReactTooltip } from "@krds-community/react";
+import { Tooltip as VueTooltip } from "@krds-community/vue";
+import { Tooltip as SvelteTooltip } from "@krds-community/svelte";
+import { Tooltip as SolidTooltip } from "@krds-community/solid";
+import { AngularTooltip } from "@docs/angular-previews.ts";
+import { Tooltip as AstroTooltip } from "@krds-community/astro";
 
 <PatternReference patternId="mobile-settings" />
 
@@ -34,6 +65,414 @@ import PatternReference from "../../../components/PatternReference.astro";
 **컨트롤은 목적에 맞게 선택한다.**
 상태의 즉시 전환에는 저장 버튼 없이 바로 반영되는 토글 스위치를 쓰고, 상호배타적 선택에는 라디오 버튼을 사용한다. 독립적인 다중 선택은 체크박스로, 연속값이나 구간은 범위 슬라이더로 다루며, 항목이 많거나 드물게 바꾸는 설정은 검색 가능한 셀렉트를 적용한다. 날짜·시간 같은 특수 입력은 전용 피커를 사용하고, 2~4개의 상위 모드 전환은 세그먼트 탭이 적절하다. 파괴적이거나 되돌리기 어려운 작업(초기화·탈퇴·번호 변경 등)은 단일 버튼 뒤에 재확인 다이얼로그를 두고, 반드시 2단계 인증을 거치게 한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="컨트롤은 목적에 맞게 선택한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <ReactToggleSwitch name="push" label="푸시 알림" checked client:only="react" />
+      <ReactToggleSwitch name="vibration" label="진동" checked client:only="react" />
+      <ReactToggleSwitch name="night" label="야간 모드" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <VueToggleSwitch name="push" label="푸시 알림" checked client:only="vue" />
+      <VueToggleSwitch name="vibration" label="진동" checked client:only="vue" />
+      <VueToggleSwitch name="night" label="야간 모드" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <SvelteToggleSwitch name="push" label="푸시 알림" checked client:only="svelte" />
+      <SvelteToggleSwitch name="vibration" label="진동" checked client:only="svelte" />
+      <SvelteToggleSwitch name="night" label="야간 모드" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "480px" }}>
+      <SolidToggleSwitch name="push" label="푸시 알림" checked client:only="solid-js" />
+      <SolidToggleSwitch name="vibration" label="진동" checked client:only="solid-js" />
+      <SolidToggleSwitch name="night" label="야간 모드" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <AstroToggleSwitch name="push" label="푸시 알림" checked />
+      <AstroToggleSwitch name="vibration" label="진동" checked />
+      <AstroToggleSwitch name="night" label="야간 모드" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+      <AngularToggleSwitch name="push" label="푸시 알림" checked={true} client:only="@analogjs/astro-angular" />
+      <AngularToggleSwitch name="vibration" label="진동" checked={true} client:only="@analogjs/astro-angular" />
+      <AngularToggleSwitch name="night" label="야간 모드" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { ToggleSwitch } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <ToggleSwitch name="push" label="푸시 알림" checked />
+      <ToggleSwitch name="vibration" label="진동" checked />
+      <ToggleSwitch name="night" label="야간 모드" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { ToggleSwitch } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+    <ToggleSwitch name="push" label="푸시 알림" checked />
+    <ToggleSwitch name="vibration" label="진동" checked />
+    <ToggleSwitch name="night" label="야간 모드" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { ToggleSwitch } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <ToggleSwitch name="push" label="푸시 알림" checked />
+  <ToggleSwitch name="vibration" label="진동" checked />
+  <ToggleSwitch name="night" label="야간 모드" />
+</div>
+```
+
+```tsx fw=solid
+import { ToggleSwitch } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 480 }}>
+      <ToggleSwitch name="push" label="푸시 알림" checked />
+      <ToggleSwitch name="vibration" label="진동" checked />
+      <ToggleSwitch name="night" label="야간 모드" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsToggleSwitchComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <krds-toggle-switch name="push" label="푸시 알림" [checked]="true"></krds-toggle-switch>
+  <krds-toggle-switch name="vibration" label="진동" [checked]="true"></krds-toggle-switch>
+  <krds-toggle-switch name="night" label="야간 모드"></krds-toggle-switch>
+</div>
+```
+
+```astro fw=astro
+---
+import { ToggleSwitch } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 16px; max-width: 480px">
+  <ToggleSwitch name="push" label="푸시 알림" checked />
+  <ToggleSwitch name="vibration" label="진동" checked />
+  <ToggleSwitch name="night" label="야간 모드" />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="즉시 반영되어야 하는 설정에 저장 버튼을 요구한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactTextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" client:only="react" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" client:only="react">저장</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueTextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" client:only="vue" />
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" client:only="vue">저장</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteTextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" client:only="svelte" />
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" client:only="svelte">저장</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidTextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" client:only="solid-js" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" client:only="solid-js">저장</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroTextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" />
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary">저장</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularTextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="저장" client:only="@analogjs/astro-angular">저장</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, TextInput } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">저장</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, TextInput } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <TextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" />
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary">저장</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, TextInput } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">저장</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, TextInput } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <TextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">저장</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsTextInputComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-text-input name="night" label="야간 모드" placeholder="설정값을 입력해 주세요"></krds-text-input>
+  <div style="display: flex; justify-content: flex-end">
+    <krds-button variant="primary" label="저장"></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, TextInput } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <TextInput name="night" label="야간 모드" placeholder="설정값을 입력해 주세요" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">저장</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="상호배타적 선택에는 라디오 버튼을 사용한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <ReactRadioButton name="language" value="ko" label="한국어" checked client:only="react" />
+      <ReactRadioButton name="language" value="en" label="English" client:only="react" />
+      <ReactRadioButton name="language" value="zh" label="中文" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <VueRadioButton name="language" value="ko" label="한국어" checked client:only="vue" />
+      <VueRadioButton name="language" value="en" label="English" client:only="vue" />
+      <VueRadioButton name="language" value="zh" label="中文" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <SvelteRadioButton name="language" value="ko" label="한국어" checked client:only="svelte" />
+      <SvelteRadioButton name="language" value="en" label="English" client:only="svelte" />
+      <SvelteRadioButton name="language" value="zh" label="中文" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <SolidRadioButton name="language" value="ko" label="한국어" checked client:only="solid-js" />
+      <SolidRadioButton name="language" value="en" label="English" client:only="solid-js" />
+      <SolidRadioButton name="language" value="zh" label="中文" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <AstroRadioButton name="language" value="ko" label="한국어" checked />
+      <AstroRadioButton name="language" value="en" label="English" />
+      <AstroRadioButton name="language" value="zh" label="中文" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <AngularRadioButton name="language" value="ko" label="한국어" checked={true} client:only="@analogjs/astro-angular" />
+      <AngularRadioButton name="language" value="en" label="English" client:only="@analogjs/astro-angular" />
+      <AngularRadioButton name="language" value="zh" label="中文" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { RadioButton } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <RadioButton name="language" value="ko" label="한국어" checked />
+      <RadioButton name="language" value="en" label="English" />
+      <RadioButton name="language" value="zh" label="中文" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { RadioButton } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>표시 언어를 선택해 주세요.</strong>
+    <RadioButton name="language" value="ko" label="한국어" checked />
+    <RadioButton name="language" value="en" label="English" />
+    <RadioButton name="language" value="zh" label="中文" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { RadioButton } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>표시 언어를 선택해 주세요.</strong>
+  <RadioButton name="language" value="ko" label="한국어" checked />
+  <RadioButton name="language" value="en" label="English" />
+  <RadioButton name="language" value="zh" label="中文" />
+</div>
+```
+
+```tsx fw=solid
+import { RadioButton } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>표시 언어를 선택해 주세요.</strong>
+      <RadioButton name="language" value="ko" label="한국어" checked />
+      <RadioButton name="language" value="en" label="English" />
+      <RadioButton name="language" value="zh" label="中文" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsRadioButtonComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>표시 언어를 선택해 주세요.</strong>
+  <krds-radio-button name="language" value="ko" label="한국어" [checked]="true"></krds-radio-button>
+  <krds-radio-button name="language" value="en" label="English"></krds-radio-button>
+  <krds-radio-button name="language" value="zh" label="中文"></krds-radio-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { RadioButton } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>표시 언어를 선택해 주세요.</strong>
+  <RadioButton name="language" value="ko" label="한국어" checked />
+  <RadioButton name="language" value="en" label="English" />
+  <RadioButton name="language" value="zh" label="中文" />
+</div>
+```
+
+</PracticeExample>
+
 **설정 변경은 즉시 적용하며, 간결한 피드백을 제공한다.**
 설정 변경은 가능하면 즉시 적용하고, 스낵바·토스트로 2~3초 안에 간결한 피드백을 제공한다. 이때 메시지는 결과와 한 가지 후속 행동만 제시하며(예: "푸시 알림이 꺼졌습니다. 되돌리기"), 접근성 사용자를 위해 스크린리더로 읽히도록 한다. 여러 필드를 한꺼번에 수정하여 서버 저장이 필요한 경우에는 하단에 고정된 저장 버튼을 제공하고, 입력이 유효할 때만 활성화한다. 실패 시에는 원인을 짧게 알리고 원상복구와 재시도 방법을 함께 안내한다.
 
@@ -42,3 +481,135 @@ import PatternReference from "../../../components/PatternReference.astro";
 
 **네트워크와 권한, 정책에 따른 예외 흐름도 명확해야 한다.**
 오프라인에서는 변경을 로컬 큐에 보관한 뒤 연결 시 적용하고, 충돌이 생기면 병합 또는 마지막 적용 기준을 사용자에게 설명한다. OS 권한이 필요한 기능은 앱 내부 토글과 운영체제 권한 스위치를 구분해 안내하고, 필요한 경우 시스템 설정으로 이동 버튼을 제공한다. 조직 정책으로 잠긴 항목은 비활성화 사유를 툴팁으로 알려 혼란을 줄인다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="조직 정책으로 잠긴 항목은 비활성화 사유를 툴팁으로 알려 혼란을 줄인다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+      <ReactToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="react" />
+      <ReactTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="react">
+        잠김
+      </ReactTooltip>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; align-items: center; gap: .5rem">
+      <VueToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="vue" />
+      <VueTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="vue">
+        잠김
+      </VueTooltip>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; align-items: center; gap: .5rem">
+      <SvelteToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="svelte" />
+      <SvelteTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="svelte">
+        잠김
+      </SvelteTooltip>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+      <SolidToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="solid-js" />
+      <SolidTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="solid-js">
+        잠김
+      </SolidTooltip>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; align-items: center; gap: .5rem">
+      <AstroToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
+      <AstroTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">
+        잠김
+      </AstroTooltip>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; align-items: center; gap: .5rem">
+      <AngularToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled={true} client:only="@analogjs/astro-angular" />
+      <AngularTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="@analogjs/astro-angular">
+        잠김
+      </AngularTooltip>
+    </div>
+  </div>
+
+```tsx fw=react
+import { ToggleSwitch, Tooltip } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+      <ToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
+      <Tooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">
+        잠김
+      </Tooltip>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { ToggleSwitch, Tooltip } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; align-items: center; gap: .5rem">
+    <ToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
+    <Tooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">잠김</Tooltip>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { ToggleSwitch, Tooltip } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; align-items: center; gap: .5rem">
+  <ToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
+  <Tooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">잠김</Tooltip>
+</div>
+```
+
+```tsx fw=solid
+import { ToggleSwitch, Tooltip } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
+      <ToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
+      <Tooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">
+        잠김
+      </Tooltip>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsToggleSwitchComponent, KrdsTooltipComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; align-items: center; gap: .5rem">
+  <krds-toggle-switch name="screen-capture" label="화면 캡처 방지" [disabled]="true"></krds-toggle-switch>
+  <krds-tooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">잠김</krds-tooltip>
+</div>
+```
+
+```astro fw=astro
+---
+import { ToggleSwitch, Tooltip } from "@krds-community/astro";
+---
+
+<div style="display: flex; align-items: center; gap: .5rem">
+  <ToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
+  <Tooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">잠김</Tooltip>
+</div>
+```
+
+</PracticeExample>

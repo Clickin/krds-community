@@ -4,6 +4,25 @@ description: 웹사이트 이용 조건과 절차를 읽고 동의하거나 안�
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Checkbox as ReactCheckbox } from "@krds-community/react";
+import { Checkbox as VueCheckbox } from "@krds-community/vue";
+import { Checkbox as SvelteCheckbox } from "@krds-community/svelte";
+import { Checkbox as SolidCheckbox } from "@krds-community/solid";
+import { AngularCheckbox } from "@docs/angular-previews.ts";
+import { Checkbox as AstroCheckbox } from "@krds-community/astro";
+import { RadioButton as ReactRadioButton } from "@krds-community/react";
+import { RadioButton as VueRadioButton } from "@krds-community/vue";
+import { RadioButton as SvelteRadioButton } from "@krds-community/svelte";
+import { RadioButton as SolidRadioButton } from "@krds-community/solid";
+import { AngularRadioButton } from "@docs/angular-previews.ts";
+import { RadioButton as AstroRadioButton } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
 
 <PatternReference patternId="consent" />
 
@@ -26,6 +45,426 @@ import PatternReference from "../../../components/PatternReference.astro";
 
 **동의하지 않음 옵션을 제공한다.** 대안을 선택할 수 있는 기회를 제공받은 것으로 인해, 사용자는 약관에 동의하는 행동이 더욱 의미 있다고 느끼게 된다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="동의하지 않음 옵션을 제공한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <ReactRadioButton name="consent" value="agree" label="동의함" client:only="react" />
+      <ReactRadioButton name="consent" value="disagree" label="동의하지 않음" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <VueRadioButton name="consent" value="agree" label="동의함" client:only="vue" />
+      <VueRadioButton name="consent" value="disagree" label="동의하지 않음" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <SvelteRadioButton name="consent" value="agree" label="동의함" client:only="svelte" />
+      <SvelteRadioButton name="consent" value="disagree" label="동의하지 않음" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <SolidRadioButton name="consent" value="agree" label="동의함" client:only="solid-js" />
+      <SolidRadioButton name="consent" value="disagree" label="동의하지 않음" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <AstroRadioButton name="consent" value="agree" label="동의함" />
+      <AstroRadioButton name="consent" value="disagree" label="동의하지 않음" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <AngularRadioButton name="consent" value="agree" label="동의함" client:only="@analogjs/astro-angular" />
+      <AngularRadioButton name="consent" value="disagree" label="동의하지 않음" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { RadioButton } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <RadioButton name="consent" value="agree" label="동의함" />
+      <RadioButton name="consent" value="disagree" label="동의하지 않음" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { RadioButton } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>개인정보 수집·이용에 동의하십니까?</strong>
+    <RadioButton name="consent" value="agree" label="동의함" />
+    <RadioButton name="consent" value="disagree" label="동의하지 않음" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { RadioButton } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>개인정보 수집·이용에 동의하십니까?</strong>
+  <RadioButton name="consent" value="agree" label="동의함" />
+  <RadioButton name="consent" value="disagree" label="동의하지 않음" />
+</div>
+```
+
+```tsx fw=solid
+import { RadioButton } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <RadioButton name="consent" value="agree" label="동의함" />
+      <RadioButton name="consent" value="disagree" label="동의하지 않음" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsRadioButtonComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>개인정보 수집·이용에 동의하십니까?</strong>
+  <krds-radio-button name="consent" value="agree" label="동의함"></krds-radio-button>
+  <krds-radio-button name="consent" value="disagree" label="동의하지 않음"></krds-radio-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { RadioButton } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>개인정보 수집·이용에 동의하십니까?</strong>
+  <RadioButton name="consent" value="agree" label="동의함" />
+  <RadioButton name="consent" value="disagree" label="동의하지 않음" />
+</div>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="동의하지 않음 옵션 없이 동의 여부를 선택하게 한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <ReactCheckbox name="consent" label="동의합니다" client:only="react" />
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <VueCheckbox name="consent" label="동의합니다" client:only="vue" />
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <SvelteCheckbox name="consent" label="동의합니다" client:only="svelte" />
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <SolidCheckbox name="consent" label="동의합니다" client:only="solid-js" />
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <AstroCheckbox name="consent" label="동의합니다" />
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <AngularCheckbox name="consent" label="동의합니다" client:only="@analogjs/astro-angular" />
+    </div>
+  </div>
+
+```tsx fw=react
+import { Checkbox } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <Checkbox name="consent" label="동의합니다" />
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Checkbox } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <strong>개인정보 수집·이용에 동의하십니까?</strong>
+    <Checkbox name="consent" label="동의합니다" />
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Checkbox } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>개인정보 수집·이용에 동의하십니까?</strong>
+  <Checkbox name="consent" label="동의합니다" />
+</div>
+```
+
+```tsx fw=solid
+import { Checkbox } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <strong>개인정보 수집·이용에 동의하십니까?</strong>
+      <Checkbox name="consent" label="동의합니다" />
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsCheckboxComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>개인정보 수집·이용에 동의하십니까?</strong>
+  <krds-checkbox name="consent" label="동의합니다"></krds-checkbox>
+</div>
+```
+
+```astro fw=astro
+---
+import { Checkbox } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <strong>개인정보 수집·이용에 동의하십니까?</strong>
+  <Checkbox name="consent" label="동의합니다" />
+</div>
+```
+
+</PracticeExample>
+
 **동의함/동의하지 않음 옵션은 구분하기 쉽게 표현한다.** 선택 옵션이 다른 요소들과 잘 구분되지 않으면, 사용자는 동의 여부 선택 옵션을 인지하지 못해, 선택 과정 없이 다음 단계로 넘어가려는 시도를 하게 되고 결국 오류가 발생할 수 있다.
 
 **필수 항목과 선택 항목 정보를 제공하고 명확하게 구분될 수 있도록 표현한다.** 사용자가 동의하지 않아도 서비스를 이용하는 데 문제가 없는 선택적 동의 항목과 필수 동의 항목은 명확하게 구분되어야 한다. 동의 항목의 제목에 ‘필수’, ‘선택’ 텍스트를 표시하고 필수 항목은 동의 항목 목록의 상단에 그루핑하여 배치한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="필수 항목과 선택 항목 정보를 제공하고 명확하게 구분될 수 있도록 표현한다."
+>
+  <div slot="react">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <ReactCheckbox name="agree-all" label="전체 동의" client:only="react" />
+      <ReactCheckbox name="agree-terms" label="[필수] 서비스 이용약관 동의" client:only="react" />
+      <ReactCheckbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" client:only="react" />
+      <ReactCheckbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" client:only="react" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <ReactButton variant="primary" client:only="react">다음</ReactButton>
+      </div>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <VueCheckbox name="agree-all" label="전체 동의" client:only="vue" />
+      <VueCheckbox name="agree-terms" label="[필수] 서비스 이용약관 동의" client:only="vue" />
+      <VueCheckbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" client:only="vue" />
+      <VueCheckbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" client:only="vue" />
+      <div style="display: flex; justify-content: flex-end">
+        <VueButton variant="primary" client:only="vue">다음</VueButton>
+      </div>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <SvelteCheckbox name="agree-all" label="전체 동의" client:only="svelte" />
+      <SvelteCheckbox name="agree-terms" label="[필수] 서비스 이용약관 동의" client:only="svelte" />
+      <SvelteCheckbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" client:only="svelte" />
+      <SvelteCheckbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" client:only="svelte" />
+      <div style="display: flex; justify-content: flex-end">
+        <SvelteButton variant="primary" client:only="svelte">다음</SvelteButton>
+      </div>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px", maxWidth: "480px" }}>
+      <SolidCheckbox name="agree-all" label="전체 동의" client:only="solid-js" />
+      <SolidCheckbox name="agree-terms" label="[필수] 서비스 이용약관 동의" client:only="solid-js" />
+      <SolidCheckbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" client:only="solid-js" />
+      <SolidCheckbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" client:only="solid-js" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <SolidButton variant="primary" client:only="solid-js">다음</SolidButton>
+      </div>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AstroCheckbox name="agree-all" label="전체 동의" />
+      <AstroCheckbox name="agree-terms" label="[필수] 서비스 이용약관 동의" />
+      <AstroCheckbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" />
+      <AstroCheckbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" />
+      <div style="display: flex; justify-content: flex-end">
+        <AstroButton variant="primary">다음</AstroButton>
+      </div>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+      <AngularCheckbox name="agree-all" label="전체 동의" client:only="@analogjs/astro-angular" />
+      <AngularCheckbox name="agree-terms" label="[필수] 서비스 이용약관 동의" client:only="@analogjs/astro-angular" />
+      <AngularCheckbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" client:only="@analogjs/astro-angular" />
+      <AngularCheckbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" client:only="@analogjs/astro-angular" />
+      <div style="display: flex; justify-content: flex-end">
+        <AngularButton variant="primary" label="다음" client:only="@analogjs/astro-angular">다음</AngularButton>
+      </div>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, Checkbox } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <Checkbox name="agree-all" label="전체 동의" />
+      <Checkbox name="agree-terms" label="[필수] 서비스 이용약관 동의" />
+      <Checkbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" />
+      <Checkbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">다음</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, Checkbox } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+    <Checkbox name="agree-all" label="전체 동의" />
+    <Checkbox name="agree-terms" label="[필수] 서비스 이용약관 동의" />
+    <Checkbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" />
+    <Checkbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" />
+    <div style="display: flex; justify-content: flex-end">
+      <Button variant="primary">다음</Button>
+    </div>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, Checkbox } from "@krds-community/svelte";
+</script>
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <Checkbox name="agree-all" label="전체 동의" />
+  <Checkbox name="agree-terms" label="[필수] 서비스 이용약관 동의" />
+  <Checkbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" />
+  <Checkbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">다음</Button>
+  </div>
+</div>
+```
+
+```tsx fw=solid
+import { Button, Checkbox } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 480 }}>
+      <Checkbox name="agree-all" label="전체 동의" />
+      <Checkbox name="agree-terms" label="[필수] 서비스 이용약관 동의" />
+      <Checkbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" />
+      <Checkbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="primary">다음</Button>
+      </div>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsCheckboxComponent } from "@krds-community/angular";
+
+// template
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <krds-checkbox name="agree-all" label="전체 동의"></krds-checkbox>
+  <krds-checkbox name="agree-terms" label="[필수] 서비스 이용약관 동의"></krds-checkbox>
+  <krds-checkbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의"></krds-checkbox>
+  <krds-checkbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의"></krds-checkbox>
+  <div style="display: flex; justify-content: flex-end">
+    <krds-button variant="primary" label="다음"></krds-button>
+  </div>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, Checkbox } from "@krds-community/astro";
+---
+
+<div style="display: flex; flex-direction: column; gap: 12px; max-width: 480px">
+  <Checkbox name="agree-all" label="전체 동의" />
+  <Checkbox name="agree-terms" label="[필수] 서비스 이용약관 동의" />
+  <Checkbox name="agree-privacy" label="[필수] 개인정보 수집·이용 동의" />
+  <Checkbox name="agree-marketing" label="[선택] 마케팅 정보 수신 동의" />
+  <div style="display: flex; justify-content: flex-end">
+    <Button variant="primary">다음</Button>
+  </div>
+</div>
+```
+
+</PracticeExample>

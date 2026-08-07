@@ -4,6 +4,25 @@ description: 게시물이나 본문에서 내려받을 수 있는 콘텐츠를 �
 ---
 
 import PatternReference from "../../../components/PatternReference.astro";
+import PracticeExample from "@docs/PracticeExample.astro";
+import { Link as ReactLink } from "@krds-community/react";
+import { Link as VueLink } from "@krds-community/vue";
+import { Link as SvelteLink } from "@krds-community/svelte";
+import { Link as SolidLink } from "@krds-community/solid";
+import { AngularLink } from "@docs/angular-previews.ts";
+import { Link as AstroLink } from "@krds-community/astro";
+import { TextList as ReactTextList } from "@krds-community/react";
+import { TextList as VueTextList } from "@krds-community/vue";
+import { TextList as SvelteTextList } from "@krds-community/svelte";
+import { TextList as SolidTextList } from "@krds-community/solid";
+import { AngularTextList } from "@docs/angular-previews.ts";
+import { TextList as AstroTextList } from "@krds-community/astro";
+import { Button as ReactButton } from "@krds-community/react";
+import { Button as VueButton } from "@krds-community/vue";
+import { Button as SvelteButton } from "@krds-community/svelte";
+import { Button as SolidButton } from "@krds-community/solid";
+import { AngularButton } from "@docs/angular-previews.ts";
+import { Button as AstroButton } from "@krds-community/astro";
 
 <PatternReference patternId="attachment" />
 
@@ -35,8 +54,521 @@ import PatternReference from "../../../components/PatternReference.astro";
 **링크가 파일 다운로드를 유발할 수 있음을 사용자에게 사전에 안내한다.**
 첨부파일 링크 주변에 '다운로드'라는 텍스트가 포함된 설명을 제공하거나 다운로드 링크를 제공하여 링크를 실행하였을 때 발생할 동작을 사용자가 예측할 수 있어야 한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="링크가 파일 다운로드를 유발할 수 있음을 사용자에게 사전에 안내한다."
+>
+  <div slot="react">
+    <ReactLink href="#" client:only="react">
+      신청서 양식.hwp [HWP] 다운로드
+    </ReactLink>
+  </div>
+  <div slot="vue">
+    <VueLink href="#" client:only="vue">
+      신청서 양식.hwp [HWP] 다운로드
+    </VueLink>
+  </div>
+  <div slot="svelte">
+    <SvelteLink href="#" client:only="svelte">
+      신청서 양식.hwp [HWP] 다운로드
+    </SvelteLink>
+  </div>
+  <div slot="solid">
+    <SolidLink href="#" client:only="solid-js">
+      신청서 양식.hwp [HWP] 다운로드
+    </SolidLink>
+  </div>
+  <div slot="astro">
+    <AstroLink href="#">
+      신청서 양식.hwp [HWP] 다운로드
+    </AstroLink>
+  </div>
+  <div slot="angular">
+    <AngularLink href="#" client:only="@analogjs/astro-angular">
+      신청서 양식.hwp [HWP] 다운로드
+    </AngularLink>
+  </div>
+
+```tsx fw=react
+import { Link } from "@krds-community/react";
+
+export function Example() {
+  return <Link href="#">신청서 양식.hwp [HWP] 다운로드</Link>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Link } from "@krds-community/vue";
+</script>
+
+<template>
+  <Link href="#">신청서 양식.hwp [HWP] 다운로드</Link>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Link } from "@krds-community/svelte";
+</script>
+
+<Link href="#">신청서 양식.hwp [HWP] 다운로드</Link>
+```
+
+```tsx fw=solid
+import { Link } from "@krds-community/solid";
+
+export function Example() {
+  return <Link href="#">신청서 양식.hwp [HWP] 다운로드</Link>;
+}
+```
+
+```ts fw=angular
+import { KrdsLinkComponent } from "@krds-community/angular";
+
+// template
+<krds-link href="#">신청서 양식.hwp [HWP] 다운로드</krds-link>
+```
+
+```astro fw=astro
+---
+import { Link } from "@krds-community/astro";
+---
+
+<Link href="#">신청서 양식.hwp [HWP] 다운로드</Link>
+```
+
+</PracticeExample>
+
+**피해야 할 사례**
+
+<PracticeExample
+  kind="bad"
+  title="파일 다운로드를 유발하는 링크를 안내 없이 제공한다."
+>
+  <div slot="react">
+    <ReactLink href="#" client:only="react">
+      신청서 양식.hwp
+    </ReactLink>
+  </div>
+  <div slot="vue">
+    <VueLink href="#" client:only="vue">
+      신청서 양식.hwp
+    </VueLink>
+  </div>
+  <div slot="svelte">
+    <SvelteLink href="#" client:only="svelte">
+      신청서 양식.hwp
+    </SvelteLink>
+  </div>
+  <div slot="solid">
+    <SolidLink href="#" client:only="solid-js">
+      신청서 양식.hwp
+    </SolidLink>
+  </div>
+  <div slot="astro">
+    <AstroLink href="#">
+      신청서 양식.hwp
+    </AstroLink>
+  </div>
+  <div slot="angular">
+    <AngularLink href="#" client:only="@analogjs/astro-angular">
+      신청서 양식.hwp
+    </AngularLink>
+  </div>
+
+```tsx fw=react
+import { Link } from "@krds-community/react";
+
+export function Example() {
+  return <Link href="#">신청서 양식.hwp</Link>;
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Link } from "@krds-community/vue";
+</script>
+
+<template>
+  <Link href="#">신청서 양식.hwp</Link>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Link } from "@krds-community/svelte";
+</script>
+
+<Link href="#">신청서 양식.hwp</Link>
+```
+
+```tsx fw=solid
+import { Link } from "@krds-community/solid";
+
+export function Example() {
+  return <Link href="#">신청서 양식.hwp</Link>;
+}
+```
+
+```ts fw=angular
+import { KrdsLinkComponent } from "@krds-community/angular";
+
+// template
+<krds-link href="#">신청서 양식.hwp</krds-link>
+```
+
+```astro fw=astro
+---
+import { Link } from "@krds-community/astro";
+---
+
+<Link href="#">신청서 양식.hwp</Link>
+```
+
+</PracticeExample>
+
 **파일의 크기와 형식 정보를 표시한다.**
 인라인 링크와 목록 링크는 파일 이름 우측에 '[파일 유형, 파일 크기]'를 제공하여 사용자가 첨부파일에 대한 정보를 예측할 수 있게 한다. 파일 크기는 KB, MB, GB 단위로 표시한다.
 
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="파일의 크기와 형식 정보를 표시한다."
+>
+  <div slot="react">
+    <ReactTextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+      client:only="react"
+    />
+  </div>
+  <div slot="vue">
+    <VueTextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+      client:only="vue"
+    />
+  </div>
+  <div slot="svelte">
+    <SvelteTextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+      client:only="svelte"
+    />
+  </div>
+  <div slot="solid">
+    <SolidTextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+      client:only="solid-js"
+    />
+  </div>
+  <div slot="astro">
+    <AstroTextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+    />
+  </div>
+  <div slot="angular">
+    <AngularTextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+      client:only="@analogjs/astro-angular"
+    />
+  </div>
+
+```tsx fw=react
+import { TextList } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <TextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+    />
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { TextList } from "@krds-community/vue";
+</script>
+
+<template>
+  <TextList
+    aria-label="첨부파일 목록"
+    :items="[
+      '2026년 제출 서류 안내.pdf [PDF, 1.2MB]',
+      '개인정보 수집·이용 동의서.hwp [HWP, 312KB]',
+      '신청 방법 안내.docx [DOCX, 540KB]',
+    ]"
+  />
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { TextList } from "@krds-community/svelte";
+</script>
+
+<TextList
+  aria-label="첨부파일 목록"
+  items={[
+    "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+    "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+    "신청 방법 안내.docx [DOCX, 540KB]",
+  ]}
+/>
+```
+
+```tsx fw=solid
+import { TextList } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <TextList
+      aria-label="첨부파일 목록"
+      items={[
+        "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+        "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+        "신청 방법 안내.docx [DOCX, 540KB]",
+      ]}
+    />
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsTextListComponent } from "@krds-community/angular";
+
+// template
+<krds-text-list
+  aria-label="첨부파일 목록"
+  [items]="[
+    '2026년 제출 서류 안내.pdf [PDF, 1.2MB]',
+    '개인정보 수집·이용 동의서.hwp [HWP, 312KB]',
+    '신청 방법 안내.docx [DOCX, 540KB]',
+  ]"
+></krds-text-list>
+```
+
+```astro fw=astro
+---
+import { TextList } from "@krds-community/astro";
+---
+
+<TextList
+  aria-label="첨부파일 목록"
+  items={[
+    "2026년 제출 서류 안내.pdf [PDF, 1.2MB]",
+    "개인정보 수집·이용 동의서.hwp [HWP, 312KB]",
+    "신청 방법 안내.docx [DOCX, 540KB]",
+  ]}
+/>
+```
+
+</PracticeExample>
+
 **인라인 링크 유형의 첨부파일 텍스트는 주변 콘텐츠와 비슷한 크기로 제공한다.**
 본문 내에 제공될 경우 링크 텍스트의 크기는 해당 줄 또는 단락에 있는 텍스트의 글자 크기와 일치해야 한다.
+
+**모범 사례**
+
+<PracticeExample
+  kind="good"
+  title="인라인 링크 유형의 첨부파일 텍스트는 주변 콘텐츠와 비슷한 크기로 제공한다."
+>
+  <div slot="react">
+    <div style={{ maxWidth: "480px" }}>
+      <p style={{ margin: "0 0 .5rem" }}>
+        신청 방법에 대한 자세한 내용은{" "}
+        <ReactLink href="#" client:only="react">
+          신청 방법 안내.pdf
+        </ReactLink>{" "}
+        파일을 확인해 주세요.
+      </p>
+      <ReactButton variant="secondary" client:only="react">미리보기</ReactButton>
+    </div>
+  </div>
+  <div slot="vue">
+    <div style="max-width: 480px">
+      <p style="margin: 0 0 .5rem">
+        신청 방법에 대한 자세한 내용은{" "}
+        <VueLink href="#" client:only="vue">
+          신청 방법 안내.pdf
+        </VueLink>{" "}
+        파일을 확인해 주세요.
+      </p>
+      <VueButton variant="secondary" client:only="vue">미리보기</VueButton>
+    </div>
+  </div>
+  <div slot="svelte">
+    <div style="max-width: 480px">
+      <p style="margin: 0 0 .5rem">
+        신청 방법에 대한 자세한 내용은{" "}
+        <SvelteLink href="#" client:only="svelte">
+          신청 방법 안내.pdf
+        </SvelteLink>{" "}
+        파일을 확인해 주세요.
+      </p>
+      <SvelteButton variant="secondary" client:only="svelte">미리보기</SvelteButton>
+    </div>
+  </div>
+  <div slot="solid">
+    <div style={{ maxWidth: "480px" }}>
+      <p style={{ margin: "0 0 .5rem" }}>
+        신청 방법에 대한 자세한 내용은{" "}
+        <SolidLink href="#" client:only="solid-js">
+          신청 방법 안내.pdf
+        </SolidLink>{" "}
+        파일을 확인해 주세요.
+      </p>
+      <SolidButton variant="secondary" client:only="solid-js">미리보기</SolidButton>
+    </div>
+  </div>
+  <div slot="astro">
+    <div style="max-width: 480px">
+      <p style="margin: 0 0 .5rem">
+        신청 방법에 대한 자세한 내용은{" "}
+        <AstroLink href="#">신청 방법 안내.pdf</AstroLink>{" "}
+        파일을 확인해 주세요.
+      </p>
+      <AstroButton variant="secondary">미리보기</AstroButton>
+    </div>
+  </div>
+  <div slot="angular">
+    <div style="max-width: 480px">
+      <p style="margin: 0 0 .5rem">
+        신청 방법에 대한 자세한 내용은{" "}
+        <AngularLink href="#" client:only="@analogjs/astro-angular">
+          신청 방법 안내.pdf
+        </AngularLink>{" "}
+        파일을 확인해 주세요.
+      </p>
+      <AngularButton variant="secondary" label="미리보기" client:only="@analogjs/astro-angular">미리보기</AngularButton>
+    </div>
+  </div>
+
+```tsx fw=react
+import { Button, Link } from "@krds-community/react";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <p style={{ margin: "0 0 .5rem" }}>
+        신청 방법에 대한 자세한 내용은 <Link href="#">신청 방법 안내.pdf</Link> 파일을 확인해
+        주세요.
+      </p>
+      <Button variant="secondary">미리보기</Button>
+    </div>
+  );
+}
+```
+
+```vue fw=vue
+<script setup>
+import { Button, Link } from "@krds-community/vue";
+</script>
+
+<template>
+  <div style="max-width: 480px">
+    <p style="margin: 0 0 .5rem">
+      신청 방법에 대한 자세한 내용은 <Link href="#">신청 방법 안내.pdf</Link> 파일을 확인해
+      주세요.
+    </p>
+    <Button variant="secondary">미리보기</Button>
+  </div>
+</template>
+```
+
+```svelte fw=svelte
+<script>
+import { Button, Link } from "@krds-community/svelte";
+</script>
+
+<div style="max-width: 480px">
+  <p style="margin: 0 0 .5rem">
+    신청 방법에 대한 자세한 내용은 <Link href="#">신청 방법 안내.pdf</Link> 파일을 확인해
+    주세요.
+  </p>
+  <Button variant="secondary">미리보기</Button>
+</div>
+```
+
+```tsx fw=solid
+import { Button, Link } from "@krds-community/solid";
+
+export function Example() {
+  return (
+    <div style={{ maxWidth: 480 }}>
+      <p style={{ margin: "0 0 .5rem" }}>
+        신청 방법에 대한 자세한 내용은 <Link href="#">신청 방법 안내.pdf</Link> 파일을 확인해
+        주세요.
+      </p>
+      <Button variant="secondary">미리보기</Button>
+    </div>
+  );
+}
+```
+
+```ts fw=angular
+import { KrdsButtonComponent, KrdsLinkComponent } from "@krds-community/angular";
+
+// template
+<div style="max-width: 480px">
+  <p style="margin: 0 0 .5rem">
+    신청 방법에 대한 자세한 내용은 <krds-link href="#">신청 방법 안내.pdf</krds-link> 파일을
+    확인해 주세요.
+  </p>
+  <krds-button variant="secondary" label="미리보기"></krds-button>
+</div>
+```
+
+```astro fw=astro
+---
+import { Button, Link } from "@krds-community/astro";
+---
+
+<div style="max-width: 480px">
+  <p style="margin: 0 0 .5rem">
+    신청 방법에 대한 자세한 내용은 <Link href="#">신청 방법 안내.pdf</Link> 파일을 확인해
+    주세요.
+  </p>
+  <Button variant="secondary">미리보기</Button>
+</div>
+```
+
+</PracticeExample>
