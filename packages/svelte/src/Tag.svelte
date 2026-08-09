@@ -20,7 +20,7 @@
     label = '레이블',
     size = 'large',
     removable = false,
-    message = '도움말',
+    message = '삭제',
     className = '',
     class: classProp = '',
     onclick,

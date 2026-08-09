@@ -48,7 +48,7 @@ export function SelectSorting(rawProps: SelectSortingProps) {
   const selected = () => {
     const mv = props.modelValue;
     if (typeof mv === "string" || typeof mv === "number") return String(mv);
-    return props.selected ?? localSelected() ?? props.defaultValue ?? "";
+    return props.selected ?? localSelected() ?? props.defaultValue ?? props.options?.[0]?.value ?? "";
   };
   const setSelected = (next: string) => {
     if (props.modelValue === undefined) setLocalSelected(next);

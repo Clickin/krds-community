@@ -13,7 +13,7 @@ export interface TagProps {
 }
 
 export function Tag(rawProps: TagProps) {
-  const merged = mergeProps({ size: "large" }, rawProps);
+  const merged = mergeProps({ size: "large", message: "삭제" }, rawProps);
   const [props, native] = splitProps(merged, [
     "class",
     "className",

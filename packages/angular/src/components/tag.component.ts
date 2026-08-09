@@ -21,7 +21,7 @@ import { createStableId } from "../kinds";
 export class KrdsTagComponent {
   @Input() id = createStableId("krds-tag");
   @Input() label = "레이블";
-  @Input() message = "도움말";
+  @Input() message = "삭제";
 }
 
 @Component({

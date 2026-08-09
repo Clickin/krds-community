@@ -10,6 +10,7 @@
     required?: boolean;
     form?: string;
     title?: string;
+    label?: string;
     selected?: string;
     modelValue?: string;
     defaultValue?: string;
@@ -29,6 +30,7 @@
     required = false,
     form,
     title = '',
+    label = '',
     selected = $bindable<string | undefined>(),
     modelValue = $bindable<string | undefined>(),
     defaultValue = '',
@@ -73,7 +75,7 @@
   {required}
   {form}
   {title}
-  aria-label={title || undefined}
+  aria-label={label || title || undefined}
   aria-invalid={selectState === 'error' ? 'true' : undefined}
   value={selection}
   onchange={(event) => setSelection((event.currentTarget as HTMLSelectElement).value, event)}

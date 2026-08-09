@@ -7,6 +7,7 @@
     value?: string;
     label?: string;
     disabled?: boolean;
+    selected?: boolean;
     [key: string]: unknown;
   };
 
@@ -88,7 +89,7 @@
       ? String(modelValue)
       : selected !== undefined
         ? selected
-        : defaultValue || String(options[0]?.value ?? ''),
+        : defaultValue || String(options.find((option) => option.selected)?.value ?? options[0]?.value ?? ''),
   );
 
   const setSelection = (next: string, event?: Event) => {

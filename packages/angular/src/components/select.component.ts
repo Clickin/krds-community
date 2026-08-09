@@ -90,12 +90,13 @@ const SELECT_TEMPLATE = `
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: SELECT_TEMPLATE,
 })
 export class KrdsSelectComponent implements ControlValueAccessor {
   @Input() id = createStableId("krds-select");
   @Input() label = "";
-  @Input() title = "제목";
+  @Input() title = "";
   @Input() name = "";
   @Input() hint = "";
   @Input() disabled = false;
@@ -104,7 +105,12 @@ export class KrdsSelectComponent implements ControlValueAccessor {
   @Input() size = "medium";
   @Input() className = "";
   @Input() selected = "";
-  @Input() options: Array<{ value: string; label: string; disabled?: boolean }> = [];
+  @Input() options: Array<{
+    value: string;
+    label: string;
+    disabled?: boolean;
+    selected?: boolean;
+  }> = [];
   @Output() selectedChange = new EventEmitter<string>();
 
   private onChange: (value: string | number | boolean | string[]) => void = () => undefined;
@@ -142,6 +148,7 @@ export class KrdsSelectComponent implements ControlValueAccessor {
 
   selectOptionSelected(index: number): boolean {
     if (this.selectKind === "select-size") return index === 0;
+    if (!this.selected) return this.options[index]?.selected === true;
     return this.options.findIndex((option) => option.value === this.selected) === index;
   }
 
@@ -194,6 +201,7 @@ export class KrdsSelectComponent implements ControlValueAccessor {
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: SELECT_TEMPLATE,
 })
 export class KrdsSelectSizeComponent extends KrdsSelectComponent {
@@ -214,6 +222,7 @@ export class KrdsSelectSizeComponent extends KrdsSelectComponent {
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: SELECT_TEMPLATE,
 })
 export class KrdsSelectSortingComponent extends KrdsSelectComponent {
@@ -234,6 +243,7 @@ export class KrdsSelectSortingComponent extends KrdsSelectComponent {
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: SELECT_TEMPLATE,
 })
 export class KrdsSelectStateComponent extends KrdsSelectComponent {

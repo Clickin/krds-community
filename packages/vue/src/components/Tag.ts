@@ -8,7 +8,7 @@ export const Tag = defineComponent({
   props: {
     label: { type: String, default: undefined },
     removable: Boolean,
-    message: { type: String, default: "" },
+    message: { type: String, default: "삭제" },
     size: { type: String, default: undefined },
   },
   emits: {

@@ -39,6 +39,20 @@ import { FilterableList as SolidFilterableList } from "@krds-community/solid/ext
 import { AngularFilterableList } from "@docs/angular-previews.ts";
 import { FilterableList as AstroFilterableList } from "@krds-community/astro/extra";
 
+export const dateInputCalendarProps = {
+  year: 2026,
+  month: 7,
+  years: [2025, 2026, 2027],
+  leadingDays: 2,
+  previousMonthDayCount: 30,
+  dayCount: 31,
+  weekdays: ["일", "월", "화", "수", "목", "금", "토"],
+  previousMonthLabel: "이전 달",
+  nextMonthLabel: "다음 달",
+  yearSelectLabel: "연도 선택",
+  monthSelectLabel: "월 선택",
+};
+
 <PatternReference patternId="filter-sort" />
 
 ## 공식 문서
@@ -100,7 +114,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <ReactSelect
         label="생애 주기"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "infant", label: "영유아", selected: true },
@@ -110,7 +123,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <ReactSelect
         label="가구 상황"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "dual", label: "맞벌이", selected: true },
@@ -120,7 +132,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <ReactSelect
         label="관심 주제"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육" },
@@ -141,8 +152,8 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
   <div slot="vue">
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <VueSelect
+        id="visual-lifecycle"
         label="생애 주기"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "infant", label: "영유아", selected: true },
@@ -151,8 +162,8 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
         client:only="vue"
       />
       <VueSelect
+        id="visual-household"
         label="가구 상황"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "dual", label: "맞벌이", selected: true },
@@ -161,8 +172,8 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
         client:only="vue"
       />
       <VueSelect
+        id="visual-topic"
         label="관심 주제"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육" },
@@ -184,7 +195,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <SvelteSelect
         label="생애 주기"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "infant", label: "영유아", selected: true },
@@ -194,7 +204,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <SvelteSelect
         label="가구 상황"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "dual", label: "맞벌이", selected: true },
@@ -204,7 +213,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <SvelteSelect
         label="관심 주제"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육" },
@@ -226,7 +234,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <SolidSelect
         label="생애 주기"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "infant", label: "영유아", selected: true },
@@ -236,7 +243,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <SolidSelect
         label="가구 상황"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "dual", label: "맞벌이", selected: true },
@@ -246,7 +252,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <SolidSelect
         label="관심 주제"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육" },
@@ -268,7 +273,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <AstroSelect
         label="생애 주기"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "infant", label: "영유아", selected: true },
@@ -277,7 +281,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <AstroSelect
         label="가구 상황"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "dual", label: "맞벌이", selected: true },
@@ -286,7 +289,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <AstroSelect
         label="관심 주제"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육" },
@@ -307,7 +309,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <AngularSelect
         label="생애 주기"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "infant", label: "영유아", selected: true },
@@ -317,7 +318,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <AngularSelect
         label="가구 상황"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "dual", label: "맞벌이", selected: true },
@@ -327,7 +327,6 @@ import { FilterableList as AstroFilterableList } from "@krds-community/astro/ext
       />
       <AngularSelect
         label="관심 주제"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육" },
@@ -355,7 +354,6 @@ export function Example() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
         <Select
           label="생애 주기"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "infant", label: "영유아", selected: true },
@@ -364,7 +362,6 @@ export function Example() {
         />
         <Select
           label="가구 상황"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "dual", label: "맞벌이", selected: true },
@@ -373,7 +370,6 @@ export function Example() {
         />
         <Select
           label="관심 주제"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "edu", label: "교육" },
@@ -411,7 +407,6 @@ import { Select, Tag } from "@krds-community/vue";
   <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
     <Select
       label="생애 주기"
-      size="medium"
       :options="[
         { value: '', label: '전체' },
         { value: 'infant', label: '영유아', selected: true },
@@ -420,7 +415,6 @@ import { Select, Tag } from "@krds-community/vue";
     />
     <Select
       label="가구 상황"
-      size="medium"
       :options="[
         { value: '', label: '전체' },
         { value: 'dual', label: '맞벌이', selected: true },
@@ -429,7 +423,6 @@ import { Select, Tag } from "@krds-community/vue";
     />
     <Select
       label="관심 주제"
-      size="medium"
       :options="[
         { value: '', label: '전체' },
         { value: 'edu', label: '교육' },
@@ -454,7 +447,6 @@ import { Select, Tag } from "@krds-community/svelte";
 <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
   <Select
     label="생애 주기"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "infant", label: "영유아", selected: true },
@@ -463,7 +455,6 @@ import { Select, Tag } from "@krds-community/svelte";
   />
   <Select
     label="가구 상황"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "dual", label: "맞벌이", selected: true },
@@ -472,7 +463,6 @@ import { Select, Tag } from "@krds-community/svelte";
   />
   <Select
     label="관심 주제"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "edu", label: "교육" },
@@ -497,7 +487,6 @@ export function Example() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
         <Select
           label="생애 주기"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "infant", label: "영유아", selected: true },
@@ -506,7 +495,6 @@ export function Example() {
         />
         <Select
           label="가구 상황"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "dual", label: "맞벌이", selected: true },
@@ -515,7 +503,6 @@ export function Example() {
         />
         <Select
           label="관심 주제"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "edu", label: "교육" },
@@ -551,7 +538,6 @@ import { KrdsSelectComponent, KrdsTagComponent } from "@krds-community/angular";
 <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
   <krds-select
     label="생애 주기"
-    size="medium"
     [options]="[
       { value: '', label: '전체' },
       { value: 'infant', label: '영유아', selected: true },
@@ -560,7 +546,6 @@ import { KrdsSelectComponent, KrdsTagComponent } from "@krds-community/angular";
   ></krds-select>
   <krds-select
     label="가구 상황"
-    size="medium"
     [options]="[
       { value: '', label: '전체' },
       { value: 'dual', label: '맞벌이', selected: true },
@@ -569,7 +554,6 @@ import { KrdsSelectComponent, KrdsTagComponent } from "@krds-community/angular";
   ></krds-select>
   <krds-select
     label="관심 주제"
-    size="medium"
     [options]="[
       { value: '', label: '전체' },
       { value: 'edu', label: '교육' },
@@ -593,7 +577,6 @@ import { Select, Tag } from "@krds-community/astro";
 <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
   <Select
     label="생애 주기"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "infant", label: "영유아", selected: true },
@@ -602,7 +585,6 @@ import { Select, Tag } from "@krds-community/astro";
   />
   <Select
     label="가구 상황"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "dual", label: "맞벌이", selected: true },
@@ -611,7 +593,6 @@ import { Select, Tag } from "@krds-community/astro";
   />
   <Select
     label="관심 주제"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "edu", label: "교육" },
@@ -917,7 +898,6 @@ import { Tag } from "@krds-community/astro";
     <div style="max-width:20rem;">
       <ReactSelect
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -937,7 +917,6 @@ import { Tag } from "@krds-community/astro";
     <div style="max-width:20rem;">
       <VueSelect
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -957,7 +936,6 @@ import { Tag } from "@krds-community/astro";
     <div style="max-width:20rem;">
       <SvelteSelect
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -977,7 +955,6 @@ import { Tag } from "@krds-community/astro";
     <div style="max-width:20rem;">
       <SolidSelect
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -997,7 +974,6 @@ import { Tag } from "@krds-community/astro";
     <div style="max-width:20rem;">
       <AstroSelect
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -1016,7 +992,6 @@ import { Tag } from "@krds-community/astro";
     <div style="max-width:20rem;">
       <AngularSelect
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -1041,7 +1016,6 @@ export function Example() {
     <div style={{ maxWidth: "20rem" }}>
       <Select
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -1068,7 +1042,6 @@ import { Select, Tag } from "@krds-community/vue";
   <div style="max-width:20rem;">
     <Select
       label="분야"
-      size="medium"
       :options="[
         { value: '', label: '전체' },
         { value: 'edu', label: '교육', selected: true },
@@ -1091,7 +1064,6 @@ import { Select, Tag } from "@krds-community/svelte";
 <div style="max-width:20rem;">
   <Select
     label="분야"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "edu", label: "교육", selected: true },
@@ -1113,7 +1085,6 @@ export function Example() {
     <div style={{ maxWidth: "20rem" }}>
       <Select
         label="분야"
-        size="medium"
         options={[
           { value: "", label: "전체" },
           { value: "edu", label: "교육", selected: true },
@@ -1138,7 +1109,6 @@ import { KrdsSelectComponent, KrdsTagComponent } from "@krds-community/angular";
 <div style="max-width:20rem;">
   <krds-select
     label="분야"
-    size="medium"
     [options]="[
       { value: '', label: '전체' },
       { value: 'edu', label: '교육', selected: true },
@@ -1160,7 +1130,6 @@ import { Select, Tag } from "@krds-community/astro";
 <div style="max-width:20rem;">
   <Select
     label="분야"
-    size="medium"
     options={[
       { value: "", label: "전체" },
       { value: "edu", label: "교육", selected: true },
@@ -1628,7 +1597,6 @@ import { FilterableList } from "@krds-community/astro/extra";
       <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
         <ReactSelect
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1638,7 +1606,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <ReactSelect
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1648,7 +1615,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <ReactSelect
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1664,8 +1630,8 @@ import { FilterableList } from "@krds-community/astro/extra";
       <p style="margin:0 0 0.5rem; font-weight:700; font-size:0.875rem;">지역</p>
       <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
         <VueSelect
+          id="related-region"
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1674,8 +1640,8 @@ import { FilterableList } from "@krds-community/astro/extra";
           client:only="vue"
         />
         <VueSelect
+          id="related-district"
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1684,8 +1650,8 @@ import { FilterableList } from "@krds-community/astro/extra";
           client:only="vue"
         />
         <VueSelect
+          id="related-neighborhood"
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1702,7 +1668,6 @@ import { FilterableList } from "@krds-community/astro/extra";
       <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
         <SvelteSelect
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1712,7 +1677,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <SvelteSelect
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1722,7 +1686,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <SvelteSelect
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1739,7 +1702,6 @@ import { FilterableList } from "@krds-community/astro/extra";
       <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
         <SolidSelect
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1749,7 +1711,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <SolidSelect
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1759,7 +1720,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <SolidSelect
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1776,7 +1736,6 @@ import { FilterableList } from "@krds-community/astro/extra";
       <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
         <AstroSelect
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1785,7 +1744,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <AstroSelect
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1794,7 +1752,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <AstroSelect
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1810,7 +1767,6 @@ import { FilterableList } from "@krds-community/astro/extra";
       <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
         <AngularSelect
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1820,7 +1776,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <AngularSelect
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1830,7 +1785,6 @@ import { FilterableList } from "@krds-community/astro/extra";
         />
         <AngularSelect
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1852,7 +1806,6 @@ export function Example() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
         <Select
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1861,7 +1814,6 @@ export function Example() {
         />
         <Select
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1870,7 +1822,6 @@ export function Example() {
         />
         <Select
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -1894,7 +1845,6 @@ import { Select } from "@krds-community/vue";
     <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
       <Select
         label="시·도"
-        size="medium"
         :options="[
           { value: '', label: '전체' },
           { value: 'seoul', label: '서울특별시', selected: true },
@@ -1903,7 +1853,6 @@ import { Select } from "@krds-community/vue";
       />
       <Select
         label="시·군·구"
-        size="medium"
         :options="[
           { value: '', label: '전체' },
           { value: 'jongno', label: '종로구', selected: true },
@@ -1912,7 +1861,6 @@ import { Select } from "@krds-community/vue";
       />
       <Select
         label="읍·면·동"
-        size="medium"
         :options="[
           { value: '', label: '전체' },
           { value: 'cheongun', label: '청운효자동' },
@@ -1934,7 +1882,6 @@ import { Select } from "@krds-community/svelte";
   <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
     <Select
       label="시·도"
-      size="medium"
       options={[
         { value: "", label: "전체" },
         { value: "seoul", label: "서울특별시", selected: true },
@@ -1943,7 +1890,6 @@ import { Select } from "@krds-community/svelte";
     />
     <Select
       label="시·군·구"
-      size="medium"
       options={[
         { value: "", label: "전체" },
         { value: "jongno", label: "종로구", selected: true },
@@ -1952,7 +1898,6 @@ import { Select } from "@krds-community/svelte";
     />
     <Select
       label="읍·면·동"
-      size="medium"
       options={[
         { value: "", label: "전체" },
         { value: "cheongun", label: "청운효자동" },
@@ -1973,7 +1918,6 @@ export function Example() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "flex-end" }}>
         <Select
           label="시·도"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "seoul", label: "서울특별시", selected: true },
@@ -1982,7 +1926,6 @@ export function Example() {
         />
         <Select
           label="시·군·구"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "jongno", label: "종로구", selected: true },
@@ -1991,7 +1934,6 @@ export function Example() {
         />
         <Select
           label="읍·면·동"
-          size="medium"
           options={[
             { value: "", label: "전체" },
             { value: "cheongun", label: "청운효자동" },
@@ -2013,7 +1955,6 @@ import { KrdsSelectComponent } from "@krds-community/angular";
   <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
     <krds-select
       label="시·도"
-      size="medium"
       [options]="[
         { value: '', label: '전체' },
         { value: 'seoul', label: '서울특별시', selected: true },
@@ -2022,7 +1963,6 @@ import { KrdsSelectComponent } from "@krds-community/angular";
     ></krds-select>
     <krds-select
       label="시·군·구"
-      size="medium"
       [options]="[
         { value: '', label: '전체' },
         { value: 'jongno', label: '종로구', selected: true },
@@ -2031,7 +1971,6 @@ import { KrdsSelectComponent } from "@krds-community/angular";
     ></krds-select>
     <krds-select
       label="읍·면·동"
-      size="medium"
       [options]="[
         { value: '', label: '전체' },
         { value: 'cheongun', label: '청운효자동' },
@@ -2052,7 +1991,6 @@ import { Select } from "@krds-community/astro";
   <div style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:flex-end;">
     <Select
       label="시·도"
-      size="medium"
       options={[
         { value: "", label: "전체" },
         { value: "seoul", label: "서울특별시", selected: true },
@@ -2061,7 +1999,6 @@ import { Select } from "@krds-community/astro";
     />
     <Select
       label="시·군·구"
-      size="medium"
       options={[
         { value: "", label: "전체" },
         { value: "jongno", label: "종로구", selected: true },
@@ -2070,7 +2007,6 @@ import { Select } from "@krds-community/astro";
     />
     <Select
       label="읍·면·동"
-      size="medium"
       options={[
         { value: "", label: "전체" },
         { value: "cheongun", label: "청운효자동" },
@@ -2103,58 +2039,46 @@ import { Select } from "@krds-community/astro";
 >
   <div slot="react">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <ReactDateInput label="시작일" calendarLabel="달력" client:only="react" />
-      <ReactDateInput label="종료일" calendarLabel="달력" client:only="react" />
+      <ReactDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="react" />
+      <ReactDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="react" />
     </div>
   </div>
   <div slot="vue">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <VueDateInput label="시작일" calendarLabel="달력" client:only="vue" />
-      <VueDateInput label="종료일" calendarLabel="달력" client:only="vue" />
+      <VueDateInput {...dateInputCalendarProps} id="filter-date-start" label="시작일" calendarLabel="달력" client:only="vue" />
+      <VueDateInput {...dateInputCalendarProps} id="filter-date-end" label="종료일" calendarLabel="달력" client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <SvelteDateInput label="시작일" calendarLabel="달력" client:only="svelte" />
-      <SvelteDateInput label="종료일" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <SolidDateInput label="시작일" calendarLabel="달력" client:only="solid-js" />
-      <SolidDateInput label="종료일" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="solid-js" />
     </div>
   </div>
   <div slot="astro">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
       <AstroDateInput
+        {...dateInputCalendarProps}
         label="시작일"
         calendarLabel="달력"
-        year={2026}
-        month={7}
-        years={[2025, 2026, 2027]}
-        leadingDays={2}
-        previousMonthDayCount={31}
-        dayCount={31}
-        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
       />
       <AstroDateInput
+        {...dateInputCalendarProps}
         label="종료일"
         calendarLabel="달력"
-        year={2026}
-        month={7}
-        years={[2025, 2026, 2027]}
-        leadingDays={2}
-        previousMonthDayCount={31}
-        dayCount={31}
-        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
       />
     </div>
   </div>
   <div slot="angular">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <AngularDateInput label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
-      <AngularDateInput label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
     </div>
   </div>
 
@@ -2259,63 +2183,51 @@ import { DateInput } from "@krds-community/astro";
 >
   <div slot="react">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <ReactDateInput label="시작일" calendarLabel="달력" client:only="react" />
-      <ReactDateInput label="종료일" calendarLabel="달력" client:only="react" />
+      <ReactDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="react" />
+      <ReactDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="react" />
       <ReactButton variant="secondary" client:only="react">조회</ReactButton>
     </div>
   </div>
   <div slot="vue">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <VueDateInput label="시작일" calendarLabel="달력" client:only="vue" />
-      <VueDateInput label="종료일" calendarLabel="달력" client:only="vue" />
+      <VueDateInput {...dateInputCalendarProps} id="filter-range-start" label="시작일" calendarLabel="달력" client:only="vue" />
+      <VueDateInput {...dateInputCalendarProps} id="filter-range-end" label="종료일" calendarLabel="달력" client:only="vue" />
       <VueButton variant="secondary" client:only="vue">조회</VueButton>
     </div>
   </div>
   <div slot="svelte">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <SvelteDateInput label="시작일" calendarLabel="달력" client:only="svelte" />
-      <SvelteDateInput label="종료일" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="svelte" />
       <SvelteButton variant="secondary" client:only="svelte">조회</SvelteButton>
     </div>
   </div>
   <div slot="solid">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <SolidDateInput label="시작일" calendarLabel="달력" client:only="solid-js" />
-      <SolidDateInput label="종료일" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="solid-js" />
       <SolidButton variant="secondary" client:only="solid-js">조회</SolidButton>
     </div>
   </div>
   <div slot="astro">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
       <AstroDateInput
+        {...dateInputCalendarProps}
         label="시작일"
         calendarLabel="달력"
-        year={2026}
-        month={7}
-        years={[2025, 2026, 2027]}
-        leadingDays={2}
-        previousMonthDayCount={31}
-        dayCount={31}
-        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
       />
       <AstroDateInput
+        {...dateInputCalendarProps}
         label="종료일"
         calendarLabel="달력"
-        year={2026}
-        month={7}
-        years={[2025, 2026, 2027]}
-        leadingDays={2}
-        previousMonthDayCount={31}
-        dayCount={31}
-        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
       />
       <AstroButton variant="secondary">조회</AstroButton>
     </div>
   </div>
   <div slot="angular">
     <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
-      <AngularDateInput label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
-      <AngularDateInput label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput {...dateInputCalendarProps} label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput {...dateInputCalendarProps} label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
       <AngularButton variant="secondary" label="조회" client:only="@analogjs/astro-angular">조회</AngularButton>
     </div>
   </div>
@@ -2427,42 +2339,36 @@ import { DateInput, Button } from "@krds-community/astro";
 >
   <div slot="react">
     <div style="max-width:16rem;">
-      <ReactDateInput label="날짜" calendarLabel="달력" client:only="react" />
+      <ReactDateInput {...dateInputCalendarProps} label="날짜" calendarLabel="달력" client:only="react" />
     </div>
   </div>
   <div slot="vue">
     <div style="max-width:16rem;">
-      <VueDateInput label="날짜" calendarLabel="달력" client:only="vue" />
+      <VueDateInput {...dateInputCalendarProps} label="날짜" calendarLabel="달력" client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
     <div style="max-width:16rem;">
-      <SvelteDateInput label="날짜" calendarLabel="달력" client:only="svelte" />
+      <SvelteDateInput {...dateInputCalendarProps} label="날짜" calendarLabel="달력" client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
     <div style="max-width:16rem;">
-      <SolidDateInput label="날짜" calendarLabel="달력" client:only="solid-js" />
+      <SolidDateInput {...dateInputCalendarProps} label="날짜" calendarLabel="달력" client:only="solid-js" />
     </div>
   </div>
   <div slot="astro">
     <div style="max-width:16rem;">
       <AstroDateInput
+        {...dateInputCalendarProps}
         label="날짜"
         calendarLabel="달력"
-        year={2026}
-        month={7}
-        years={[2025, 2026, 2027]}
-        leadingDays={2}
-        previousMonthDayCount={31}
-        dayCount={31}
-        weekdays={["일", "월", "화", "수", "목", "금", "토"]}
       />
     </div>
   </div>
   <div slot="angular">
     <div style="max-width:16rem;">
-      <AngularDateInput label="날짜" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+      <AngularDateInput {...dateInputCalendarProps} label="날짜" calendarLabel="달력" client:only="@analogjs/astro-angular" />
     </div>
   </div>
 
@@ -2719,6 +2625,7 @@ import { Tag, Button } from "@krds-community/astro";
         <ReactButton variant="secondary" size="small" client:only="react">필터 2</ReactButton>
         <ReactSelectSorting
           label="정렬 기준"
+          value="recent"
           options={[
             { value: "recent", label: "최신순" },
             { value: "popular", label: "인기순" },
@@ -2742,6 +2649,7 @@ import { Tag, Button } from "@krds-community/astro";
         <VueButton variant="secondary" size="small" client:only="vue">필터 2</VueButton>
         <VueSelectSorting
           label="정렬 기준"
+          value="recent"
           options={[
             { value: "recent", label: "최신순" },
             { value: "popular", label: "인기순" },
@@ -2765,6 +2673,7 @@ import { Tag, Button } from "@krds-community/astro";
         <SvelteButton variant="secondary" size="small" client:only="svelte">필터 2</SvelteButton>
         <SvelteSelectSorting
           label="정렬 기준"
+          value="recent"
           options={[
             { value: "recent", label: "최신순" },
             { value: "popular", label: "인기순" },
@@ -2788,6 +2697,7 @@ import { Tag, Button } from "@krds-community/astro";
         <SolidButton variant="secondary" size="small" client:only="solid-js">필터 2</SolidButton>
         <SolidSelectSorting
           label="정렬 기준"
+          value="recent"
           options={[
             { value: "recent", label: "최신순" },
             { value: "popular", label: "인기순" },
@@ -2811,6 +2721,7 @@ import { Tag, Button } from "@krds-community/astro";
         <AstroButton variant="secondary" size="small">필터 2</AstroButton>
         <AstroSelectSorting
           label="정렬 기준"
+          value="recent"
           options={[
             { value: "recent", label: "최신순" },
             { value: "popular", label: "인기순" },
@@ -2833,6 +2744,7 @@ import { Tag, Button } from "@krds-community/astro";
         <AngularButton variant="secondary" size="small" label="필터 2" client:only="@analogjs/astro-angular">필터 2</AngularButton>
         <AngularSelectSorting
           label="정렬 기준"
+          selected="recent"
           options={[
             { value: "recent", label: "최신순" },
             { value: "popular", label: "인기순" },

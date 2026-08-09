@@ -62,7 +62,14 @@ function SelectInner(rawProps: SelectProps, kind: string) {
   const selected = () => {
     const mv = props.modelValue;
     if (typeof mv === "string" || typeof mv === "number") return String(mv);
-    return props.selected ?? localSelected() ?? props.defaultValue ?? "";
+    return (
+      props.selected ??
+      localSelected() ??
+      props.defaultValue ??
+      (props.options?.find((option) => (option as KrdsOption & { selected?: boolean }).selected)
+        ?.value as string | undefined) ??
+      ""
+    );
   };
   const setSelected = (next: string) => {
     if (props.modelValue === undefined) setLocalSelected(next);

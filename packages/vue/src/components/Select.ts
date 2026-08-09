@@ -52,6 +52,8 @@ export const Select = defineComponent({
       props.defaultSelected ??
       (typeof props.modelValue === "string" ? props.modelValue : undefined) ??
       (typeof props.defaultValue === "string" ? props.defaultValue : undefined) ??
+      (props.options.find((option) => (option as KrdsOption & { selected?: boolean }).selected)
+        ?.value as string | undefined) ??
       props.options[0]?.value ??
       "";
     const localSelected = ref(initialSelected);
