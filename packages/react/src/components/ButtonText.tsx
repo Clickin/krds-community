@@ -8,7 +8,7 @@ export function ButtonText({
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button {...props} type={props.type ?? "button"} className={cx("krds-btn", "text", className)}>
-      {children}
+      {children ?? "레이블"}
     </button>
   );
 }

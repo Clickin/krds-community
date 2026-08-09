@@ -45,7 +45,7 @@ export interface MainMenuMobileProps {
 
 export function MainMenuMobile(rawProps: MainMenuMobileProps) {
   const merged = mergeProps(
-    { bottomSize: "small", id: `krds-main-menu-mobile-${createUniqueId()}` },
+    { bottomSize: "small", id: `krds-main-menu-mobile-${createUniqueId()}`, standalone: true },
     rawProps,
   );
   const [props, native] = splitProps(merged, [
@@ -55,6 +55,7 @@ export function MainMenuMobile(rawProps: MainMenuMobileProps) {
     "ref",
     "open",
     "sample",
+    "standalone",
     "navigationRole",
     "menuLabel",
     "bottomSize",
@@ -145,6 +146,18 @@ export function MainMenuMobile(rawProps: MainMenuMobileProps) {
       {...(native as Record<string, any>)}
       ref={setRootRef}
       id={props.id}
+      style={
+        (props.standalone
+          ? typeof native.style === "string"
+            ? `display: block; position: static; visibility: visible;${native.style}`
+            : {
+                display: "block",
+                position: "static",
+                visibility: "visible",
+                ...(native.style as Record<string, string>),
+              }
+          : native.style) as unknown as Record<string, string> | string
+      }
       class={["krds-main-menu-mobile", props.sample && "sample", className()]
         .filter(Boolean)
         .join(" ")}

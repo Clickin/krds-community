@@ -13,11 +13,11 @@ import { AngularStructuredListTable } from "@docs/angular-previews.ts";
 import { StructuredListTable as AstroStructuredListTable } from "@krds-community/astro";
 
 <FrameworkPreview title="구조화 목록 표">
-  <ReactStructuredListTable slot="react" caption="구조화 목록" client:only="react" />
-  <VueStructuredListTable slot="vue" caption="구조화 목록" client:only="vue" />
-  <SvelteStructuredListTable slot="svelte" caption="구조화 목록" client:only="svelte" />
-  <SolidStructuredListTable slot="solid" caption="구조화 목록" client:only="solid-js" />
-  <AngularStructuredListTable slot="angular" caption="구조화 목록" client:only="@analogjs/astro-angular" />
+  <ReactStructuredListTable slot="react" caption="구조화 목록" client:only="react" columns={[{ key: 'title', label: '제목' }]} rows={[{ id: '1', title: '목록 항목' }]} selectAllLabel="전체 선택" actions={[]} countLabel="표시 개수" countOptions={['10']} sortLabel="정렬" sortOptions={['최신순']} sortValue="최신순" pagination={{ current: 1, items: [1], previousLabel: '이전', nextLabel: '다음', currentLabel: '현재 페이지' }} />
+  <VueStructuredListTable slot="vue" caption="구조화 목록" client:only="vue" columns={[{ key: 'title', label: '제목' }]} rows={[{ id: '1', title: '목록 항목' }]} selectAllLabel="전체 선택" actions={[]} countLabel="표시 개수" countOptions={['10']} sortLabel="정렬" sortOptions={['최신순']} sortValue="최신순" pagination={{ current: 1, items: [1], previousLabel: '이전', nextLabel: '다음', currentLabel: '현재 페이지' }} />
+  <SvelteStructuredListTable slot="svelte" caption="구조화 목록" client:only="svelte" columns={[{ key: 'title', label: '제목' }]} rows={[{ id: '1', title: '목록 항목' }]} selectAllLabel="전체 선택" actions={[]} countLabel="표시 개수" countOptions={['10']} sortLabel="정렬" sortOptions={['최신순']} sortValue="최신순" pagination={{ current: 1, items: [1], previousLabel: '이전', nextLabel: '다음', currentLabel: '현재 페이지' }} />
+  <SolidStructuredListTable slot="solid" caption="구조화 목록" client:only="solid-js" columns={[{ key: 'title', label: '제목' }]} rows={[{ id: '1', title: '목록 항목' }]} selectAllLabel="전체 선택" actions={[]} countLabel="표시 개수" countOptions={['10']} sortLabel="정렬" sortOptions={['최신순']} sortValue="최신순" pagination={{ current: 1, items: [1], previousLabel: '이전', nextLabel: '다음', currentLabel: '현재 페이지' }} />
+  <AngularStructuredListTable slot="angular" caption="구조화 목록" client:only="@analogjs/astro-angular" columns={[{ key: 'title', label: '제목' }]} rows={[{ id: '1', title: '목록 항목' }]} selectAllLabel="전체 선택" actions={[]} countLabel="표시 개수" countOptions={['10']} sortLabel="정렬" sortOptions={['최신순']} sortValue="최신순" pagination={{ current: 1, items: [1], previousLabel: '이전', nextLabel: '다음', currentLabel: '현재 페이지' }} />
   <AstroStructuredListTable
     slot="astro"
     caption="구조화 목록"
@@ -32,7 +32,7 @@ import { StructuredListTable as AstroStructuredListTable } from "@krds-community
     sortValue="최신순"
     pagination={{
       current: 1,
-      items: [{ label: '1', href: '#', current: true }],
+      items: [1],
       previousLabel: '이전',
       nextLabel: '다음',
       currentLabel: '현재 페이지',

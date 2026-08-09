@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
 
   /**
@@ -78,7 +79,7 @@
     ...restProps
   }: Props = $props();
 
-  let inputValue = $state(initialValue);
+  let inputValue = $state(untrack(() => initialValue));
   let status = $state<'idle' | 'valid' | 'invalid'>('idle');
   let message = $state('');
   let inputElement: HTMLInputElement;

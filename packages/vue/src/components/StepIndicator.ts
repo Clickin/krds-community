@@ -11,7 +11,7 @@ export const StepIndicator = defineComponent({
     steps: { type: Array as PropType<KrdsStep[]>, default: () => [] },
     current: { type: Number, default: undefined },
     defaultCurrent: { type: Number, default: 0 },
-    label: { type: String, default: undefined },
+    label: { type: String, default: "단계" },
     message: { type: String, default: undefined },
   },
   setup(props, { attrs }) {

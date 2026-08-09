@@ -4,7 +4,6 @@ description: KRDS 푸터 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, A
 category: identity
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Footer as ReactFooter } from "@krds-community/react";
 import { Footer as VueFooter } from "@krds-community/vue";
@@ -99,7 +98,7 @@ import { Footer } from '@krds-community/astro';
 푸터는 페이지의 마지막 요소이므로 본문 하단에 배치해야 한다. 본문의 높이가 뷰포트 높이보다 짧은 경우 푸터가 뷰포트 하단에 고정되어 있는지 확인한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="모든 페이지에 푸터를 일관된 위치에 제공해야 한다.">
+<FrameworkPreview kind="good" title="모든 페이지에 푸터를 일관된 위치에 제공해야 한다.">
   <div slot="react">
     <p>본문 콘텐츠가 배치되는 영역입니다.</p>
     <ReactFooter
@@ -273,11 +272,11 @@ import { Footer } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="모든 페이지에 푸터를 일관된 위치에 제공해야 한다.">
+<FrameworkPreview kind="bad" title="모든 페이지에 푸터를 일관된 위치에 제공해야 한다.">
   <div slot="react">
     <ReactFooter
       organization="대한민국 정부"
@@ -451,7 +450,7 @@ import { Footer } from '@krds-community/astro';
     />
     <p>본문 콘텐츠가 배치되는 영역입니다.</p>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모든 디지털 정부 서비스에서 푸터 섹션의 정보는 일관된 순서로 제공한다.**
 푸터 내 정보 배치 일관성을 유지하는 것은 디지털 정부 서비스 브랜드 확립과 사용자 신뢰 구축에 매우 중요하므로 명확한 이유 없이 기본 순서를 변경해서는 안 된다.

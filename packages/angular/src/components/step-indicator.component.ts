@@ -26,7 +26,7 @@ import type { KrdsStep } from "@krds-community/recipes";
 export class KrdsStepIndicatorComponent {
   @Input() current = 1;
   @Input() stepLabel = "";
-  @Input() label = "";
+  @Input() label = "단계";
   @Input() message = "도움말";
   @Input() steps: KrdsStep[] = [];
 }

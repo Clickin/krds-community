@@ -34,7 +34,12 @@ const hasBodySlot = Astro.slots.has('default');
       aria-modal="true"
       aria-labelledby={title ? titleId : undefined}
     >
-      <div class="bottom-sheet-overlay" data-close></div>
+      <button
+        type="button"
+        class="bottom-sheet-overlay"
+        data-close
+        aria-label={closeLabel}
+      ></button>
       <div class="bottom-sheet-panel" role="document">
         <button
           type="button"

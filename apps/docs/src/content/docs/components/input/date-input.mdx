@@ -11,7 +11,6 @@ import { DateInput as SvelteDateInput } from "@krds-community/svelte";
 import { DateInput as SolidDateInput } from "@krds-community/solid";
 import { AngularDateInput } from "@docs/angular-previews.ts";
 import { DateInput as AstroDateInput } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { TextInput as ReactTextInput } from "@krds-community/react";
 import { TextInput as VueTextInput } from "@krds-community/vue";
 import { TextInput as SvelteTextInput } from "@krds-community/svelte";
@@ -149,7 +148,7 @@ import { DateInput } from '@krds-community/astro';
 표시자를 제공하고 도움말 텍스트에는 입력 자릿수에 대한 안내 문구와 작성 예시를 제공한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="도움말 텍스트를 활용하여 날짜 입력 형식을 안내한다.">
+<FrameworkPreview kind="good" title="도움말 텍스트를 활용하여 날짜 입력 형식을 안내한다.">
   <div slot="react">
     <ReactDateInput
       label="생년월일"
@@ -204,11 +203,11 @@ import { DateInput } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="도움말 텍스트를 활용하여 날짜 입력 형식을 안내한다.">
+<FrameworkPreview kind="bad" title="도움말 텍스트를 활용하여 날짜 입력 형식을 안내한다.">
   <div slot="react">
     <ReactDateInput label="생년월일" calendarLabel="달력" client:only="react" />
   </div>
@@ -237,13 +236,13 @@ import { DateInput } from '@krds-community/astro';
   <div slot="angular">
     <AngularDateInput label="생년월일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **문서에 표시된 날짜를 정확하게 요청할 때 입력 필드의 구성을 원본 형식과 일치시킨다.**
 여권, 신용카드 유효 기간 등 원본이 존재하는 날짜는 원본의 형식과 입력 필드를 일치시켜 사용자가 혼동을 느끼지 않도록 하고 필요한 경우 날짜 텍스트를 복사하여 쉽게 붙여넣을 수 있도록 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="문서에 표시된 날짜를 정확하게 요청할 때 입력 필드의 구성을 원본 형식과 일치시킨다."
 >
@@ -285,11 +284,11 @@ import { DateInput } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="문서에 표시된 날짜를 정확하게 요청할 때 입력 필드의 구성을 원본 형식과 일치시킨다."
 >
@@ -336,14 +335,14 @@ import { DateInput } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **사용자가 대략적인 날짜를 입력할 수 있도록 한다.**
 사용자가 기억하기 어려운 날짜나 특정일을 지정하기 어려운 정보를 요청할 때, 범위로 날짜를 입력할 수 있도록 입력 필드를 구성해야 한다. 예를 들어, '여권 분실 일자'는 특정일이 아니라 '2023년 12월'과 같이 달을 범위로 입력할 수 있도록 입력 필드를 구성할 수 있다.
 신청 결과 목록에서 사용자가 신청 일자를 기억하지 못하는 상황을 고려하여 범위 입력 필드를 통해 목록 조회의 기간을 설정할 수 있도록 구성해야 한다.
 **모범 사례 1**
 
-<PracticeExample kind="good" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
+<FrameworkPreview kind="good" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
   <div slot="react" style="display:flex;gap:16px;flex-wrap:wrap">
     <ReactDateInput label="시작일" calendarLabel="달력" client:only="react" />
     <ReactDateInput label="종료일" calendarLabel="달력" client:only="react" />
@@ -388,11 +387,11 @@ import { DateInput } from '@krds-community/astro';
     <AngularDateInput label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
     <AngularDateInput label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample kind="good" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
+<FrameworkPreview kind="good" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
   <div slot="react" style="display:flex;gap:16px;flex-wrap:wrap">
     <div style="width:160px">
       <ReactTextInput
@@ -481,11 +480,11 @@ import { DateInput } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
+<FrameworkPreview kind="bad" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
   <div slot="react">
     <ReactDateInput label="여권 분실 일자" calendarLabel="달력" client:only="react" />
   </div>
@@ -518,7 +517,7 @@ import { DateInput } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **사용자가 자주, 반복적으로 입력하는 날짜는 자동 완성될 수 있도록 구현한다.**
 사용자에게 개인 정보를 입력받는 입력 필드(생년월일 등)에 프로그램(웹 브라우저)을 통해 사용자가 기존에 입력한 정보를 활용할 수 있는 기술을 적용한다. 이를 통해 정보 입력에 필요한 사용자의 인지적, 신체적 노력을 최소화할 수 있다.

@@ -4,7 +4,9 @@ import { CarouselImage } from "./Carousel.js";
 import type { CarouselProps } from "./Carousel.js";
 
 export function CarouselBanner({
-  slides = [],
+  // ponytail: default sample slide mirrors the astro demo when no slides are
+  // passed, so the component never renders an empty shell
+  slides = [{ id: "slide-1", title: "배너 제목", description: "배너 설명", href: "#" }],
   label: _label,
   autoPlay = true,
   previousLabel,

@@ -10,7 +10,7 @@ import { createStableId } from "../kinds";
   template: `
     <div class="form-group">
       <div class="form-tit">
-        <label [for]="id + '-input'">{{ label }}</label>
+        <label [for]="id + '-input'">{{ inputLabel }}</label>
       </div>
       <div class="form-conts">
         <div class="form-spinner">
@@ -26,4 +26,5 @@ import { createStableId } from "../kinds";
 export class KrdsSpinnerComponent {
   @Input() id = createStableId("krds-spinner");
   @Input() label = "레이블";
+  @Input() inputLabel = "Label";
 }

@@ -3,8 +3,8 @@ title: 접근 가능한 미디어
 description: 미디어 콘텐츠에 설명이 필요한 경우에 사용하는 컴포넌트이다.
 category: live-only
 ---
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 
-import PracticeExample from "@docs/PracticeExample.astro";
 
 {/* krds-official:component_11_01 */}
 
@@ -63,7 +63,7 @@ import PracticeExample from "@docs/PracticeExample.astro";
 이를 청각 대체 정보에 포함해야 한다.
 **모범 사례 1**
 
-<PracticeExample kind="good" title="대체 정보는 미디어에 포함된 모든 정보를 설명해야 한다.">
+<FrameworkPreview kind="good" title="대체 정보는 미디어에 포함된 모든 정보를 설명해야 한다.">
   <div slot="react">
     <div style="max-width: 360px; font-size: 14px; line-height: 1.6;">
       <div
@@ -275,11 +275,11 @@ import PracticeExample from "@docs/PracticeExample.astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample kind="good" title="대체 정보는 미디어에 포함된 모든 정보를 설명해야 한다.">
+<FrameworkPreview kind="good" title="대체 정보는 미디어에 포함된 모든 정보를 설명해야 한다.">
   <div slot="react">
     <div style="max-width: 360px; font-size: 14px; line-height: 1.6;">
       <div
@@ -491,7 +491,7 @@ import PracticeExample from "@docs/PracticeExample.astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **정보를 전달하기 위한 목적의 시각적 요소를 삽입할 때 명도 대비에 유의한다.**
 이미지화된 텍스트는 사용자가 직접 텍스트 색상을 조정할 수 없기 때문에 비디오, 멀티미디어 콘텐츠를 제작할 때 명도 대비 기준을 준수하는 것이 특히 중요하다. 장식 용도의 요소, 오디오로 설명이 제공되고 있는 정보를 제외한 시각적 정보는 인접한 배경과 가능한 4.5:1 이상의 명도 대비를
@@ -501,7 +501,7 @@ import PracticeExample from "@docs/PracticeExample.astro";
 경우, 사용자가 자막의 크기, 색상, 위치를 조정할 수 있는 옵션을 제공하면 대체 정보가 필요한 사용자의 편의성을 높일 수 있다.
 **모범 사례 1**
 
-<PracticeExample kind="good" title="자막은 주변 요소에 가려지거나 흐리게 표시되어서는 안 된다.">
+<FrameworkPreview kind="good" title="자막은 주변 요소에 가려지거나 흐리게 표시되어서는 안 된다.">
   <div slot="react">
     <div style="max-width: 360px; font-size: 14px; line-height: 1.6;">
       <div
@@ -677,11 +677,11 @@ import PracticeExample from "@docs/PracticeExample.astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample kind="good" title="자막은 주변 요소에 가려지거나 흐리게 표시되어서는 안 된다.">
+<FrameworkPreview kind="good" title="자막은 주변 요소에 가려지거나 흐리게 표시되어서는 안 된다.">
   <div slot="react">
     <div style="max-width: 360px; font-size: 14px; line-height: 1.6;">
       <div
@@ -857,11 +857,11 @@ import PracticeExample from "@docs/PracticeExample.astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="자막은 주변 요소에 가려지거나 흐리게 표시되어서는 안 된다.">
+<FrameworkPreview kind="bad" title="자막은 주변 요소에 가려지거나 흐리게 표시되어서는 안 된다.">
   <div slot="react">
     <div style="max-width: 360px; font-size: 14px; line-height: 1.6; position: relative;">
       <div
@@ -1037,7 +1037,7 @@ import PracticeExample from "@docs/PracticeExample.astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **자막은 오디오와 동기화하여 제공한다.**
 오디오가 제공되는 시점에 정확하게 정보를 전달할 수 있으며, 시청각 정보가 일치하므로 콘텐츠에 대한 사용자의 이해를 높일 수 있다.

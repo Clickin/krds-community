@@ -1,10 +1,11 @@
-import { createEffect, createSignal, createUniqueId, mergeProps, splitProps } from "solid-js";
+import { Show, createEffect, createSignal, createUniqueId, mergeProps, splitProps } from "solid-js";
 
 export interface TextInputIconProps {
   class?: string;
   className?: string;
   id?: string;
   label?: string;
+  hint?: string;
   value?: string;
   modelValue?: string;
   type?: string;
@@ -19,6 +20,7 @@ export function TextInputIcon(rawProps: TextInputIconProps) {
     "className",
     "id",
     "label",
+    "hint",
     "value",
     "modelValue",
     "type",
@@ -62,6 +64,7 @@ export function TextInputIcon(rawProps: TextInputIconProps) {
           class={["krds-input", className()].filter(Boolean).join(" ")}
           type={props.type}
           value={value()}
+          aria-describedby={props.hint ? `${props.id}-hint` : undefined}
           onInput={updateInput}
         />
         <button type="button" class="krds-btn medium icon">
@@ -69,6 +72,11 @@ export function TextInputIcon(rawProps: TextInputIconProps) {
           <i class="svg-icon ico-pw-visible" />
         </button>
       </div>
+      <Show when={props.hint}>
+        <p class="form-hint" id={`${props.id}-hint`}>
+          {props.hint}
+        </p>
+      </Show>
     </div>
   );
 }

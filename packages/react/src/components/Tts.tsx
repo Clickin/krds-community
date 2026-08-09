@@ -13,7 +13,7 @@ export interface TtsProps extends NativeCommonProps, ButtonHTMLAttributes<HTMLBu
 }
 
 export function Tts({
-  label: _label,
+  label,
   text,
   iconOnly = false,
   size = "medium",
@@ -28,6 +28,7 @@ export function Tts({
 }: TtsProps & { ref?: Ref<HTMLButtonElement> }) {
   const [uncontrolledPlaying, setUncontrolledPlaying] = useState(defaultPlaying);
   const playing = controlledPlaying ?? uncontrolledPlaying;
+  const textContent = children ?? text ?? label;
   return (
     <button
       {...props}
@@ -44,10 +45,14 @@ export function Tts({
       <span className="krds-tts-icon" aria-hidden="true">
         <SvgIcon name={playing ? "ico-stop" : "ico-volume"} />
       </span>
-      {iconOnly ? null : (
+      {iconOnly ? (
+        textContent ? (
+          <span className="sr-only">{textContent}</span>
+        ) : null
+      ) : (
         <>
           {" "}
-          <span className="krds-tts-text">{children ?? text}</span>
+          <span className="krds-tts-text">{textContent}</span>
         </>
       )}
     </button>

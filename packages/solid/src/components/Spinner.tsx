@@ -1,4 +1,4 @@
-import { mergeProps, splitProps, type JSX } from "solid-js";
+import { createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
 
 export interface SpinnerProps {
   class?: string;
@@ -12,7 +12,7 @@ export interface SpinnerProps {
 }
 
 export function Spinner(rawProps: SpinnerProps) {
-  const merged = mergeProps({}, rawProps);
+  const merged = mergeProps({ id: `krds-spinner-${createUniqueId()}` }, rawProps);
   const [props, native] = splitProps(merged, [
     "class",
     "className",

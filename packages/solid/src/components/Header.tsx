@@ -332,6 +332,7 @@ export function Header(rawProps: HeaderProps) {
       </div>
       <MainMenuMobile
         id="mobile-nav"
+        standalone={false}
         ref={(element) => {
           headerMobileMenu = element;
         }}

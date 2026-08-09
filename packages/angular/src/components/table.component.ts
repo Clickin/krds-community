@@ -16,12 +16,7 @@ import {
 } from "../kinds";
 import type { KrdsTableColumn } from "@krds-community/recipes";
 
-@Component({
-  selector: "krds-table, krds-structured-list-table",
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+const KRDS_TABLE_TEMPLATE = `
     <ng-template #tableContent>
       <div class="krds-table-wrap">
         <table class="tbl col data">
@@ -198,7 +193,14 @@ import type { KrdsTableColumn } from "@krds-community/recipes";
     } @else {
       <ng-container [ngTemplateOutlet]="tableContent"></ng-container>
     }
-  `,
+  `;
+
+@Component({
+  selector: "krds-table",
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: KRDS_TABLE_TEMPLATE,
 })
 export class KrdsTableComponent {
   @Input() id = createStableId("krds-table");
@@ -263,4 +265,13 @@ export class KrdsTableComponent {
     return (event.target as HTMLSelectElement).value;
   }
 }
-export { KrdsTableComponent as KrdsStructuredListTableComponent };
+@Component({
+  selector: "krds-structured-list-table",
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: KRDS_TABLE_TEMPLATE,
+})
+export class KrdsStructuredListTableComponent extends KrdsTableComponent {
+  override kind: "table" | "structured-list-table" | null = "structured-list-table";
+}

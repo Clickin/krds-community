@@ -231,6 +231,12 @@
         class="krds-suggestions-item"
         class:is-active={index === activeIndex}
         onclick={() => selectItem(item)}
+        onkeydown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectItem(item);
+          }
+        }}
       >
         {item.label}
       </li>

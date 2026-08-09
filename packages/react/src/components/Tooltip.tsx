@@ -132,7 +132,7 @@ export function Tooltip({
           setVisible(false);
         }}
       >
-        {inlineSpacedText(children, false, true)}
+        {inlineSpacedText(children ?? label, false, true)}
         <SvgIcon name="ico-angle right" />
       </button>
       <div

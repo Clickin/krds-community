@@ -27,23 +27,25 @@ ordered?: boolean;
   const rootClass = $derived(`${classProp} ${className}`.trim());
 </script>
 
+{#snippet renderList(list, depth)}
+  <ul class="krds-info-list {depth === 1 ? 'dash' : 'hollow'}" role="list">
+    {#each list as item}
+      <li role="listitem">
+        {labelOf(item)}
+        {#if childrenOf(item).length}
+          {@render renderList(childrenOf(item), depth + 1)}
+        {/if}
+      </li>
+    {/each}
+  </ul>
+{/snippet}
+
 <ul {...rest} class={`decimal krds-info-list ${rootClass}`} role="list">
   {#each items as item}
     <li role="listitem">
       {labelOf(item)}
       {#if childrenOf(item).length}
-        <ul class="dash krds-info-list" role="list">
-          {#each childrenOf(item) as child}
-            <li role="listitem">
-              {labelOf(child)}
-              {#if childrenOf(child).length}
-                <ul class="hollow krds-info-list" role="list">
-                  {#each childrenOf(child) as grandchild}<li role="listitem">{labelOf(grandchild)}</li>{/each}
-                </ul>
-              {/if}
-            </li>
-          {/each}
-        </ul>
+        {@render renderList(childrenOf(item), 1)}
       {/if}
     </li>
   {/each}

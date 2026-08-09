@@ -3,8 +3,8 @@ title: 개인 식별 정보 입력
 description: 개인의 신원과 기본 정보를 확인하기 위해 정보를 입력받는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { TextInput as ReactTextInput } from "@krds-community/react";
 import { TextInput as VueTextInput } from "@krds-community/vue";
 import { TextInput as SvelteTextInput } from "@krds-community/svelte";
@@ -66,7 +66,7 @@ import { Select as AstroSelect } from "@krds-community/astro";
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="이름 입력 필드에 입력 가능한 글자 수를 적절하게 구성한다."
 >
@@ -166,7 +166,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **이름 입력에 단일 텍스트 입력 필드를 사용한다.** 모든 사람의 이름이 일반적인 성, 이름 형식에 부합하지 않을 수 있으므로 여러 개의 이름 입력 필드는 신중하게 사용해야 한다.
 
@@ -174,7 +174,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="개명한 사용자가 문제 없이 이름을 입력할 수 있는지 확인한다."
 >
@@ -298,7 +298,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **외국인 사용자 이름의 길이를 고려하여 이름 입력 필드의 가로 길이(field length)를 충분히 확보한다.** 일반 단일 입력 필드 기준 최소 320~360px 이상을 확보하고, 폼이 단일열일 경우 가용 폭을 100% 사용하도록 한다. 이름이 길어도 필드 안에서는 스크롤되거나 전체가 보이도록 처리해 사용자가 내용을 확인할 수 있게 한다.
 
@@ -312,7 +312,7 @@ import { TextInput } from "@krds-community/astro";
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="생년월일의 입력에 날짜 선택기를 사용하지 않는다."
 >
@@ -432,13 +432,13 @@ import { DateInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **연도, 일의 입력에 셀렉트를 사용하지 않는다.** 연도와 일 정보를 셀렉트로 제공하게 되면 옵션 수가 지나치게 많아져 오히려 입력이 어려워질 수 있다. 날짜 입력 서식 컴포넌트 중 다중 입력 필드나 단일 입력 필드를 사용하는 것이 좋다.
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="연도, 일의 입력에 셀렉트를 사용하지 않는다."
 >
@@ -895,7 +895,7 @@ const days = [
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **날짜 입력 형식을 정확하게 안내한다.** 날짜 입력 필드 컴포넌트를 참조하여 해당 가이드라인에 따라 입력 형식을 안내한다.
 
@@ -905,7 +905,7 @@ const days = [
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="특정 성별을 기본값으로 지정하지 않는다."
 >
@@ -1041,13 +1041,13 @@ import { Radio } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **‘선택 안 함’ 옵션을 제공한다.** 성별이 개인의 신원을 정확하게 하는 데 필요한 정보가 아니라면 성별 정보를 필수 입력 항목에서 제외하거나 사용자가 응답하지 않을 옵션을 제공하는 것이 바람직하다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="‘선택 안 함’ 옵션을 제공한다."
 >
@@ -1183,7 +1183,7 @@ import { Radio } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 전화번호
 
@@ -1191,7 +1191,7 @@ import { Radio } from "@krds-community/astro";
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="활용 용도에 적합한 유형의 전화번호 입력을 요청한다."
 >
@@ -1321,13 +1321,13 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **전화번호 입력 필드에 명확한 레이블을 제공한다.** 입력해야 하는 전화번호의 유형이 무엇인지 정확하게 인지할 수 있도록 ‘휴대 전화번호’, ‘지역 번호’와 같이 명확한 레이블을 제공한다. 전화번호의 유형 구분이 불필요한 경우에는 ‘전화번호’라는 레이블을 사용한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="전화번호 입력 필드에 명확한 레이블을 제공한다."
 >
@@ -1427,7 +1427,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **여러 가지 입력 형식에 유연한 입력 필드를 제공한다.** 공백, 하이픈, 대시 등 일반적으로 전화번호의 입력 형식으로 사용되는 다양한 형식의 입력을 허용하여 사용자가 익숙한 방식으로 전화번호를 입력할 수 있도록 한다. 하이픈을 반드시 포함해야 하는 등 특정 형식에 맞추어 입력이 필요한 경우, 도움말 텍스트로 입력 형식의 제한에 대해 명확하게 설명해야 한다. 사용자의 편의성을 위해 자동으로 형식을 수정할 수 있다.
 

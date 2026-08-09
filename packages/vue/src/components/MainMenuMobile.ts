@@ -20,6 +20,7 @@ export const MainMenuMobile = defineComponent({
     closeLabel: { type: String, default: undefined },
     bottomItems: { type: Array as PropType<AdditionalMenuItem[]>, default: () => [] },
     sample: Boolean,
+    standalone: { type: Boolean, default: true },
     open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
   },
   emits: {
@@ -61,6 +62,7 @@ export const MainMenuMobile = defineComponent({
         props.sample,
         closeMenu,
         false,
+        props.standalone,
       );
     };
   },

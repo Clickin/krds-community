@@ -5,7 +5,6 @@ category: settings
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Resize as ReactResize } from "@krds-community/react";
 import { Resize as VueResize } from "@krds-community/vue";
 import { Resize as SvelteResize } from "@krds-community/svelte";
@@ -97,7 +96,7 @@ import { Resize } from '@krds-community/astro';
 옵션에 텍스트 레이블 없이 글자 크기만을 보여주는 아이콘만 제공되거나 확대 배율만 표시될 경우 사용자에 따라 이해가 어려울 수 있으므로 설명적인 레이블을 함께 제공해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="옵션 레이블을 명확한 내용으로 제공한다.">
+<FrameworkPreview kind="good" title="옵션 레이블을 명확한 내용으로 제공한다.">
   <div slot="react">
     <ReactResize
       label="화면 크기"
@@ -181,11 +180,11 @@ import { Resize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="옵션 레이블을 명확한 내용으로 제공한다.">
+<FrameworkPreview kind="bad" title="옵션 레이블을 명확한 내용으로 제공한다.">
   <div slot="react">
     <ReactResize
       label="화면 크기"
@@ -269,13 +268,13 @@ import { Resize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **옵션을 5개 이내로 제공한다.**
 서비스 특성에 따라 확대/축소 옵션값을 추가하거나 제거할 수 있다. 옵션의 개수가 많아질 수록 인지적 부담이 증가하므로 옵션 개수는 5개 이내로 제공하는 것이 바람직하다.
 **모범 사례**
 
-<PracticeExample kind="good" title="옵션을 5개 이내로 제공한다.">
+<FrameworkPreview kind="good" title="옵션을 5개 이내로 제공한다.">
   <div slot="react">
     <ReactResize
       label="화면 크기"
@@ -359,11 +358,11 @@ import { Resize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="옵션을 5개 이내로 제공한다.">
+<FrameworkPreview kind="bad" title="옵션을 5개 이내로 제공한다.">
   <div slot="react">
     <ReactResize
       label="화면 크기"
@@ -459,7 +458,7 @@ import { Resize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **반응형 레이아웃 사용을 고려한다.**
 사용자 에이전트의 확대 기능을 사용하여 화면을 400%까지 확대했을 때, 1920 x 1080 해상도의 모니터를 기준으로 뷰포트 너비가 480px로 줄어들어 모바일 레이아웃으로 전환된다.

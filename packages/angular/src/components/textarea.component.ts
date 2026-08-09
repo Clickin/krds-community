@@ -34,10 +34,14 @@ import { createStableId } from "../kinds";
       [disabled]="disabled"
       [readonly]="readonly"
       [required]="required"
+      [attr.aria-describedby]="hint ? textareaHintId : null"
       (input)="setValue(inputValue($event))"
       (blur)="touch()"
     ></textarea>
     <label [for]="id">{{ label }}</label>
+    @if (hint) {
+      <p [id]="textareaHintId">{{ hint }}</p>
+    }
   `,
 })
 export class KrdsTextareaComponent implements ControlValueAccessor {
@@ -45,10 +49,15 @@ export class KrdsTextareaComponent implements ControlValueAccessor {
   @Input() label = "레이블";
   @Input() value = "";
   @Input() placeholder = "";
+  @Input() hint = "";
   @Input() disabled = false;
   @Input() readonly = false;
   @Input() required = false;
   @Output() valueChange = new EventEmitter<string>();
+
+  get textareaHintId(): string {
+    return `${this.id}-hint`;
+  }
 
   private onChange: (value: string | number | boolean | string[]) => void = () => undefined;
   private onTouched: () => void = () => undefined;

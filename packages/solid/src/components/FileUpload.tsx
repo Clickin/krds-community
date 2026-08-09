@@ -24,7 +24,7 @@ export interface FileUploadProps {
 }
 
 export function FileUpload(rawProps: FileUploadProps) {
-  const merged = mergeProps({ countSuffix: "개" }, rawProps);
+  const merged = mergeProps({}, rawProps);
   const [props, native] = splitProps(merged, [
     "class",
     "className",
@@ -103,9 +103,9 @@ export function FileUpload(rawProps: FileUploadProps) {
       <div class="file-list">
         <div class="total">
           <span class="current">
-            {String(props.currentCount ?? "") + String(props.countSuffix ?? "")}
+            {String(props.currentCount ?? props.files?.length ?? 0) + (props.countSuffix ?? "")}
           </span>
-          {" / " + String(props.maxCount ?? "") + String(props.countSuffix ?? "")}
+          {" / " + String(props.maxCount ?? "") + (props.countSuffix ?? "")}
         </div>
         <ul class="upload-list">
           <For each={props.files}>
@@ -124,15 +124,17 @@ export function FileUpload(rawProps: FileUploadProps) {
                         <em class="sr-only">{file.statusLabel}</em>
                       </span>
                     </Show>
-                    <Show when={file.status === "deletable" || file.status === "error"}>
+                    <Show when={file.deleteLabel}>
                       <button type="button" class="krds-btn medium text">
                         {file.deleteLabel} <i class="svg-icon ico-delete-fill" />
                       </button>
                     </Show>
-                    <Show when={file.status === "downloadable"}>
+                    <Show when={file.downloadLabel}>
                       <button type="button" class="krds-btn medium text">
                         {file.downloadLabel} <i class="svg-icon ico-down" />
                       </button>
+                    </Show>
+                    <Show when={file.previewLabel}>
                       <button type="button" class="krds-btn medium text">
                         {file.previewLabel} <i class="svg-icon ico-angle right" />
                       </button>

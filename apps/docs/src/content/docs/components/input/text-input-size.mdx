@@ -11,7 +11,6 @@ import { TextInputSize as SvelteTextInputSize } from "@krds-community/svelte";
 import { TextInputSize as SolidTextInputSize } from "@krds-community/solid";
 import { AngularTextInputSize } from "@docs/angular-previews.ts";
 import { TextInputSize as AstroTextInputSize } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 
 <FrameworkPreview title="텍스트 입력 크기">
   <ReactTextInputSize slot="react" name="query" label="검색어" size="small" type="text" client:only="react" />
@@ -112,7 +111,7 @@ import { TextInputSize } from '@krds-community/astro';
 없이 입력값을 확인할 수 있는지를 점검해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="입력 필드는 텍스트의 길이를 고려하여 적절한 크기로 제공한다.">
+<FrameworkPreview kind="good" title="입력 필드는 텍스트의 길이를 고려하여 적절한 크기로 제공한다.">
   <div slot="react" style="display:flex;gap:16px;flex-wrap:wrap">
     <div style="width:130px">
       <ReactTextInputSize
@@ -243,11 +242,11 @@ import { TextInputSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="입력 필드는 텍스트의 길이를 고려하여 적절한 크기로 제공한다.">
+<FrameworkPreview kind="bad" title="입력 필드는 텍스트의 길이를 고려하여 적절한 크기로 제공한다.">
   <div slot="react">
     <ReactTextInputSize
       name="postal"
@@ -307,7 +306,7 @@ import { TextInputSize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모든 텍스트 입력 필드에는 레이블을 제공한다.**
 텍스트 입력 필드에 레이블이 제공되지 않으면 사용자는 어떤 정보를 입력해야 하는지 알 수 없다. 레이블을 생략하고자 하는 경우에는 레이블 없이도 사용자가 값을 선택하는 데 문제가 없다는 근거가 명확해야 한다.
@@ -316,7 +315,7 @@ import { TextInputSize } from '@krds-community/astro';
 플레이스홀더 텍스트의 기본 색상을 최소 명도 대비 기준보다 낮게 제공하므로 읽기 어렵다. 이와 같이 플레이스홀더는 다양한 사용자 그룹에서 여러 사용성 문제를 야기하므로 단순히 사용자의 행동을 유도하기 위한 수단으로 사용해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="플레이스홀더가 레이블이나 도움말의 대체 수단으로 사용되어서는 안 된다."
 >
@@ -379,11 +378,11 @@ import { TextInputSize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="플레이스홀더가 레이블이나 도움말의 대체 수단으로 사용되어서는 안 된다."
 >
@@ -440,7 +439,7 @@ import { TextInputSize } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **복사, 붙여쓰기를 제한하지 않는다.**
 사용자가 다른 웹사이트나 플랫폼에서 텍스트를 복사하여 붙여 넣어야 하는 경우가 있을 수 있으므로 복사, 붙여쓰기 기능을 제한하지 않는 것이 바람직하다

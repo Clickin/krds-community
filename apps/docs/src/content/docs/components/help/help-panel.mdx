@@ -11,7 +11,6 @@ import { HelpPanel as SvelteHelpPanel } from "@krds-community/svelte";
 import { HelpPanel as SolidHelpPanel } from "@krds-community/solid";
 import { AngularHelpPanel } from "@docs/angular-previews.ts";
 import { HelpPanel as AstroHelpPanel } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -36,8 +35,7 @@ import { Button as AstroButton } from "@krds-community/astro";
     tutorialTitle="튜토리얼"
     tasks={[]}
     stopLabel="중지"
-    collapseLabel="접기"
-    label="도움 패널"
+        label="도움 패널"
   />
 
 ```tsx fw=react
@@ -133,7 +131,7 @@ import { HelpPanel } from '@krds-community/astro';
 도움말이 필요한 사용자가 패널의 존재 유무를 직관적으로 인지할 수 있도록 화면이 로딩되었을 때 도움 패널을 펼친 상태로 제공한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="화면이 로딩되었을 때 도움 패널은 열린 상태로 제공한다.">
+<FrameworkPreview kind="good" title="화면이 로딩되었을 때 도움 패널은 열린 상태로 제공한다.">
   <div slot="react">
     <ReactHelpPanel
       defaultOpen
@@ -182,6 +180,7 @@ import { HelpPanel } from '@krds-community/astro';
   <div slot="astro">
     <AstroHelpPanel
       open
+        helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
       title="도움말"
       tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
       selectedLabel="선택됨"
@@ -191,8 +190,7 @@ import { HelpPanel } from '@krds-community/astro';
       tutorialTitle="튜토리얼"
       tasks={[]}
       stopLabel="중지"
-      collapseLabel="접기"
-      label="도움 패널"
+            label="도움 패널"
     />
   </div>
   <div slot="angular">
@@ -201,13 +199,16 @@ import { HelpPanel } from '@krds-community/astro';
       title="도움말"
       label="도움 패널"
       client:only="@analogjs/astro-angular"
-    />
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다." />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="화면이 로딩되었을 때 도움 패널은 열린 상태로 제공한다.">
+<FrameworkPreview kind="bad" title="화면이 로딩되었을 때 도움 패널은 열린 상태로 제공한다.">
   <div slot="react">
     <ReactHelpPanel title="도움말" label="도움 패널" client:only="react" />
   </div>
@@ -231,20 +232,19 @@ import { HelpPanel } from '@krds-community/astro';
       tutorialTitle="튜토리얼"
       tasks={[]}
       stopLabel="중지"
-      collapseLabel="접기"
-      label="도움 패널"
+            label="도움 패널"
     />
   </div>
   <div slot="angular">
     <AngularHelpPanel title="도움말" label="도움 패널" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **도움 패널의 첫 화면은 기본 상태로 제공한다.**
 도움 패널과 따라하기 패널이 함께 제공되어야 하는 경우, 도움 패널이 선택되어 있어야 한다. 콘텐츠는 도움 패널의 용도와 활용 방법을 간략하게 안내하여, 사용자의 이용을 유도하고 사용자가 의도하지 않은 상황에서 상세 도움 정보가 제공되지 않도록 해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="도움 패널의 첫 화면은 기본 상태로 제공한다.">
+<FrameworkPreview kind="good" title="도움 패널의 첫 화면은 기본 상태로 제공한다.">
   <div slot="react">
     <ReactHelpPanel
       defaultOpen
@@ -293,6 +293,7 @@ import { HelpPanel } from '@krds-community/astro';
   <div slot="astro">
     <AstroHelpPanel
       open
+        helpDescription="도움 패널의 용도와 활용 방법을 간략하게 안내합니다."
       title="도움말"
       tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
       selectedLabel="선택됨"
@@ -302,8 +303,7 @@ import { HelpPanel } from '@krds-community/astro';
       tutorialTitle="튜토리얼"
       tasks={[]}
       stopLabel="중지"
-      collapseLabel="접기"
-      label="도움 패널"
+            label="도움 패널"
     />
   </div>
   <div slot="angular">
@@ -312,9 +312,12 @@ import { HelpPanel } from '@krds-community/astro';
       title="도움말"
       label="도움 패널"
       client:only="@analogjs/astro-angular"
-    />
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움 패널의 용도와 활용 방법을 간략하게 안내합니다." />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **아이콘 버튼은 도움 정보를 제공하고자 하는 요소 주변에 배치한다.**
 정보를 제공하고자 하는 컴포넌트나 레이블 옆에 배치하여 관련 요소와의 연관성이 명확하게 인지될 수 있도록 한다.
@@ -338,7 +341,7 @@ import { HelpPanel } from '@krds-community/astro';
 화면 너비가 충분하지 않을 경우, 사용자가 본문 콘텐츠에 우선적으로 접근하고 본문의 과업에 집중할 수 있도록 패널 열기 버튼을 제공한다. 패널 열기 버튼이나 아이콘 버튼을 눌렀을 때 패널은 모달 형식으로 제공하면 된다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않을 때 도움 패널은 패널 열기 버튼으로 축약하여 제공한다."
 >
@@ -386,7 +389,7 @@ import { HelpPanel } from '@krds-community/astro';
       </AngularButton>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

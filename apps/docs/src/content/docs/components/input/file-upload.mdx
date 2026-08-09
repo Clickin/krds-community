@@ -11,7 +11,6 @@ import { FileUpload as SvelteFileUpload } from "@krds-community/svelte";
 import { FileUpload as SolidFileUpload } from "@krds-community/solid";
 import { AngularFileUpload } from "@docs/angular-previews.ts";
 import { FileUpload as AstroFileUpload } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -132,7 +131,7 @@ import { FileUpload } from '@krds-community/astro';
 업로드 가능한 문서 유형, 파일 크기, 파일 개수에 제한이 있는 경우 도움말 텍스트를 사용하여 제약 사항에 대한 정보를 강조하여 표시한다. 이를 통해 사용자가 잘못된 형식의 파일을 업로드하거나 너무 큰 파일을 업로드하여 오류가 발생하는 것을 방지할 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="파일 유형, 파일 크기, 파일 개수 제한에 대해 안내한다.">
+<FrameworkPreview kind="good" title="파일 유형, 파일 크기, 파일 개수 제한에 대해 안내한다.">
   <div slot="react">
     <ReactFileUpload
       title="증빙 서류"
@@ -198,7 +197,7 @@ import { FileUpload } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **가능한 한 파일 형식을 제한하지 않는다.**
 제출을 요구하는 파일의 일반적인 형식을 확인하여 사용자가 다양한 파일 형식을 업로드할 수 있도록 한다. 모든 사람이 동일한 소프트웨어에 접근할 수 있는 것이 아니므로 불필요한 소프트웨어 설치 요구 등을 피하기 위해 업로드 파일 형식을 유연하게 구성해야 한다. 이때, 파일의
@@ -214,7 +213,7 @@ import { FileUpload } from '@krds-community/astro';
 페이지에 입력폼 제출 버튼과 같은 최상위 수준의 버튼이 존재하는 경우에는 하위 위계 수준의 버튼 강조 표현을 사용하여 핵심 작업과 파일 업로드 작업이 충돌하지 않도록 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="파일 선택 버튼을 적절한 강조 수준으로 표현한다.">
+<FrameworkPreview kind="good" title="파일 선택 버튼을 적절한 강조 수준으로 표현한다.">
   <div slot="react" style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
     <ReactFileUpload
       title="첨부 파일"
@@ -290,11 +289,11 @@ import { FileUpload } from '@krds-community/astro';
       제출
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="파일 선택 버튼을 적절한 강조 수준으로 표현한다.">
+<FrameworkPreview kind="bad" title="파일 선택 버튼을 적절한 강조 수준으로 표현한다.">
   <div slot="react" style="display:flex;flex-direction:column;gap:16px;align-items:flex-start">
     <ReactFileUpload
       title="첨부 파일"
@@ -370,7 +369,7 @@ import { FileUpload } from '@krds-community/astro';
       제출
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **파일을 자동으로 제출하지 않는다.**
 사용자가 입력폼을 제출할 때까지 파일을 서버에 업로드하거나 저장해서는 안 된다.
@@ -388,7 +387,7 @@ import { FileUpload } from '@krds-community/astro';
   파일 이름이 길어 텍스트가 파일 항목 컨테이너를 벗어나는 경우 말줄임표를 사용한다.
   **모범 사례**
 
-<PracticeExample kind="good" title="업로드된 파일 이름 텍스트를 두 줄로 제공하지 않는다.">
+<FrameworkPreview kind="good" title="업로드된 파일 이름 텍스트를 두 줄로 제공하지 않는다.">
   <div slot="react">
     <ReactFileUpload
       title="첨부 파일"
@@ -502,11 +501,11 @@ import { FileUpload } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="업로드된 파일 이름 텍스트를 두 줄로 제공하지 않는다.">
+<FrameworkPreview kind="bad" title="업로드된 파일 이름 텍스트를 두 줄로 제공하지 않는다.">
   <div slot="react" style="max-width:320px">
     <ul style="list-style:none;margin:0;padding:0">
       <li style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--krds-mode-high-contrast-color-border-secondary)">
@@ -555,7 +554,7 @@ import { FileUpload } from '@krds-community/astro';
       </li>
     </ul>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 
@@ -583,7 +582,7 @@ import { FileUpload } from '@krds-community/astro';
 - WCAG 2.1 Pointer Gestures (A)
   **모범 사례**
 
-<PracticeExample kind="good" title="드래그 앤 드롭 유형은 반드시 파일 업로더와 함께 사용한다.">
+<FrameworkPreview kind="good" title="드래그 앤 드롭 유형은 반드시 파일 업로더와 함께 사용한다.">
   <div slot="react">
     <ReactFileUpload
       title="첨부 파일"
@@ -649,11 +648,11 @@ import { FileUpload } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례**
 
-<PracticeExample kind="good" title="드래그 앤 드롭 유형은 반드시 파일 업로더와 함께 사용한다.">
+<FrameworkPreview kind="good" title="드래그 앤 드롭 유형은 반드시 파일 업로더와 함께 사용한다.">
   <div slot="react">
     <ReactFileUpload
       title="첨부 파일"
@@ -767,7 +766,7 @@ import { FileUpload } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **스크린 리더로 접근할 수 있도록 한다.**
 파일 업로드 컴포넌트의 역할이 스크린 리더로 전달될 수 있도록 시각적으로 숨겨진 \<input type="file"\>에 적절한 숨김 스타일을 사용해야 한다.

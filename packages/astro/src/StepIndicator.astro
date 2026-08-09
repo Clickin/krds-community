@@ -35,7 +35,7 @@ const {
     >
       <span>
         {index === current && message && <em class="sr-only">{message}</em>}
-        <i class="step">{index + 1}{label}</i>
+        <i class="step">{index + 1}{label ?? "단계"}</i>
         <span class="step-tit">{item.label}</span>
         {item.description && <span class="sr-only">{item.description}</span>}
       </span>

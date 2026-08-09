@@ -40,7 +40,7 @@ const {
   selectLabel,
   currentCount,
   maxCount,
-  countSuffix = '개',
+  countSuffix,
   files = [],
   deleteAllLabel,
   label: _label,
@@ -52,7 +52,6 @@ const {
 } = Astro.props;
 const inputId = providedInputId ?? `krds-file-upload-${crypto.randomUUID()}`;
 const displayedCount = currentCount ?? files.length;
-const hasList = files.length > 0 || currentCount !== undefined || maxCount !== undefined || deleteAllLabel !== undefined;
 ---
 
 <div
@@ -85,10 +84,11 @@ const hasList = files.length > 0 || currentCount !== undefined || maxCount !== u
     </div>
   </div>
 
-  {hasList && (
-    <div class="file-list">
-      <div class="total"><span class="current">{displayedCount}{countSuffix}</span>{maxCount !== undefined && <Fragment>{' / '}{maxCount}{countSuffix}</Fragment>}</div>
-      <ul class="upload-list">
+  <div class="file-list">
+    <div class="total">
+      <span class="current">{displayedCount}{countSuffix}</span>{' / '}{maxCount}{countSuffix}
+    </div>
+    <ul class="upload-list">
         {files.map((file) => (
           <li class={file.status === 'error' ? 'is-error' : undefined}>
             <div class={cx('file-info', file.status === 'downloadable' && 'm-column')}>
@@ -104,7 +104,7 @@ const hasList = files.length > 0 || currentCount !== undefined || maxCount !== u
                     {file.statusLabel !== undefined && <em class="sr-only">{file.statusLabel}</em>}
                   </span>
                 )}
-                {(file.status === 'deletable' || file.status === 'error') && file.deleteLabel !== undefined && (
+                {file.deleteLabel !== undefined && (
                   <button type="button" class="krds-btn medium text">
                     {file.deleteLabel} <i class="svg-icon ico-delete-fill"></i>
                   </button>
@@ -143,7 +143,6 @@ const hasList = files.length > 0 || currentCount !== undefined || maxCount !== u
         </div>
       )}
     </div>
-  )}
 </div>
 <script
   is:inline

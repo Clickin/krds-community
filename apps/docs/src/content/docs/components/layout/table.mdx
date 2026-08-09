@@ -5,7 +5,6 @@ category: layout
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Table as ReactTable } from "@krds-community/react";
 import { Table as VueTable } from "@krds-community/vue";
 import { Table as SvelteTable } from "@krds-community/svelte";
@@ -14,11 +13,11 @@ import { AngularTable } from "@docs/angular-previews.ts";
 import { Table as AstroTable } from "@krds-community/astro";
 
 <FrameworkPreview title="표">
-  <ReactTable slot="react" caption="표" client:only="react" />
-  <VueTable slot="vue" caption="표" client:only="vue" />
-  <SvelteTable slot="svelte" caption="표" client:only="svelte" />
-  <SolidTable slot="solid" caption="표" client:only="solid-js" />
-  <AngularTable slot="angular" caption="표" client:only="@analogjs/astro-angular" />
+  <ReactTable slot="react" caption="표" client:only="react" columns={[{ key: 'name', label: '이름' }]} rows={[{ name: '홍길동' }]} />
+  <VueTable slot="vue" caption="표" client:only="vue" columns={[{ key: 'name', label: '이름' }]} rows={[{ name: '홍길동' }]} />
+  <SvelteTable slot="svelte" caption="표" client:only="svelte" columns={[{ key: 'name', label: '이름' }]} rows={[{ name: '홍길동' }]} />
+  <SolidTable slot="solid" caption="표" client:only="solid-js" columns={[{ key: 'name', label: '이름' }]} rows={[{ name: '홍길동' }]} />
+  <AngularTable slot="angular" caption="표" client:only="@analogjs/astro-angular" columns={[{ key: 'name', label: '이름' }]} rows={[{ name: '홍길동' }]} />
   <AstroTable
     slot="astro"
     caption="표"
@@ -118,7 +117,7 @@ import { Table } from '@krds-community/astro';
 아코디언, 모달과 같이 공간의 제한으로 인해 데이터가 잘리거나 데이터 확인을 위해 가로 스크롤을 사용해야 하는 영역에는 표를 사용하지 않아야 한다. 필요한 경우, 각각의 열이 아래로 떨어지도록 배치한다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="표는 데이터 잘림 없이 표시될 수 있는 영역에 사용한다.">
+<FrameworkPreview kind="bad" title="표는 데이터 잘림 없이 표시될 수 있는 영역에 사용한다.">
   <div slot="react">
     <div style="width: 320px; overflow-x: auto;">
       <ReactTable
@@ -304,7 +303,7 @@ import { Table } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **열의 최소 너비는 콘텐츠의 길이를 고려하여 설정한다.**
 데이터 셀을 구성하는 텍스트는 가능한 3줄을 넘어가지 않도록 하고 행과 행 사이의 간격을 적절하게 제공하여 사용자가 한 번에 많은 데이터를 비교할 수 있도록 해야 한다.
@@ -327,7 +326,7 @@ import { Table } from '@krds-community/astro';
 한 줄의 행 헤더 또는 열 헤더로 구성된 단일 차원의 단순한 표의 경우, 헤더 텍스트와 데이터 텍스트를 수직으로 배치를 변경할 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않은 경우 데이터의 배열 방식의 변경을 고려한다."
 >
@@ -426,11 +425,11 @@ import { Table } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="화면 너비가 충분하지 않은 경우 데이터의 배열 방식의 변경을 고려한다."
 >
@@ -619,14 +618,14 @@ import { Table } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **화면 너비가 충분하지 않은 경우 표 영역에 가로 스크롤을 사용하는 방안을 고려한다.**
 행과 열 간의 관계 표현이 유지되어야 하거나 구성이 복잡하다면 셀의 배치를 변경하지 않고 표 섹션에 가로 스크롤을 생성할 수 있다. 만약 표에 열 헤더가 존재한다면 가로 스크롤의 위치가 변경되더라도 열 헤더를 화면의 왼쪽에 고정함으로써 데이터를 탐색하는 과정의 편의성을 높일 수
 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않은 경우 표 영역에 가로 스크롤을 사용하는 방안을 고려한다."
 >
@@ -881,7 +880,7 @@ import { Table } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

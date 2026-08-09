@@ -5,7 +5,6 @@ category: action
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Link as ReactLink } from "@krds-community/react";
 import { Link as VueLink } from "@krds-community/vue";
 import { Link as SvelteLink } from "@krds-community/svelte";
@@ -128,7 +127,7 @@ import { Link } from '@krds-community/astro';
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="링크와 관련된 사용자 과업, 플로(Flow)의 중요도에 따라 위계를 명확하게 구분한다."
 >
@@ -182,23 +181,17 @@ import { Link } from '@krds-community/astro';
     <AstroLink href="#">자주 묻는 질문</AstroLink>
   </div>
   <div slot="angular">
-    <AngularLink href="#" client:only="@analogjs/astro-angular">
-      신청하기
-    </AngularLink>
-    <AngularLink href="#" client:only="@analogjs/astro-angular">
-      이용 안내
-    </AngularLink>
-    <AngularLink href="#" client:only="@analogjs/astro-angular">
-      자주 묻는 질문
-    </AngularLink>
+    <AngularLink href="#" client:only="@analogjs/astro-angular" label="신청하기" />
+    <AngularLink href="#" client:only="@analogjs/astro-angular" label="이용 안내" />
+    <AngularLink href="#" client:only="@analogjs/astro-angular" label="자주 묻는 질문" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 **링크를 색상만으로 구분하지 않는다.** 링크에 인디케이터를 제공하면 요소를 직관적으로 인지할 수
 있으며, 색상 지각에 어려움이 있는 사용자도 링크를 명확하게 변별할 수 있다.
 
 **모범 사례**
 
-<PracticeExample kind="good" title="링크를 색상만으로 구분하지 않는다.">
+<FrameworkPreview kind="good" title="링크를 색상만으로 구분하지 않는다.">
   <div slot="react">
     <ReactLink href="#" client:only="react">
       자세히 보기
@@ -223,15 +216,13 @@ import { Link } from '@krds-community/astro';
     <AstroLink href="#">자세히 보기</AstroLink>
   </div>
   <div slot="angular">
-    <AngularLink href="#" client:only="@analogjs/astro-angular">
-      자세히 보기
-    </AngularLink>
+    <AngularLink href="#" client:only="@analogjs/astro-angular" label="자세히 보기" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="링크를 색상만으로 구분하지 않는다.">
+<FrameworkPreview kind="bad" title="링크를 색상만으로 구분하지 않는다.">
   <div slot="react">
     <a href="#" class="practice-link-color-only">
       자세히 보기
@@ -262,7 +253,7 @@ import { Link } from '@krds-community/astro';
       자세히 보기
     </a>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 **링크 레이블은 연결된 목적지 정보를 예측할 수 있는 내용으로 제공한다.** 링크는 사용자를 현재의
 맥락에서 데리고 나와 새로운 위치로 이동시킨다. 그러므로 링크 레이블은 목적지에서 발견할 수 있는
 콘텐츠 내용을 정확하게 반영해야 한다. 따라서 주변 맥락을 활용하여 링크 목적지 정보를 명확하게 파악할
@@ -277,7 +268,7 @@ import { Link } from '@krds-community/astro';
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="외부 서비스로 이동하는 링크를 분명하게 구분하고 일관된 방식으로 표현한다."
 >
@@ -307,15 +298,13 @@ import { Link } from '@krds-community/astro';
     </AstroLink>
   </div>
   <div slot="angular">
-    <AngularLink href="https://www.law.go.kr" external client:only="@analogjs/astro-angular">
-      국가법령정보센터
-    </AngularLink>
+    <AngularLink href="https://www.law.go.kr" external client:only="@analogjs/astro-angular" label="국가법령정보센터" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="외부 서비스로 이동하는 링크를 분명하게 구분하고 일관된 방식으로 표현한다."
 >
@@ -349,7 +338,7 @@ import { Link } from '@krds-community/astro';
       국가법령정보센터
     </a>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 **링크는 레이블의 설명과 가장 관련성이 높은 목적지로 바로 이동할 수 있도록 구성한다.** 사용자가
 링크를 실행하여 이동한 후, 원하는 정보를 찾기 위해 부가적인 탐색을 시도하지 않도록 적절한 목적지로
 연결해야 한다. 적절한 경우 연결된 서비스의 특정 섹션이 목적지로 사용될 수 있다.

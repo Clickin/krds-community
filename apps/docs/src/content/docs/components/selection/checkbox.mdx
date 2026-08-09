@@ -5,7 +5,6 @@ category: selection
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Checkbox as ReactCheckbox } from "@krds-community/react";
 import { Checkbox as VueCheckbox } from "@krds-community/vue";
 import { Checkbox as SvelteCheckbox } from "@krds-community/svelte";
@@ -119,7 +118,7 @@ import { Checkbox } from '@krds-community/astro';
 가독성과 옵션 간 명확한 구분을 위하여 체크박스는 수직으로 배치하는 것이 좋다. 이때, 레이블은 양식의 오른쪽에 배치해 일관된 위치에서 텍스트를 읽을 수 있도록 해야 한다. 만약 체크박스를 수평으로 배치해야 한다면 레이블의 텍스트 길이가 지나치게 길지 않아야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="체크박스는 수직으로, 체크박스 레이블은 양식의 오른쪽에 배치한다."
 >
@@ -165,11 +164,11 @@ import { Checkbox } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="체크박스는 수직으로, 체크박스 레이블은 양식의 오른쪽에 배치한다."
 >
@@ -217,7 +216,7 @@ import { Checkbox } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **체크박스의 레이블은 분명하고 정확하게 제공한다**
 사용자가 어떤 옵션을 선택하는 것인지 이해할 수 있도록 체크박스의 레이블은 분명하고 정확하게 제공해야 한다.
@@ -225,7 +224,7 @@ import { Checkbox } from '@krds-community/astro';
 하위 옵션의 일부만 선택되었음에도 불구하고 상위 옵션이 선택 상태로 유지되면 사용자에게 혼동을 줄 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="전체 선택 옵션이 제공되는 경우 중간 상태를 명확하게 표현한다.">
+<FrameworkPreview kind="good" title="전체 선택 옵션이 제공되는 경우 중간 상태를 명확하게 표현한다.">
   <div slot="react">
     <ReactCheckbox
       name="select-all"
@@ -279,10 +278,8 @@ import { Checkbox } from '@krds-community/astro';
     <AstroCheckbox name="option-1" label="옵션 1" checked />
     <AstroCheckbox name="option-2" label="옵션 2" checked />
     <AstroCheckbox name="option-3" label="옵션 3" />
-    <script>
-      const selectAll = document.querySelector('input[name="select-all-astro"]'); if (selectAll)
-      selectAll.indeterminate = true;
-    </script>
+    <script>{`const selectAll = document.querySelector('input[name="select-all-astro"]'); if (selectAll)
+      selectAll.indeterminate = true;`}</script>
   </div>
   <div slot="angular">
     <div>
@@ -302,16 +299,14 @@ import { Checkbox } from '@krds-community/astro';
       />
       <AngularCheckbox name="option-3" label="옵션 3" client:only="@analogjs/astro-angular" />
     </div>
-    <script>
-      const selectAll = document.querySelector("#select-all-angular"); if (selectAll)
-      selectAll.indeterminate = true;
-    </script>
+    <script>{`const selectAll = document.querySelector("#select-all-angular"); if (selectAll)
+      selectAll.indeterminate = true;`}</script>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="전체 선택 옵션이 제공되는 경우 중간 상태를 명확하게 표현한다.">
+<FrameworkPreview kind="bad" title="전체 선택 옵션이 제공되는 경우 중간 상태를 명확하게 표현한다.">
   <div slot="react">
     <ReactCheckbox name="select-all" label="전체 선택" defaultChecked client:only="react" />
     <ReactCheckbox name="option-1" label="옵션 1" defaultChecked client:only="react" />
@@ -353,7 +348,7 @@ import { Checkbox } from '@krds-community/astro';
     <AngularCheckbox name="option-2" label="옵션 2" checked client:only="@analogjs/astro-angular" />
     <AngularCheckbox name="option-3" label="옵션 3" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 
@@ -368,7 +363,7 @@ import { Checkbox } from '@krds-community/astro';
 - WCAG 2.1 Use of Color (A)
   **모범 사례**
 
-<PracticeExample kind="good" title="체크박스의 선택 상태를 색상으로만 구분하지 않는다.">
+<FrameworkPreview kind="good" title="체크박스의 선택 상태를 색상으로만 구분하지 않는다.">
   <div slot="react">
     <ReactCheckbox name="color-option-a" label="옵션 A" defaultChecked client:only="react" />
     <ReactCheckbox name="color-option-b" label="옵션 B" client:only="react" />
@@ -398,11 +393,11 @@ import { Checkbox } from '@krds-community/astro';
     />
     <AngularCheckbox name="color-option-b" label="옵션 B" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="체크박스의 선택 상태를 색상으로만 구분하지 않는다.">
+<FrameworkPreview kind="bad" title="체크박스의 선택 상태를 색상으로만 구분하지 않는다.">
   <div slot="react">
     <ReactCheckbox name="color-option-a" label="옵션 A" defaultChecked client:only="react" />
     <ReactCheckbox name="color-option-b" label="옵션 B" client:only="react" />
@@ -432,7 +427,7 @@ import { Checkbox } from '@krds-community/astro';
     />
     <AngularCheckbox name="color-option-b" label="옵션 B" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **체크박스를 키보드로 탐색하고 실행할 수 있도록 한다.**
 사용자 에이전트에서 제공되는 기본 체크박스가 아니라 커스텀 디자인을 사용하는 경우에 기본 체크박스에 display:none, visibility:hidden, opacity:0과 같은 스타일을 하면 스크린 리더에서 체크박스의 역할을 인지할 수 없으며 키보드로 옵션을 선택할 수

@@ -35,9 +35,14 @@ export function Tooltip(rawProps: TooltipProps) {
       >
         {content()} {props.icon ?? <i class="svg-icon ico-angle right" />}
       </button>
-      <span id={`${props.id}-tooltip`} class="krds-tooltip-popover" role="tooltip" hidden>
-        {[props.label, props.message].filter(Boolean).join(" ")}
-      </span>
+      <div
+        id={`${props.id}-tooltip`}
+        class="krds-tooltip-popover"
+        role="tooltip"
+        aria-hidden="true"
+      >
+        <span class="sr-only">{props.label}</span> {props.message}
+      </div>
     </>
   );
 }
@@ -68,9 +73,14 @@ export function TooltipBox(rawProps: TooltipProps) {
       >
         {content()} {props.icon ?? <i class="svg-icon ico-angle right" />}
       </button>
-      <span id={`${props.id}-tooltip`} class="krds-tooltip-popover" role="tooltip" hidden>
-        {[props.label, props.message].filter(Boolean).join(" ")}
-      </span>
+      <div
+        id={`${props.id}-tooltip`}
+        class="krds-tooltip-popover"
+        role="tooltip"
+        aria-hidden="true"
+      >
+        <span class="sr-only">{props.label}</span> {props.message}
+      </div>
     </>
   );
 }
@@ -101,9 +111,14 @@ export function TooltipVertical(rawProps: TooltipProps) {
       >
         {content()} {props.icon ?? <i class="svg-icon ico-angle right" />}
       </button>
-      <span id={`${props.id}-tooltip`} class="krds-tooltip-popover" role="tooltip" hidden>
-        {[props.label, props.message].filter(Boolean).join(" ")}
-      </span>
+      <div
+        id={`${props.id}-tooltip`}
+        class="krds-tooltip-popover"
+        role="tooltip"
+        aria-hidden="true"
+      >
+        <span class="sr-only">{props.label}</span> {props.message}
+      </div>
     </>
   );
 }

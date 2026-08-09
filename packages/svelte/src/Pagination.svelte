@@ -24,7 +24,7 @@ label?: string;
   let {
     id = generatedId,
     current = $bindable<number | undefined>(),
-    items = [] as unknown[],
+    items = [1, 2, 3, 4, 5] as unknown[],
     previousLabel = '이전',
     nextLabel = '다음',
     navigationLabel = '페이지 이동',

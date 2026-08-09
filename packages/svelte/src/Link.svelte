@@ -24,7 +24,7 @@ external?: boolean;
     title = '제목',
     label = '레이블',
     external,
-    size = '',
+    size = 'small',
     className = '',
     class: classProp = '',
     onclick,
@@ -45,5 +45,5 @@ external?: boolean;
   onclick={(event) => invoke(onclick, event)}
 >
   <span class="underline">{#if children}{@render children()}{:else}{label}{/if}</span>
-  {#if target === '_blank'}<i class="ico-go svg-icon"></i>{/if}
+  <i class:ico-go={target === '_blank' || external} class:ico-angle={target !== '_blank' && !external} class:right={target !== '_blank' && !external} class="svg-icon"></i>
 </a>

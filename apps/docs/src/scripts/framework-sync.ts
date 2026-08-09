@@ -3,9 +3,9 @@
  *
  * One module, one localStorage key (`starlight-synced-tabs__framework`, the
  * official Starlight convention) so every `[data-framework-tabs]` tablist on
- * the page — FrameworkPreview, FrameworkCodeTabs, PracticeExample — follows
- * the same selection. Stored values are framework ids ('react', 'vue', …),
- * not labels: ids are stable and unambiguous.
+ * the page — FrameworkPreview, FrameworkCodeTabs — follows the same
+ * selection. Stored values are framework ids ('react', 'vue', …), not
+ * labels: ids are stable and unambiguous.
  *
  * Listeners are attached once at the document level (delegation), so tabsets
  * added later by Astro view transitions work without re-wiring.
@@ -44,11 +44,11 @@ export function selectFramework(fw: string): boolean {
       tab.tabIndex = selected ? 0 : -1;
     });
     const container =
-      tablist.closest<HTMLElement>('[data-framework-preview], [data-code-tabs], [data-practice-example]') ??
+      tablist.closest<HTMLElement>('[data-framework-preview], [data-code-tabs]') ??
       tablist.parentElement;
     container
       ?.querySelectorAll<HTMLElement>(
-        '[data-source-panel], [data-code-panel], [data-preview-panel], [data-practice-panel]',
+        '[data-source-panel], [data-code-panel], [data-preview-panel]',
       )
       .forEach((panel) => {
         panel.hidden = panel.dataset.framework !== fw;

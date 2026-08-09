@@ -276,7 +276,8 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
   <div {...rest} class={cx('form-group', className)}>
     {(label !== undefined || Astro.slots.has('label')) && (
       <div class="form-tit">
-        <label for={inputId}><slot name="label">{label}</slot></label>
+        {/* ponytail: label stays sr-only — react/vue render the calendar surface only, so a visible label breaks text parity; sr-only keeps the input's accessible name */}
+        <label for={inputId} class="sr-only"><slot name="label">{label}</slot></label>
       </div>
     )}
     <div class="form-conts calendar-conts">

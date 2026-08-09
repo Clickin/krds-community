@@ -25,7 +25,7 @@ export function ButtonHierarchy(rawProps: ButtonHierarchyProps) {
     "disabled",
   ]);
   const className = () => props.class ?? props.className ?? "";
-  const content = () => props.children ?? props.label;
+  const content = () => props.children ?? props.label ?? "레이블";
   return (
     <button
       {...(native as Record<string, any>)}

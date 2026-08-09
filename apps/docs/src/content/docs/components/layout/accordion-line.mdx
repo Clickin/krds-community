@@ -5,7 +5,6 @@ category: layout
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { AccordionLine as ReactAccordionLine } from "@krds-community/react";
 import { AccordionLine as VueAccordionLine } from "@krds-community/vue";
 import { AccordionLine as SvelteAccordionLine } from "@krds-community/svelte";
@@ -22,7 +21,7 @@ import { AccordionLine as AstroAccordionLine } from "@krds-community/astro";
   <AstroAccordionLine
     slot="astro"
     type="line"
-    items={[{ id: 'item-1', title: '첫 번째 항목', content: '첫 번째 항목의 내용입니다.' }]}
+    items={[]}
   />
 
 ```tsx fw=react
@@ -126,7 +125,7 @@ import { AccordionLine } from '@krds-community/astro';
 아코디언이 접혀 있는 경우 사용자가 확장 가능한 영역이 있음을 알 수 있도록 'V' 또는 '+' 아이콘이, 펼쳐진 경우에는 '^', '-' 아이콘이 제공되어야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="아코디언의 확장 상태를 나타내는 아이콘은 패널이 펼쳐지거나 접히는 방향을 정확하게 반영하도록 제공한다."
 >
@@ -234,16 +233,17 @@ import { AccordionLine } from '@krds-community/astro';
         },
       ]}
       client:only="@analogjs/astro-angular"
+      open={["item-1"]}
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **헤더 전체를 클릭 가능하도록 만든다.**
 상호작용이 가능한 타깃 영역이 클수록 사용자가 더 쉽게 조작할 수 있다. 사용자가 패널을 펼치거나 접기 위해 헤더 전체를 클릭할 수 있도록 구현해야 한다. 만약, 패널 내부 콘텐츠에 링크, 버튼과 같은 인터페이스가 포함되어 있다면 헤더와 패널 사이에 충분한 공간을 확보하여
 사용자가 실수로 헤더를 클릭하지 않도록 해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="헤더 전체를 클릭 가능하도록 만든다.">
+<FrameworkPreview kind="good" title="헤더 전체를 클릭 가능하도록 만든다.">
   <div slot="react">
     <ReactAccordionLine
       items={[
@@ -375,11 +375,11 @@ import { AccordionLine } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="헤더 전체를 클릭 가능하도록 만든다.">
+<FrameworkPreview kind="bad" title="헤더 전체를 클릭 가능하도록 만든다.">
   <div slot="react">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0.875rem 1rem;border:1px solid var(--krds-mode-light-color-border-secondary-light);border-radius:0.5rem;">
       <span>이용 약관 안내</span>
@@ -416,13 +416,13 @@ import { AccordionLine } from '@krds-community/astro';
       <button type="button">펼치기</button>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **헤더와 패널은 서로 관련 있는 것으로 인지될 수 있게 표현한다.**
 헤더와 패널이 하나의 콘텐츠 섹션으로 인지될 수 있게 표현되어야 하며, 필요한 경우 여백, 색상, 그림자, 선을 사용할 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="헤더와 패널은 서로 관련 있는 것으로 인지될 수 있게 표현한다.">
+<FrameworkPreview kind="good" title="헤더와 패널은 서로 관련 있는 것으로 인지될 수 있게 표현한다.">
   <div slot="react">
     <ReactAccordionLine
       items={[
@@ -527,13 +527,14 @@ import { AccordionLine } from '@krds-community/astro';
         },
       ]}
       client:only="@analogjs/astro-angular"
+      open={["item-1"]}
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="헤더와 패널은 서로 관련 있는 것으로 인지될 수 있게 표현한다.">
+<FrameworkPreview kind="bad" title="헤더와 패널은 서로 관련 있는 것으로 인지될 수 있게 표현한다.">
   <div slot="react">
     <div>
       <h5 style="margin:0;">이용 약관 안내</h5>
@@ -582,13 +583,13 @@ import { AccordionLine } from '@krds-community/astro';
       </div>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **패널 영역에 스크롤이 발생하지 않도록 한다.**
 패널 내부 콘텐츠가 길어져 화면의 뷰포트를 넘어가는 경우, 페이지 스크롤을 통해 콘텐츠를 탐색할 수 있어야 한다. 패널 영역에 별도의 세로, 가로 스크롤이 생성되어서는 안 된다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="패널 영역에 스크롤이 발생하지 않도록 한다.">
+<FrameworkPreview kind="bad" title="패널 영역에 스크롤이 발생하지 않도록 한다.">
   <div slot="react">
     <div style="max-height:10rem;overflow-y:auto;border:1px solid var(--krds-mode-light-color-border-secondary-light);border-radius:0.5rem;padding:0.5rem;">
       <ReactAccordionLine
@@ -786,7 +787,7 @@ import { AccordionLine } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

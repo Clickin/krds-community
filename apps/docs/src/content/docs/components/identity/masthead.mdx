@@ -4,7 +4,6 @@ description: KRDS 마스트헤드 컴포넌트의 React, Vue, Svelte, SolidJS, A
 category: identity
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Masthead as ReactMasthead } from "@krds-community/react";
 import { Masthead as VueMasthead } from "@krds-community/vue";
@@ -93,7 +92,7 @@ import { Masthead } from '@krds-community/astro';
 서비스의 디자인 주제에 적합한 컨테이너 배경색을 사용한다. 화면 상단 영역에서 사용자가 가장 먼저 집중해야 하는 정보는 헤더 내부의 내비게이션과 기능 버튼이다.
 **모범 사례**
 
-<PracticeExample kind="good" title="배너가 지나치게 주의를 끌지 않도록 표현한다.">
+<FrameworkPreview kind="good" title="배너가 지나치게 주의를 끌지 않도록 표현한다.">
   <div slot="react">
     <ReactMasthead message="이 누리집은 대한민국 공식 전자정부 누리집입니다." client:only="react" />
   </div>
@@ -121,11 +120,11 @@ import { Masthead } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="배너가 지나치게 주의를 끌지 않도록 표현한다.">
+<FrameworkPreview kind="bad" title="배너가 지나치게 주의를 끌지 않도록 표현한다.">
   <div slot="react">
     <div style="background: var(--krds-primitive-color-light-point-60); padding: 16px; border-radius: 8px">
       <ReactMasthead
@@ -168,13 +167,13 @@ import { Masthead } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **배너 텍스트와 스타일을 변형하지 않는다.**
 모든 디지털 정부서비스에서 공식 배너가 일관성 있게 제공되었을 때 신뢰할 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="배너 텍스트와 스타일을 변형하지 않는다.">
+<FrameworkPreview kind="good" title="배너 텍스트와 스타일을 변형하지 않는다.">
   <div slot="react">
     <ReactMasthead message="이 누리집은 대한민국 공식 전자정부 누리집입니다." client:only="react" />
   </div>
@@ -202,11 +201,11 @@ import { Masthead } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="배너 텍스트와 스타일을 변형하지 않는다.">
+<FrameworkPreview kind="bad" title="배너 텍스트와 스타일을 변형하지 않는다.">
   <div slot="react">
     <ReactMasthead message="정부 공식 사이트입니다" client:only="react" />
   </div>
@@ -225,7 +224,7 @@ import { Masthead } from '@krds-community/astro';
   <div slot="angular">
     <AngularMasthead message="정부 공식 사이트입니다" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **공식 디지털 정부서비스가 아닌 사이트에서는 배너를 사용하지 않아야 한다.**
 정부의 공식 서비스가 아닌 곳에서 배너를 사용하게 될 경우 사용자에게 혼동을 줄 수 있으므로 배너를 사용하지 않아야 한다.

@@ -503,7 +503,7 @@ export function headerMyMenu(menu: AdditionalMyMenu, controlId?: string): VNode 
         create(
           "ul",
           { class: "drop-list" },
-          menu.items.map((item) =>
+          (menu.items ?? []).map((item) =>
             create("li", { key: item.id ?? item.label }, [
               create("a", { class: "item-link", href: item.href }, [
                 item.label,
@@ -594,6 +594,7 @@ export function mobileMenuMarkup(
   visible: boolean,
   onClose: () => void,
   enhanced: boolean,
+  standalone = false,
 ): VNode {
   return create(
     "div",
@@ -607,7 +608,11 @@ export function mobileMenuMarkup(
       ],
       role: visible ? "navigation" : undefined,
       "aria-label": data.menuLabel ?? attrs["aria-label"] ?? attrs.menuLabel ?? "전체 메뉴",
-      style: visible ? attrs.style : "display: none;",
+      style: standalone
+        ? "display: block; position: static; visibility: visible;"
+        : visible
+          ? attrs.style
+          : "display: none;",
     },
     [
       create("div", { class: "gnb-wrap" }, [
@@ -812,8 +817,11 @@ export function calendarMarkup(
   attrs: Record<string, unknown>,
   className: string | undefined,
 ): VNode {
-  const year = data.displayYear ?? data.year ?? data.years[0] ?? 0;
-  const month = data.displayMonth ?? data.month ?? 1;
+  const currentDate = new Date();
+  const defaultYear = currentDate.getFullYear();
+  const defaultMonth = currentDate.getMonth() + 1;
+  const year = data.displayYear ?? data.year ?? data.years[0] ?? defaultYear;
+  const month = data.displayMonth ?? data.month ?? defaultMonth;
   const selectedYear = data.selectedYear ?? data.year ?? year;
   const selectedMonth = data.selectedMonth ?? data.month ?? month;
   const yearListId = `${rootId}-year`;
@@ -823,12 +831,20 @@ export function calendarMarkup(
   const previousYear = month === 1 ? year - 1 : year;
   const nextMonth = month === 12 ? 1 : month + 1;
   const nextYear = month === 12 ? year + 1 : year;
+  const leadingDays = data.leadingDays || new Date(year, month - 1, 1).getDay();
+  const previousMonthDayCount =
+    data.previousMonthDayCount || new Date(year, month - 1, 0).getDate();
+  const dayCount = data.dayCount || new Date(year, month, 0).getDate();
+  const years = data.years.length ? data.years : [year];
+  const weekdays = data.weekdays.length
+    ? data.weekdays
+    : ["일", "월", "화", "수", "목", "금", "토"];
   const cells = Array.from({ length: 42 }, (_, cellIndex) => {
-    const currentOffset = cellIndex - data.leadingDays;
+    const currentOffset = cellIndex - leadingDays;
     const old = currentOffset < 0;
-    const next = currentOffset >= data.dayCount;
+    const next = currentOffset >= dayCount;
     const day = old
-      ? data.previousMonthDayCount + currentOffset + 1
+      ? previousMonthDayCount + currentOffset + 1
       : next
         ? currentOffset - data.dayCount + 1
         : currentOffset + 1;
@@ -923,7 +939,7 @@ export function calendarMarkup(
                 create(
                   "ul",
                   { id: yearListId, class: ["sel", "year"], role: "listbox" },
-                  data.years.map((optionYear) =>
+                  years.map((optionYear) =>
                     create("li", { key: optionYear, role: "none" }, [
                       create(
                         "button",
@@ -990,7 +1006,7 @@ export function calendarMarkup(
                 "thead",
                 create(
                   "tr",
-                  data.weekdays.map((weekday) => create("th", { key: weekday }, weekday)),
+                  weekdays.map((weekday) => create("th", { key: weekday }, weekday)),
                 ),
               ),
               create(

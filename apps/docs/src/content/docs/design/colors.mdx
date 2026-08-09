@@ -3,8 +3,8 @@ title: 색상
 description: 색상은 정보 전달과 시각적 경험을 결정하는 중요한 요소다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import TokenSwatches from "@docs/TokenSwatches.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton, Badge as ReactBadge } from "@krds-community/react";
 import { Button as VueButton, Badge as VueBadge } from "@krds-community/vue";
 import { Button as SvelteButton, Badge as SvelteBadge } from "@krds-community/svelte";
@@ -280,7 +280,7 @@ gray-0(white) 배경 이외의 다른 색상의 배경을 고려하여 매직넘
 시스템 색상은 시각적 보조수단과 함께 사용한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="시스템 색상은 시각적 보조수단과 함께 사용한다.">
+<FrameworkPreview kind="good" title="시스템 색상은 시각적 보조수단과 함께 사용한다.">
   <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
       <ReactBadge tone="danger" appearance="solid" label="위험"  client:only="react"/>
@@ -390,11 +390,11 @@ import { Badge } from '@krds-community/astro';
 <Badge tone="information" appearance="solid" label="안내" />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="시스템 색상은 시각적 보조수단과 함께 사용한다.">
+<FrameworkPreview kind="bad" title="시스템 색상은 시각적 보조수단과 함께 사용한다.">
 <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center">
       <span style="width:24px;height:24px;border-radius:4px;background:var(--krds-mode-light-color-element-danger)"></span>
@@ -536,14 +536,14 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 주요 색상 사용
 
 주요 액션이나 중요한 정보를 강조하는 데 사용한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="주요 액션이나 중요한 정보를 강조하는 데 사용한다.">
+<FrameworkPreview kind="good" title="주요 액션이나 중요한 정보를 강조하는 데 사용한다.">
   <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <ReactButton variant="primary" client:only="react">확인</ReactButton>
@@ -657,11 +657,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="주요 액션이나 중요한 정보를 강조하는 데 사용한다.">
+<FrameworkPreview kind="bad" title="주요 액션이나 중요한 정보를 강조하는 데 사용한다.">
   <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <ReactButton variant="primary" client:only="react">확인</ReactButton>
@@ -771,14 +771,14 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 접근성 고려한 대비율
 
 명도 대비를 준수한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="명도 대비를 준수한다.">
+<FrameworkPreview kind="good" title="명도 대비를 준수한다.">
   <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <span style="display:inline-block;background:var(--krds-mode-light-color-background-white);color:var(--krds-mode-light-color-text-basic);padding:12px 16px;border-radius:6px;font-size:15px;border:1px solid var(--krds-mode-light-color-border-gray-light)">명도 대비를 준수한 텍스트</span>
@@ -880,11 +880,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="명도 대비를 준수한다.">
+<FrameworkPreview kind="bad" title="명도 대비를 준수한다.">
 <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <span style="display:inline-block;background:var(--krds-mode-light-color-background-white);color:var(--krds-mode-light-color-text-disabled);padding:12px 16px;border-radius:6px;font-size:15px;border:1px solid var(--krds-mode-light-color-border-gray-light)">
@@ -1002,14 +1002,14 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 상태 값 색상
 
 상태 값에 다른 색조 사용하지 않는다.
 **모범 사례**
 
-<PracticeExample kind="good" title="상태 값에 다른 색조 사용하지 않는다.">
+<FrameworkPreview kind="good" title="상태 값에 다른 색조 사용하지 않는다.">
   <div slot="react" client:only="react">
     <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
       <ReactBadge tone="danger" appearance="solid" label="오류가 발생했습니다"  client:only="react"/>
@@ -1111,11 +1111,11 @@ import { Badge } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="상태 값에 다른 색조 사용하지 않는다.">
+<FrameworkPreview kind="bad" title="상태 값에 다른 색조 사용하지 않는다.">
   <div slot="react" client:only="react">
     <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
       <ReactBadge tone="danger" appearance="solid" label="오류가 발생했습니다"  client:only="react"/>
@@ -1217,14 +1217,14 @@ import { Badge } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 투명도(alpha)
 
 disabled 상태에 투명도 색상을 사용하지 않는다.
 **모범 사례**
 
-<PracticeExample kind="good" title="disabled 상태에 투명도 색상을 사용하지 않는다.">
+<FrameworkPreview kind="good" title="disabled 상태에 투명도 색상을 사용하지 않는다.">
   <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center">
       <ReactButton disabled client:only="react">비활성 버튼</ReactButton>
@@ -1310,11 +1310,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="disabled 상태에 투명도 색상을 사용하지 않는다.">
+<FrameworkPreview kind="bad" title="disabled 상태에 투명도 색상을 사용하지 않는다.">
 <div slot="react" client:only="react">
     <div style="display:flex;gap:16px;align-items:center">
       <span style="display:inline-block;background:var(--krds-primitive-color-light-alpha-black10);color:var(--krds-mode-light-color-text-disabled);padding:8px 16px;border-radius:6px;font-size:14px">
@@ -1432,7 +1432,7 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 {/* /krds-official:style_02 */}
 

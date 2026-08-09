@@ -2,7 +2,6 @@
 import * as Components from '@krds-community/astro';
 import * as ExtraComponents from '@krds-community/astro/extra';
 import catalogData from '@krds-community/conformance-host/fixtures.json';
-import extraCatalogData from '@krds-community/conformance-host/fixtures-extra.json';
 import { baseProps } from '@krds-community/conformance-host/fixture-props';
 import '@krds-community/conformance-host/host.css';
 import { fixtureRootAttributes } from '@krds-community/conformance-host/protocol';
@@ -16,11 +15,6 @@ interface Props {
   fixture: FixtureDefinition;
   state: FixtureState;
 }
-
-const mergedCatalog = (): FixtureCatalog => ({
-  upstream: catalogData.upstream,
-  fixtures: [...catalogData.fixtures, ...extraCatalogData.fixtures] as FixtureDefinition[],
-});
 
 export async function getStaticPaths() {
   const { default: official } = await import('@krds-community/conformance-host/fixtures.json');

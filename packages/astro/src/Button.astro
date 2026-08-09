@@ -29,5 +29,5 @@ const recipe = buttonRecipe({ variant, size, disabled, className });
   disabled={disabled}
   class={recipe.className}
 >
-  <slot>{children ?? label}</slot>
+  <slot>{children ?? label ?? "레이블"}</slot>
 </button>

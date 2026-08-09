@@ -1,4 +1,4 @@
-import { Show, mergeProps, splitProps, type JSX } from "solid-js";
+import { mergeProps, splitProps, type JSX } from "solid-js";
 
 export interface LinkProps {
   class?: string;
@@ -29,6 +29,8 @@ export function Link(rawProps: LinkProps) {
     "title",
   ]);
   const className = () => props.class ?? props.className ?? "";
+  const size = () => props.size ?? "small";
+  const external = () => props.external ?? props.target === "_blank";
   const content = () => props.children ?? props.label;
   return (
     <a
@@ -36,12 +38,10 @@ export function Link(rawProps: LinkProps) {
       href={props.href}
       target={props.target ?? (props.external ? "_blank" : undefined)}
       title={props.external ? props.title : undefined}
-      class={["krds-btn", "link", props.size, className()].filter(Boolean).join(" ")}
+      class={["krds-btn", size(), "link", className()].filter(Boolean).join(" ")}
     >
       <span class="underline">{content()}</span>{" "}
-      <Show when={props.external ?? Boolean(props.target)}>
-        {props.icon ?? <i class="svg-icon ico-go" />}
-      </Show>
+      {props.icon ?? <i class={`svg-icon ${external() ? "ico-go" : "ico-angle right"}`} />}
     </a>
   );
 }

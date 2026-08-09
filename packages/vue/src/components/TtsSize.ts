@@ -70,11 +70,16 @@ export const TtsSize = defineComponent({
             }),
           ),
           " ",
-          create(
-            "span",
-            { class: "krds-tts-text" },
-            slotChildren.length ? slotChildren : props.text,
-          ),
+          !props.iconOnly
+            ? [
+                " ",
+                create(
+                  "span",
+                  { class: "krds-tts-text" },
+                  slotChildren.length ? slotChildren : [props.text ?? props.label],
+                ),
+              ]
+            : null,
         ],
       );
     };

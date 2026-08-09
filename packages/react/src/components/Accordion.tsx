@@ -7,14 +7,14 @@ export interface AccordionItemData extends Omit<AccordionItemContract, "title" |
   content: ReactNode;
 }
 export interface AccordionProps extends Omit<AccordionContractProps, "items"> {
-  items: AccordionItemData[];
+  items?: AccordionItemData[];
   defaultOpen?: string[];
   open?: string[];
   onOpenChange?: (open: string[]) => void;
   className?: string;
 }
 export function Accordion({
-  items,
+  items = [],
   type = "default",
   multiple = false,
   defaultOpen = [],

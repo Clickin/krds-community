@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { componentExamples } from "../apps/docs/src/data/example-catalog";
 import { componentNavigation } from "../apps/docs/src/data/component-meta";
 import { allPatterns } from "../apps/docs/src/data/patterns";
+import remarkFrameworkPreview from "../apps/docs/remark-framework-preview.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const docsRoot = resolve(root, "apps/docs/src");
@@ -13,6 +14,32 @@ const internalLinkPattern =
   /\]\(\/(?:storybook|conformance|components|service-patterns|basic-patterns|guides|getting-started)/;
 
 describe("docs route coverage", () => {
+  it("assigns deterministic unique preview ids per document occurrence", () => {
+    const tree = {
+      type: "root",
+      children: [
+        {
+          type: "mdxJsxFlowElement",
+          name: "FrameworkPreview",
+          attributes: [{ type: "mdxJsxAttribute", name: "title", value: "반복 예제" }],
+          children: [],
+        },
+        {
+          type: "mdxJsxFlowElement",
+          name: "FrameworkPreview",
+          attributes: [{ type: "mdxJsxAttribute", name: "title", value: "반복 예제" }],
+          children: [],
+        },
+      ],
+    } as any;
+    const transform = remarkFrameworkPreview();
+    transform(tree);
+    const ids = tree.children.map(
+      (node) => node.attributes.find((attribute) => attribute.name === "previewId").value,
+    );
+    expect(ids).toEqual(["fp-반복-예제-1", "fp-반복-예제-2"]);
+  });
+
   it("publishes one fixture-backed page for every upstream catalog component", () => {
     expect(componentNavigation.length).toBe(88);
     expect(componentExamples.length).toBe(76);

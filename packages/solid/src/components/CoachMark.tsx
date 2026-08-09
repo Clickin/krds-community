@@ -21,7 +21,10 @@ export interface CoachMarkProps {
 }
 
 export function CoachMark(rawProps: CoachMarkProps) {
-  const merged = mergeProps({}, rawProps);
+  const merged = mergeProps(
+    { currentStepLabel: "현재 단계", totalStepsLabel: "총 단계" },
+    rawProps,
+  );
   const [props, native] = splitProps(merged, [
     "class",
     "className",
@@ -41,6 +44,14 @@ export function CoachMark(rawProps: CoachMarkProps) {
     "label",
   ]);
   const className = () => props.class ?? props.className ?? "";
+  // react baseline: `step="1 / 2"` → current "1", total "2"; explicit
+  // currentStep/totalSteps override the parsed values.
+  const stepParts = () => {
+    const [current = "", total = ""] = (props.step ?? "1 / 1")
+      .split("/")
+      .map((part) => part.trim());
+    return { current, total };
+  };
   return (
     <div
       {...(native as Record<string, any>)}
@@ -56,9 +67,9 @@ export function CoachMark(rawProps: CoachMarkProps) {
         <div class="coach-controls">
           <div class="num">
             <span class="sr-only">{props.currentStepLabel}</span>
-            <strong>{props.currentStep}</strong>
+            <strong>{props.currentStep ?? stepParts().current}</strong>
             <span class="sr-only">{props.totalStepsLabel}</span>
-            <span>{props.totalSteps}</span>
+            <span>{props.totalSteps ?? stepParts().total}</span>
           </div>
           <div class="btn-wrap">
             <button type="button" class="krds-btn small text">

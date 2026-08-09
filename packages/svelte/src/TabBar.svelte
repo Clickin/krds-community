@@ -1,5 +1,6 @@
 <script lang="ts">
   import Badge from './Badge.svelte';
+  import { untrack } from 'svelte';
 
   type Item = { id: string; label: string; href?: string; icon?: string; badge?: string };
 
@@ -26,7 +27,7 @@
   }: Props = $props();
 
   const rootClass = $derived(`${classProp} ${className}`.trim());
-  let internal = $state<string | undefined>(defaultSelected);
+  let internal = $state<string | undefined>(untrack(() => defaultSelected));
   const current = $derived(selected !== undefined ? selected : internal);
 
   const select = (id: string) => {

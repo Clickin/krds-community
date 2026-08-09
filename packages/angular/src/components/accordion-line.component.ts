@@ -45,6 +45,8 @@ export class KrdsAccordionLineComponent {
   @Input() type = "line";
   @Input() description = "";
   @Input() items: (AngularNavItem | string)[] = [];
+  // Initial open item ids (mirrors react's `defaultOpen`).
+  @Input() open: string[] = [];
   accordionOpenIndex: number | null = null;
 
   get accordionClass(): string {
@@ -54,11 +56,23 @@ export class KrdsAccordionLineComponent {
   }
 
   isAccordionOpen(index: number): boolean {
+    this.initializeOpen();
     return this.accordionOpenIndex === index;
   }
 
   toggleAccordion(index: number): void {
     this.accordionOpenIndex = this.isAccordionOpen(index) ? null : index;
+  }
+
+  // Initialize from `open` once items are bound (react semantics: initial open
+  // state, still toggleable).
+  initializeOpen(): void {
+    if (this.accordionOpenIndex !== null || !this.open.length) return;
+    const index = this.items.findIndex((item) => {
+      const id = typeof item === "string" ? item : (item as { id?: unknown }).id;
+      return id !== undefined && this.open.includes(String(id));
+    });
+    this.accordionOpenIndex = index >= 0 ? index : null;
   }
 
   accordionHeaderId(index: number): string {

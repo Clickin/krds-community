@@ -301,7 +301,7 @@ export function HelpPanelSurface({
             onClick={() => setOpen(false)}
           >
             <span className="sr-only">{label ?? title}</span>
-            {inlineSpacedText(collapseLabel, true, true)}
+            {inlineSpacedText(collapseLabel ?? label ?? title, true, true)}
             <SvgIcon name="ico-angle right" />
           </button>
         </div>
@@ -311,5 +311,11 @@ export function HelpPanelSurface({
 }
 
 export function HelpPanel({ ref, ...props }: HelpPanelProps & { ref?: Ref<HTMLDivElement> }) {
-  return <HelpPanelSurface {...props} {...(ref !== undefined ? { ref } : {})} />;
+  return (
+    <HelpPanelSurface
+      {...props}
+      label={props.label ?? "도움 패널"}
+      {...(ref !== undefined ? { ref } : {})}
+    />
+  );
 }

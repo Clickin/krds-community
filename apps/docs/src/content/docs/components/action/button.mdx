@@ -5,7 +5,6 @@ category: action
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -145,7 +144,7 @@ import { Button } from '@krds-community/astro';
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="버튼과 관련된 사용자 과업, 플로우의 중요도에 따라 버튼 간 위계를 명확하게 구분한다."
 >
@@ -209,11 +208,11 @@ import { Button } from '@krds-community/astro';
       상세 보기
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="버튼과 관련된 사용자 과업, 플로우의 중요도에 따라 버튼 간 위계를 명확하게 구분한다."
 >
@@ -277,7 +276,7 @@ import { Button } from '@krds-community/astro';
       상세 보기
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 **한 페이지에 최상위 수준의 강조 버튼은 한 번만 사용한다.** 채운 스타일의 버튼은 시각적으로 매우
 현저하기 때문에 사용자가 빠르게 인지할 수 있도록 도와준다. 하지만 한 페이지에 채운 버튼을 여러 개
 사용할 경우 사용자는 인지적 부담이 증가해 가장 중요한 행동 관련 버튼을 발견하는 데 많은 시간이 걸릴
@@ -285,7 +284,7 @@ import { Button } from '@krds-community/astro';
 
 **모범 사례**
 
-<PracticeExample kind="good" title="한 페이지에 최상위 수준의 강조 버튼은 한 번만 사용한다.">
+<FrameworkPreview kind="good" title="한 페이지에 최상위 수준의 강조 버튼은 한 번만 사용한다.">
   <div slot="react">
     <ReactButton variant="primary" client:only="react">
       저장
@@ -330,11 +329,11 @@ import { Button } from '@krds-community/astro';
       취소
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="한 페이지에 최상위 수준의 강조 버튼은 한 번만 사용한다.">
+<FrameworkPreview kind="bad" title="한 페이지에 최상위 수준의 강조 버튼은 한 번만 사용한다.">
   <div slot="react">
     <ReactButton variant="primary" client:only="react">
       저장
@@ -379,7 +378,7 @@ import { Button } from '@krds-community/astro';
       취소
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 **버튼 그룹을 수직으로 배열할 때 최상위 수준의 강조 버튼을 첫 번째로 배치한다.** 일반적으로 버튼
 그룹은 수평 방향으로 나란히 배치된다. 그러나 버튼이 패널, 모바일 디바이스처럼 좁은 영역에 제공되어야
 하는 경우 공간의 제약으로 인해 버튼을 수직으로 배치할 수 있다. 이 경우 버튼의 중요도 순으로 위쪽에

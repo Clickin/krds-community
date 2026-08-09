@@ -10,7 +10,7 @@ export interface TabItem extends Omit<KrdsTabItem, "label"> {
 }
 
 export interface TabProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onChange"> {
-  tabs: TabItem[];
+  tabs?: TabItem[];
   panels: Record<string, ReactNode>;
   defaultTab?: string;
   defaultValue?: string;
@@ -23,7 +23,7 @@ export interface TabProps extends Omit<HTMLAttributes<HTMLDivElement>, "children
   onChange?: (id: string) => void;
 }
 export function Tab({
-  tabs,
+  tabs = [],
   panels,
   defaultTab,
   defaultValue,

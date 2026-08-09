@@ -3,7 +3,7 @@ title: 형태
 description: 형태는 브랜드의 시각적 아이덴티티를 표현하는 중요한 요소로, UI 요소에 적용되는 둥글기 값인 래디어스(radius)를 통해 버튼, 카드, 컨테이너, 이미지 등에 고유한 느낌과 분위기를 만들어낸다.
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Button as ReactButton, Tag as ReactTag } from "@krds-community/react";
 import { Button as VueButton, Tag as VueTag } from "@krds-community/vue";
 import { Button as SvelteButton, Tag as SvelteTag } from "@krds-community/svelte";
@@ -104,7 +104,7 @@ import { Button as AstroButton, Tag as AstroTag } from "@krds-community/astro";
 컨테이너 사이즈가 커지면 래디어스값도 비율에 맞게 적용한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="컨테이너 사이즈가 커지면 래디어스값도 비율에 맞게 적용한다.">
+<FrameworkPreview kind="good" title="컨테이너 사이즈가 커지면 래디어스값도 비율에 맞게 적용한다.">
   <div slot="react" client:only="react">
     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
       <ReactTag label="태그"  client:only="react"/>
@@ -220,11 +220,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="컨테이너 사이즈가 커지면 래디어스값도 비율에 맞게 적용한다.">
+<FrameworkPreview kind="bad" title="컨테이너 사이즈가 커지면 래디어스값도 비율에 맞게 적용한다.">
 <div slot="react" client:only="react">
     <div style="display:flex;gap:12px;align-items:center">
       <span style="width:32px;height:32px;border-radius:var(--krds-semantic-radius-small1);background:var(--krds-mode-light-color-element-gray-light)"></span>
@@ -350,14 +350,14 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 동일한 래디어스 적용
 
 비슷한 크기의 구성 요소는 동일한 래디어스를 적용하면 디자인의 통일성과 조화로움을 높일 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="비슷한 크기의 구성 요소는 동일한 래디어스를 적용하면 디자인의 통일성과 조화로움을 높일 수 있다."
 >
@@ -470,11 +470,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="비슷한 크기의 구성 요소는 동일한 래디어스를 적용하면 디자인의 통일성과 조화로움을 높일 수 있다."
 >
@@ -603,14 +603,14 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 콘텐츠 영역 침범
 
 과한 래디어스 값 적용으로 콘텐츠에 영향을 주지 않는다. 둥근 형태를 사용할 땐 내부 패딩값을 충분히 준다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="과한 래디어스 값 적용으로 콘텐츠에 영향을 주지 않는다. 둥근 형태를 사용할 땐 내부 패딩값을 충분히 준다."
 >
@@ -731,11 +731,11 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="과한 래디어스 값 적용으로 콘텐츠에 영향을 주지 않는다. 둥근 형태를 사용할 땐 내부 패딩값을 충분히 준다."
 >
@@ -856,14 +856,14 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### % 사용
 
 작은 컴포넌트에서 50%를 적용하면 모서리가 지나치게 둥글어져 의도와 다른 디자인 결과가 나올 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="작은 컴포넌트에서 50%를 적용하면 모서리가 지나치게 둥글어져 의도와 다른 디자인 결과가 나올 수 있다."
 >
@@ -964,11 +964,11 @@ import { Tag } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="작은 컴포넌트에서 50%를 적용하면 모서리가 지나치게 둥글어져 의도와 다른 디자인 결과가 나올 수 있다."
 >
@@ -1081,6 +1081,6 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 {/* /krds-official:style_04 */}

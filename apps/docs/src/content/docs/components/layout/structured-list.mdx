@@ -18,17 +18,7 @@ import { StructuredList as AstroStructuredList } from "@krds-community/astro";
   <SvelteStructuredList slot="svelte" aria-label="구조화 목록" client:only="svelte" />
   <SolidStructuredList slot="solid" aria-label="구조화 목록" client:only="solid-js" />
   <AngularStructuredList slot="angular" aria-label="구조화 목록" client:only="@analogjs/astro-angular" />
-  <AstroStructuredList
-    slot="astro"
-    aria-label="구조화 목록"
-    items={[{ title: '구조화 목록 항목', href: '#', dateLabel: '날짜', dateValue: '2026.08.01' }]}
-    dateLabel="날짜"
-    dateValue="2026.08.01"
-    tags={['태그']}
-    actionLabel="자세히 보기"
-    shareLabel="공유"
-    favoriteLabel="관심"
-  />
+  <AstroStructuredList slot="astro" aria-label="구조화 목록" />
 
 ```tsx fw=react
 import { StructuredList } from "@krds-community/react";

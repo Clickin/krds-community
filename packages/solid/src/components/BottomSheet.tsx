@@ -128,7 +128,10 @@ export function BottomSheet(rawProps: BottomSheetProps) {
         class={`krds-bottom-sheet${closing() ? " closing" : ""}${className() ? ` ${className()}` : ""}`}
         onClick={(event) => {
           invokeHandler(native.onClick, event);
-          if (!event.defaultPrevented && (event.target as Element).closest(".bottom-sheet-overlay")) {
+          if (
+            !event.defaultPrevented &&
+            (event.target as Element).closest(".bottom-sheet-overlay")
+          ) {
             startClose();
           }
         }}
@@ -144,7 +147,12 @@ export function BottomSheet(rawProps: BottomSheetProps) {
           if (panel && open()) trapTabFocus(event, panel);
         }}
       >
-        <div class="bottom-sheet-overlay" data-close />
+        <button
+          type="button"
+          class="bottom-sheet-overlay"
+          data-close
+          aria-label={props.closeLabel}
+        />
         <div
           class="bottom-sheet-panel"
           role="document"

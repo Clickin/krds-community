@@ -50,7 +50,7 @@ import { createStableId } from "../kinds";
 })
 export class KrdsToggleSwitchComponent implements ControlValueAccessor {
   @Input() id = createStableId("krds-toggle-switch");
-  @Input() label = "레이블";
+  @Input() label = "";
   @Input() name = "";
   @Input() disabled = false;
   @Input() size = "";

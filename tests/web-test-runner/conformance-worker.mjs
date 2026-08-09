@@ -27,16 +27,31 @@ import {
   stateActionsOf,
 } from "../../scripts/conformance/browser-judge.mjs";
 
-const upstreamFiles = import.meta.glob("/upstream/krds-html/html/code/*.html", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
+const collectorOrigin = "http://127.0.0.1:8123";
 
-export const catalog = await fetch("/apps/conformance-host/dist/fixtures.json").then((response) => {
-  if (!response.ok) throw new Error(`catalog fetch failed: ${response.status}`);
-  return response.json();
-});
+const upstreamFiles = {
+  ...import.meta.glob("/upstream/krds-html/html/code/*.html", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+  }),
+  ...import.meta.glob("/extra/**/*.html", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+  }),
+};
+
+const collectorConfig = await fetch(`${collectorOrigin}/config`)
+  .then((response) => (response.ok ? response.json() : {}))
+  .catch(() => ({}));
+const catalogName = collectorConfig.catalog === "extra" ? "fixtures-extra.json" : "fixtures.json";
+export const catalog = await fetch(`/apps/conformance-host/dist/${catalogName}`).then(
+  (response) => {
+    if (!response.ok) throw new Error(`catalog fetch failed: ${response.status}`);
+    return response.json();
+  },
+);
 
 const styleUrl = "/packages/styles/dist/index.css";
 const scriptUrl = "/upstream/krds-html/resources/cdn/krds.min.js";
@@ -254,12 +269,23 @@ const applyActions = async (root, state) => {
         if ((key === "Enter" || key === " ") && element.matches("button, [role='button']")) {
           element.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
         }
+        // Synthetic keyboard events do not move focus. Preserve the observable
+        // part of Tab for focusout-based validation fixtures.
+        if (key === "Tab") element.blur();
         await settle();
       } else if (step.action === "fill") {
         element.focus();
-        element.value = String(step.value ?? "");
+        // React's value tracker ignores an input event after a direct
+        // `element.value = ...` assignment. Use the native prototype setter so
+        // every framework observes the same user-like value change.
+        const valueSetter = Object.getOwnPropertyDescriptor(
+          Object.getPrototypeOf(element),
+          "value",
+        )?.set;
+        valueSetter?.call(element, String(step.value ?? ""));
         element.dispatchEvent(new Event("input", { bubbles: true }));
         element.dispatchEvent(new Event("change", { bubbles: true }));
+        await settle();
       } else if (step.action === "select-option") {
         const value = String(step.value ?? "");
         for (const option of element.options ?? []) {
@@ -603,8 +629,8 @@ const mountAstroFixture = async (fixture, state) => {
   const moduleBodies = [...sourceRoot.querySelectorAll('script[type="module"]:not([src])')].map(
     (script) => script.textContent ?? "",
   );
-  const moduleSrcs = [...sourceRoot.querySelectorAll('script[type="module"][src]')].map(
-    (script) => script.getAttribute("src"),
+  const moduleSrcs = [...sourceRoot.querySelectorAll('script[type="module"][src]')].map((script) =>
+    script.getAttribute("src"),
   );
   const container = document.createElement("div");
   container.id = "fixture-root";
@@ -784,12 +810,7 @@ export const captureFixture = async (framework, adapter, fixture) => {
   return records;
 };
 
-const collectorOrigin = "http://127.0.0.1:8123";
-
-export const compiledErrata = await fetch(`${collectorOrigin}/config`)
-  .then((response) => response.json())
-  .then((configValue) => configValue.errata ?? {})
-  .catch(() => ({}));
+export const compiledErrata = collectorConfig.errata ?? {};
 
 export const emitFixtureCapture = async (framework, fixtureId, records) => {
   const payload = { catalog: catalog.upstream, framework, fixtureId, results: records };

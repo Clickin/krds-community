@@ -25,27 +25,33 @@ ordered?: boolean;
   }: Props = $props();
 
   const rootClass = $derived(`${classProp} ${className}`.trim());
+
+  const markerFor = (depth: number, index: number) => {
+    if (depth === 0) return `${index + 1}. `;
+    if (depth === 1) return `${String.fromCharCode(97 + index)}. `;
+    return String.fromCodePoint(0x2460 + index);
+  };
 </script>
+
+{#snippet renderList(list, depth)}
+  <ol role="list" class="krds-info-list ordered">
+    {#each list as item, index}
+      <li role="listitem">
+        <span class="num">{fieldOf(item, 'marker') || markerFor(depth, index)}</span>{labelOf(item)}
+        {#if childrenOf(item).length}
+          {@render renderList(childrenOf(item), depth + 1)}
+        {/if}
+      </li>
+    {/each}
+  </ol>
+{/snippet}
 
 <ol {...rest} class={`krds-info-list ordered ${rootClass}`} role="list">
   {#each items as item, index}
     <li role="listitem">
-      <span class="num">{index + 1}.</span>{labelOf(item)}
+      <span class="num">{fieldOf(item, 'marker') || markerFor(0, index)}</span>{labelOf(item)}
       {#if childrenOf(item).length}
-        <ol class="krds-info-list ordered" role="list">
-          {#each childrenOf(item) as child, childIndex}
-            <li role="listitem">
-              <span class="num">{String.fromCharCode(97 + childIndex)}.</span>{labelOf(child)}
-              {#if childrenOf(child).length}
-                <ol class="krds-info-list ordered" role="list">
-                  {#each childrenOf(child) as grandchild}
-                    <li role="listitem"><span class="num">{fieldOf(grandchild, 'marker')}</span>{labelOf(grandchild)}</li>
-                  {/each}
-                </ol>
-              {/if}
-            </li>
-          {/each}
-        </ol>
+        {@render renderList(childrenOf(item), 1)}
       {/if}
     </li>
   {/each}

@@ -9,7 +9,7 @@ KRDS Community는 공식 KRDS HTML Component Kit와 디자인 토큰을 기준�
 
 - 각 프레임워크의 상태·이벤트·폼·SSR 모델을 따르는 네이티브 컴포넌트
 - 공식 디자인 토큰에서 생성한 공통 CSS 변수와 Tailwind CSS 테마
-- 동일한 fixture와 상호작용 시나리오를 실행하는 프레임워크 간 conformance 도구
+- 원본 UI·고정 fixture 기준으로 프레임워크 간 동일한 출력을 검증하는 내부 conformance 테스트
 - 구현한 컴포넌트로 구성한 컴포넌트·기본 패턴·서비스 패턴 쇼케이스
 
 Web Components 위에 프레임워크 래퍼를 쌓지 않습니다. 공유 패키지는 토큰, 스타일, class recipe, 검증 계약만 소유하고 DOM과 상태는 각 프레임워크 패키지가 직접 구현합니다.

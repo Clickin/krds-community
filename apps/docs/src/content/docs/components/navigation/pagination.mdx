@@ -5,7 +5,6 @@ category: navigation
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Pagination as ReactPagination } from "@krds-community/react";
 import { Pagination as VuePagination } from "@krds-community/vue";
 import { Pagination as SveltePagination } from "@krds-community/svelte";
@@ -157,7 +156,7 @@ import { Pagination } from '@krds-community/astro';
 사용자가 현재 몇 번째 화면을 탐색하는지 명확하게 변별할 수 있도록 현재 화면 숫자 링크를 적절하게 강조하여 표현한다. 목록 상단에 별도의 텍스트 정보를 제공함으로써 탐색 중인 화면의 인지를 도울 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="번호 링크에 현재 화면 숫자를 강조하여 표현한다.">
+<FrameworkPreview kind="good" title="번호 링크에 현재 화면 숫자를 강조하여 표현한다.">
   <div slot="react">
     <ReactPagination current={3} items={[1, 2, 3, 4, 5]} client:only="react" />
   </div>
@@ -176,7 +175,7 @@ import { Pagination } from '@krds-community/astro';
   <div slot="angular">
     <AngularPagination current={3} items={[1, 2, 3, 4, 5]} client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **페이지네이션은 전체 서비스에서 일관된 영역에 배치한다.**
 페이지네이션은 유형에 상관없이 목록 하단에 중앙 정렬하여 사용자가 전체 사이트에 걸쳐 일관된 영역에서 접근할 수 있도록 한다.
@@ -195,7 +194,7 @@ import { Pagination } from '@krds-community/astro';
 감소시키고 인접 영역을 실수로 터치하지 않도록 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않은 경우 이전/다음 버튼, 숫자 링크 목록을 수직으로 배치한다."
 >
@@ -233,11 +232,11 @@ import { Pagination } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="화면 너비가 충분하지 않은 경우 이전/다음 버튼, 숫자 링크 목록을 수직으로 배치한다."
 >
@@ -287,13 +286,13 @@ import { Pagination } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **화면 너비가 충분하지 않은 경우 숫자 링크 목록은 말줄임표를 포함하여 최대 7개 링크를 표시한다.**
 더 많은 항목이 제공될 경우, 각 링크를 터치할 수 있는 충분한 영역을 확보하기 어렵다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않은 경우 숫자 링크 목록은 말줄임표를 포함하여 최대 7개 링크를 표시한다."
 >
@@ -319,7 +318,7 @@ import { Pagination } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **화면 크기에 상관없이 전체 화면 수를 일정하게 유지한다.**
 어떤 설정과 디바이스 환경에서 서비스를 이용하더라도 동일한 항목은 동일한 위치에서 찾을 수 있도록 전체 화면 수와 각 화면에 표시되는 항목 수를 일정하게 유지해야 한다.
@@ -345,7 +344,7 @@ import { Pagination } from '@krds-community/astro';
 - WCAG 2.1 Use of Color (A)
   **모범 사례**
 
-<PracticeExample kind="good" title="현재 화면 숫자 링크를 색상만으로 구분하지 않는다.">
+<FrameworkPreview kind="good" title="현재 화면 숫자 링크를 색상만으로 구분하지 않는다.">
   <div slot="react">
     <ReactPagination current={3} items={[1, 2, 3, 4, 5]} client:only="react" />
   </div>
@@ -364,11 +363,11 @@ import { Pagination } from '@krds-community/astro';
   <div slot="angular">
     <AngularPagination current={3} items={[1, 2, 3, 4, 5]} client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="현재 화면 숫자 링크를 색상만으로 구분하지 않는다.">
+<FrameworkPreview kind="bad" title="현재 화면 숫자 링크를 색상만으로 구분하지 않는다.">
   <div slot="react">
     <ol style="display: flex; gap: var(--krds-gap-3); list-style: none; padding: 0">
       <li>
@@ -515,9 +514,35 @@ import { Pagination } from '@krds-community/astro';
     </ol>
   </div>
   <div slot="angular">
-    <AngularPagination current={3} items={[1, 2, 3, 4, 5]} client:only="@analogjs/astro-angular" />
+    <ol style="display: flex; gap: var(--krds-gap-3); list-style: none; padding: 0">
+      <li>
+        <a href="#" style="color: var(--krds-light-color-text-basic)">
+          1
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: var(--krds-light-color-text-basic)">
+          2
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: var(--krds-light-color-text-primary)">
+          3
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: var(--krds-light-color-text-basic)">
+          4
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: var(--krds-light-color-text-basic)">
+          5
+        </a>
+      </li>
+    </ol>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **숫자 링크에 적절한 접근 가능한 이름을 제공한다.**
 스크린 리더 사용자가 숫자 링크의 용도를 보다 명확하게 인지할 수 있도록 aria-label="페이지 1", aria label="페이지 2" 또는 title="페이지"와 같은 방식으로 접근 가능한 이름이나 보조적 설명을 제공한다. 마지막 화면의 경우,

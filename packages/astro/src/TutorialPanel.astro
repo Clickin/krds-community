@@ -50,7 +50,7 @@ export interface Props
   externalTitle?: string;
   tasks: TutorialPanelTask[];
   stopLabel: string;
-  collapseLabel: string;
+  collapseLabel?: string;
   label: string;
   title?: string;
   children?: string;
@@ -100,6 +100,7 @@ const resolvedTasks = tasks.map((task, index) => ({
   disclosureId: `${panelId}-task-${task.id ?? index + 1}`,
 }));
 const resolvedDescription = helpDescription ?? children;
+const foldLabel = collapseLabel ?? label;
 ---
 
 <button
@@ -112,6 +113,7 @@ const resolvedDescription = helpDescription ?? children;
 >
   <i class="svg-icon ico-fold"></i> {label}
 </button>
+
 <div
   {...rest}
   id={panelId}
@@ -282,7 +284,7 @@ const resolvedDescription = helpDescription ?? children;
       </div>
 
       <button type="button" class="krds-btn small tertiary btn-help-panel fold">
-        <span class="sr-only">{label}</span> {collapseLabel} <i class="svg-icon ico-angle right"></i>
+        <span class="sr-only">{label}</span> {foldLabel} <i class="svg-icon ico-angle right"></i>
       </button>
     </div>
   </div>

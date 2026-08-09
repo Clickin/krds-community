@@ -3,8 +3,8 @@ title: 동의
 description: 웹사이트 이용 조건과 절차를 읽고 동의하거나 안내를 확인하는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Checkbox as ReactCheckbox } from "@krds-community/react";
 import { Checkbox as VueCheckbox } from "@krds-community/vue";
 import { Checkbox as SvelteCheckbox } from "@krds-community/svelte";
@@ -47,7 +47,7 @@ import { Button as AstroButton } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="동의하지 않음 옵션을 제공한다."
 >
@@ -171,11 +171,11 @@ import { RadioButton } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="동의하지 않음 옵션 없이 동의 여부를 선택하게 한다."
 >
@@ -287,7 +287,7 @@ import { Checkbox } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **동의함/동의하지 않음 옵션은 구분하기 쉽게 표현한다.** 선택 옵션이 다른 요소들과 잘 구분되지 않으면, 사용자는 동의 여부 선택 옵션을 인지하지 못해, 선택 과정 없이 다음 단계로 넘어가려는 시도를 하게 되고 결국 오류가 발생할 수 있다.
 
@@ -295,7 +295,7 @@ import { Checkbox } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 항목과 선택 항목 정보를 제공하고 명확하게 구분될 수 있도록 표현한다."
 >
@@ -467,4 +467,4 @@ import { Button, Checkbox } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>

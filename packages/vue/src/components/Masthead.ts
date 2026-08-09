@@ -7,7 +7,7 @@ export const Masthead = defineComponent({
   inheritAttrs: false,
   props: {
     id: { type: String, default: undefined },
-    message: { type: String, default: "" },
+    message: { type: String, default: "도움말" },
     description: { type: String, default: undefined },
   },
   setup(props, { attrs }) {

@@ -30,9 +30,20 @@ const CLOSE_ANIMATION_MS = 200;
         aria-modal="true"
         [attr.aria-labelledby]="title ? id + '-title' : null"
       >
-        <div class="bottom-sheet-overlay" (click)="close()"></div>
+        <button
+          type="button"
+          class="bottom-sheet-overlay"
+          data-close
+          [attr.aria-label]="closeLabel"
+          (click)="close()"
+        ></button>
         <div class="bottom-sheet-panel" role="document">
-          <button type="button" class="bottom-sheet-handle" aria-hidden="true" tabindex="-1"></button>
+          <button
+            type="button"
+            class="bottom-sheet-handle"
+            aria-hidden="true"
+            tabindex="-1"
+          ></button>
           @if (title) {
             <div class="bottom-sheet-header">
               <h2 [id]="id + '-title'" class="bottom-sheet-title">{{ title }}</h2>
@@ -42,6 +53,13 @@ const CLOSE_ANIMATION_MS = 200;
             </div>
           }
           <div class="bottom-sheet-body">
+            @if (items.length) {
+              <ul class="bottom-sheet-options">
+                @for (item of items; track $index) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+            }
             <ng-content></ng-content>
           </div>
           <button
@@ -63,6 +81,10 @@ export class KrdsBottomSheetComponent implements OnInit, OnChanges, OnDestroy {
   @Input() defaultOpen = false;
   @Input() title = "";
   @Input() description = "";
+  // Options list rendered as `bottom-sheet-options` (react demo contract).
+  // ng-content children are not projected by astro-angular, so demos pass
+  // options via this prop instead.
+  @Input() items: string[] = [];
   @Input() closeLabel = "닫기";
   @Output() openChange = new EventEmitter<boolean>();
 
@@ -113,7 +135,8 @@ export class KrdsBottomSheetComponent implements OnInit, OnChanges, OnDestroy {
   private openPanel(): void {
     if (typeof window === "undefined") return;
     this.attachKeydown();
-    this.lastFocused = typeof document === "undefined" ? null : (document.activeElement as HTMLElement | null);
+    this.lastFocused =
+      typeof document === "undefined" ? null : (document.activeElement as HTMLElement | null);
     window.setTimeout(() => {
       this.panelFocusables()[0]?.focus();
     }, 0);
@@ -146,8 +169,8 @@ export class KrdsBottomSheetComponent implements OnInit, OnChanges, OnDestroy {
     if (!panel) return [];
     return Array.from(
       panel.querySelectorAll<HTMLElement>(
-        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )
+        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      ),
     );
   }
 

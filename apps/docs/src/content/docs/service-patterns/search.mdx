@@ -3,8 +3,8 @@ title: 검색
 description: 큰 데이터 집합에서 원하는 정보를 찾도록 돕는 서비스 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Badge as ReactBadge } from "@krds-community/react";
 import { Badge as VueBadge } from "@krds-community/vue";
 import { Badge as SvelteBadge } from "@krds-community/svelte";
@@ -102,7 +102,7 @@ import { SearchSuggestions as AstroSearchSuggestions } from "@krds-community/ast
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="통합 검색 기능은 검색어 입력 필드와 돋보기 버튼의 조합 또는 돋보기 버튼 형태로 사용한다."
 >
@@ -226,11 +226,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="통합 검색 기능은 검색어 입력 필드와 돋보기 버튼의 조합 또는 돋보기 버튼 형태로 사용한다."
 >
@@ -371,14 +371,14 @@ import { ButtonIcon } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 부분 검색 기능은 콘텐츠 목록의 수준과 맥락을 고려하여 사용자가 예측할 수 있는 영역에 배치한다.**
 기본적으로 검색하고자 하는 목록 레이아웃의 오른쪽 상단에 제공한다. 보다 복잡한 검색이 필요한 경우에는 목록 상단 전체 영역을 활용할 수 있다.
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="부분 검색 기능은 콘텐츠 목록의 수준과 맥락을 고려하여 사용자가 예측할 수 있는 영역에 배치한다."
 >
@@ -715,11 +715,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="부분 검색 기능은 콘텐츠 목록의 수준과 맥락을 고려하여 사용자가 예측할 수 있는 영역에 배치한다."
 >
@@ -1060,7 +1060,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 검색 기능 주변에 불필요한 요소의 배치를 최소화한다.**
 검색어 입력 필드, 돋보기 아이콘 주변에 다른 기능 버튼, 안내 배너 등이 제공되는 경우 검색 관련 인터페이스의 현출성이 저하되어 인지가 어려울 수 있다.
@@ -1072,7 +1072,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자가 검색어 입력 행위에 집중할 수 있도록 한다."
 >
@@ -1195,11 +1195,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자가 검색어 입력 행위에 집중할 수 있도록 한다."
 >
@@ -1356,7 +1356,7 @@ import { SearchSuggestions } from "@krds-community/astro/extra";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 스코프 필터를 사용하는 경우, ‘전체’ 옵션을 제공한다.**
 스코프 필터를 사용하면 목록의 특정 섹션 또는 특정 범주의 데이터로 사전에 검색을 제한할 수 있다. 범위 필터는 한 번에 하나의 옵션만을 선택할 수 있기 때문에 항상 '전체' 옵션을 제공하고 기본값으로 설정하여 모든 정보의 범주를 검색할 수 있도록 해야 한다.
@@ -1369,7 +1369,7 @@ import { SearchSuggestions } from "@krds-community/astro/extra";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="통합 검색이 아닌 검색에는 입력 필드에 레이블을 제공한다."
 >
@@ -1493,11 +1493,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="통합 검색이 아닌 검색에는 입력 필드에 레이블을 제공한다."
 >
@@ -1621,14 +1621,14 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 플레이스홀더를 사용하는 경우, 유도 문구 외에 검색에 대한 단서나 레이블을 포함해서는 안 된다.**
 플레이스홀더 텍스트는 사용자가 입력을 시도하는 순간 사라지기 때문에 사용자가 검색어를 입력하는 시점에는 도움을 받을 수 없다. 플레이스홀더를 사용하는 경우, 검색어 입력 필드의 레이블에 제공되지 않은 추가적인 정보를 플레이스홀더로 전달하지 않아야 한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="플레이스홀더를 사용하는 경우, 유도 문구 외에 검색에 대한 단서나 레이블을 포함해서는 안 된다."
 >
@@ -1752,11 +1752,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="플레이스홀더를 사용하는 경우, 유도 문구 외에 검색에 대한 단서나 레이블을 포함해서는 안 된다."
 >
@@ -1896,7 +1896,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 사용자에게 다양한 방식의 검색어 입력 도움을 제공한다.**
 검색 가능한 항목이 복잡한 경우 사용자가 원하는 항목을 찾는 데 도움이 된다. 사용자에게 제공할 수 있는 검색 도움은 다음과 같다.
@@ -1909,7 +1909,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자에게 다양한 방식의 검색어 입력 도움을 제공한다."
 >
@@ -2072,14 +2072,14 @@ import { SearchSuggestions } from "@krds-community/astro/extra";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **우수: 검색어 입력 도움은 가능한 사용자가 검색어를 입력하는 시점에 실시간으로 제공한다.**
 실시간 검색어 제안은 검색어를 입력하는 시간을 단축함으로써 사용자가 빠르게 검색을 수행할 수 있도록 돕는다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="검색어 입력 도움은 가능한 사용자가 검색어를 입력하는 시점에 실시간으로 제공한다."
 >
@@ -2236,7 +2236,7 @@ import { SearchSuggestions } from "@krds-community/astro/extra";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 실시간으로 검색어를 제안할 수 없는 경우, 검색 결과 화면에서 보조적인 도움 수단을 제공한다.**
 
@@ -2245,7 +2245,7 @@ import { SearchSuggestions } from "@krds-community/astro/extra";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="음성입력 버튼을 제공한다"
 >
@@ -2369,7 +2369,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **상세 검색 컨트롤을 숨김 처리한다.**
 검색 컨트롤이 많아 화면이 복잡하여 사용자가 혼란을 있을 경우 필수조건을 제외한 컨트롤은 모달/바텀시트 등을 활용하여 숨김 처리 할 수 있다.
@@ -2387,7 +2387,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="검색 결과 화면에 여러 개의 검색어 입력 필드를 사용하지 않는다."
 >
@@ -2671,11 +2671,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="검색 결과 화면에 여러 개의 검색어 입력 필드를 사용하지 않는다."
 >
@@ -2983,7 +2983,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 사용자가 재검색을 시도하지 않는 한 검색어 입력 필드에 검색어를 유지한다.**
 검색 결과 화면 상단의 검색어 입력 필드에 검색 결과를 반환한 검색어, 즉 사용자가 검색을 시도한 검색어를 유지하여 결과 화면에 진입하기 직전에 수행한 작업을 사용자가 기억한 상태에서 원하는 결과를 탐색할 수 있도록 해야 한다.
@@ -2993,7 +2993,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="검색 결과 수를 표시한다."
 >
@@ -3315,7 +3315,7 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 검색어와 관련된 결과가 반환되는지 확인한다.**
 사용자는 원하는 정보를 찾기 위해 검색 패턴을 이용한다. 많은 사용자가 자주 검색하는 검색어를 중심으로 검색 결과가 적절한 내용과 순서로 제공되고 있는지 정기적으로 점검하여 검색 결과의 정확성을 향상해야 한다.
@@ -3345,7 +3345,7 @@ import { Table } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="검색 결과가 없는 경우, 결과를 명확하게 알리고 적절한 대안을 제공한다."
 >
@@ -3544,11 +3544,11 @@ import { Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="검색 결과가 없는 경우, 결과를 명확하게 알리고 적절한 대안을 제공한다."
 >
@@ -3638,7 +3638,7 @@ export class Example {}
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 ### 상세 검색
 
@@ -3653,7 +3653,7 @@ export class Example {}
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="기본 검색에서 정렬, 필터 컨트롤은 일정한 순서로 제공되어야 한다."
 >
@@ -4005,11 +4005,11 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="기본 검색에서 정렬, 필터 컨트롤은 일정한 순서로 제공되어야 한다."
 >
@@ -4369,7 +4369,7 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 스코프 필터를 사용하는 경우 결과 페이지 상단에 설정된 범위를 명시적으로 표시한다.**
 검색 결과의 제한 사항에 대해 사용자가 명확하게 인지할 수 있도록 사용자가 값을 변경하기 전까지는 기본으로 선택된 스코프 필터가 유지되도록 하거나 검색 결과 화면의 제목에 설정된 옵션 정보를 포함하여 제공할 수 있다.
@@ -4382,7 +4382,7 @@ import { Table } from "@krds-community/astro";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다."
 >
@@ -4678,11 +4678,11 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다."
 >
@@ -5046,11 +5046,11 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 3**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="조건이 적용되었음을 확인할 수 있는 명확한 시각적 단서를 제공한다."
 >
@@ -5375,7 +5375,7 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 ### 검색 결과 이용
 
@@ -5401,7 +5401,7 @@ import { Table } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="전체 결과 목록은 주제별 섹션 구분 없이 결과의 정확도나 관련도 순으로 정렬한다."
 >
@@ -5832,11 +5832,11 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="전체 결과 목록은 주제별 섹션 구분 없이 결과의 정확도나 관련도 순으로 정렬한다."
 >
@@ -6079,7 +6079,7 @@ import { TextList } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 제목과 설명은 명확하고 간결하게 제공한다.**
 제목과 설명은 2줄 이내로 제공하여 사용자가 결과 목록을 효율적으로 탐색할 수 있도록 해야 한다. 2줄을 초과하는 텍스트는 말줄임표를 사용해 잘라 표현함으로써 상세 화면에서 추가로 정보가 제공되고 있음이 드러나야 한다.
@@ -6089,7 +6089,7 @@ import { TextList } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="항목에 검색 결과 범주 정보가 명확하게 드러나도록 표현한다."
 >
@@ -6344,7 +6344,7 @@ import { Table } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 검색어와 일치하는 항목을 강조 표시한다.**
 검색 결과를 표시할 때는 사용자가 입력했던 검색어와 일치하는 항목을 강조 표시하여, 인지의 흐름에 단절이 생기지 않도록 해야 한다.
@@ -6359,7 +6359,7 @@ import { Table } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="상세 검색 컨트롤을 숨기지 않는다."
 >
@@ -6758,11 +6758,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="상세 검색 컨트롤을 숨기지 않는다."
 >
@@ -7091,7 +7091,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 사용자가 설정한 상세 검색 조건을 유지한다.**
 사용자가 의도적으로 설정을 해제하기 전까지 재검색 전 과정 동안 상세 검색 조건을 유지하여 사용자가 필요한 맥락 내에서 연속적으로 검색을 수행할 수 있도록 해야 한다.
@@ -7106,7 +7106,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="검색 과업 맥락에서 벗어나 다른 화면 또는 다른 탐색 수단에 빠르게 접근할 수 있도록 해야 한다."
 >
@@ -7489,11 +7489,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="검색 과업 맥락에서 벗어나 다른 화면 또는 다른 탐색 수단에 빠르게 접근할 수 있도록 해야 한다."
 >
@@ -7741,4 +7741,4 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>

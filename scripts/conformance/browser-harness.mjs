@@ -109,6 +109,18 @@ export const captureDomTree = async (
       return `#${ids.get(value.slice(1)) ?? value.slice(1)}`;
     }
     if (name === "class") return value.split(/\s+/).filter(Boolean).sort().join(" ");
+    // CSS declaration whitespace is not semantic. React serializes an inline
+    // style object with spaces while the reference fixtures use compact CSS;
+    // compare the declarations in one canonical form instead of weakening the
+    // actual style values.
+    if (name === "style") {
+      return value
+        .split(";")
+        .map((declaration) => declaration.trim())
+        .filter(Boolean)
+        .map((declaration) => declaration.replace(/\s*:\s*/g, ":"))
+        .join(";");
+    }
     return value;
   };
   const serialize = (node) => {

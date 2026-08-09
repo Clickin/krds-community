@@ -3,7 +3,7 @@ title: 선명한 화면 모드
 description: 다크 모드와 유사한 선명한 화면 모드는 시각 기능에 제약이 있는 사용자, 저조도 환경의 사용자를 위해 콘텐츠의 가독성과 가시성을 높인 화면 스타일이다.
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -59,7 +59,7 @@ import { Button as AstroButton } from "@krds-community/astro";
 어두운 화면에 넓은 면적의 흰 배경을 가진 요소를 사용했을 때 눈부심을 유발하거나 지나치게 강조되어 표현될 수 있으므로 색상 팔레트에서 조금 더 어두운 색상을 사용하여 요소를 표현한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="흰 배경 색상을 가진 요소의 사용에 유의한다.">
+<FrameworkPreview kind="good" title="흰 배경 색상을 가진 요소의 사용에 유의한다.">
   <div slot="react" client:only="react">
     <div style="background:var(--krds-primitive-color-high-contrast-gray-100);padding:16px;border-radius:6px">
       <div style="background:var(--krds-primitive-color-high-contrast-gray-90);color:var(--krds-primitive-color-high-contrast-gray-0);padding:12px;border-radius:6px;font-size:14px">
@@ -181,11 +181,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="흰 배경 색상을 가진 요소의 사용에 유의한다.">
+<FrameworkPreview kind="bad" title="흰 배경 색상을 가진 요소의 사용에 유의한다.">
   <div slot="react" client:only="react">
     <div style="background:var(--krds-primitive-color-high-contrast-gray-100);padding:16px;border-radius:6px">
       <div style="background:var(--krds-primitive-color-high-contrast-gray-0);color:var(--krds-primitive-color-high-contrast-gray-0);padding:12px;border-radius:6px;font-size:14px">
@@ -307,7 +307,7 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **일반 모드와 선명한 화면 모드에서 잘 식별되는 이미지를 사용한다.**
 일반 모드에서 선명한 화면 모드로 전환되었을 때 모든 이미지가 문제없이 표시되는지 확인해야 한다. 가장 좋은 방법은 일반 모드와 선명한 화면 모드에 잘 호환되는 이미지를 사용하는 것이다. 그러나 상황에 따라 특정한 이미지를 선명한 화면 모드에서 알아보기 어렵다면 각 모드별로 제공될 이미지를
@@ -315,7 +315,7 @@ import { Button } from '@krds-community/astro';
 래스터(Raster) 이미지(JPEG, PNG, GIF 등)는 두 가지 모드에 대응 가능하도록 별도 버전을 준비한다. 벡터(Vector) 이미지(SVG 등)는 디자인 토큰의 색상 규칙에 따라서 적용될 수 있도록 구현한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="일반 모드와 선명한 화면 모드에서 잘 식별되는 이미지를 사용한다."
 >
@@ -432,11 +432,11 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례 1**
 
-<PracticeExample kind="bad" title="일반 모드와 선명한 화면 모드에서 잘 식별되는 이미지를 사용한다.">
+<FrameworkPreview kind="bad" title="일반 모드와 선명한 화면 모드에서 잘 식별되는 이미지를 사용한다.">
 <div slot="react" client:only="react">
     <div style="display:flex;gap:8px;align-items:center;background:var(--krds-primitive-color-light-gray-5);padding:12px;border-radius:6px">
       <span style="width:40px;height:40px;border-radius:6px;background:var(--krds-primitive-color-light-primary-20)"></span>
@@ -550,11 +550,11 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례 2**
 
-<PracticeExample kind="bad" title="일반 모드와 선명한 화면 모드에서 잘 식별되는 이미지를 사용한다.">
+<FrameworkPreview kind="bad" title="일반 모드와 선명한 화면 모드에서 잘 식별되는 이미지를 사용한다.">
 <div slot="react" client:only="react">
     <div style="display:flex;gap:8px;align-items:center;background:var(--krds-primitive-color-high-contrast-gray-90);padding:12px;border-radius:6px">
       <span style="width:40px;height:40px;border-radius:6px;background:var(--krds-primitive-color-high-contrast-gray-70)"></span>
@@ -668,13 +668,13 @@ export class ExampleComponent {}
       </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **한 화면에서 다른 화면으로 이동하거나 서비스 채널이 변경될 때 모드 일관성을 유지한다.**
 선명한 화면 모드는 하나의 스타일 주제이므로 한 서비스 내에서 모든 화면과 요소는 일관된 주제로 표현되어야 한다. 모바일 애플리케이션에서 웹 페이지를 여는 것과 같은 채널/플랫폼 간 전환이 발생하는 경우에도 가능한 스타일 모드의 일관성이 유지되도록 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="한 화면에서 다른 화면으로 이동하거나 서비스 채널이 변경될 때 모드 일관성을 유지한다."
 >
@@ -855,11 +855,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="한 화면에서 다른 화면으로 이동하거나 서비스 채널이 변경될 때 모드 일관성을 유지한다."
 >
@@ -1040,13 +1040,13 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **프레임으로 제공되는 요소에는 별도의 스타일을 지정한다.**
 레임으로 포함된 문서는 부모 화면의 스타일 속성을 상속하지 못한다. 만약 프레임 요소가 선명한 화면 모드 또는 다크 모드를 지원한다면, 부모 화면이 선명한 화면 모드로 전환되었을 때 프레임 요소도 어두운 배경으로 표시되도록 한 화면 내에서의 스타일 일관성이 유지되도록 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="프레임으로 제공되는 요소에는 별도의 스타일을 지정한다.">
+<FrameworkPreview kind="good" title="프레임으로 제공되는 요소에는 별도의 스타일을 지정한다.">
   <div slot="react" client:only="react">
     <div style="background:var(--krds-primitive-color-high-contrast-gray-100);padding:16px;border-radius:6px">
       <div style="background:var(--krds-primitive-color-high-contrast-gray-95);color:var(--krds-primitive-color-high-contrast-gray-0);padding:12px;border-radius:6px;font-size:14px">
@@ -1168,11 +1168,11 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="프레임으로 제공되는 요소에는 별도의 스타일을 지정한다.">
+<FrameworkPreview kind="bad" title="프레임으로 제공되는 요소에는 별도의 스타일을 지정한다.">
   <div slot="react" client:only="react">
     <div style="background:var(--krds-primitive-color-high-contrast-gray-100);padding:16px;border-radius:6px">
       <div style="background:var(--krds-primitive-color-light-gray-0);color:var(--krds-primitive-color-light-gray-100);padding:12px;border-radius:6px;font-size:14px">
@@ -1294,7 +1294,7 @@ import { Button } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

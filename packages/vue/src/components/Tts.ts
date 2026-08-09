@@ -67,12 +67,16 @@ export const Tts = defineComponent({
               class: ["svg-icon", isPlaying ? "ico-stop" : "ico-volume"],
             }),
           ]),
-          " ",
-          create(
-            "span",
-            { class: "krds-tts-text" },
-            slotChildren.length ? slotChildren : [props.text],
-          ),
+          !props.iconOnly
+            ? [
+                " ",
+                create(
+                  "span",
+                  { class: "krds-tts-text" },
+                  slotChildren.length ? slotChildren : [props.text ?? props.label],
+                ),
+              ]
+            : null,
         ],
       );
     };

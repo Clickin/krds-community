@@ -4,7 +4,6 @@ description: KRDS 헤더 컴포넌트의 React, Vue, Svelte, SolidJS, Angular, A
 category: identity
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Header as ReactHeader, Button as ReactButton } from "@krds-community/react";
 import { Header as VueHeader, Button as VueButton } from "@krds-community/vue";
@@ -121,7 +120,7 @@ import { Header } from '@krds-community/astro';
 유사한 목적을 가진 링크를 하나의 드롭다운 메뉴로 제공함으로써 사용자는 관련 있는 기능을 더 빠르게 인지할 수 있으며, 헤더를 간결하게 유지함으로써 보다 중요한 정보에 집중하는 데 도움이 된다.
 **모범 사례**
 
-<PracticeExample kind="good" title="유틸리티 링크가 5개 이상 필요한 경우 드롭다운 메뉴를 사용한다.">
+<FrameworkPreview kind="good" title="유틸리티 링크가 5개 이상 필요한 경우 드롭다운 메뉴를 사용한다.">
   <div slot="react">
     <ReactHeader
       aria-label="정부 헤더"
@@ -307,11 +306,11 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="유틸리티 링크가 5개 이상 필요한 경우 드롭다운 메뉴를 사용한다.">
+<FrameworkPreview kind="bad" title="유틸리티 링크가 5개 이상 필요한 경우 드롭다운 메뉴를 사용한다.">
   <div slot="react">
     <ReactHeader
       aria-label="정부 헤더"
@@ -449,7 +448,7 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **언어 설정을 위한 드롭다운 메뉴에 국기를 사용하지 않는다.**
 한 국가 내에서도 다양한 언어가 사용될 수 있기 때문에 국기 대신 언어의 이름을 해당 언어로 제공해야 한다.
@@ -457,7 +456,7 @@ import { Header } from '@krds-community/astro';
 아이콘에 표현된 정보가 명확하지 않거나 정보 해석에 많은 시간 소요되는 사용자는 아이콘만 제공되었을 때 컨트롤의 기능을 이해하지 못할 가능성이 높다. 검색, 로그인처럼 대부분의 사용자가 의미를 이해할 수 있고 아이콘이 간결한 경우에는 텍스트 레이블을 생략할 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="아이콘 버튼/링크에 텍스트 레이블을 제공한다.">
+<FrameworkPreview kind="good" title="아이콘 버튼/링크에 텍스트 레이블을 제공한다.">
   <div slot="react">
     <ReactHeader
       aria-label="정부 헤더"
@@ -559,13 +558,13 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **메인 메뉴와 검색의 위치는 웹사이트의 목적에 적합한 형태로 제공한다.**
 메인 메뉴의 길이와 검색의 복잡도, 이용 빈도에 따라 적절한 레이아웃의 메인 메뉴와 통합검색 버튼 스타일을 결정한다.
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="메인 메뉴와 검색의 위치는 웹사이트의 목적에 적합한 형태로 제공한다."
 >
@@ -676,11 +675,11 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="메인 메뉴와 검색의 위치는 웹사이트의 목적에 적합한 형태로 제공한다."
 >
@@ -773,7 +772,7 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **화면을 스크롤 했을 때 헤더를 뷰포트 상단에 고정할 수 있다.**
 헤더가 간결하게 구성되어 있다면 사용자가 긴 화면을 스크롤 하면서도 헤더에서 제공하는 탐색 및 유틸리티에 계속 접근 가능하도록 헤더를 고정하여 제공할 수 있다.
@@ -782,7 +781,7 @@ import { Header } from '@krds-community/astro';
 헤더가 고정될 때에는 공식 배너를 제외한 전체 헤더가 고정되어야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="화면을 스크롤 했을 때 헤더를 뷰포트 상단에 고정할 수 있다.">
+<FrameworkPreview kind="good" title="화면을 스크롤 했을 때 헤더를 뷰포트 상단에 고정할 수 있다.">
   <div slot="react">
     <div style="position: sticky; top: 0; z-index: 10">
       <ReactHeader
@@ -914,7 +913,7 @@ import { Header } from '@krds-community/astro';
     </p>
     <p>헤더가 고정되면 사용자는 메인 화면으로 이동하거나 메뉴를 탐색할 수 있습니다.</p>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 플랫폼에 대한 고려 사항
 
@@ -922,7 +921,7 @@ import { Header } from '@krds-community/astro';
 작은 화면에서는 사용자가 본문 콘텐츠에 집중할 수 있도록 메인 메뉴 막대를 숨기고 햄버거 메뉴 버튼과 메뉴 레이어를 사용할 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않아 메인 메뉴를 표시할 수 없을 때 햄버거 메뉴 형태로 제공할 수 있다."
 >
@@ -1135,13 +1134,13 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **최소한의 메뉴만 제공한다.**
 모바일 앱에서의 헤더의 좌측에는 최대 3개 이하의 최소한의 메뉴만 제공한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="최소한의 메뉴만 제공한다.">
+<FrameworkPreview kind="good" title="최소한의 메뉴만 제공한다.">
   <div slot="react">
     <ReactHeader
       aria-label="정부 헤더"
@@ -1231,11 +1230,11 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="최소한의 메뉴만 제공한다.">
+<FrameworkPreview kind="bad" title="최소한의 메뉴만 제공한다.">
   <div slot="react">
     <ReactHeader
       aria-label="정부 헤더"
@@ -1349,13 +1348,13 @@ import { Header } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **콘텐츠 페이지로 이동 시 좌측에 뒤로가기버튼을 제공한다.**
 콘텐츠 페이지로 이동 시 좌측에 이전버튼을 제공하여 사용자에게 이전으로 이동할 수 있도록 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="콘텐츠 페이지로 이동 시 좌측에 뒤로가기버튼을 제공한다.">
+<FrameworkPreview kind="good" title="콘텐츠 페이지로 이동 시 좌측에 뒤로가기버튼을 제공한다.">
   <div slot="react">
     <div style="display: flex; align-items: flex-start; gap: 8px">
       <div style="flex-shrink: 0; padding-top: 8px">
@@ -1497,7 +1496,7 @@ import { Header } from '@krds-community/astro';
       </div>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **유틸리티 링크 그룹은 재배치한다.**
 모바일 앱에서는 유틸리티 링크 그룹을 설정창을 통하여 제공한다.

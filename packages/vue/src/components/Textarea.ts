@@ -7,7 +7,7 @@ export const Textarea = defineComponent({
   inheritAttrs: false,
   props: {
     id: { type: String, default: undefined },
-    label: { type: String, default: undefined },
+    label: { type: String, default: "내용" },
     name: { type: String, default: undefined },
     value: {
       type: [String, Number, Boolean] as PropType<string | number | boolean | undefined>,
@@ -64,10 +64,12 @@ export const Textarea = defineComponent({
       emit("valueChange", next);
     };
 
+    const hintId = props.hint ? `${id.value}-hint` : undefined;
+
     return () => {
       const className = attrs.class as string | undefined;
       return create(Fragment, null, [
-        props.label ? create("label", { for: id.value, class: "sr-only" }, props.label) : null,
+        create("label", { for: id.value }, props.label),
         create("textarea", {
           ...attrs,
           id: id.value,
@@ -78,6 +80,7 @@ export const Textarea = defineComponent({
           disabled: props.disabled,
           readonly: props.readonly,
           required: props.required,
+          "aria-describedby": hintId,
           onInput: (event: Event) => {
             invokeNativeEvent(attrs.onInput, event);
             setValue((event.target as HTMLTextAreaElement).value);
@@ -88,6 +91,7 @@ export const Textarea = defineComponent({
           },
           class: ["krds-input", className],
         }),
+        props.hint ? create("p", { id: hintId }, props.hint) : null,
       ]);
     };
   },

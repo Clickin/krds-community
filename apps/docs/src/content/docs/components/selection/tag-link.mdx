@@ -5,7 +5,6 @@ category: selection
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { TagLink as ReactTagLink } from "@krds-community/react";
 import { Tag as ReactTag } from "@krds-community/react";
 import { TagLink as VueTagLink } from "@krds-community/vue";
@@ -138,7 +137,7 @@ import { TagLink } from '@krds-community/astro';
 태그를 많이 사용할수록 인지 부담이 증가되므로 최소의 태그를 사용한다. 이후, 사용자 의견 수렴 과정을 통해 추가가 필요한 태그를 확인하여 표시 개수를 늘릴 수 있다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="지나치게 많은 태그를 사용하지 않는다.">
+<FrameworkPreview kind="bad" title="지나치게 많은 태그를 사용하지 않는다.">
   <div slot="react">
     <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
       <ReactTagLink href="/tag" label="여행" client:only="react" />
@@ -223,14 +222,14 @@ import { TagLink } from '@krds-community/astro';
       <AngularTagLink href="/tag" label="레저" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **태그의 표현에 지나치게 많은 색상을 사용하지 않는다.**
 여러 색상은 사용자의 주의를 분산시키고 혼동을 줄 수 있으므로 가능한 한 태그에는 하나의 색상만 사용하는 것이 적합하다. 색상을 추가하고자 하는 경우, 색상을 활용한 태그 구분이 사용자에게 의미가 있는지를 가장 먼저 고려해야 한다. 그 다음 동시에 표시되는 태그 수를 고려하여,
 모든 태그가 동등한 수준으로 강조될 수 있는 색상을 사용해야 한다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="태그의 표현에 지나치게 많은 색상을 사용하지 않는다.">
+<FrameworkPreview kind="bad" title="태그의 표현에 지나치게 많은 색상을 사용하지 않는다.">
   <div slot="react">
     <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
       <ReactTag tone="primary" label="여행" client:only="react" />
@@ -285,7 +284,7 @@ import { TagLink } from '@krds-community/astro';
       <AngularTag tone="secondary" label="맛집" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

@@ -3,8 +3,8 @@ title: 확인
 description: 취소하기 어렵거나 효과를 인지해야 하는 행위를 다시 확인하는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Modal as ReactModal } from "@krds-community/react";
 import { Modal as VueModal } from "@krds-community/vue";
 import { Modal as SvelteModal } from "@krds-community/svelte";
@@ -36,7 +36,7 @@ import { Modal as AstroModal } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="행동을 확정, 취소할 수 있는 버튼을 모두 제공한다."
 >
@@ -189,7 +189,7 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **버튼의 레이블에 행동을 구체적으로 설명한다.**
 버튼 레이블에 작동 시 어떤 동작을 수행하는 것인지 구체적으로 기술되어 있으면 사용자는 본문을 읽지 않더라도 어떤 행위를 할 것인지 또는 하지 말아야 하는지를 이해하고, 효과적으로 다음 행동을 취할 수 있다.

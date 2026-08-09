@@ -3,8 +3,8 @@ title: 입력 폼
 description: 입력 컨트롤로 데이터를 입력하여 서버로 전송하는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -80,7 +80,7 @@ import { Spinner as AstroSpinner } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="액션 버튼은 일관된 위치에 배치하고 정렬한다."
 >
@@ -240,11 +240,11 @@ import { Button, TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="액션 버튼은 일관된 위치에 배치하고 정렬한다."
 >
@@ -428,14 +428,14 @@ import { Button, TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **비활성화 상태의 콜투액션 버튼 사용을 고려한다.**
 입력폼의 모든 필수 입력 항목에 데이터가 입력되기 전까지 입력폼 제출 버튼 또는 다음 단계로의 이동 버튼을 비활성화하면 버튼을 누르기 전에 입력폼 제출 요건이 갖추어지지 않았음을 사용자가 직관적으로 인지할 수 있다. 사용자가 입력폼을 제출할 때는 중복 제출을 방지하기 위해 제출 버튼을 비활성화한다. 입력폼 처리에 시간이 걸릴 경우 피드백 메시지 및 인디케이터(예 - 스피너)를 사용하여 처리 중임을 안내하는 것이 바람직하다.
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="비활성화 상태의 콜투액션 버튼 사용을 고려한다."
 >
@@ -587,11 +587,11 @@ import { Button, TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="비활성화 상태의 콜투액션 버튼 사용을 고려한다."
 >
@@ -755,11 +755,11 @@ import { Button, Spinner, TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="클라이언트 측 검증은 실시간으로 입력을 확인한다"
 >
@@ -1054,7 +1054,7 @@ import { ValidatedInput } from "@krds-community/astro/extra";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **입력 필드 주변에 레이블과 설명을 제공한다.**
 입력 필드의 용도와 관련 도움말을 쉽게 활용할 수 있도록 근접한 위치에 정보를 제공한다.
@@ -1067,7 +1067,7 @@ import { ValidatedInput } from "@krds-community/astro/extra";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 입력 항목과 선택 입력 항목을 명확하게 구분한다."
 >
@@ -1179,11 +1179,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 입력 항목과 선택 입력 항목을 명확하게 구분한다."
 >
@@ -1295,11 +1295,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 3**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 입력 항목과 선택 입력 항목을 명확하게 구분한다."
 >
@@ -1423,7 +1423,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다.**
 입력 항목을 구분하기 위해 사용된 패턴은 동일한 유형의 입력폼 또는 전체 웹사이트에서 일관되어야 한다. 입력 항목을 구분하는 데 다음과 같은 방식을 활용할 수 있다.
@@ -1433,7 +1433,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다."
 >
@@ -1557,11 +1557,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다."
 >
@@ -1685,11 +1685,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 3**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필수 또는 선택 입력 항목은 일관성 있는 방식으로 구분한다."
 >
@@ -1825,7 +1825,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **사용자로부터 최소한의 데이터만 입력받는다.**
 반드시 필요한 정보만을 사용자가 입력하도록 콘텐츠를 간결화하고 입력 항목을 신중하게 도출해야 한다.
@@ -1838,7 +1838,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자가 잘못 입력/선택한 값을 자동으로 삭제하지 않는다."
 >
@@ -1980,11 +1980,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="사용자가 잘못 입력/선택한 값을 자동으로 삭제하지 않는다."
 >
@@ -2120,4 +2120,4 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>

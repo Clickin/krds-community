@@ -5,7 +5,6 @@ category: selection
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Radio as ReactRadio } from "@krds-community/react";
 import { Radio as VueRadio } from "@krds-community/vue";
 import { Radio as SvelteRadio } from "@krds-community/svelte";
@@ -117,7 +116,7 @@ import { RadioSize } from '@krds-community/astro';
 가독성과 옵션 간 명확한 구분을 위하여 라디오 버튼은 수직으로 배치하는 것이 좋다. 이때, 레이블은 양식의 오른쪽에 배치해 일관된 위치에서 텍스트를 읽을 수 있도록 해야 한다. 만약 라디오 버튼을 수평으로 배치해야 한다면 레이블의 텍스트 길이가 지나치게 길지 않아야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="라디오 버튼은 수직으로, 라디오 버튼의 레이블은 양식의 오른쪽에 배치한다."
 >
@@ -241,11 +240,11 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="라디오 버튼은 수직으로, 라디오 버튼의 레이블은 양식의 오른쪽에 배치한다."
 >
@@ -355,13 +354,13 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **라디오 버튼을 수평으로 배치하는 경우 버튼 간 간격을 충분히 제공한다.**
 각 라디오 버튼의 간격을 양식과 레이블 간 간격과 동일하게 제공하는 경우 사용자에게 혼동을 줄 수 있으므로 유의해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="라디오 버튼을 수평으로 배치하는 경우 버튼 간 간격을 충분히 제공한다."
 >
@@ -485,11 +484,11 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="라디오 버튼을 수평으로 배치하는 경우 버튼 간 간격을 충분히 제공한다."
 >
@@ -613,13 +612,13 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **라디오 버튼의 레이블은 분명하고 정확하게 제공한다.**
 사용자가 어떤 옵션을 선택하는 것인지 이해할 수 있도록 라디오 버튼의 레이블은 분명하고 정확하게 제공해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="라디오 버튼의 레이블은 분명하고 정확하게 제공한다.">
+<FrameworkPreview kind="good" title="라디오 버튼의 레이블은 분명하고 정확하게 제공한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactRadio name="plan" value="monthly" label="월간 구독" size="large" client:only="react" />
@@ -686,11 +685,11 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="라디오 버튼의 레이블은 분명하고 정확하게 제공한다.">
+<FrameworkPreview kind="bad" title="라디오 버튼의 레이블은 분명하고 정확하게 제공한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactRadio name="plan" value="one" label="옵션 1" size="large" client:only="react" />
@@ -739,13 +738,13 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **사용자가 정확한 값을 입력하는 것이 중요한 경우 라디오 버튼의 특정 옵션을 기본 선택값으로 제공하지 않아야 한다.**
 사용자가 어떤 질문이나 선택을 해야 하는지를 놓치거나 잘못된 옵션 값을 제출하는 실수를 할 수 있으므로 유의해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자가 정확한 값을 입력하는 것이 중요한 경우 라디오 버튼의 특정 옵션을 기본 선택값으로 제공하지 않아야 한다."
 >
@@ -809,11 +808,11 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="사용자가 정확한 값을 입력하는 것이 중요한 경우 라디오 버튼의 특정 옵션을 기본 선택값으로 제공하지 않아야 한다."
 >
@@ -906,13 +905,13 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **‘해당 없음’, ‘잘 모름’ 옵션 제공을 고려한다.**
 일단 라디오 버튼 옵션 목록에서 하나의 옵션을 선택하고 나면 화면을 새로 고침하기 전까지 선택을 되돌릴 수 없다. 필수 입력 항목이 아닌 경우와 같이 아무 값도 선택하지 않아도 되는 상황을 고려하여 ‘해당 없음’, 잘 모름’, ‘선택 안 함’과 같은 옵션을 제공하는 것이 좋다.
 **모범 사례**
 
-<PracticeExample kind="good" title="‘해당 없음’, ‘잘 모름’ 옵션 제공을 고려한다.">
+<FrameworkPreview kind="good" title="‘해당 없음’, ‘잘 모름’ 옵션 제공을 고려한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactRadio name="survey" value="yes" label="그렇다" size="large" client:only="react" />
@@ -973,11 +972,11 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="‘해당 없음’, ‘잘 모름’ 옵션 제공을 고려한다.">
+<FrameworkPreview kind="bad" title="‘해당 없음’, ‘잘 모름’ 옵션 제공을 고려한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactRadio name="survey" value="yes" label="그렇다" size="large" client:only="react" />
@@ -1026,7 +1025,7 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 
@@ -1041,7 +1040,7 @@ import { RadioSize } from '@krds-community/astro';
 - WCAG 2.1 Use of Color (A)
   **모범 사례**
 
-<PracticeExample kind="good" title="버튼 양식의 선택 상태를 색상으로만 구분하지 않는다.">
+<FrameworkPreview kind="good" title="버튼 양식의 선택 상태를 색상으로만 구분하지 않는다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactRadio
@@ -1125,11 +1124,11 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="버튼 양식의 선택 상태를 색상으로만 구분하지 않는다.">
+<FrameworkPreview kind="bad" title="버튼 양식의 선택 상태를 색상으로만 구분하지 않는다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactRadio
@@ -1207,7 +1206,7 @@ import { RadioSize } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **라디오 버튼을 키보드로 탐색하고 실행할 수 있도록 한다.**
 사용자 에이전트에서 제공되는 기본 버튼 양식이 아니라 커스텀 양식 디자인을 사용하는 경우에 기본 버튼 양식에 display:none, visibility:hidden, opacity:0과 같은 스타일을 하면 스크린 리더에서 라디오 버튼의 역할을 인지할 수 없으며 키보드로 옵션을

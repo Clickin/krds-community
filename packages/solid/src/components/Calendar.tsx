@@ -74,7 +74,7 @@ const renderCalendarSurface = (
       (p as Record<string, any>).displayYear ??
         (p as Record<string, any>).year ??
         (p as Record<string, any>).selectedYear,
-      2000,
+      new Date().getFullYear(),
     );
   const calendarDisplayMonth = () =>
     Math.min(
@@ -85,7 +85,7 @@ const renderCalendarSurface = (
           (p as Record<string, any>).displayMonth ??
             (p as Record<string, any>).month ??
             (p as Record<string, any>).selectedMonth,
-          1,
+          new Date().getMonth() + 1,
         ),
       ),
     );

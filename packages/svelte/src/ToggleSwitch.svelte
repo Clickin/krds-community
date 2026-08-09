@@ -20,7 +20,7 @@
   let {
     id = generatedId,
     name = '',
-    label = '레이블',
+    label = '',
     disabled = false,
     required = false,
     form,

@@ -50,7 +50,7 @@ export interface Props
   externalTitle?: string;
   tasks: HelpPanelTask[];
   stopLabel: string;
-  collapseLabel: string;
+  collapseLabel?: string;
   label: string;
   title?: string;
   children?: string;
@@ -99,6 +99,7 @@ const resolvedTasks = tasks.map((task, index) => ({
   disclosureId: `${panelId}-task-${task.id ?? index + 1}`,
 }));
 const resolvedDescription = helpDescription ?? children;
+const foldLabel = collapseLabel ?? label;
 ---
 
 <button
@@ -109,8 +110,9 @@ const resolvedDescription = helpDescription ?? children;
   aria-expanded={open ? 'true' : 'false'}
   title={triggerTitle}
 >
-  <i class="svg-icon ico-fold"></i>{' '}{label}
+  <i class="svg-icon ico-fold"></i> {label}
 </button>
+
 <div
   {...rest}
   id={panelId}
@@ -290,7 +292,7 @@ const resolvedDescription = helpDescription ?? children;
       </div>
 
       <button type="button" class="krds-btn small tertiary btn-help-panel fold">
-        <span class="sr-only">{label}</span>{' '}{collapseLabel}{' '}<i class="svg-icon ico-angle right"></i>
+        <span class="sr-only">{label}</span>{' '}{foldLabel}{' '}<i class="svg-icon ico-angle right"></i>
       </button>
     </div>
   </div>
@@ -410,7 +412,7 @@ const resolvedDescription = helpDescription ?? children;
       });
 
       trigger?.addEventListener('click', () => setOpen(true, trigger));
-      collapse?.addEventListener('click', () => setOpen(false));
+      collapse?.addEventListener('click', () => setOpen(!root.classList.contains('expand')));
       root.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
         event.preventDefault();

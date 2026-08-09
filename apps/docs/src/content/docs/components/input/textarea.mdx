@@ -11,7 +11,6 @@ import { Textarea as SvelteTextarea } from "@krds-community/svelte";
 import { Textarea as SolidTextarea } from "@krds-community/solid";
 import { AngularTextarea } from "@docs/angular-previews.ts";
 import { Textarea as AstroTextarea } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 
 <FrameworkPreview title="텍스트 영역">
   <ReactTextarea slot="react" name="description" label="설명" hint="도움말" placeholder="내용을 입력하세요" client:only="react" />
@@ -127,7 +126,7 @@ import { Textarea } from '@krds-community/astro';
 플레이스홀더 텍스트의 기본 색상을 최소 명도 대비 기준보다 낮게 제공하므로 읽기 어렵다. 이와 같이 플레이스홀더는 다양한 사용자 그룹에서 여러 사용성 문제를 야기하므로 단순히 사용자의 행동을 유도하기 위한 수단으로 사용해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="플레이스홀더가 레이블이나 도움말의 대체 수단으로 사용되어서는 안 된다."
 >
@@ -184,11 +183,11 @@ import { Textarea } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="플레이스홀더가 레이블이나 도움말의 대체 수단으로 사용되어서는 안 된다."
 >
@@ -239,7 +238,7 @@ import { Textarea } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **복사, 붙여쓰기를 제한하지 않는다.**
 사용자가 다른 웹사이트나 플랫폼에서 텍스트를 복사하여 붙여 넣어야 하는 경우가 있을 수 있으므로 복사, 붙여쓰기 기능을 제한하지 않는 것이 바람직하다.
@@ -247,7 +246,7 @@ import { Textarea } from '@krds-community/astro';
 입력폼 주변에 레이블 다음 또는 입력 영역 다음 요소로 최대 글자 수와 남은 입력 가능 글자 수 정보를 제공한다. 남은 입력 가능 글자 수는 사용자의 입력에 따라 동적으로 업데이트하여 사용자가 입력폼을 제출하기 전에 입력 제약 사항에 대해 예측할 수 있도록 해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="입력 가능한 글자 수에 제한이 있는 경우 사용자에게 글자 수 정보를 제공한다."
 >
@@ -309,7 +308,7 @@ import { Textarea } from '@krds-community/astro';
     />
     <p style="margin-top:8px">0/500자</p>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

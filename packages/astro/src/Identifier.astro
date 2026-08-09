@@ -16,5 +16,5 @@ const { organization, description, children, class: className, ...rest } = Astro
   <span class="logo">
     <span class="sr-only"><slot name="organization">{organization}</slot></span>
   </span>
-  <span class="ban-txt"><slot>{description ?? children}</slot></span>
+  <span class="ban-txt"><slot>{description ?? children ?? organization}</slot></span>
 </div>

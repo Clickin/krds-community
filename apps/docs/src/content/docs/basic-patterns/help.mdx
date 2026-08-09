@@ -3,8 +3,8 @@ title: 도움
 description: 서비스 이용 중 작동 방식과 과업 흐름에 관한 도움을 제공하는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Tooltip as ReactTooltip } from "@krds-community/react";
 import { Tooltip as VueTooltip } from "@krds-community/vue";
 import { Tooltip as SvelteTooltip } from "@krds-community/svelte";
@@ -100,7 +100,7 @@ import { TextInput as AstroTextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="플레이스홀더를 레이블이나 도움말의 대체 수단으로 사용하지 않는다."
 >
@@ -229,11 +229,11 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="플레이스홀더를 레이블 대체 수단으로 사용한다."
 >
@@ -356,7 +356,7 @@ import { TextInput } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 인라인 텍스트
 
@@ -368,7 +368,7 @@ import { TextInput } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="컨트롤 요소에 대한 레이블과 같이 간단한 추가 정보를 제공하는 데 툴팁을 사용한다."
 >
@@ -496,7 +496,7 @@ import { ButtonIcon, Tooltip } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 맥락적 도움말
 
@@ -504,7 +504,7 @@ import { ButtonIcon, Tooltip } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="컴포넌트의 상태나 관련된 상세 정보를 제공하는 데 맥락적 도움말을 사용한다."
 >
@@ -705,7 +705,7 @@ import { ContextualHelp } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 도움 패널
 
@@ -719,7 +719,7 @@ import { ContextualHelp } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="도움말 콘텐츠의 양이 많거나 복잡한 과업에 도움 패널을 사용한다."
 >
@@ -781,8 +781,7 @@ import { ContextualHelp } from "@krds-community/astro";
       tutorialTitle="튜토리얼"
       tasks={[]}
       stopLabel="중지"
-      collapseLabel="접기"
-      label="도움 패널"
+            label="도움 패널"
     />
   </div>
   <div slot="angular">
@@ -895,12 +894,11 @@ import { HelpPanel } from "@krds-community/astro";
   tutorialTitle="튜토리얼"
   tasks={[]}
   stopLabel="중지"
-  collapseLabel="접기"
-  label="도움 패널"
+    label="도움 패널"
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 #### 코치마크와 따라하기 패널
 

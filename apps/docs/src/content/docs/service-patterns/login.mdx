@@ -3,8 +3,8 @@ title: 로그인
 description: 사용자의 신원을 확인하여 서비스에 접근하도록 하는 서비스 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -70,7 +70,7 @@ import { Tab as AstroTab } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="헤더에서 제공되는 로그인 링크는 사용자 아이콘과 레이블로 구성한다."
 >
@@ -196,11 +196,11 @@ import { Header } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="헤더에서 제공되는 로그인 링크는 사용자 아이콘과 레이블로 구성한다."
 >
@@ -423,7 +423,7 @@ export function Example() {
 </header>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 로그인 링크는 항상 ‘로그인’ 화면으로 연결되어야 한다.**
 로그인 링크의 목적지는 로그인 프로세스를 시작하는 화면 또는 로그인할 수 있는 다양한 계정이 있는 계정 선택 화면으로 설정해야 한다.
@@ -436,7 +436,7 @@ export function Example() {
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인 버튼은 사용자가 잘 볼 수 있도록 상시 노출한다."
 >
@@ -774,7 +774,7 @@ import { Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **로그인 방식을 우선으로 화면에 배치한다.**
 작은 화면에 특성 상 사용자가 로그인 방식을 우선적으로 확인 할 수 있도록 화면에 배치한다.
@@ -797,7 +797,7 @@ import { Button } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인에 대한 안내는 모달로 제공하여 사용자의 과업 맥락이 유지될 수 있도록 한다."
 >
@@ -950,11 +950,11 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="로그인에 대한 안내는 모달로 제공하여 사용자의 과업 맥락이 유지될 수 있도록 한다."
 >
@@ -1182,7 +1182,7 @@ import { Button } from "@krds-community/astro";
 </section>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 로그인은 꼭 필요한 상황에서 유도한다.**
 사용자의 작업 과정을 방해하지 말고, 로그인이 필요한 작업을 수행하는 상황에서 로그인을 요청해야 한다. 기본, 추천 유형에서 로그인 안내는 사용자가 로그인이 필수적인 화면/기능에 접근하기 위한 액션 버튼을 실행하였을 때 제공한다. 제안 유형에서 로그인 안내는 사용자가 접근을 시도한 화면이 로딩된 후에 제공한다.
@@ -1192,7 +1192,7 @@ import { Button } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인을 제안하는 경우 모달 본문에서 로그인을 통해 얻을 수 있는 이점에 대해 명확한 설명을 제공해야 한다."
 >
@@ -1345,14 +1345,14 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **우수: 사용자가 이용 절차를 단축할 수 있는 로그인 방식을 추천한다.**
 로그인 방식에 따라 서비스 이용 방식이 달라지는 경우 로그인 안내 과정에서 이용 절차를 단축할 수 있는 로그인 방식을 추천한다. 예를 들어, A 방식으로 로그인 했을 때에는 최종 단계에서 별도의 본인 인증 과정을 거쳐야 하지만 B 방식으로 로그인했을 때 본인 인증 과정을 건너뛸 수 있다면 로그인 안내에서 B 방식을 사용할 것을 추천하면 된다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자가 이용 절차를 단축할 수 있는 로그인 방식을 추천한다."
 >
@@ -1505,14 +1505,14 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 로그인 안내 모달에는 ‘로그인 안 함’ 옵션을 제공하여 원하지 않는 이동 동작이 발생하지 않도록 한다.**
 현재 화면에 머무르기로 결정한 사용자가 서비스를 계속 이용할 수 있도록 모달 푸터에 ‘로그인 안 함’ 옵션을 제공해야 한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인 안내 모달에는 ‘로그인 안 함’ 옵션을 제공하여 원하지 않는 이동 동작이 발생하지 않도록 한다."
 >
@@ -1665,11 +1665,11 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="로그인 안내 모달에는 ‘로그인 안 함’ 옵션을 제공하여 원하지 않는 이동 동작이 발생하지 않도록 한다."
 >
@@ -1810,7 +1810,7 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 ### 로그인 방식 확인/선택
 
@@ -1827,7 +1827,7 @@ import { Modal } from "@krds-community/astro";
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="동일한 수준의 로그인 방식을 탭으로 구분하여 선택하게 하지 않는다."
 >
@@ -2022,7 +2022,7 @@ import { Tab } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 다양한 로그인 방식에 대한 분류 체계에 사용자의 관점과 언어를 반영한다.**
 로그인 방식을 기술적인 관점으로 구분하지 않고 사용자의 관점에서 그 이용 목적에 따라 분류하여 제공한다. 이때 선택할 수 있는 로그인 방식 목록은 화면 구성을 고려하여 배치할 수 있다. 이렇게 함으로써 사용자는 여러 가지 로그인 방식 중에서 방문 목적에 적합한 로그인 방식을 빠르게 비교하여 선택할 수 있다.
@@ -2044,7 +2044,7 @@ import { Tab } from "@krds-community/astro";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="인지 기능 테스트에 의존하지 않는 인증 방식을 제공한다."
 >
@@ -2380,11 +2380,11 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="인지 기능 테스트에 의존하지 않는 인증 방식을 제공한다."
 >
@@ -2720,7 +2720,7 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **로그인 방식을 우선으로 화면에 배치한다.**
 작은 화면에 특성 상 사용자가 로그인방식의 전체를 한눈에 확인 할 수 있도록 화면에 배치한다.
@@ -2732,7 +2732,7 @@ import { TextInput, Button } from "@krds-community/astro";
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="아이디 형식에 대한 단서를 사전에 제공한다."
 >
@@ -2992,7 +2992,7 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 비밀번호를 표시할 수 있는 옵션을 제공한다.**
 사용자가 비밀번호를 입력할 때 공공장소에 있을 수 있으므로 기본적으로 비밀번호를 숨겨야 한다. 이때, 사용자가 원하는 경우 비밀번호를 볼 수 있도록 '비밀번호 표시' 버튼을 통해 사용자가 비밀번호를 입력할 수 있도록 돕는다. 이를 통해 사용자가 비밀번호를 올바르게 입력하는 동시에, 필요할 때 개인정보를 보호할 수 있다.
@@ -3011,7 +3011,7 @@ import { TextInput, Button } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="오류 메시지는 명확하고 간결하게 제공한다."
 >
@@ -3298,11 +3298,11 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="오류 메시지는 명확하고 간결하게 제공한다."
 >
@@ -3589,11 +3589,11 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="오류 메시지는 명확하고 간결하게 제공한다."
 >
@@ -3880,7 +3880,7 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **초점이 논리적인 순서로 이동할 수 있도록 제공한다.**
 로그인 입력 양식의 시각적 배열에 상관없이 초점은 논리적인 순서대로 이동할 수 있도록 제공해야 한다. 비밀번호 입력 양식 이전에 로그인 버튼으로 초점이 이동하거나, 로그인 버튼 이후에 아이디 및 비밀번호 저장 옵션으로 초점이 이동해서는 안 된다.
@@ -3893,7 +3893,7 @@ import { TextInput, Button } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="실시간 유효성 검사는 입력 필드가 포커스를 잃을 때 발생한다"
 >
@@ -4243,7 +4243,7 @@ import { ValidatedInput } from "@krds-community/astro/extra";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **사용자가 로그인 폼을 제출하였을 때 오류가 발생한 경우 해당 항목으로 초점을 이동시킨다.**
 서버 측 오류가 발생하면 화면을 다시 로드하고 비밀번호 필드를 지운 다음 사용자 이름 입력 필드로 사용자를 돌려보내야 한다. 인라인 메시지 등의 방식을 활용하여 오류를 표시하고 사용자가 문제를 해결하는 방법에 대한 명확한 지침을 제공한다.
@@ -4258,7 +4258,7 @@ import { ValidatedInput } from "@krds-community/astro/extra";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인이 완료된 후, 로그인 상황에 적합한 화면으로 이동해야 한다."
 >
@@ -4483,11 +4483,11 @@ import { Header } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="로그인이 완료된 후, 로그인 상황에 적합한 화면으로 이동해야 한다."
 >
@@ -4712,7 +4712,7 @@ import { Header } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 로그인 상태로 전환되었음을 명확하게 표현한다.**
 로그인 기능이 사라지고 로그아웃 옵션을 표시하는 등의 방법으로 현재 로그인 상태에 있음을 사용자에게 알려주어야 한다. 마이페이지 버튼을 실행시켜 활성화된 레이어에 사용자 이름을 제공하면 로그인 상태를 표현하면서도 개인 정보를 보호할 수 있다.
@@ -4729,7 +4729,7 @@ import { Header } from "@krds-community/astro";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자에게 로그인 세션이 만료되기 전에 유지 시간에 제한이 있음을 안내한다."
 >
@@ -5001,11 +5001,11 @@ import { Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자에게 로그인 세션이 만료되기 전에 유지 시간에 제한이 있음을 안내한다."
 >
@@ -5284,14 +5284,14 @@ import { TextInput, Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 로그인 세션 시간 만료에 대한 안내는 모달로 제공하여 사용자의 과업 맥락이 유지될 수 있도록 한다.**
 탐색 중인 화면에 머무르고자 하는 사용자가 로그인 상태 연장 옵션을 선택했을 때 현재 화면이 유지됨을 인지할 수 있도록 모달 레이아웃을 이용하여 안내를 제공한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인 세션 시간 만료에 대한 안내는 모달로 제공하여 사용자의 과업 맥락이 유지될 수 있도록 한다."
 >
@@ -5444,7 +5444,7 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필수: 로그인 세션 시간 만료에 대한 안내는 세션이 만료되기 최소 20초 전에 제공한다.**
 사용자에 따라 로그인 만료 안내 내용을 확인하고 연장하기 버튼을 누르는 데 오랜 시간이 걸릴 수 있으므로 최소 20초 전에 안내 모달을 제공해야 한다. 시스템의 반응 속도가 느린 경우 더 긴 시간을 제공하는 것이 적절하다.
@@ -5454,7 +5454,7 @@ import { Modal } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인 만료 안내 모달에 시간 연장하기 버튼과 로그아웃하기 버튼을 제공한다."
 >
@@ -5607,11 +5607,11 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="로그인 만료 안내 모달에 시간 연장하기 버튼과 로그아웃하기 버튼을 제공한다."
 >
@@ -5752,7 +5752,7 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **로그인 만료 안내 모달이 활성화된 상태에서 아무 키나 눌렀을 때 연장 가능하도록 한다.**
 로그인 만료 안내 모달이 활성화된 상태에서 반드시 '연장하기' 버튼을 누르지 않더라도 아무 키나 눌렀을 때 시간이 연장되도록 하는 방안을 고려한다. 사용자마다 시간 연장 버튼을 누르는 데 필요한 노력의 정도가 다를 수 있으므로 가능한 한 단순한 방법으로 로그인 연장 기능을 실행할 수 있는 방안을 제공하는 것을 고려한다.
@@ -5775,7 +5775,7 @@ import { Modal } from "@krds-community/astro";
 
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그아웃이 완료된 후, 상황에 적합한 화면으로 이동해야 한다."
 >
@@ -6007,11 +6007,11 @@ import { Header } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그아웃이 완료된 후, 상황에 적합한 화면으로 이동해야 한다."
 >
@@ -6239,14 +6239,14 @@ import { Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **우수: 로그아웃에 대한 안내는 별도의 화면으로 구성하여 제공한다.**
 로그아웃 상태로 이용 맥락이 완전히 변경되었음을 직관적으로 인지할 수 있도록 별도 화면에서 안내를 제공한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그아웃에 대한 안내는 별도의 화면으로 구성하여 제공한다."
 >
@@ -6416,11 +6416,11 @@ export function Example() {
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="로그아웃에 대한 안내는 별도의 화면으로 구성하여 제공한다."
 >
@@ -6561,14 +6561,14 @@ import { Modal } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **우수: 로그아웃 안내 화면에 사용자의 행동을 유도할 수 있는 액션 버튼을 제공한다.**
 사용자가 기존에 이용 중이던 맥락으로 돌아갈 수 있도록 '다시 로그인하기' 버튼을 제공하고 로그인이 완료되었을 때 사용자가 탐색 중이던 화면으로 연결되어야 한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그아웃 안내 화면에 사용자의 행동을 유도할 수 있는 액션 버튼을 제공한다."
 >
@@ -6796,4 +6796,4 @@ import { Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>

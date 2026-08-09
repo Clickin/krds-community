@@ -24,12 +24,12 @@ const {
   external = false,
   underline = true,
   underlineOnInteraction = false,
-  icon = external,
+  icon = true,
   class: className,
   ...rest
 } = Astro.props;
 const content = label ?? children;
-const iconClass = typeof icon === 'string' ? icon : external ? 'ico-go' : undefined;
+const iconClass = typeof icon === 'string' ? icon : external ? 'ico-go' : 'ico-angle right';
 const labelClass = cx(underline && 'underline', underlineOnInteraction && 'hidden-underline') || undefined;
 ---
 

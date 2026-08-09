@@ -18,7 +18,7 @@ export function Identifier({
       <span className="logo">
         <span className="sr-only">{organization}</span>
       </span>
-      <span className="ban-txt">{children ?? description}</span>
+      <span className="ban-txt">{children ?? description ?? organization}</span>
     </div>
   );
 }

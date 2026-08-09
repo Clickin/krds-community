@@ -42,7 +42,7 @@ export function Carousel({
   nextLabel,
   moreLabel,
   imageLabel,
-  actionLabel,
+  actionLabel = "콘텐츠 보기",
   onSlideChange,
   className,
   ref,

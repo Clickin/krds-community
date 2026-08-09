@@ -3,8 +3,8 @@ title: 목록 탐색
 description: 의미적으로 관련된 데이터를 일관된 형식으로 배열하여 탐색하게 하는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Table as ReactTable } from "@krds-community/react";
 import { Table as VueTable } from "@krds-community/vue";
 import { Table as SvelteTable } from "@krds-community/svelte";
@@ -68,7 +68,7 @@ import { Button as AstroButton } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="중요한 항목은 목록의 상단에 배치한다."
 >
@@ -293,13 +293,13 @@ import { Table } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **항목을 의미 있는 단위로 구분하고 논리적인 순서에 따라 정렬한다.** 논리적인 순서에 따라 정렬하면 사용자가 내용을 빠르게 훑어보고 쉽게 이해할 수 있다.
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="항목을 의미 있는 단위로 구분하지 않고 논리적인 순서 없이 나열한다."
 >
@@ -536,13 +536,13 @@ import { Table } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **항목을 명확하게 구분한다.** 목록을 구성하고 있는 항목들이 서로 명확하게 구분될 수 있도록 항목 간에 충분한 간격을 제공해야 한다. 필요한 경우 구분선을 사용하거나 항목 컨테이너에 테두리, 배경색을 표현할 수 있으나 목록 유형, 데이터 복잡성에 따라 시각적 복잡성을 증가시킬 수 있으므로 유의한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="항목을 명확하게 구분한다."
 >
@@ -658,12 +658,7 @@ import { Table } from "@krds-community/astro";
           description: "재산세는 매년 9월과 12월에 부과됩니다.",
         },
       ]}
-      dateLabel="작성일"
-      dateValue="2026.08.01"
       tags={[]}
-      actionLabel="자세히 보기"
-      shareLabel="공유"
-      favoriteLabel="관심"
     />
   </div>
   <div slot="angular">
@@ -863,7 +858,7 @@ import { StructuredList } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **강조를 위한 시각적 표현을 과도하게 사용하지 않는다.** 아이콘, 배지, 태그 등의 컴포넌트를 적절하게 사용하면 사용자의 효율적인 정보처리를 도울 수 있지만 지나치면 오히려 주의가 분산될 수 있다.
 
@@ -871,7 +866,7 @@ import { StructuredList } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="긴 목록은 페이지 등으로 단위를 나누어 제공한다."
 >
@@ -1156,13 +1151,13 @@ import { Pagination, TextList } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **필터링 또는 검색 기능을 제공한다.** 항목 개수가 많은 경우, 페이지네이션만으로 정보를 탐색하는 데 한계가 있으므로 필터링이나 검색 기능을 제공하여 빠른 내용 탐색이 가능하도록 만들어야 한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="필터링 또는 검색 기능을 제공한다."
 >
@@ -1493,4 +1488,4 @@ import { Button, Select, TextInput, TextList } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>

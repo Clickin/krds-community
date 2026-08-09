@@ -184,11 +184,11 @@ export class KrdsCalendarRangeComponent {
   calendarMonthOpen = false;
 
   get calendarYear(): number {
-    return this.displayYear ?? this.year ?? this.years[0] ?? 0;
+    return this.displayYear ?? this.year ?? this.years[0] ?? new Date().getFullYear();
   }
 
   get calendarMonth(): number {
-    return this.displayMonth ?? this.month ?? 1;
+    return this.displayMonth ?? this.month ?? new Date().getMonth() + 1;
   }
 
   get calendarSelectedYear(): number {
@@ -210,9 +210,15 @@ export class KrdsCalendarRangeComponent {
   get calendarWeeks(): AngularCalendarCell[][] {
     const activeYear = this.calendarYear;
     const activeMonth = this.calendarMonth;
-    const leadingDays = Math.max(0, Math.min(6, this.leadingDays));
-    const dayCount = Math.max(0, this.dayCount);
-    const previousMonthDayCount = Math.max(0, this.previousMonthDayCount);
+    const leadingDays = Math.max(
+      0,
+      Math.min(6, this.leadingDays || new Date(activeYear, activeMonth - 1, 1).getDay()),
+    );
+    const dayCount = Math.max(0, this.dayCount || new Date(activeYear, activeMonth, 0).getDate());
+    const previousMonthDayCount = Math.max(
+      0,
+      this.previousMonthDayCount || new Date(activeYear, activeMonth - 1, 0).getDate(),
+    );
     const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
     const weeks: AngularCalendarCell[][] = [];
 

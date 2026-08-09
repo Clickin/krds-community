@@ -1,7 +1,7 @@
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { loadFixtureManifests, loadManifests } from "@krds-community/conformance";
+import { frameworks, loadFixtureManifests, loadManifests } from "@krds-community/conformance";
 import { fixtureRootAttributes } from "../apps/conformance-host/src/protocol";
 
 const root = resolve(import.meta.dirname, "..");
@@ -166,6 +166,23 @@ describe("KRDS component inventory", () => {
       "active",
       "disabled",
     ]);
+  });
+
+  it("keeps every extra state strict across all six frameworks", async () => {
+    const manifests = await loadFixtureManifests(resolve(root, "extra/manifests"));
+    const fixtures = manifests.flatMap((manifest) => manifest.fixtures);
+    expect(manifests).toHaveLength(3);
+    expect(fixtures).toHaveLength(9);
+    expect(fixtures.flatMap((fixture) => fixture.states)).toHaveLength(9);
+    expect(
+      fixtures.every(
+        (fixture) =>
+          fixture.mandatory &&
+          fixture.comparisons.dom === "strict" &&
+          fixture.comparisons.accessibility === "strict",
+      ),
+    ).toBe(true);
+    expect(fixtures.length * frameworks.length).toBe(54);
   });
   it("keeps calendar fixture roots paired with the calendar visual surface", async () => {
     const fixtures = (await loadFixtureManifests(resolve(root, "conformance/manifests"))).flatMap(

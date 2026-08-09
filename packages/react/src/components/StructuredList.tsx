@@ -9,7 +9,7 @@ export interface StructuredListItem extends Omit<KrdsListItem, "title" | "descri
 }
 
 export interface StructuredListProps extends Omit<HTMLAttributes<HTMLUListElement>, "children"> {
-  items: StructuredListItem[];
+  items?: StructuredListItem[];
   dateLabel?: ReactNode;
   dateValue?: ReactNode;
   tags?: ReactNode[];
@@ -20,7 +20,7 @@ export interface StructuredListProps extends Omit<HTMLAttributes<HTMLUListElemen
   onFavorite?: (item: StructuredListItem) => void;
 }
 export function StructuredList({
-  items,
+  items = [],
   dateLabel,
   dateValue,
   tags = [],
@@ -79,7 +79,7 @@ export function StructuredList({
                 onClick={() => onShare?.(item)}
               >
                 <SvgIcon name="ico-share" />
-                {" " + shareLabel}
+                {shareLabel ? " " + shareLabel : null}
               </button>
               <button
                 type="button"
@@ -88,7 +88,7 @@ export function StructuredList({
                 onClick={() => onFavorite?.(item)}
               >
                 <SvgIcon name="ico-like" />
-                {" " + favoriteLabel}
+                {favoriteLabel ? " " + favoriteLabel : null}
               </button>
             </div>
           </div>

@@ -328,7 +328,7 @@ export const HelpPanel = defineComponent({
                 },
                 [
                   create("span", { class: "sr-only" }, props.label),
-                  props.collapseLabel === undefined ? undefined : ` ${props.collapseLabel} `,
+                  ` ${props.collapseLabel ?? props.label ?? props.title} `,
                   create("i", { class: ["svg-icon", "ico-angle", "right"] }),
                 ],
               ),

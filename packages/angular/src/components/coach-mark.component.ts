@@ -43,10 +43,11 @@ export class KrdsCoachMarkComponent {
   @Input() step = "1/1";
 
   get currentStep(): string {
-    return this.step.split("/")[0] || "1";
+    return this.step.split("/")[0]?.trim() ?? "";
   }
 
+  // react renders only the parts present in `step` — no "1/1" fallback.
   get totalSteps(): string {
-    return this.step.split("/")[1] || "1";
+    return this.step.split("/")[1]?.trim() ?? "";
   }
 }

@@ -7,7 +7,7 @@ export const Link = defineComponent({
   inheritAttrs: false,
   props: {
     href: { type: String, default: "#" },
-    size: { type: String, default: undefined },
+    size: { type: String, default: "small" },
     label: { type: String, default: undefined },
     external: Boolean,
     title: { type: String, default: undefined },
@@ -28,8 +28,14 @@ export const Link = defineComponent({
         },
         [
           create("span", { class: "underline" }, slotChildren.length ? slotChildren : props.label),
-          props.external || attrs.target ? " " : null,
-          props.external || attrs.target ? create("i", { class: ["svg-icon", "ico-go"] }) : null,
+          " ",
+          create("i", {
+            class: [
+              "svg-icon",
+              props.external || attrs.target ? "ico-go" : "ico-angle",
+              !(props.external || attrs.target) ? "right" : undefined,
+            ],
+          }),
         ],
       );
     };

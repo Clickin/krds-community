@@ -27,7 +27,7 @@ export function Identifier(rawProps: IdentifierProps) {
       <span class="logo">
         <span class="sr-only">{props.organization}</span>
       </span>
-      <span class="ban-txt">{props.description ?? props.children}</span>
+      <span class="ban-txt">{props.children ?? props.description ?? props.organization}</span>
     </div>
   );
 }

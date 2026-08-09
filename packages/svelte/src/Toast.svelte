@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, untrack } from 'svelte';
 
   const CLOSE_ANIMATION_MS = 200;
 
@@ -30,7 +30,7 @@
   const rootClass = $derived(`${classProp} ${className}`.trim());
   const controlled = $derived(open !== undefined);
 
-  let rendered = $state(open === true || (open === undefined && defaultOpen === true));
+  let rendered = $state(untrack(() => open === true || (open === undefined && defaultOpen === true)));
   let closing = $state(false);
   let wasOpen = false;
   let closeTimer: ReturnType<typeof setTimeout> | undefined;

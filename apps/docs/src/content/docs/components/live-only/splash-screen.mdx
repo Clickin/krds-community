@@ -4,7 +4,7 @@ description: 스플래시 스크린은 응용 프로그램이 실행되기 전�
 category: live-only
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Spinner as ReactSpinner } from "@krds-community/react";
 import { Spinner as VueSpinner } from "@krds-community/vue";
 import { Spinner as SvelteSpinner } from "@krds-community/svelte";
@@ -53,7 +53,7 @@ import { Spinner as AstroSpinner } from "@krds-community/astro";
 인상이 일관성 있게 유지될 수 있다.
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="디자인 테마별로 최적화된 스플래시 스크린 제공을 고려한다."
 >
@@ -174,11 +174,11 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="디자인 테마별로 최적화된 스플래시 스크린 제공을 고려한다."
 >
@@ -299,14 +299,14 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **운영체제와 운영체제의 버전에 상관없이 일관성 있는 시작 경험을 제공한다.**
 다양한 운영체제와 그 버전 간에도 스플래시 스크린의 디자인과 기능이 일관되도록 하여 사용자가 서비스에 대한 예측 가능성을 유지할 수 있도록 한다. 이를 위해 각 운영체제의 가이드라인을 준수하되, 정부서비스의 정체성 요소가 일관되게 반영되도록 디자인한다. 다양한 화면 크기나
 해상도에서 스플래시 스크린이 왜곡 없이 적절하게 표시되는지 테스트해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="운영체제와 운영체제의 버전에 상관없이 일관성 있는 시작 경험을 제공한다."
 >
@@ -515,11 +515,11 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="운영체제와 운영체제의 버전에 상관없이 일관성 있는 시작 경험을 제공한다."
 >
@@ -728,13 +728,13 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **앱 실행이 길어질 경우 상태를 보여줄 수 있는 피드백을 제공한다.**
 응용 프로그램의 실행에 시간이 오래 걸릴 경우, 사용자에게 현재 진행 상황을 시각적으로 알려줄 수 있는 단서(스피너, 텍스트, 로딩 애니메이션 등)를 제공한다. 스피너가 아닌 별도의 애니메이션을 표시하는 경우, 가급적 1,000ms 이내로 제작하여 사용자의 피로감을 최소화한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="앱 실행이 길어질 경우 상태를 보여줄 수 있는 피드백을 제공한다."
 >
@@ -867,13 +867,13 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **스플래시 스크린에 텍스트 사용을 최소화한다.**
 스플래시 스크린에 노출되는 텍스트는 읽기 어렵고 피로감을 유발할 수 있다. 따라서 브랜드 로고나 간단한 아이콘과 같은 시각적 요소를 중심으로 직관적인 디자인을 구성하고, 필수적인 정보만을 간결하게 제공하는 것이 바람직하다.
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="스플래시 스크린에 텍스트 사용을 최소화한다."
 >
@@ -982,11 +982,11 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="스플래시 스크린에 텍스트 사용을 최소화한다."
 >
@@ -1095,7 +1095,7 @@ import { Spinner } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **스플래시 스크린의 노출 시간을 임의로 조정하지 않는다.**
 가능한 스플래시 스크린의 노출 시간은 운영체제의 기본 설정에 따라 서비스가 실제로 로딩되는 시간을 초과하지 않도록 한다. 사용자가 스플래시 스크린에서 불필요하게 대기하는 시간을 줄이고 빠르게 목표 작업을 수행할 수 있도록 한다.

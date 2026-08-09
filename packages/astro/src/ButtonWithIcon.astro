@@ -30,6 +30,6 @@ const className = classNameProp ?? classAttribute;
   disabled={disabled}
   class={cx('krds-btn', variant, size, className)}
 >
-  <slot>{children ?? label}</slot>
+  <slot>{children ?? label ?? "레이블"}</slot>
   <slot name="icon"><i class={cx('svg-icon', iconClass)}></i></slot>
 </button>

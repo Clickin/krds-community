@@ -15,19 +15,19 @@ import { createStableId } from "../kinds";
             <div class="tab line">
               <ul role="tablist">
                 @for (tab of tabs; track tab.id) {
-                  <li role="presentation" [class.active]="helpTabValue(tab) === activeTab">
+                  <li role="presentation" [class.active]="helpTabValue(tab) === effectiveActiveTab">
                     <button
                       [id]="tab.id"
                       type="button"
                       class="btn-tab"
                       role="tab"
-                      [attr.aria-selected]="helpTabValue(tab) === activeTab"
+                      [attr.aria-selected]="helpTabValue(tab) === effectiveActiveTab"
                       [attr.aria-controls]="helpTabPanelId(tab)"
-                      [attr.tabindex]="helpTabValue(tab) === activeTab ? '0' : '-1'"
+                      [attr.tabindex]="helpTabValue(tab) === effectiveActiveTab ? '0' : '-1'"
                       (click)="setActiveTab(helpTabValue(tab))"
                     >
                       {{ tab.label }}
-                      @if (helpTabValue(tab) === activeTab) {
+                      @if (helpTabValue(tab) === effectiveActiveTab) {
                         <i class="sr-only created"> {{ selectedLabel }}</i>
                       }
                     </button>
@@ -42,8 +42,8 @@ import { createStableId } from "../kinds";
                   role="tabpanel"
                   [attr.aria-labelledby]="tabs[0].id"
                   class="tab-conts"
-                  [class.active]="helpTabValue(tabs[0]) === activeTab"
-                  [hidden]="helpTabValue(tabs[0]) !== activeTab"
+                  [class.active]="helpTabValue(tabs[0]) === effectiveActiveTab"
+                  [hidden]="helpTabValue(tabs[0]) !== effectiveActiveTab"
                 >
                   <h3 class="sr-only">{{ tabs[0].label }}</h3>
                   <div class="help-conts-area-inner">
@@ -106,8 +106,8 @@ import { createStableId } from "../kinds";
                   role="tabpanel"
                   [attr.aria-labelledby]="tabs[1].id"
                   class="tab-conts"
-                  [class.active]="helpTabValue(tabs[1]) === activeTab"
-                  [hidden]="helpTabValue(tabs[1]) !== activeTab"
+                  [class.active]="helpTabValue(tabs[1]) === effectiveActiveTab"
+                  [hidden]="helpTabValue(tabs[1]) !== effectiveActiveTab"
                 >
                   <h3 class="sr-only">{{ tabs[1].label }}</h3>
                   <div class="help-conts-area-inner">
@@ -157,7 +157,7 @@ import { createStableId } from "../kinds";
             class="krds-btn small tertiary btn-help-panel fold"
             (click)="open = false"
           >
-            <span class="sr-only">{{ label }}</span> {{ collapseLabel }}
+            <span class="sr-only">{{ label }}</span> {{ collapseLabel || label }}
             <i class="svg-icon ico-angle right"></i>
           </button>
         </div>
@@ -191,6 +191,12 @@ export class KrdsHelpPanelComponent {
     summary: string;
     steps: string[];
   }> = [];
+
+  // react initializes the uncontrolled active tab to the first tab; mirror it
+  // so panels render content even when the MDX never passes activeTab.
+  get effectiveActiveTab(): string {
+    return this.activeTab || (this.tabs[0] ? this.helpTabValue(this.tabs[0]) : "");
+  }
 
   helpTabValue(tab: { id: string; value?: string }): string {
     return tab.value ?? tab.id;

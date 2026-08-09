@@ -2,14 +2,14 @@ import { type ReactNode, type TableHTMLAttributes, type Ref } from "react";
 import { cx } from "@krds-community/recipes";
 import type { DataTableColumn } from "./StructuredListTable.js";
 export interface TableProps extends Omit<TableHTMLAttributes<HTMLTableElement>, "children"> {
-  columns: DataTableColumn[];
-  rows: Array<Record<string, ReactNode>>;
+  columns?: DataTableColumn[];
+  rows?: Array<Record<string, ReactNode>>;
   caption?: ReactNode;
 }
 
 export function Table({
-  columns,
-  rows,
+  columns = [],
+  rows = [],
   caption,
   className,
   ref,

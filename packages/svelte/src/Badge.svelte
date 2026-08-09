@@ -40,4 +40,4 @@
       : `bg-${appearance === 'light' ? 'light-' : ''}${toneClass[tone]}`
   } ${size} ${number ? 'number' : ''} ${rootClass}`}
   onclick={(event) => invoke(onclick, event)}
->{label}</span>
+>{#if children}{@render children()}{:else}{label}{/if}</span>

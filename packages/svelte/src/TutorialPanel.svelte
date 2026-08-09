@@ -69,6 +69,7 @@
   class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`}
   hidden={!isOpen}
 >
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -- KRDS requires this wrapper to receive focus when the panel opens. -->
   <div class="help-panel-wrap" tabindex={isOpen ? 0 : undefined}>
     <div class="help-conts-area">
       <div class="krds-tab-area layer">
@@ -100,8 +101,8 @@
         <div class="tab-conts-wrap">
           {#each tabs as tab, index}
             {@const tabName = index === 0 ? 'help' : 'tutorial'}
-            <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
-<section              id={fieldOf(tab, 'panelId')}
+            <!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -- The upstream KRDS fixture requires a section tabpanel. -->
+            <section id={fieldOf(tab, 'panelId')}
               role="tabpanel"
               aria-labelledby={tab.id}
               class="tab-conts"

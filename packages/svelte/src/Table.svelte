@@ -30,7 +30,7 @@
 </script>
 
 <div class="krds-table-wrap">
-  <table {...rest} class="tbl col data">
+  <table {...rest} class={`tbl col data ${rootClass}`}>
     <caption>{caption || title}</caption>
     <colgroup>
       {#each columns as column}

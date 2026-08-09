@@ -5,7 +5,6 @@ category: layout
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { TextList as ReactTextList } from "@krds-community/react";
 import { TextListOrdered as ReactTextListOrdered } from "@krds-community/react";
 import { TextList as VueTextList } from "@krds-community/vue";
@@ -25,7 +24,7 @@ import { TextListOrdered as AstroTextListOrdered } from "@krds-community/astro";
   <SvelteTextList slot="svelte" aria-label="목록" client:only="svelte" />
   <SolidTextList slot="solid" aria-label="목록" client:only="solid-js" />
   <AngularTextList slot="angular" aria-label="목록" client:only="@analogjs/astro-angular" />
-  <AstroTextList slot="astro" aria-label="목록" items={['목록 항목']} />
+  <AstroTextList slot="astro" aria-label="목록" />
 
 ```tsx fw=react
 import { TextList } from "@krds-community/react";
@@ -119,7 +118,7 @@ import { TextList } from '@krds-community/astro';
 특정 번호의 콘텐츠만 확인하거나, 순서를 건너뛰어 읽게 될 수 있다.
 **모범 사례 1**
 
-<PracticeExample kind="good" title="콘텐츠에 적합한 유형의 목록을 사용한다.">
+<FrameworkPreview kind="good" title="콘텐츠에 적합한 유형의 목록을 사용한다.">
   <div slot="react">
     <ReactTextList
       aria-label="목록"
@@ -158,11 +157,11 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample kind="good" title="콘텐츠에 적합한 유형의 목록을 사용한다.">
+<FrameworkPreview kind="good" title="콘텐츠에 적합한 유형의 목록을 사용한다.">
   <div slot="react">
     <ReactTextListOrdered
       aria-label="순서 목록"
@@ -204,13 +203,13 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **동일한 수준의 항목은 일관된 어투로 작성한다.**
 만약 첫 번째 항목이 서술식으로 작성되었다면 목록에서 동일한 수준의 항목은 일관되게 서술식으로 작성한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="동일한 수준의 항목은 일관된 어투로 작성한다.">
+<FrameworkPreview kind="good" title="동일한 수준의 항목은 일관된 어투로 작성한다.">
   <div slot="react">
     <ReactTextList
       aria-label="목록"
@@ -276,11 +275,11 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="동일한 수준의 항목은 일관된 어투로 작성한다.">
+<FrameworkPreview kind="bad" title="동일한 수준의 항목은 일관된 어투로 작성한다.">
   <div slot="react">
     <ReactTextList
       aria-label="목록"
@@ -346,13 +345,13 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **문장 형식에 적합한 종결 부호를 사용한다.**
 서술식 목록의 가장 마지막 문장에는 반드시 종결 부호를 사용한다. 개조식 목록의 가장 마지막 문장에는 종결 부호를 생략할 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="문장 형식에 적합한 종결 부호를 사용한다.">
+<FrameworkPreview kind="good" title="문장 형식에 적합한 종결 부호를 사용한다.">
   <div slot="react">
     <ReactTextList
       aria-label="목록"
@@ -418,11 +417,11 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="문장 형식에 적합한 종결 부호를 사용한다.">
+<FrameworkPreview kind="bad" title="문장 형식에 적합한 종결 부호를 사용한다.">
   <div slot="react">
     <ReactTextList
       aria-label="목록"
@@ -464,13 +463,13 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **들여쓰기를 활용하여 계층 구조를 명확하게 구분한다.**
 글자 크기를 조정하는 것만으로는 서로 다른 수준의 항목을 구분하는 것이 어려울 수 있다. 글자 크기, 계층 구조의 수준을 고려하여 각 수준별로 적절한 들여쓰기 여백을 설정하여 계층 구조가 명확하게 구분될 수 있도록 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="들여쓰기를 활용하여 계층 구조를 명확하게 구분한다.">
+<FrameworkPreview kind="good" title="들여쓰기를 활용하여 계층 구조를 명확하게 구분한다.">
   <div slot="react">
     <ReactTextList
       aria-label="계층 목록"
@@ -530,11 +529,11 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="들여쓰기를 활용하여 계층 구조를 명확하게 구분한다.">
+<FrameworkPreview kind="bad" title="들여쓰기를 활용하여 계층 구조를 명확하게 구분한다.">
   <div slot="react">
     <ReactTextList
       aria-label="계층 목록"
@@ -576,13 +575,13 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **목록은 3수준 이내로 구성한다.**
 목록의 수준이 지나치게 깊어지면 항목 간 상하 관계를 이해하기 어려워진다.
 **모범 사례**
 
-<PracticeExample kind="good" title="목록은 3수준 이내로 구성한다.">
+<FrameworkPreview kind="good" title="목록은 3수준 이내로 구성한다.">
   <div slot="react">
     <ReactTextList
       aria-label="계층 목록"
@@ -684,11 +683,11 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="목록은 3수준 이내로 구성한다.">
+<FrameworkPreview kind="bad" title="목록은 3수준 이내로 구성한다.">
   <div slot="react">
     <ReactTextList
       aria-label="계층 목록"
@@ -820,7 +819,7 @@ import { TextList } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

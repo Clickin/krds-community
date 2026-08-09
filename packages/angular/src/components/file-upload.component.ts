@@ -38,8 +38,8 @@ import { createStableId } from "../kinds";
       </div>
       <div class="file-list">
         <div class="total">
-          <span class="current">{{ currentCount }}{{ countSuffix }}</span
-          >{{ " / " + maxCount + countSuffix }}
+          <span class="current">{{ effectiveCount }}{{ countSuffix }}</span
+          >{{ " / " + (maxCount ?? "") + countSuffix }}
         </div>
         <ul class="upload-list">
           @for (file of files; track file.id) {
@@ -55,18 +55,18 @@ import { createStableId } from "../kinds";
                     <span class="ico-invalid complete">
                       <em class="sr-only">{{ file.statusLabel }}</em>
                     </span>
-                  } @else if (file.status === "deletable") {
+                  }
+                  @if (file.deleteLabel) {
                     <button type="button" class="krds-btn medium text">
                       {{ file.deleteLabel }} <i class="svg-icon ico-delete-fill"></i>
                     </button>
-                  } @else if (file.status === "error") {
-                    <button type="button" class="krds-btn medium text">
-                      {{ file.deleteLabel }} <i class="svg-icon ico-delete-fill"></i>
-                    </button>
-                  } @else if (file.status === "downloadable") {
+                  }
+                  @if (file.downloadLabel) {
                     <button type="button" class="krds-btn medium text">
                       {{ file.downloadLabel }} <i class="svg-icon ico-down"></i>
                     </button>
+                  }
+                  @if (file.previewLabel) {
                     <button type="button" class="krds-btn medium text">
                       {{ file.previewLabel }} <i class="svg-icon ico-angle right"></i>
                     </button>
@@ -97,15 +97,15 @@ import { createStableId } from "../kinds";
 })
 export class KrdsFileUploadComponent {
   @Input() id = createStableId("krds-file-upload");
-  @Input() title = "제목";
+  @Input() title = "";
   @Input() description = "";
   @Input() prompt = "";
   @Input() name = "";
   @Input() inputId = "";
   @Input() disabled = false;
   @Input() selectLabel = "";
-  @Input() currentCount = 0;
-  @Input() maxCount = 0;
+  @Input() currentCount: number | null = null;
+  @Input() maxCount: number | null = null;
   @Input() countSuffix = "";
   @Input() deleteAllLabel = "";
   @Input() files: Array<{
@@ -118,4 +118,10 @@ export class KrdsFileUploadComponent {
     downloadLabel?: string;
     previewLabel?: string;
   }> = [];
+
+  // react renders currentCount ?? files.length — mirror it so a provided
+  // file list alone drives the counter.
+  get effectiveCount(): number {
+    return this.currentCount ?? this.files.length;
+  }
 }

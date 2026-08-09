@@ -5,7 +5,6 @@ category: navigation
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Breadcrumb as ReactBreadcrumb } from "@krds-community/react";
 import { Breadcrumb as VueBreadcrumb } from "@krds-community/vue";
 import { Breadcrumb as SvelteBreadcrumb } from "@krds-community/svelte";
@@ -109,7 +108,7 @@ import { Breadcrumb } from '@krds-community/astro';
 본문 상단에 명확한 본문 제목이 제공되고 있는 경우, 브레드크럼의 마지막 항목으로 현재 화면의 경로를 생략하고 상위 화면을 경로로 제공할 수 있다. 이때 브레드크럼과 본문 제목 사이에 다른 요소가 존재해서는 안 된다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="브레드크럼 목록의 가장 마지막 항목으로 현재 화면의 상위 화면 링크를 제공한다."
 >
@@ -177,11 +176,11 @@ import { Breadcrumb } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="브레드크럼 목록의 가장 마지막 항목으로 현재 화면의 상위 화면 링크를 제공한다."
 >
@@ -249,7 +248,7 @@ import { Breadcrumb } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **상위 화면으로 연결되는 링크가 없는 경우에도 항상 현재 화면의 전체 정보 계층 구조를 표시한다.**
 연결될 수 있는 상위 화면이 없는 경우에는 해당 텍스트가 링크로 작동하지 않도록 하고 링크를 변별하기 위한 밑줄, 마우스오버(Mouseover) 효과를 제거한다.
@@ -260,7 +259,7 @@ import { Breadcrumb } from '@krds-community/astro';
 브레드크럼이 한 줄로 구성되도록 한다. 만약 4개 이내의 경로만 표시하고 있음에도 줄바꿈이 발생하는 경우 가장 마지막 링크를 축약할 수 있다.
 **모범 사례**
 
-<PracticeExample kind="good" title="브레드크럼은 단일 행으로 제공한다.">
+<FrameworkPreview kind="good" title="브레드크럼은 단일 행으로 제공한다.">
   <div slot="react">
     <ReactBreadcrumb
       aria-label="경로"
@@ -331,11 +330,11 @@ import { Breadcrumb } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="브레드크럼은 단일 행으로 제공한다.">
+<FrameworkPreview kind="bad" title="브레드크럼은 단일 행으로 제공한다.">
   <div slot="react">
     <div style="max-width: 24rem">
       <ReactBreadcrumb
@@ -438,7 +437,7 @@ import { Breadcrumb } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **브레드크럼은 항상 본문 제목의 왼쪽 상단에 표시한다.**
 브레드크럼을 제목 상단에 배치함으로써 브레드크럼의 가장 마지막 경로 텍스트와 현재 화면의 제목 텍스트가 탐색 경로로 자연스럽게 이어질 수 있다. 또한 모든 화면에서 일관성 있는 영역에 배치되므로 탐색 경로를 보다 효과적으로 인지할 수 있다.
@@ -449,7 +448,7 @@ import { Breadcrumb } from '@krds-community/astro';
 않는 것이 적절하다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="브레드크럼이 메인 메뉴나 사이드 메뉴를 대체해서는 안 된다.">
+<FrameworkPreview kind="bad" title="브레드크럼이 메인 메뉴나 사이드 메뉴를 대체해서는 안 된다.">
   <div slot="react">
     <ReactBreadcrumb
       aria-label="경로"
@@ -532,7 +531,7 @@ import { Breadcrumb } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 플랫폼에 대한 고려 사항
 
@@ -540,7 +539,7 @@ import { Breadcrumb } from '@krds-community/astro';
 첫 번째 경로는 메인 화면 링크, 마지막 링크는 현재 화면의 상위 화면 링크로 일관성 있게 제공한다. 이때, 첫 번째 경로와 마지막 경로 사이에 말줄임표를 제공함으로써 탐색 경로가 축약되어 있음을 사용자가 인지할 수 있도록 해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분하지 않은 경우 첫 번째 경로와 마지막 경로만 표시한다."
 >
@@ -620,7 +619,7 @@ import { Breadcrumb } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

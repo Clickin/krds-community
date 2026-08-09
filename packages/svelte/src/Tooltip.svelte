@@ -16,7 +16,7 @@
   let {
     id = generatedId,
     label = '레이블',
-    message = '도움말',
+    message = '',
     kind = 'horizontal',
     open = $bindable<boolean | undefined>(),
     onclick,
@@ -44,7 +44,7 @@
 >
   {#if children}{@render children()}{:else}{label}{/if}{' '}<i class="ico-angle right svg-icon"></i>
 </button>
-<div id={`${id}-tip`} class={`krds-tooltip-popover ${placementClass}`.trim()} role="tooltip" aria-hidden={isOpen ? 'false' : 'true'} hidden={!isOpen}>
+<div id={`${id}-tip`} class={`krds-tooltip-popover ${placementClass}`.trim()} role="tooltip" aria-hidden={isOpen ? 'false' : 'true'}>
   <span class="sr-only">{label}</span>
   {message}
 </div>

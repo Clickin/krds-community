@@ -23,8 +23,8 @@ export interface StructuredListTableRow extends Record<
 }
 
 export interface StructuredListTableProps {
-  columns: DataTableColumn[];
-  rows: StructuredListTableRow[];
+  columns?: DataTableColumn[];
+  rows?: StructuredListTableRow[];
   caption?: ReactNode;
   className?: string;
   selectAllLabel?: ReactNode;
@@ -47,8 +47,8 @@ export interface StructuredListTableProps {
   onDownload?: (row: StructuredListTableRow) => void;
 }
 export function StructuredListTable({
-  columns,
-  rows,
+  columns = [],
+  rows = [],
   caption,
   className: _className,
   selectAllLabel = "전체선택",

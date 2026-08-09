@@ -6,7 +6,7 @@ export interface MastheadProps extends BoxProps {
 }
 export function Masthead({
   id = "krds-masthead",
-  message,
+  message = "도움말",
   className,
   ref,
   ...props

@@ -118,7 +118,7 @@ export const baseProps = (definition: FixtureDefinition): Record<string, unknown
       value: "에러",
     };
   } else if (componentId === "textarea") {
-    defaults = { label: "레이블", hint: "도움말", placeholder: "플레이스홀더" };
+    defaults = { label: "레이블", placeholder: "플레이스홀더" };
   } else if (componentId === "select-size") {
     defaults = {
       label: "레이블",

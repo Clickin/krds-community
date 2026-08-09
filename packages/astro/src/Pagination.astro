@@ -32,7 +32,7 @@ export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list
 }
 
 const {
-  items = [],
+  items = [1, 2, 3, 4, 5],
   current = 1,
   previousDisabled = current <= 1,
   nextDisabled = false,
@@ -48,8 +48,8 @@ const {
   class: className,
   ...rest
 } = Astro.props;
-const resolvedPreviousLabel = previousLabel ?? title;
-const resolvedNextLabel = nextLabel ?? label;
+const resolvedPreviousLabel = previousLabel ?? title ?? "이전";
+const resolvedNextLabel = nextLabel ?? label ?? "다음";
 const resolveHref = (page: number, explicit?: string) =>
   explicit ?? (typeof pageHref === 'function' ? pageHref(page) : pageHref);
 ---

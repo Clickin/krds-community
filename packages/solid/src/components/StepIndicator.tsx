@@ -39,7 +39,7 @@ export function StepIndicator(rawProps: StepIndicatorProps) {
               <Show when={stepIndex() === stepCurrent()}>
                 <em class="sr-only">{props.message}</em>
               </Show>
-              <i class="step">{`${stepIndex() + 1}${props.label}`}</i>
+              <i class="step">{`${stepIndex() + 1}${props.label ?? "단계"}`}</i>
               <span class="step-tit">{step.label}</span>
             </span>
           </li>

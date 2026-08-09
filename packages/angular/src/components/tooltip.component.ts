@@ -25,7 +25,7 @@ import { createStableId } from "../kinds";
 export class KrdsTooltipComponent {
   @Input() id = createStableId("krds-tooltip");
   @Input() label = "레이블";
-  @Input() message = "도움말";
+  @Input() message = "";
   @Input() kind: "tooltip" | "tooltip-box" | "tooltip-vertical" = "tooltip";
 
   get tooltipClass(): string {

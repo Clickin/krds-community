@@ -64,7 +64,7 @@ export function Pagination(rawProps: PaginationProps) {
         when={!props.previousDisabled}
         fallback={
           <span {...({ href: "#" } as Record<string, string>)} class="page-navi prev disabled">
-            {props.title}
+            {props.previousLabel ?? "이전"}
           </span>
         }
       >
@@ -73,11 +73,11 @@ export function Pagination(rawProps: PaginationProps) {
           href="#"
           onClick={() => setSelected(String(Math.max(1, paginationPage() - 1)))}
         >
-          {props.title}
+          {props.previousLabel ?? "이전"}
         </a>
       </Show>
       <div class="page-links">
-        <For each={props.items ?? []}>
+        <For each={props.items ?? [1, 2, 3, 4, 5]}>
           {(item) =>
             typeof item === "number" ? (
               <a
@@ -98,7 +98,7 @@ export function Pagination(rawProps: PaginationProps) {
         </For>
       </div>
       <a class="page-navi next" href="#" onClick={() => setSelected(String(paginationPage() + 1))}>
-        {props.label}
+        {props.nextLabel ?? "다음"}
       </a>
     </div>
   );

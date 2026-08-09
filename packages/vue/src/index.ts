@@ -482,7 +482,7 @@ export const Accordion = defineComponent<AccordionProps>({
   name: "KrdsAccordion",
   inheritAttrs: false,
   props: {
-    items: { type: Array as PropType<AccordionItem[]>, required: true },
+    items: { type: Array as PropType<AccordionItem[]>, default: () => [] },
     type: { type: String as PropType<"default" | "line">, default: "default" },
     multiple: Boolean,
     modelValue: { type: Array as PropType<string[] | undefined>, default: undefined },

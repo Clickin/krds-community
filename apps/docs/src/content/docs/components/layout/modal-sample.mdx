@@ -5,7 +5,6 @@ category: layout
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { ModalSample as ReactModalSample } from "@krds-community/react";
 import { ModalSample as VueModalSample } from "@krds-community/vue";
 import { ModalSample as SvelteModalSample } from "@krds-community/svelte";
@@ -140,7 +139,7 @@ import { ModalSample } from '@krds-community/astro';
 인지할 수 있는 단서를 제공해야 한다. 또한 액션 버튼이 스크롤 한 영역의 가장 아래에 배치될 경우 사용자에게 혼동을 줄 수 있으므로 액션 버튼이 제공되는 푸터는 모달 영역의 하단부에 항상 표시될 수 있도록 구현해야 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="콘텐츠 영역에 스크롤이 필요한 경우 사용자가 스크롤 영역을 인지할 수 있도록 표현하고 푸터가 항상 표시되도록 한다."
 >
@@ -209,7 +208,7 @@ import { ModalSample } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **헤더, 콘텐츠, 버튼 레이블은 명확한 내용으로 제공한다.**
 헤더에서 제공되는 제목 및 설명은 모달의 제공 목적(실행되는 기능, 확인하고자 하는 정보 등)이 명확하게 드러나야 한다. 본문에는 현재 플로(Flow)나 과업과 상관없는 내용을 포함하지 않아야 한다. 버튼 레이블은 버튼을 통해 실행하고자 하는 기능, 확정하고자 하는 행동을
@@ -219,7 +218,7 @@ import { ModalSample } from '@krds-community/astro';
 어렵다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="모달 내 상호작용을 최소화한다.">
+<FrameworkPreview kind="bad" title="모달 내 상호작용을 최소화한다.">
   <div slot="react">
     <ReactModalSample
       open="true"
@@ -318,14 +317,14 @@ import { ModalSample } from '@krds-community/astro';
     <AngularModalSample
       open="true"
       title="신청서를 제출할까요?"
-      description="모달 내부에 입력 폼과 같은 추가 상호작용 요소가 함께 제공됩니다."
+      description="이름"
       cancelLabel="취소"
       confirmLabel="확인"
       closeLabel="닫기"
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모달은 사용자의 행동을 통해 실행한다.**
 일부 예외를 제외하고 사용자가 의도하지 않은 모달을 자동으로 실행해서는 안 된다. 팝업의 갑작스러운 출현은 사용자를 당황하게 하며, 특히 스크린 리더 사용자가 화면 탐색 맥락을 잃어버리는 원인이 되므로 사용자 행동의 결과로 모달 팝업이 실행되어야 한다. 다만, 사용자에게 인증

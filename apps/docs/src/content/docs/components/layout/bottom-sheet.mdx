@@ -5,7 +5,6 @@ category: layout
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { BottomSheet as ReactBottomSheet } from "@krds-community/react";
 import { BottomSheet as VueBottomSheet } from "@krds-community/vue";
 import { BottomSheet as SvelteBottomSheet } from "@krds-community/svelte";
@@ -42,13 +41,8 @@ import { BottomSheet as AstroBottomSheet } from "@krds-community/astro";
       <li>댓글순</li>
     </ul>
   </SolidBottomSheet>
-  <AngularBottomSheet slot="angular" open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" client:only="@analogjs/astro-angular">
-    <ul class="bottom-sheet-options">
-      <li>최신순</li>
-      <li>조회순</li>
-      <li>댓글순</li>
-    </ul>
-  </AngularBottomSheet>
+  <AngularBottomSheet slot="angular" open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" client:only="@analogjs/astro-angular" items={["최신순", "조회순", "댓글순"]}>
+    </AngularBottomSheet>
   <AstroBottomSheet slot="astro" open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기">
     <ul class="bottom-sheet-options">
       <li>최신순</li>
@@ -185,7 +179,7 @@ import { BottomSheet } from '@krds-community/astro';
 바텀 시트는 상단 핸들을 아래로 스와이프 하거나 탭 하여 닫을 수 있지만, 이 기능을 모든 사용자가 알지 못 한다. 사용자가 바텀 시트를 안정적으로 닫을 수 있도록 화면에서 인지하기 쉬운 바텀 시트 상단에 ‘닫기’ 또는 ‘X’ 버튼을 포함하여 구성하는 것이 좋다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="닫기 버튼을 포함하여 구현하여야 한다."
 >
@@ -235,13 +229,8 @@ import { BottomSheet } from '@krds-community/astro';
   </div>
   <div slot="angular">
     <div style="display: flex; justify-content: center;">
-      <AngularBottomSheet open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" client:only="@analogjs/astro-angular">
-        <ul class="bottom-sheet-options">
-          <li>최신순</li>
-          <li>조회순</li>
-          <li>댓글순</li>
-        </ul>
-      </AngularBottomSheet>
+      <AngularBottomSheet open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." closeLabel="닫기" client:only="@analogjs/astro-angular" items={["최신순", "조회순", "댓글순"]}>
+    </AngularBottomSheet>
     </div>
   </div>
   <div slot="astro">
@@ -346,11 +335,11 @@ import { BottomSheet } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="닫기 버튼을 포함하여 구현하여야 한다."
 >
@@ -400,13 +389,8 @@ import { BottomSheet } from '@krds-community/astro';
   </div>
   <div slot="angular">
     <div style="display: flex; justify-content: center;">
-      <AngularBottomSheet open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." client:only="@analogjs/astro-angular">
-        <ul class="bottom-sheet-options">
-          <li>최신순</li>
-          <li>조회순</li>
-          <li>댓글순</li>
-        </ul>
-      </AngularBottomSheet>
+      <AngularBottomSheet open title="정렬 기준 선택" description="정렬 기준을 선택해 주세요." client:only="@analogjs/astro-angular" items={["최신순", "조회순", "댓글순"]}>
+    </AngularBottomSheet>
     </div>
   </div>
   <div slot="astro">
@@ -511,7 +495,7 @@ import { BottomSheet } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **다중으로 바텀 시트를 사용하지 않아야 한다.**
 여러 개의 바텀 시트를 서로 위로 쌓을 경우, 사용자는 현재 자신이 위치한 단계에 혼란을 줄 수 있어 하나의 바텀시트만 사용하는 것이 바람직하다. 부득이하게 여러 개의 바텀 시트를 사용할 수 밖에 없는 경우, 현 단계를 사용자에게 명확하게 전달하여야 하며, 시트를 닫을 때 현재의

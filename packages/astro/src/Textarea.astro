@@ -46,7 +46,8 @@ const recipe = inputRecipe({ className });
       >{initialValue}</textarea>
       {maxLength !== undefined && (
         <p class="textarea-count" aria-live="polite">
-          <span class="count-now">{count}</span><span class="count-total">/{maxLength}</span>
+          {/* ponytail: docs convention is "0/500자" (single text node keeps parity text identical); the count script targets .count-now */}
+          <span class="count-now">{count}/{maxLength}자</span>
         </p>
       )}
     </div>

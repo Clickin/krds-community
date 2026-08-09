@@ -5,7 +5,6 @@ category: settings
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -114,7 +113,7 @@ import { LanguageSwitcher } from '@krds-community/astro';
 제공해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="링크 레이블에 아이콘을 제공한다.">
+<FrameworkPreview kind="good" title="링크 레이블에 아이콘을 제공한다.">
   <div slot="react">
     <ReactLanguageSwitcher
       label="언어 선택"
@@ -174,11 +173,11 @@ import { LanguageSwitcher } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="링크 레이블에 아이콘을 제공한다.">
+<FrameworkPreview kind="bad" title="링크 레이블에 아이콘을 제공한다.">
   <div slot="react">
     <ReactButton variant="tertiary" client:only="react">
       언어 선택
@@ -207,7 +206,7 @@ import { LanguageSwitcher } from '@krds-community/astro';
       언어 선택
     </AngularButton>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **링크 레이블은 전환되는 언어의 이름을 해당 언어로 작성한다.**
 사용자가 링크 레이블을 읽고 이해할 수 있어야 이용하기 적합한 언어로 전환하거나 관련 서비스로 이동할 수 있다. 만약 모든 언어 이름이 영어로 작성되어 있다면 영어를 읽을 수 없는 사용자는 자신에게 필요한 서비스가 제공되고 있더라도 사용할 수 없을 것이다.
@@ -215,7 +214,7 @@ import { LanguageSwitcher } from '@krds-community/astro';
 레이블은 ‘한국어’로 표시되어야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="링크 레이블은 전환되는 언어의 이름을 해당 언어로 작성한다.">
+<FrameworkPreview kind="good" title="링크 레이블은 전환되는 언어의 이름을 해당 언어로 작성한다.">
   <div slot="react">
     <ReactLanguageSwitcher
       label="언어 선택"
@@ -275,11 +274,11 @@ import { LanguageSwitcher } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="링크 레이블은 전환되는 언어의 이름을 해당 언어로 작성한다.">
+<FrameworkPreview kind="bad" title="링크 레이블은 전환되는 언어의 이름을 해당 언어로 작성한다.">
   <div slot="react">
     <ReactLanguageSwitcher
       label="언어 선택"
@@ -339,13 +338,13 @@ import { LanguageSwitcher } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **링크 레이블을 언어 코드로 축약하지 않는다.**
 사용자에게 익숙하지 않은 언어 코드를 링크 레이블로 사용해서는 안 된다. 언어 이름을 그대로 사용했을 때 의미를 명확하게 전달할 수 있으며, 별도 설명 없이도 스크린 리더 사용자에게 자연스러운 설명을 제공할 수 있다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="링크 레이블을 언어 코드로 축약하지 않는다.">
+<FrameworkPreview kind="bad" title="링크 레이블을 언어 코드로 축약하지 않는다.">
   <div slot="react">
     <ReactLanguageSwitcher
       label="언어 선택"
@@ -405,7 +404,7 @@ import { LanguageSwitcher } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **국가명은 필요한 경우에만 사용한다.**
 한 국가 내에서도 다양한 언어가 사용되므로 서비스 언어 변경을 위한 링크 레이블을 국가와 관련된 정보로 표현하는 것은 적절하지 않다. 만약 사용자의 국적이나 접속 국가에 따라 제공되는 서비스가 달라지거나 서비스 정책이 변경되는 경우에는 링크에 국가명을 보조적인 정보로 제공할 수
@@ -415,7 +414,7 @@ import { LanguageSwitcher } from '@krds-community/astro';
 중인 화면의 맥락과 상관없이 외국어 서비스의 대표 화면으로 이동하게 된다. 사용자가 이용 맥락의 변화로 인한 혼동을 겪지 않도록 링크를 새 창으로 실행하고, 새 창 열림 아이콘을 제공해야 한다.
 **모범 사례 1**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="외국어 서비스로 이동하는 경우 링크를 새 창으로 실행하고, 새 창 열림 아이콘을 제공한다."
 >
@@ -498,11 +497,11 @@ import { LanguageSwitcher } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **모범 사례 2**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="외국어 서비스로 이동하는 경우 링크를 새 창으로 실행하고, 새 창 열림 아이콘을 제공한다."
 >
@@ -583,7 +582,7 @@ import { LanguageSwitcher } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 플랫폼에 대한 고려 사항
 

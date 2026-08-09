@@ -48,6 +48,7 @@ export const Tooltip = defineComponent({
           {
             id: tooltipId,
             class: "krds-tooltip-popover",
+            role: "tooltip",
             "aria-hidden": "true",
           },
           // A literal separator space between the sr-only label and the message
@@ -106,6 +107,7 @@ export const TooltipBox = defineComponent({
           {
             id: tooltipId,
             class: "krds-tooltip-popover",
+            role: "tooltip",
             "aria-hidden": "true",
           },
           [create("span", { class: "sr-only" }, props.label), " ", props.message],
@@ -161,6 +163,7 @@ export const TooltipVertical = defineComponent({
           {
             id: tooltipId,
             class: "krds-tooltip-popover",
+            role: "tooltip",
             "aria-hidden": "true",
           },
           [create("span", { class: "sr-only" }, props.label), " ", props.message],

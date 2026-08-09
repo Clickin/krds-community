@@ -11,7 +11,6 @@ import { TooltipVertical as SvelteTooltipVertical } from "@krds-community/svelte
 import { TooltipVertical as SolidTooltipVertical } from "@krds-community/solid";
 import { AngularTooltipVertical } from "@docs/angular-previews.ts";
 import { TooltipVertical as AstroTooltipVertical } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { ButtonIcon as ReactButtonIcon } from "@krds-community/react";
 import { ButtonIcon as VueButtonIcon } from "@krds-community/vue";
 import { ButtonIcon as SvelteButtonIcon } from "@krds-community/svelte";
@@ -126,7 +125,7 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
 툴팁의 팝오버 영역이 시각적으로 확인할 수 없는 화면 밖의 영역에 배치되어 내부 콘텐츠가 가려지지 않도록 해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="팝오버 영역이 화면을 벗어나지 않도록 표현한다.">
+<FrameworkPreview kind="good" title="팝오버 영역이 화면을 벗어나지 않도록 표현한다.">
   <div slot="react">
     <div style="display:flex;gap:1rem;align-items:center;padding:1rem">
       <p style="margin:0">본문 설명 텍스트가 표시되는 영역입니다.</p>
@@ -179,11 +178,11 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       </AngularTooltipVertical>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="팝오버 영역이 화면을 벗어나지 않도록 표현한다.">
+<FrameworkPreview kind="bad" title="팝오버 영역이 화면을 벗어나지 않도록 표현한다.">
   <div slot="react">
     <div style="display:flex;justify-content:flex-end">
       <ReactTooltipVertical label="도움말" message="간단한 부가 설명" client:only="react">
@@ -230,13 +229,13 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       </AngularTooltipVertical>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **팝오버 영역이 본문의 중요 콘텐츠를 가리지 않도록 표현한다.**
 툴팁의 팝오버 영역이 활성화 버튼과 부가 정보를 제공하고자 하는 본문 콘텐츠 요소를 가리지 않도록 적절한 표시 방향을 설정한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="팝오버 영역이 본문의 중요 콘텐츠를 가리지 않도록 표현한다.">
+<FrameworkPreview kind="good" title="팝오버 영역이 본문의 중요 콘텐츠를 가리지 않도록 표현한다.">
   <div slot="react">
     <div style="display:flex;gap:1rem;align-items:center">
       <p style="margin:0">본문의 중요 콘텐츠가 표시됩니다.</p>
@@ -289,11 +288,11 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       </AngularTooltipVertical>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="팝오버 영역이 본문의 중요 콘텐츠를 가리지 않도록 표현한다.">
+<FrameworkPreview kind="bad" title="팝오버 영역이 본문의 중요 콘텐츠를 가리지 않도록 표현한다.">
   <div slot="react">
     <div>
       <ReactTooltipVertical label="도움말" message="간단한 부가 설명" client:only="react">
@@ -346,13 +345,13 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       <p style="margin:0">팝오버가 본문 콘텐츠를 덮는 배치입니다.</p>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **아이콘 버튼에 툴팁을 제공한다.**
 아이콘만으로 구성된 컨트롤 요소는 사용자에게 의미/용도를 정확하게 전달하기 어렵다. 그러므로 아이콘만으로 구성된 메뉴/기능 버튼에는 툴팁을 반드시 제공해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="아이콘 버튼에 툴팁을 제공한다.">
+<FrameworkPreview kind="good" title="아이콘 버튼에 툴팁을 제공한다.">
   <div slot="react">
     <div style="display:flex;gap:.5rem;align-items:center">
       <ReactButtonIcon label="검색" client:only="react" />
@@ -405,11 +404,11 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       </AngularTooltipVertical>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="아이콘 버튼에 툴팁을 제공한다.">
+<FrameworkPreview kind="bad" title="아이콘 버튼에 툴팁을 제공한다.">
   <div slot="react">
     <div style="display:flex;gap:.5rem;align-items:center">
       <ReactButtonIcon label="검색" client:only="react" />
@@ -440,13 +439,13 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       <AngularButtonIcon label="검색" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **툴팁은 부가적인 정보를 전달하는 데 사용한다.**
 사용자가 반드시 확인해야 하는 중요한 정보를 툴팁 팝오버에만 제공해서는 안 된다. 필수 정보는 사용자가 잘 발견할 수 있도록 별도의 상호작용 없이 본문에 표시하는 것이 적절하다.
 **모범 사례**
 
-<PracticeExample kind="good" title="툴팁은 부가적인 정보를 전달하는 데 사용한다.">
+<FrameworkPreview kind="good" title="툴팁은 부가적인 정보를 전달하는 데 사용한다.">
   <div slot="react">
     <div style="display:flex;gap:.5rem;align-items:center">
       <p style="margin:0">
@@ -527,11 +526,11 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       </AngularTooltipVertical>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="툴팁은 부가적인 정보를 전달하는 데 사용한다.">
+<FrameworkPreview kind="bad" title="툴팁은 부가적인 정보를 전달하는 데 사용한다.">
   <div slot="react">
     <div style="display:flex;gap:.5rem;align-items:center">
       <p style="margin:0">신청 기한</p>
@@ -600,13 +599,13 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       </AngularTooltipVertical>
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **툴팁 컴포넌트와 title 속성을 중첩하여 사용하지 않는다.**
 툴팁 컴포넌트와 title 속성이 동시에 사용되면 두 요소의 위치가 중첩되면서 설명이 정확하게 전달되기 어렵다. 스크린 리더 사용자에게도 동일한 설명이 여러 번 제공되므로 피로를 유발할 수 있다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="툴팁 컴포넌트와 title 속성을 중첩하여 사용하지 않는다.">
+<FrameworkPreview kind="bad" title="툴팁 컴포넌트와 title 속성을 중첩하여 사용하지 않는다.">
   <div slot="react">
     <ReactTooltipVertical
       label="도움말"
@@ -656,7 +655,7 @@ HTML title 속성으로 제공되는 힌트 텍스트는 글자 크기, 표시 �
       도움말
     </AngularTooltipVertical>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **한 화면에 아이콘 툴팁과 맥락적 도움말 또는 도움말 패널을 혼용하지 않는다.**
 정보/물음표 아이콘 툴팁과 맥락적 도움말의 활성화 버튼은 동일하게 생겼으나 상호작용 방식이 다르므로 한 화면에 두 개의 요소를 혼용할 경우 사용자가 혼동을 느낄 수 있다. 만약 맥락적 도움말이나 도움말 패널 사용이 필요하다면 툴팁 대신 맥락적 도움말 컴포넌트를 사용한다.

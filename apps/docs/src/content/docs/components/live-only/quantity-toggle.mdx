@@ -4,7 +4,7 @@ description: 수량 토글은 사용자가 수량 옵션을 늘리거나 줄이�
 category: live-only
 ---
 
-import PracticeExample from "@docs/PracticeExample.astro";
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import { Button as ReactButton } from "@krds-community/react";
 import { Button as VueButton } from "@krds-community/vue";
 import { Button as SvelteButton } from "@krds-community/svelte";
@@ -57,7 +57,7 @@ import { TextInput as AstroTextInput } from "@krds-community/astro";
 선택 수량에 제한을 설정할 때 버튼 상태를 비활성화로 변경하여 즉시 피드백을 제공해야 하며, 선택 수량은 기준 값을 포함하여 총 11단계 이내 범위를 제한하여 구현한다. 너무 많은 선택 값을 제공해야 하는 경우 수량 토글 보다는 텍스트 입력 필드를 적용하는 것이 적합합니다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="선택 수량의 범위를 제한해야 한다."
 >
@@ -178,11 +178,11 @@ import { Button, TextInput } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="선택 수량의 범위를 제한해야 한다."
 >
@@ -303,13 +303,13 @@ import { Button, TextInput } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **수량 조정 버튼의 크기를 너무 작게 표시하지 않는다.**
 수량 값을 조정하는 증가, 감소 버튼을 모아서 배치하거나, 너무 작게 제공하는 경우 사용자는 속도를 늦추고 신중하게 움직여 잘못 클릭하는 경우를 발생할 수 있다. 수량 조정 버튼은 항상 입력 필드를 가운데 두고 분리하여 배치하는 것이 적합하다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="수량 조정 버튼의 크기를 너무 작게 표시하지 않는다."
 >
@@ -430,11 +430,11 @@ import { Button, TextInput } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="수량 조정 버튼의 크기를 너무 작게 표시하지 않는다."
 >
@@ -555,6 +555,6 @@ import { Button, TextInput } from '@krds-community/astro';
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 {/* /krds-official:component_12_04 */}

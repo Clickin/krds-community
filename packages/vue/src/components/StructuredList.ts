@@ -82,7 +82,10 @@ export const StructuredList = defineComponent({
                     class: ["krds-btn", "medium", "text"],
                     title: listItem.title,
                   },
-                  [create("i", { class: ["svg-icon", "ico-share"] }), " " + props.shareLabel],
+                  [
+                    create("i", { class: ["svg-icon", "ico-share"] }),
+                    props.shareLabel ? " " + props.shareLabel : null,
+                  ],
                 ),
                 create(
                   "button",
@@ -91,7 +94,10 @@ export const StructuredList = defineComponent({
                     class: ["krds-btn", "medium", "text"],
                     title: listItem.title,
                   },
-                  [create("i", { class: ["svg-icon", "ico-like"] }), " " + props.favoriteLabel],
+                  [
+                    create("i", { class: ["svg-icon", "ico-like"] }),
+                    props.favoriteLabel ? " " + props.favoriteLabel : null,
+                  ],
                 ),
               ]),
             ]),

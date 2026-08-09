@@ -145,14 +145,14 @@ export function StructuredListTable(rawProps: StructuredListTableProps) {
                 <tr>
                   <For each={props.columns}>
                     {(column, columnIndex) =>
-                      columnIndex() === 0 ? (
+                      column.key === "selected" ? (
                         <th scope="row">
                           <div class="krds-form-check">
                             <input
                               type="checkbox"
                               class="chk"
                               id={`${props.id}-row-${String(row.id)}`}
-                              aria-label={row.selectionLabel ?? String(row[column.key] ?? "")}
+                              aria-label={row.selectionLabel}
                               checked={Boolean(row.selected)}
                             />
                             <label for={`${props.id}-row-${String(row.id)}`} />
@@ -165,6 +165,8 @@ export function StructuredListTable(rawProps: StructuredListTableProps) {
                             {" " + String(row[column.key] ?? "")}
                           </button>
                         </td>
+                      ) : columnIndex() === 0 ? (
+                        <th scope="row">{String(row[column.key] ?? "")}</th>
                       ) : (
                         <td>{String(row[column.key] ?? "")}</td>
                       )

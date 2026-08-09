@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, untrack } from 'svelte';
   import type { Snippet } from 'svelte';
 
   const CLOSE_ANIMATION_MS = 200;
@@ -36,7 +36,7 @@
   const rootClass = $derived(`${classProp} ${className}`.trim());
   const controlled = $derived(open !== undefined);
 
-  let rendered = $state(open === true || (open === undefined && defaultOpen === true));
+  let rendered = $state(untrack(() => open === true || (open === undefined && defaultOpen === true)));
   let closing = $state(false);
   let wasOpen = false;
   let wasRendered = false;
@@ -84,6 +84,7 @@
           : null;
       queueMicrotask(() => {
         sheetRoot
+          ?.querySelector<HTMLElement>('.bottom-sheet-panel')
           ?.querySelector<HTMLElement>(
             'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
           )
@@ -101,7 +102,7 @@
     }
     if (event.key !== 'Tab') return;
     const focusable = Array.from(
-      sheetRoot?.querySelectorAll<HTMLElement>(
+      sheetRoot?.querySelector<HTMLElement>('.bottom-sheet-panel')?.querySelectorAll<HTMLElement>(
         'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
       ) ?? [],
     );
@@ -134,7 +135,13 @@
     aria-labelledby={title ? `${id}-title` : undefined}
     onkeydown={handleKeydown}
   >
-    <div class="bottom-sheet-overlay" data-close onclick={requestClose}></div>
+    <button
+      type="button"
+      class="bottom-sheet-overlay"
+      data-close
+      aria-label={closeLabel}
+      onclick={requestClose}
+    ></button>
     <div class="bottom-sheet-panel" role="document">
       <button type="button" class="bottom-sheet-handle" aria-hidden="true" tabindex="-1"></button>
       {#if title}

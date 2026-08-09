@@ -7,8 +7,12 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ng-template #unorderedList let-list let-level="level">
-      <ul [class]="unorderedListClass(level)" role="list">
+    <ng-template #unorderedList let-list let-level="level" let-root="root">
+      <ul
+        [attr.aria-label]="root ? ariaLabel || null : null"
+        [class]="unorderedListClass(level)"
+        role="list"
+      >
         @for (item of list; track $index) {
           <li role="listitem">
             {{ navLabel(item) }}
@@ -16,7 +20,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
               <ng-container
                 *ngTemplateOutlet="
                   unorderedList;
-                  context: { $implicit: itemChildren(item), level: level + 1 }
+                  context: { $implicit: itemChildren(item), level: level + 1, root: false }
                 "
               />
             }
@@ -24,11 +28,14 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
         }
       </ul>
     </ng-template>
-    <ng-container *ngTemplateOutlet="unorderedList; context: { $implicit: items, level: 0 }" />
+    <ng-container
+      *ngTemplateOutlet="unorderedList; context: { $implicit: items, level: 0, root: true }"
+    />
   `,
 })
 export class KrdsTextListComponent {
   @Input() items: unknown[] = [];
+  @Input("aria-label") ariaLabel = "";
 
   navLabel(item: unknown): string {
     if (typeof item === "string" || typeof item === "number") return String(item);
@@ -56,8 +63,12 @@ export class KrdsTextListComponent {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ng-template #orderedList let-list let-level="level">
-      <ol class="krds-info-list ordered" role="list">
+    <ng-template #orderedList let-list let-level="level" let-root="root">
+      <ol
+        [attr.aria-label]="root ? ariaLabel || null : null"
+        class="krds-info-list ordered"
+        role="list"
+      >
         @for (item of list; track $index) {
           <li role="listitem">
             <span class="num">{{ orderedMarker(level, $index) }}</span>
@@ -66,7 +77,7 @@ export class KrdsTextListComponent {
               <ng-container
                 *ngTemplateOutlet="
                   orderedList;
-                  context: { $implicit: itemChildren(item), level: level + 1 }
+                  context: { $implicit: itemChildren(item), level: level + 1, root: false }
                 "
               />
             }
@@ -74,11 +85,14 @@ export class KrdsTextListComponent {
         }
       </ol>
     </ng-template>
-    <ng-container *ngTemplateOutlet="orderedList; context: { $implicit: items, level: 0 }" />
+    <ng-container
+      *ngTemplateOutlet="orderedList; context: { $implicit: items, level: 0, root: true }"
+    />
   `,
 })
 export class KrdsTextListOrderedComponent {
   @Input() items: unknown[] = [];
+  @Input("aria-label") ariaLabel = "";
 
   navLabel(item: unknown): string {
     if (typeof item === "string" || typeof item === "number") return String(item);

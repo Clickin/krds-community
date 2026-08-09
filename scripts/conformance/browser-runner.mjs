@@ -82,7 +82,10 @@ if (ownsCollector) await startCollector();
     }
     if (rules.length) byFixture.set(fixture.id, rules);
   }
-  await setConfig({ errata: Object.fromEntries(byFixture) });
+  await setConfig({
+    errata: Object.fromEntries(byFixture),
+    catalog: catalogArgument?.endsWith("fixtures-extra.json") ? "extra" : "upstream",
+  });
 }
 
 let wtrStderr = "";
@@ -172,35 +175,42 @@ for (const framework of activeFrameworks) {
 }
 
 const frameworkEvidence = activeFrameworks.map((framework) => {
-    const frameworkResults = results.filter((result) => result.framework === framework);
-    const fixtureResults = [...fixtureById.values()].map((fixture) => {
-      const states = frameworkResults.filter((result) => result.fixtureId === fixture.id);
-      const errors = states
-        .filter((state) => state.status !== "passing")
-        .map(
-          (state) =>
-            `${state.state}: ${Object.entries(state.checks)
-              .filter(([, check]) => check.passed === false)
-              .map(([name]) => name)
-              .join(", ")}`,
-        );
+  const frameworkResults = results.filter((result) => result.framework === framework);
+  const fixtureResults = [...fixtureById.values()].map((fixture) => {
+    const states = frameworkResults.filter((result) => result.fixtureId === fixture.id);
+    if (!states.length) {
       return {
         fixtureId: fixture.id,
-        status: errors.length ? "failing" : "passing",
-        ...(errors.length ? { errors } : {}),
+        status: "failing",
+        errors: ["no browser verdict produced"],
       };
-    });
-    const errors = fixtureResults.flatMap((result) => result.errors ?? []);
+    }
+    const errors = states
+      .filter((state) => state.status !== "passing")
+      .map(
+        (state) =>
+          `${state.state}: ${Object.entries(state.checks)
+            .filter(([, check]) => check.passed === false)
+            .map(([name]) => name)
+            .join(", ")}`,
+      );
     return {
-      framework,
+      fixtureId: fixture.id,
       status: errors.length ? "failing" : "passing",
-      fixtureResults,
-      unresolvedSelectors: [],
-      errata: [],
-      errors,
-      source: evidenceSource,
+      ...(errors.length ? { errors } : {}),
     };
   });
+  const errors = fixtureResults.flatMap((result) => result.errors ?? []);
+  return {
+    framework,
+    status: errors.length ? "failing" : "passing",
+    fixtureResults,
+    unresolvedSelectors: [],
+    errata: [],
+    errors,
+    source: evidenceSource,
+  };
+});
 
 const strictConformance =
   results.every((result) => result.status === "passing") &&

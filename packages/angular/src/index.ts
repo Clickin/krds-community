@@ -85,8 +85,8 @@ export { KrdsTextareaComponent } from "./components/textarea.component.js";
 export { KrdsToastComponent } from "./components/toast.component.js";
 export {
   KrdsTextInputIconComponent,
-  KrdsTextInputIconComponent as KrdsTextInputSizeComponent,
-  KrdsTextInputIconComponent as KrdsTextInputStateComponent,
+  KrdsTextInputSizeComponent,
+  KrdsTextInputStateComponent,
 } from "./components/text-input-icon.component.js";
 export {
   KrdsTextListComponent,

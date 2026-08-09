@@ -1,12 +1,4 @@
-import {
-  defineComponent,
-  nextTick,
-  onBeforeUnmount,
-  ref,
-  useId,
-  watch,
-  type PropType,
-} from "vue";
+import { defineComponent, nextTick, onBeforeUnmount, ref, useId, watch, type PropType } from "vue";
 
 import { children, create, withoutNativeEvents } from "../shared.js";
 
@@ -120,9 +112,11 @@ export const BottomSheet = defineComponent({
           "aria-labelledby": props.title ? `${generatedId}-title` : undefined,
         },
         [
-          create("div", {
+          create("button", {
+            type: "button",
             class: "bottom-sheet-overlay",
             "data-close": "",
+            "aria-label": props.closeLabel,
             onClick: () => close(),
           }),
           create("div", { class: "bottom-sheet-panel", role: "document" }, [
@@ -141,11 +135,7 @@ export const BottomSheet = defineComponent({
                     props.title,
                   ),
                   props.description
-                    ? create(
-                        "p",
-                        { class: "bottom-sheet-description" },
-                        props.description,
-                      )
+                    ? create("p", { class: "bottom-sheet-description" }, props.description)
                     : null,
                 ])
               : null,

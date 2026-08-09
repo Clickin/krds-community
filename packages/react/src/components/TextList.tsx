@@ -1,4 +1,5 @@
-import { isValidElement, type ReactNode } from "react";
+import { isValidElement, type ReactNode, type Ref } from "react";
+import type { HTMLAttributes } from "react";
 import { cx } from "@krds-community/recipes";
 
 type StructuredTextListItem = {
@@ -33,10 +34,19 @@ function TextListItems({
   depth: number;
 }) {
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  const markerFor = (index: number) =>
+    depth === 0
+      ? `${index + 1}. `
+      : depth === 1
+        ? `${alphabet[index] ?? index + 1}. `
+        : String.fromCodePoint(0x2460 + index);
   return items.map((item, index) => {
     if (isTextListReactNode(item)) {
       return (
         <li role="listitem" key={index}>
+          {ordered && item !== null && typeof item !== "object" ? (
+            <span className="num">{markerFor(index)}</span>
+          ) : null}
           {item}
         </li>
       );
@@ -70,14 +80,22 @@ export function TextList({
   items = [],
   ordered = false,
   className,
+  ref,
+  ...props
 }: {
   items?: TextListItem[];
   ordered?: boolean;
   className?: string;
-}) {
+  ref?: Ref<HTMLElement>;
+} & Omit<HTMLAttributes<HTMLUListElement>, "children">) {
   const List = ordered ? "ol" : "ul";
   return (
-    <List role="list" className={cx("krds-info-list", ordered ? "ordered" : "decimal", className)}>
+    <List
+      {...props}
+      ref={ref as Ref<HTMLOListElement>}
+      role="list"
+      className={cx("krds-info-list", ordered ? "ordered" : "decimal", className)}
+    >
       <TextListItems items={items} ordered={ordered} depth={0} />
     </List>
   );

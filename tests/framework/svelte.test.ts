@@ -1,5 +1,5 @@
 import { mount, tick, unmount, type Component } from "svelte";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createClassComponent } from "svelte/legacy";
 import Accordion from "../../packages/svelte/src/Accordion.svelte";
 import Additional from "../../packages/svelte/src/Additional.svelte";
@@ -10,6 +10,9 @@ import DateInput from "../../packages/svelte/src/DateInput.svelte";
 import Identifier from "../../packages/svelte/src/Identifier.svelte";
 import Spinner from "../../packages/svelte/src/Spinner.svelte";
 import TextInputIcon from "../../packages/svelte/src/TextInputIcon.svelte";
+import BottomSheet from "../../packages/svelte/src/BottomSheet.svelte";
+import HelpPanel from "../../packages/svelte/src/HelpPanel.svelte";
+import TutorialPanel from "../../packages/svelte/src/TutorialPanel.svelte";
 import ReactiveForm from "./fixtures/ReactiveForm.svelte";
 import {
   BadgeNumber,
@@ -1113,5 +1116,42 @@ describe("Svelte core component contracts", () => {
     expect(host.querySelector(".krds-tts")?.getAttribute("aria-label")).toBe("Listen");
     mountInHost(TtsSize, { label: "Small" });
     expect(host.querySelector(".krds-tts")?.classList.contains("xsmall")).toBe(true);
+  });
+
+  it("keeps the native bottom-sheet overlay and panel focus contracts", async () => {
+    vi.useFakeTimers();
+    const onOpenChange = vi.fn();
+    mountInHost(BottomSheet, {
+      defaultOpen: true,
+      closeLabel: "시트 닫기",
+      onopenchange: onOpenChange,
+    });
+    await tick();
+
+    const overlay = host.querySelector<HTMLButtonElement>(".bottom-sheet-overlay")!;
+    expect(overlay.tagName).toBe("BUTTON");
+    expect(overlay.type).toBe("button");
+    expect(overlay.getAttribute("aria-label")).toBe("시트 닫기");
+    overlay.focus();
+    overlay.click();
+    vi.advanceTimersByTime(200);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+
+    mountInHost(HelpPanel, {
+      open: true,
+      tabs: [{ id: "help-tab", label: "도움말", panelId: "help-panel" }],
+    });
+    await tick();
+    expect(host.querySelector<HTMLElement>(".help-panel-wrap")?.tabIndex).toBe(0);
+    expect(host.querySelector('section[role="tabpanel"]')?.id).toBe("help-panel");
+
+    mountInHost(TutorialPanel, {
+      open: true,
+      tabs: [{ id: "tutorial-tab", label: "튜토리얼", panelId: "tutorial-panel" }],
+    });
+    await tick();
+    expect(host.querySelector<HTMLElement>(".help-panel-wrap")?.tabIndex).toBe(0);
+    expect(host.querySelector('section[role="tabpanel"]')?.id).toBe("tutorial-panel");
+    vi.useRealTimers();
   });
 });

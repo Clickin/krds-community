@@ -80,11 +80,11 @@ export function StructuredList(rawProps: StructuredListProps) {
                 <div class="card-btn">
                   <button type="button" class="krds-btn medium text" title={labelOf(item)}>
                     <i class="svg-icon ico-share" />
-                    {" " + (structured?.shareLabel ?? props.shareLabel)}
+                    {(structured?.shareLabel ?? props.shareLabel) ? " " + (structured?.shareLabel ?? props.shareLabel) : null}
                   </button>
                   <button type="button" class="krds-btn medium text" title={labelOf(item)}>
                     <i class="svg-icon ico-like" />
-                    {" " + (structured?.favoriteLabel ?? props.favoriteLabel)}
+                    {(structured?.favoriteLabel ?? props.favoriteLabel) ? " " + (structured?.favoriteLabel ?? props.favoriteLabel) : null}
                   </button>
                 </div>
               </div>

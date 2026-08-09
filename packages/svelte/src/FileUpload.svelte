@@ -21,7 +21,6 @@
     form?: string;
     currentCount?: number;
     maxCount?: number;
-    label,
     countSuffix?: string;
     files?: FileItem[];
     label?: string;
@@ -35,7 +34,7 @@
   let {
     id = '',
     name = '',
-    title = '제목',
+    title = '',
     description = '',
     prompt = '',
     inputId = '',
@@ -45,8 +44,8 @@
     disabled = false,
     required = false,
     form,
-    currentCount = 0,
-    maxCount = 0,
+    currentCount,
+    maxCount,
     countSuffix = '',
     label,
     files = [],
@@ -103,7 +102,7 @@
   </div>
   <div class="file-list">
     <div class="total">
-      <span class="current">{currentCount}{countSuffix || '개'}</span> / {maxCount}{countSuffix || '개'}
+      <span class="current">{currentCount ?? files.length}{countSuffix}</span> / {maxCount ?? ''}{countSuffix}
     </div>
     <ul class="upload-list">
       {#each files as file}

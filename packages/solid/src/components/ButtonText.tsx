@@ -21,7 +21,7 @@ export function ButtonText(rawProps: ButtonTextProps) {
     "icon",
   ]);
   const className = () => props.class ?? props.className ?? "";
-  const content = () => props.children ?? props.label;
+  const content = () => props.children ?? props.label ?? "레이블";
   return (
     <button
       {...(native as Record<string, any>)}
@@ -44,7 +44,7 @@ export function ButtonWithIcon(rawProps: ButtonTextProps) {
     "icon",
   ]);
   const className = () => props.class ?? props.className ?? "";
-  const content = () => props.children ?? props.label;
+  const content = () => props.children ?? props.label ?? "레이블";
   return (
     <button
       {...(native as Record<string, any>)}

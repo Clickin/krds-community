@@ -5,7 +5,6 @@ category: layout
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Favicon as ReactFavicon } from "@krds-community/react";
 import { Favicon as VueFavicon } from "@krds-community/vue";
 import { Favicon as SvelteFavicon } from "@krds-community/svelte";
@@ -95,7 +94,7 @@ import { Favicon } from '@krds-community/astro';
 환경에서도 또렷하게 보이도록 한다. 대표 도메인과 서브 서비스에 동일 파비콘을 적용해 이용자가 동일 기관 서비스임을 인지할 수 있게 한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="정부기관의 식별성을 높이기 위해 기관 CI 기반 파비콘을 필수로 제공한다."
 >
@@ -183,13 +182,13 @@ import { Favicon } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **라이트·다크 테마 모두에서 구분되도록 버전을 마련한다.**
 라이트·다크 테마 및 브라우저 및 OS UI 배경 변화에도 식별성이 유지되도록 테마 대응 버전을 제공하며 동일한 심볼 형태를 유지한 채 명도 반전, 외곽선, 배경판 적용 등으로 충분한 대비를 확보한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="라이트·다크 테마 모두에서 구분되도록 버전을 마련한다.">
+<FrameworkPreview kind="good" title="라이트·다크 테마 모두에서 구분되도록 버전을 마련한다.">
   <div slot="react">
     <div>
       <div>라이트·다크 테마에 각각 대응하는 파비콘 버전을 함께 제공한다.</div>
@@ -300,11 +299,11 @@ import { Favicon } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="라이트·다크 테마 모두에서 구분되도록 버전을 마련한다.">
+<FrameworkPreview kind="bad" title="라이트·다크 테마 모두에서 구분되도록 버전을 마련한다.">
   <div slot="react">
     <div>
       <div>다크 테마 대응 버전 없이 라이트 테마 전용 파비콘만 제공한다.</div>
@@ -346,6 +345,6 @@ import { Favicon } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 {/* /krds-official:component_04_14 */}

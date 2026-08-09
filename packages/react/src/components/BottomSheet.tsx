@@ -132,7 +132,12 @@ export function BottomSheet({
         if ((event.target as HTMLElement).closest?.("[data-close]")) close();
       }}
     >
-      <div className="bottom-sheet-overlay" data-close />
+      <button
+        type="button"
+        className="bottom-sheet-overlay"
+        data-close
+        aria-label={closeLabel ?? "닫기"}
+      />
       <div className="bottom-sheet-panel" role="document" ref={panelRef}>
         <button
           type="button"

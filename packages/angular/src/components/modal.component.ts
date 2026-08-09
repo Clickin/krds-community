@@ -43,6 +43,8 @@ import { createStableId, type AngularNavItem } from "../kinds";
       <section
         [id]="id"
         class="krds-modal fade"
+        [class.in]="open"
+        [class.shown]="open"
         role="dialog"
         [attr.aria-labelledby]="id + '-title'"
       >
@@ -79,13 +81,14 @@ import { createStableId, type AngularNavItem } from "../kinds";
             </button>
           </div>
         </div>
-        <div class="modal-back"></div>
+        <div class="modal-back" [class.in]="open"></div>
       </section>
     }
   `,
 })
 export class KrdsModalComponent {
   @Input() id = createStableId("krds-modal");
+  @Input() open = false;
   @Input() title = "제목";
   @Input() description = "";
   @Input() cancelLabel = "";

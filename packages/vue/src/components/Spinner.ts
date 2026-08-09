@@ -8,8 +8,8 @@ export const Spinner = defineComponent({
   props: {
     id: { type: String, default: undefined },
     placeholder: { type: String, default: "" },
-    label: { type: String, default: undefined },
-    inputLabel: { type: String, default: undefined },
+    label: { type: String, default: "처리 중" },
+    inputLabel: { type: String, default: "Label" },
   },
   setup(props, { attrs, slots: _slots }) {
     const generatedId = `krds-spinner-${useId()}`;
@@ -17,6 +17,9 @@ export const Spinner = defineComponent({
     return () => {
       const className = attrs.class as string | undefined;
       return create("div", { class: "form-group" }, [
+        create("div", { class: "form-tit" }, [
+          create("label", { for: `${id.value}-input` }, props.inputLabel),
+        ]),
         create("div", { class: "form-conts" }, [
           create("div", { class: "form-spinner" }, [
             create("input", {

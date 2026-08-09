@@ -11,7 +11,7 @@ export interface MastheadProps {
 }
 
 export function Masthead(rawProps: MastheadProps) {
-  const merged = mergeProps({}, rawProps);
+  const merged = mergeProps({ message: "도움말" }, rawProps);
   const [props, native] = splitProps(merged, [
     "class",
     "className",

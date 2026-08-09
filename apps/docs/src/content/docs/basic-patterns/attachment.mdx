@@ -3,8 +3,8 @@ title: 첨부 파일
 description: 게시물이나 본문에서 내려받을 수 있는 콘텐츠를 제공하는 기본 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Link as ReactLink } from "@krds-community/react";
 import { Link as VueLink } from "@krds-community/vue";
 import { Link as SvelteLink } from "@krds-community/svelte";
@@ -56,7 +56,7 @@ import { Button as AstroButton } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="링크가 파일 다운로드를 유발할 수 있음을 사용자에게 사전에 안내한다."
 >
@@ -86,9 +86,7 @@ import { Button as AstroButton } from "@krds-community/astro";
     </AstroLink>
   </div>
   <div slot="angular">
-    <AngularLink href="#" client:only="@analogjs/astro-angular">
-      신청서 양식.hwp [HWP] 다운로드
-    </AngularLink>
+    <AngularLink href="#" client:only="@analogjs/astro-angular" label="신청서 양식.hwp [HWP] 다운로드" />
   </div>
 
 ```tsx fw=react
@@ -140,11 +138,11 @@ import { Link } from "@krds-community/astro";
 <Link href="#">신청서 양식.hwp [HWP] 다운로드</Link>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="파일 다운로드를 유발하는 링크를 안내 없이 제공한다."
 >
@@ -174,9 +172,7 @@ import { Link } from "@krds-community/astro";
     </AstroLink>
   </div>
   <div slot="angular">
-    <AngularLink href="#" client:only="@analogjs/astro-angular">
-      신청서 양식.hwp
-    </AngularLink>
+    <AngularLink href="#" client:only="@analogjs/astro-angular" label="신청서 양식.hwp" />
   </div>
 
 ```tsx fw=react
@@ -228,14 +224,14 @@ import { Link } from "@krds-community/astro";
 <Link href="#">신청서 양식.hwp</Link>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **파일의 크기와 형식 정보를 표시한다.**
 인라인 링크와 목록 링크는 파일 이름 우측에 '[파일 유형, 파일 크기]'를 제공하여 사용자가 첨부파일에 대한 정보를 예측할 수 있게 한다. 파일 크기는 KB, MB, GB 단위로 표시한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="파일의 크기와 형식 정보를 표시한다."
 >
@@ -400,14 +396,14 @@ import { TextList } from "@krds-community/astro";
 />
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **인라인 링크 유형의 첨부파일 텍스트는 주변 콘텐츠와 비슷한 크기로 제공한다.**
 본문 내에 제공될 경우 링크 텍스트의 크기는 해당 줄 또는 단락에 있는 텍스트의 글자 크기와 일치해야 한다.
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="인라인 링크 유형의 첨부파일 텍스트는 주변 콘텐츠와 비슷한 크기로 제공한다."
 >
@@ -473,9 +469,7 @@ import { TextList } from "@krds-community/astro";
     <div style="max-width: 480px">
       <p style="margin: 0 0 .5rem">
         신청 방법에 대한 자세한 내용은{" "}
-        <AngularLink href="#" client:only="@analogjs/astro-angular">
-          신청 방법 안내.pdf
-        </AngularLink>{" "}
+        <AngularLink href="#" client:only="@analogjs/astro-angular" label="신청 방법 안내.pdf" />{" "}
         파일을 확인해 주세요.
       </p>
       <AngularButton variant="secondary" label="미리보기" client:only="@analogjs/astro-angular">미리보기</AngularButton>
@@ -571,4 +565,4 @@ import { Button, Link } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>

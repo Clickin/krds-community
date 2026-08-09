@@ -79,7 +79,7 @@ export const FileUpload = defineComponent({
                 },
                 [
                   create("i", { class: ["svg-icon", "ico-upload"] }),
-                  props.selectLabel ?? props.label,
+                  props.selectLabel,
                 ],
               ),
             ]),
@@ -89,9 +89,9 @@ export const FileUpload = defineComponent({
               create(
                 "span",
                 { class: "current" },
-                `${props.currentCount ?? 0}${props.countSuffix ?? ""}`,
+                `${props.currentCount ?? props.files.length}${props.countSuffix ?? ""}`,
               ),
-              ` / ${props.maxCount ?? 0}${props.countSuffix ?? ""}`,
+              ` / ${props.maxCount ?? ""}${props.countSuffix ?? ""}`,
             ]),
             create(
               "ul",
@@ -123,22 +123,23 @@ export const FileUpload = defineComponent({
                               ? create("span", { class: ["complete", "ico-invalid"] }, [
                                   create("em", { class: "sr-only" }, file.statusLabel),
                                 ])
-                              : file.deleteLabel
-                                ? create(
-                                    "button",
-                                    {
-                                      type: "button",
-                                      class: ["krds-btn", "medium", "text"],
-                                    },
-                                    [
-                                      file.deleteLabel,
-                                      " ",
-                                      create("i", {
-                                        class: ["svg-icon", "ico-delete-fill"],
-                                      }),
-                                    ],
-                                  )
-                                : null,
+                              : null,
+                          file.deleteLabel
+                            ? create(
+                                "button",
+                                {
+                                  type: "button",
+                                  class: ["krds-btn", "medium", "text"],
+                                },
+                                [
+                                  file.deleteLabel,
+                                  " ",
+                                  create("i", {
+                                    class: ["svg-icon", "ico-delete-fill"],
+                                  }),
+                                ],
+                              )
+                            : null,
                           file.downloadLabel
                             ? create(
                                 "button",

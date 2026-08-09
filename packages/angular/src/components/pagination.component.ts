@@ -38,9 +38,9 @@ export class KrdsPaginationComponent {
   @Input() current = 1;
   @Input() message = "도움말";
   @Input() navigationLabel = "페이지 이동";
-  @Input() previousLabel = "";
-  @Input() nextLabel = "";
-  @Input() items: (string | number | { label: string })[] = [];
+  @Input() previousLabel = "이전";
+  @Input() nextLabel = "다음";
+  @Input() items: (string | number | { label: string })[] = [1, 2, 3, 4, 5];
   @Output() currentChange = new EventEmitter<number>();
 
   get currentPage(): string {

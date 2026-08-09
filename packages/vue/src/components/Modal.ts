@@ -76,7 +76,7 @@ export const Modal = defineComponent({
           ...withoutNativeEvents(attrs),
           ref: modalElement,
           id: id.value,
-          class: ["krds-modal", "fade", undefined, className],
+          class: ["krds-modal", "fade", open.value && "in", open.value && "shown", className],
           role: "dialog",
           "aria-labelledby": `${id.value}-title`,
         },
@@ -145,7 +145,7 @@ export const Modal = defineComponent({
             ]),
           ]),
           create("div", {
-            class: ["modal-back", undefined],
+            class: ["modal-back", open.value && "in"],
           }),
         ],
       );

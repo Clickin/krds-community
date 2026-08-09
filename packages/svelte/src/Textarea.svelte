@@ -73,4 +73,5 @@
   {form}
   oninput={setValue}
 ></textarea>
-<label class="sr-only" for={id}>{label}</label>
+{#if label}<label for={id}>{label}</label>{/if}
+{#if hint}<p id={`${id}-hint`}>{hint}</p>{/if}

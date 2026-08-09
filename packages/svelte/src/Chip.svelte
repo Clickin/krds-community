@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
+
   type Option = { value: string; label: string; disabled?: boolean };
 
   type Props = {
@@ -28,7 +30,7 @@
   }: Props = $props();
 
   const rootClass = $derived(`${classProp} ${className}`.trim());
-  let internal = $state<string | string[] | undefined>(defaultSelected);
+  let internal = $state<string | string[] | undefined>(untrack(() => defaultSelected));
   const current = $derived(selected !== undefined ? selected : internal);
   const isSelected = (value: string) =>
     type === 'single' ? current === value : (Array.isArray(current) ? current : []).includes(value);

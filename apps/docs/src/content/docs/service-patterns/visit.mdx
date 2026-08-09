@@ -3,8 +3,8 @@ title: 방문
 description: 사용자가 디지털 서비스에 접속하여 원하는 상세 정보로 연결되는 서비스 패턴입니다.
 ---
 
+import FrameworkPreview from "@docs/FrameworkPreview.astro";
 import PatternReference from "../../../components/PatternReference.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Badge as ReactBadge } from "@krds-community/react";
 import { Badge as VueBadge } from "@krds-community/vue";
 import { Badge as SvelteBadge } from "@krds-community/svelte";
@@ -60,7 +60,7 @@ import { TextList as AstroTextList } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="시급하거나 중요한 정보를 사용자가 빠르게 인지할 수 있도록 제공한다."
 >
@@ -399,7 +399,7 @@ import { Carousel } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 사용자 데이터를 기반으로 한 우선순위에 따라 콘텐츠를 배치한다.**
 메인 화면을 구성하는 요소들의 우선순위를 제공자의 관점으로만 결정하면 사용자들이 주로 찾는 정보와 기능이 찾기 어려운 곳에 배치되거나 주목도가 낮아지게 되어 방문 단계에서부터 사용자가 원하는 목적을 달성할 수 없게 된다.
@@ -409,7 +409,7 @@ import { Carousel } from "@krds-community/astro";
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="사용자 관점에서 같은 목적의 콘텐츠들은 섹션으로 모아서 구성한다."
 >
@@ -799,7 +799,7 @@ import { TextList } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 방문 목적 및 사용자 유형별로 핵심적인 정보와 서비스를 탐색할 수 있는 영역을 구성한다.**
 사용자마다 다른 방문 목적에 대응하기 위해 다양하고 많은 콘텐츠를 메인 화면에 배치하는 것에는 한계가 있다. 서비스의 이용 패턴을 고려하여 ‘방문 목적별/사용자 유형별 바로가기’, ‘자주 찾는 서비스’와 같은 방식으로 사용자가 원하는 정보를 직접 선택하고 빠르게 탐색 및 이동할 수 있는 기능을 제공해야 한다.
@@ -809,7 +809,7 @@ import { TextList } from "@krds-community/astro";
 
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="로그인 기반의 개인화된 바로가기 영역을 배치한다."
 >
@@ -1033,7 +1033,7 @@ import { Button } from "@krds-community/astro";
 </div>
 ```
 
-</PracticeExample>
+</FrameworkPreview>
 
 **권장: 사용자가 정보를 빠르게 구분하고 정확하게 이동할 수 있는 방법을 제시한다.**
 사용자는 메인 화면에서 원하는 콘텐츠를 탐색한 이후에 내용을 확인하고 해당 링크로 이동하게 된다. 이 과정에서 사용자가 콘텐츠를 쉽게 이해하고 정확하게 이동할 수 있도록 돕는 것이 중요하며, 콘텐츠의 특성에 따라 제공할 수 있는 방법은 다음과 같다.

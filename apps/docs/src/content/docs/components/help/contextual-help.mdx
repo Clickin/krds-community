@@ -11,7 +11,6 @@ import { ContextualHelp as SvelteContextualHelp } from "@krds-community/svelte";
 import { ContextualHelp as SolidContextualHelp } from "@krds-community/solid";
 import { AngularContextualHelp } from "@docs/angular-previews.ts";
 import { ContextualHelp as AstroContextualHelp } from "@krds-community/astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { HelpPanel as ReactHelpPanel } from "@krds-community/react";
 import { HelpPanel as VueHelpPanel } from "@krds-community/vue";
 import { HelpPanel as SvelteHelpPanel } from "@krds-community/svelte";
@@ -130,7 +129,7 @@ import { ContextualHelp } from '@krds-community/astro';
 관련된 유용한 정보를 맥락적 도움말로 제공한다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="사용자가 작업을 수행하기 위해 반드시 알아야 하는 필수 정보가 맥락적 도움말 콘텐츠에서만 제공되지 않도록 한다."
 >
@@ -215,7 +214,7 @@ import { ContextualHelp } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **맥락적 도움말에서 또 다른 맥락적 도움말을 실행하거나 모달을 실행하지 않도록 한다.**
 여러 개의 도움말 팝업을 동시에 활성화 하거나 하나의 팝오버를 다른 팝오버 내부에 중첩시켜서는 안 된다. 또한 맥락적 도움말에서 모달이 생성되지 않도록 하여 복잡성을 피해야 한다.
@@ -225,7 +224,7 @@ import { ContextualHelp } from '@krds-community/astro';
 사용자가 인터페이스의 작동 방식을 혼동하지 않도록 하나의 과업 흐름에서 맥락적 도움말과 도움 패널을 동시에 사용하지 않아야 한다.
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="맥락적 도움말과 도움 패널을 함께 사용하지 않는다.">
+<FrameworkPreview kind="bad" title="맥락적 도움말과 도움 패널을 함께 사용하지 않는다.">
   <div slot="react">
     <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
       <ReactContextualHelp label="도움말" title="안내" defaultOpen client:only="react">
@@ -298,6 +297,7 @@ import { ContextualHelp } from '@krds-community/astro';
       </AstroContextualHelp>
       <AstroHelpPanel
         open
+        helpDescription="부가 정보입니다."
         title="도움말"
         tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
         selectedLabel="선택됨"
@@ -307,8 +307,7 @@ import { ContextualHelp } from '@krds-community/astro';
         tutorialTitle="튜토리얼"
         tasks={[]}
         stopLabel="중지"
-        collapseLabel="접기"
-        label="도움 패널"
+                label="도움 패널"
       />
     </div>
   </div>
@@ -325,10 +324,13 @@ import { ContextualHelp } from '@krds-community/astro';
         title="도움말"
         label="도움 패널"
         client:only="@analogjs/astro-angular"
-      />
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="부가 정보입니다." />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 플랫폼에 대한 고려 사항
 

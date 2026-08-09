@@ -20,6 +20,7 @@ export const TextInputIcon = defineComponent({
       default: undefined,
     },
     placeholder: { type: String, default: "" },
+    hint: { type: String, default: undefined },
     disabled: Boolean,
     readonly: Boolean,
     required: Boolean,
@@ -106,6 +107,7 @@ export const TextInputIcon = defineComponent({
             }),
           ]),
         ]),
+        props.hint ? create("p", { class: "form-hint" }, props.hint) : null,
       ]);
     };
   },

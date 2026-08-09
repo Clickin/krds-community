@@ -7,7 +7,7 @@ export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 export function Link({
   external = false,
-  label: _label,
+  label,
   children,
   className,
   href = "#",
@@ -27,7 +27,7 @@ export function Link({
       rel={rel}
       title={external ? (title ?? "새 창 열림") : title}
     >
-      <span className="underline">{children}</span>{" "}
+      <span className="underline">{children ?? label}</span>{" "}
       <SvgIcon name={external ? "ico-go" : "ico-angle right"} />
     </a>
   );

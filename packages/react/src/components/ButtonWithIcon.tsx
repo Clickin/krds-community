@@ -4,11 +4,12 @@ import { SvgIcon } from "./_utils.js";
 
 export function ButtonWithIcon({
   icon,
+  label,
   children,
   className,
   ref,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { icon?: ReactNode } & {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { icon?: ReactNode; label?: ReactNode } & {
   ref?: Ref<HTMLButtonElement>;
 }) {
   return (
@@ -18,7 +19,7 @@ export function ButtonWithIcon({
       type={props.type ?? "button"}
       className={cx("krds-btn", className)}
     >
-      {children}
+      {children ?? label ?? "레이블"}
       {icon ?? <SvgIcon name="ico-sch" />}
     </button>
   );

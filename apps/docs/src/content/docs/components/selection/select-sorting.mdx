@@ -13,12 +13,12 @@ import { AngularSelectSorting } from "@docs/angular-previews.ts";
 import { SelectSorting as AstroSelectSorting } from "@krds-community/astro";
 
 <FrameworkPreview title="정렬 셀렉트">
-  <ReactSelectSorting slot="react" title="정렬 기준" client:only="react" />
-  <VueSelectSorting slot="vue" title="정렬 기준" client:only="vue" />
-  <SvelteSelectSorting slot="svelte" title="정렬 기준" client:only="svelte" />
-  <SolidSelectSorting slot="solid" title="정렬 기준" client:only="solid-js" />
-  <AngularSelectSorting slot="angular" title="정렬 기준" client:only="@analogjs/astro-angular" />
-  <AstroSelectSorting slot="astro" title="정렬 기준" />
+  <ReactSelectSorting slot="react" title="정렬 기준" options={[{ value: "latest", label: "최신순" }, { value: "views", label: "조회순" }]} client:only="react" />
+  <VueSelectSorting slot="vue" title="정렬 기준" options={[{ value: "latest", label: "최신순" }, { value: "views", label: "조회순" }]} client:only="vue" />
+  <SvelteSelectSorting slot="svelte" title="정렬 기준" options={[{ value: "latest", label: "최신순" }, { value: "views", label: "조회순" }]} client:only="svelte" />
+  <SolidSelectSorting slot="solid" title="정렬 기준" options={[{ value: "latest", label: "최신순" }, { value: "views", label: "조회순" }]} client:only="solid-js" />
+  <AngularSelectSorting slot="angular" title="정렬 기준" options={[{ value: "latest", label: "최신순" }, { value: "views", label: "조회순" }]} client:only="@analogjs/astro-angular" />
+  <AstroSelectSorting slot="astro" title="정렬 기준" options={[{ value: "latest", label: "최신순" }, { value: "views", label: "조회순" }]} />
 
 ```tsx fw=react
 import { SelectSorting } from "@krds-community/react";

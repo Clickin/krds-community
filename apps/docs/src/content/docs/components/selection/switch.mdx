@@ -5,7 +5,6 @@ category: selection
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { Switch as ReactSwitch } from "@krds-community/react";
 import { Switch as VueSwitch } from "@krds-community/vue";
 import { Switch as SvelteSwitch } from "@krds-community/svelte";
@@ -152,7 +151,7 @@ import { Switch } from '@krds-community/astro';
 명사형으로 작성하였을 때 의미가 명확하지 않다면 동사형으로 변경하거나, 부가적인 도움말을 제공하여 토글 스위치를 켜고 끄는 동작을 통해 무엇이 변경되는지를 사용자가 직관적으로 이해할 수 있어야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="레이블은 가능한 명사형으로 작성한다.">
+<FrameworkPreview kind="good" title="레이블은 가능한 명사형으로 작성한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactSwitch name="night" label="야간 모드" client:only="react" />
@@ -189,11 +188,11 @@ import { Switch } from '@krds-community/astro';
       <AngularSwitch name="mute" label="무음 모드" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="레이블은 가능한 명사형으로 작성한다.">
+<FrameworkPreview kind="bad" title="레이블은 가능한 명사형으로 작성한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactSwitch name="night" label="어두운 화면으로 바꾸기" client:only="react" />
@@ -234,14 +233,14 @@ import { Switch } from '@krds-community/astro';
       <AngularSwitch name="mute" label="소리를 끄기" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **스위치 상태에 상관없이 레이블을 일관되게 유지한다.**
 스위치 상태가 변경될 때마다 레이블의 내용이 변경되어서는 안 된다. 스위치 상태 정보는 핸들의 위치, 상태 아이콘을 통해 전달할 수 있으므로 레이블의 내용은 스위치의 목적을 정확하게 보여줄 수 있는 내용으로 작성한다. 상태 정보를 텍스트로 제공하고자 하는 경우, 스위치의 인접
 영역에 별도 텍스트로 제공해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="스위치 상태에 상관없이 레이블을 일관되게 유지한다.">
+<FrameworkPreview kind="good" title="스위치 상태에 상관없이 레이블을 일관되게 유지한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactSwitch name="notice" label="알림 수신" checked client:only="react" />
@@ -283,11 +282,11 @@ import { Switch } from '@krds-community/astro';
       <AngularSwitch name="notice2" label="알림 수신" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="스위치 상태에 상관없이 레이블을 일관되게 유지한다.">
+<FrameworkPreview kind="bad" title="스위치 상태에 상관없이 레이블을 일관되게 유지한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start;">
       <ReactSwitch name="notice" label="알림 수신 켜짐" checked client:only="react" />
@@ -329,13 +328,13 @@ import { Switch } from '@krds-community/astro';
       <AngularSwitch name="notice2" label="알림 수신 꺼짐" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **레이블과 스위치 사이의 거리에 유의한다.**
 레이블과 스위치가 지나치게 멀리 배치되어 있으면 사용자에 따라 두 요소 간 관계를 파악하기 어려울 수 있다. 넓은 컨테이너 내부에 스위치를 사용해야 하는 경우, 레이블을 스위치 오른쪽과 같이 보다 인접한 영역에 배치하는 것이 바람직하다.
 **모범 사례**
 
-<PracticeExample kind="good" title="레이블과 스위치 사이의 거리에 유의한다.">
+<FrameworkPreview kind="good" title="레이블과 스위치 사이의 거리에 유의한다.">
   <div slot="react">
     <ReactSwitch name="notice" label="알림 수신" client:only="react" />
   </div>
@@ -354,11 +353,11 @@ import { Switch } from '@krds-community/astro';
   <div slot="angular">
     <AngularSwitch name="notice" label="알림 수신" client:only="@analogjs/astro-angular" />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="레이블과 스위치 사이의 거리에 유의한다.">
+<FrameworkPreview kind="bad" title="레이블과 스위치 사이의 거리에 유의한다.">
   <div slot="react">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <span>알림 수신</span>
@@ -392,10 +391,10 @@ import { Switch } from '@krds-community/astro';
   <div slot="angular">
     <div style="display: flex; justify-content: space-between; align-items: center;">
       <span>알림 수신</span>
-      <AngularSwitch name="notice" label="알림 수신" client:only="@analogjs/astro-angular" />
+      <AngularSwitch name="notice" aria-label="알림 수신" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **한 화면 내에서의 토글 스위치 표현에 동일한 레이아웃을 사용한다.**
 만약 목록의 왼쪽 열에 레이블이 배치되고 오른쪽 열에 스위치가 배치된다면 목록에서의 모든 스위치는 동일한 배열을 가져야 한다. 또한 상태 레이블이나 상태 아이콘을 사용한 스위치가 하나라도 존재한다면, 이 역시 모든 스위치 항목에 제공되어야 한다.
@@ -403,7 +402,7 @@ import { Switch } from '@krds-community/astro';
 시선이 일관된 흐름으로 이동하도록 도와 탐색 피로도를 최소화할 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="한 화면 내에서의 토글 스위치 표현에 동일한 레이아웃을 사용한다."
 >
@@ -449,11 +448,11 @@ import { Switch } from '@krds-community/astro';
       <AngularSwitch name="news" label="뉴스레터" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="한 화면 내에서의 토글 스위치 표현에 동일한 레이아웃을 사용한다.">
+<FrameworkPreview kind="bad" title="한 화면 내에서의 토글 스위치 표현에 동일한 레이아웃을 사용한다.">
   <div slot="react">
     <div style="display: flex; flex-direction: column; gap: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -503,12 +502,12 @@ import { Switch } from '@krds-community/astro';
     <div style="display: flex; flex-direction: column; gap: 1rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span>이메일 알림</span>
-        <AngularSwitch name="email" label="이메일 알림" client:only="@analogjs/astro-angular" />
+        <AngularSwitch name="email" aria-label="이메일 알림" client:only="@analogjs/astro-angular" />
       </div>
       <AngularSwitch name="push" label="푸시 알림" client:only="@analogjs/astro-angular" />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 접근성 가이드라인
 

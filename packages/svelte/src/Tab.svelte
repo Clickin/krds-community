@@ -47,7 +47,7 @@
 
   const rootClass = $derived(`${classProp} ${className}`.trim());
   const tabClasses = $derived(tabRecipe());
-  const active = $derived(selection ?? selected ?? modelValue ?? tabs[0]?.id);
+  const active = $derived(selection ?? selected ?? modelValue ?? defaultValue ?? tabs[0]?.id);
 
   const selectTab = (tabId: string, event?: Event) => {
     selection = tabId;

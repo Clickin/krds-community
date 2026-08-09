@@ -5,7 +5,6 @@ category: navigation
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { MainMenuPc as ReactMainMenuPc } from "@krds-community/react";
 import { MainMenuPc as VueMainMenuPc } from "@krds-community/vue";
 import { MainMenuPc as SvelteMainMenuPc } from "@krds-community/svelte";
@@ -14,12 +13,36 @@ import { AngularMainMenuPc } from "@docs/angular-previews.ts";
 import { MainMenuPc as AstroMainMenuPc } from "@krds-community/astro";
 
 <FrameworkPreview title="데스크톱 메인 메뉴">
-  <ReactMainMenuPc slot="react" aria-label="주 메뉴" client:only="react" />
-  <VueMainMenuPc slot="vue" aria-label="주 메뉴" client:only="vue" />
-  <SvelteMainMenuPc slot="svelte" aria-label="주 메뉴" client:only="svelte" />
-  <SolidMainMenuPc slot="solid" aria-label="주 메뉴" client:only="solid-js" />
-  <AngularMainMenuPc slot="angular" aria-label="주 메뉴" client:only="@analogjs/astro-angular" />
-  <AstroMainMenuPc slot="astro" aria-label="주 메뉴" />
+  <ReactMainMenuPc slot="react" aria-label="주 메뉴" client:only="react" items={[
+    { id: "menu-1", label: "메뉴 1", active: true, children: [{ id: "menu-1-1", label: "하위 메뉴 1-1", href: "#" }, { id: "menu-1-2", label: "하위 메뉴 1-2", href: "#" }] },
+    { id: "menu-2", label: "메뉴 2", children: [{ id: "menu-2-1", label: "하위 메뉴 2-1", href: "#" }] },
+    { id: "menu-3", label: "메뉴 3", href: "#" },
+  ]} />
+  <VueMainMenuPc sample slot="vue" aria-label="주 메뉴" client:only="vue" items={[
+    { id: "menu-1", label: "메뉴 1", active: true, children: [{ id: "menu-1-1", label: "하위 메뉴 1-1", href: "#" }, { id: "menu-1-2", label: "하위 메뉴 1-2", href: "#" }] },
+    { id: "menu-2", label: "메뉴 2", children: [{ id: "menu-2-1", label: "하위 메뉴 2-1", href: "#" }] },
+    { id: "menu-3", label: "메뉴 3", href: "#" },
+  ]} />
+  <SvelteMainMenuPc sample slot="svelte" aria-label="주 메뉴" client:only="svelte" items={[
+    { id: "menu-1", label: "메뉴 1", active: true, children: [{ id: "menu-1-1", label: "하위 메뉴 1-1", href: "#" }, { id: "menu-1-2", label: "하위 메뉴 1-2", href: "#" }] },
+    { id: "menu-2", label: "메뉴 2", children: [{ id: "menu-2-1", label: "하위 메뉴 2-1", href: "#" }] },
+    { id: "menu-3", label: "메뉴 3", href: "#" },
+  ]} />
+  <SolidMainMenuPc sample slot="solid" aria-label="주 메뉴" client:only="solid-js" items={[
+    { id: "menu-1", label: "메뉴 1", active: true, children: [{ id: "menu-1-1", label: "하위 메뉴 1-1", href: "#" }, { id: "menu-1-2", label: "하위 메뉴 1-2", href: "#" }] },
+    { id: "menu-2", label: "메뉴 2", children: [{ id: "menu-2-1", label: "하위 메뉴 2-1", href: "#" }] },
+    { id: "menu-3", label: "메뉴 3", href: "#" },
+  ]} />
+  <AngularMainMenuPc slot="angular" aria-label="주 메뉴" client:only="@analogjs/astro-angular" items={[
+    { id: "menu-1", label: "메뉴 1", active: true, children: [{ id: "menu-1-1", label: "하위 메뉴 1-1", href: "#" }, { id: "menu-1-2", label: "하위 메뉴 1-2", href: "#" }] },
+    { id: "menu-2", label: "메뉴 2", children: [{ id: "menu-2-1", label: "하위 메뉴 2-1", href: "#" }] },
+    { id: "menu-3", label: "메뉴 3", href: "#" },
+  ]} />
+  <AstroMainMenuPc sample slot="astro" aria-label="주 메뉴" items={[
+    { id: "menu-1", label: "메뉴 1", active: true, children: [{ id: "menu-1-1", label: "하위 메뉴 1-1", href: "#" }, { id: "menu-1-2", label: "하위 메뉴 1-2", href: "#" }] },
+    { id: "menu-2", label: "메뉴 2", children: [{ id: "menu-2-1", label: "하위 메뉴 2-1", href: "#" }] },
+    { id: "menu-3", label: "메뉴 3", href: "#" },
+  ]} />
 
 ```tsx fw=react
 import { MainMenuPc } from "@krds-community/react";
@@ -141,7 +164,7 @@ import { MainMenuPc } from '@krds-community/astro';
 드롭다운 메뉴 영역은 본문 그리드를 기준으로 가장 왼쪽부터 하위 수준의 링크 목록이 배치되도록 표현하여 사용자가 항상 일관된 위치에서 정보를 스캔할 수 있도록 해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="드롭다운 메뉴 영역 내에서 레이블은 좌측으로 정렬한다.">
+<FrameworkPreview kind="good" title="드롭다운 메뉴 영역 내에서 레이블은 좌측으로 정렬한다.">
   <div slot="react">
     <ReactMainMenuPc
       aria-label="주 메뉴"
@@ -170,7 +193,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="vue">
-    <VueMainMenuPc
+    <VueMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -197,7 +220,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="svelte">
-    <SvelteMainMenuPc
+    <SvelteMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -224,7 +247,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="solid">
-    <SolidMainMenuPc
+    <SolidMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -251,7 +274,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="astro">
-    <AstroMainMenuPc
+    <AstroMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -302,11 +325,11 @@ import { MainMenuPc } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="드롭다운 메뉴 영역 내에서 레이블은 좌측으로 정렬한다.">
+<FrameworkPreview kind="bad" title="드롭다운 메뉴 영역 내에서 레이블은 좌측으로 정렬한다.">
   <div slot="react">
     <div style="text-align: right">
       <ReactMainMenuPc
@@ -338,7 +361,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <div style="text-align: right">
-      <VueMainMenuPc
+      <VueMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -367,7 +390,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <div style="text-align: right">
-      <SvelteMainMenuPc
+      <SvelteMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -396,7 +419,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="solid">
     <div style="text-align: right">
-      <SolidMainMenuPc
+      <SolidMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -425,7 +448,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="astro">
     <div style="text-align: right">
-      <AstroMainMenuPc
+      <AstroMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -479,14 +502,14 @@ import { MainMenuPc } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **드롭다운 영역의 최대 높이는 뷰포트의 70%를 초과하지 않도록 하고 최대 높이를 초과하는 경우에 스크롤이 생성되도록 제공한다.**
 링크 목록의 수가 많아 뷰포트 높이의 70%를 넘어가는 경우 브라우저 기본 스크롤이 아니라 드롭다운 영역 스크롤을 통해 메뉴를 탐색할 수 있도록 해야 한다. 브라우저 기본 스크롤을 통해 메뉴를 탐색하는 경우, 1수준 링크 레이블을 클릭하거나 배경 마스크를 클릭하여 메뉴를 닫는
 과정에서 많은 행동이 요구되며 메뉴를 닫았을 때 본문의 중간부터 콘텐츠를 탐색하게 되는 불편을 겪을 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="드롭다운 영역의 최대 높이는 뷰포트의 70%를 초과하지 않도록 하고 최대 높이를 초과하는 경우에 스크롤이 생성되도록 제공한다."
 >
@@ -516,7 +539,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="vue">
-    <VueMainMenuPc
+    <VueMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -541,7 +564,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="svelte">
-    <SvelteMainMenuPc
+    <SvelteMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -566,7 +589,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="solid">
-    <SolidMainMenuPc
+    <SolidMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -591,7 +614,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="astro">
-    <AstroMainMenuPc
+    <AstroMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         {
@@ -638,11 +661,11 @@ import { MainMenuPc } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="드롭다운 영역의 최대 높이는 뷰포트의 70%를 초과하지 않도록 하고 최대 높이를 초과하는 경우에 스크롤이 생성되도록 제공한다."
 >
@@ -677,7 +700,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <div style="height: 15rem; overflow: hidden">
-      <VueMainMenuPc
+      <VueMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -706,7 +729,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <div style="height: 15rem; overflow: hidden">
-      <SvelteMainMenuPc
+      <SvelteMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -735,7 +758,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="solid">
     <div style="height: 15rem; overflow: hidden">
-      <SolidMainMenuPc
+      <SolidMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -764,7 +787,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="astro">
     <div style="height: 15rem; overflow: hidden">
-      <AstroMainMenuPc
+      <AstroMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           {
@@ -818,7 +841,7 @@ import { MainMenuPc } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **링크의 활성화 상태, 선택 상태가 명확히 구분되도록 표현한다.**
 현재 탐색 중인 페이지가 사이트 구조상 어디에 위치하는지를 알 수 있도록 활성화된 메뉴 링크를 명확하게 구분한다.
@@ -841,7 +864,7 @@ import { MainMenuPc } from '@krds-community/astro';
 모바일에서는 별도 페이지나 영역으로 메뉴를 숨기고 햄버거 아이콘을 눌러 메뉴를 확인할 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="화면 너비가 충분한 경우에는 1수준 메뉴 전체를 확인할 수 있도록 표현한다."
 >
@@ -859,7 +882,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="vue">
-    <VueMainMenuPc
+    <VueMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -872,7 +895,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="svelte">
-    <SvelteMainMenuPc
+    <SvelteMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -885,7 +908,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="solid">
-    <SolidMainMenuPc
+    <SolidMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -898,7 +921,7 @@ import { MainMenuPc } from '@krds-community/astro';
     />
   </div>
   <div slot="astro">
-    <AstroMainMenuPc
+    <AstroMainMenuPc sample
       aria-label="주 메뉴"
       items={[
         { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -921,11 +944,11 @@ import { MainMenuPc } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="화면 너비가 충분한 경우에는 1수준 메뉴 전체를 확인할 수 있도록 표현한다."
 >
@@ -949,7 +972,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <div style="width: 22rem; overflow: hidden">
-      <VueMainMenuPc
+      <VueMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -967,7 +990,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <div style="width: 22rem; overflow: hidden">
-      <SvelteMainMenuPc
+      <SvelteMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -985,7 +1008,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="solid">
     <div style="width: 22rem; overflow: hidden">
-      <SolidMainMenuPc
+      <SolidMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -1003,7 +1026,7 @@ import { MainMenuPc } from '@krds-community/astro';
   </div>
   <div slot="astro">
     <div style="width: 22rem; overflow: hidden">
-      <AstroMainMenuPc
+      <AstroMainMenuPc sample
         aria-label="주 메뉴"
         items={[
           { id: "menu-1", label: "메뉴 1", href: "#" },
@@ -1035,7 +1058,7 @@ import { MainMenuPc } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **메뉴 탐색 기능을 제공한다.**
 3수준의 메뉴의 수준을 사용할 때에는 메뉴 탐색 기능을 제공하여 빠른 정보 탐색이 가능하도록 할 수 있다.

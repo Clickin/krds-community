@@ -426,7 +426,7 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
             onClick={() => setOpen(false)}
           >
             <span class="sr-only">{props.label ?? props.title}</span>
-            {inlineSpacedText(props.collapseLabel, true, true)}
+            {inlineSpacedText(props.collapseLabel ?? props.label ?? props.title, true, true)}
             <SvgIcon name="ico-angle right" />
           </button>
         </div>

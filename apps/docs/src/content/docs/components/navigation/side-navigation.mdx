@@ -5,7 +5,6 @@ category: navigation
 ---
 
 import FrameworkPreview from "@docs/FrameworkPreview.astro";
-import PracticeExample from "@docs/PracticeExample.astro";
 import { SideNavigation as ReactSideNavigation } from "@krds-community/react";
 import { SideNavigation as VueSideNavigation } from "@krds-community/vue";
 import { SideNavigation as SvelteSideNavigation } from "@krds-community/svelte";
@@ -142,12 +141,12 @@ import { SideNavigation } from '@krds-community/astro';
 것이 적절하다.
 **모범 사례**
 
-<PracticeExample kind="good" title="메뉴의 계층 구조는 최대 2개 수준까지 사용한다.">
+<FrameworkPreview kind="good" title="메뉴의 계층 구조는 최대 2개 수준까지 사용한다.">
   <div slot="react">
     <ReactSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         {
           id: "nav-2",
           label: "메뉴 2",
@@ -165,7 +164,7 @@ import { SideNavigation } from '@krds-community/astro';
     <VueSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         {
           id: "nav-2",
           label: "메뉴 2",
@@ -183,7 +182,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SvelteSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         {
           id: "nav-2",
           label: "메뉴 2",
@@ -201,7 +200,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SolidSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         {
           id: "nav-2",
           label: "메뉴 2",
@@ -219,7 +218,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AstroSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         {
           id: "nav-2",
           label: "메뉴 2",
@@ -236,7 +235,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AngularSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         {
           id: "nav-2",
           label: "메뉴 2",
@@ -250,16 +249,16 @@ import { SideNavigation } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="메뉴의 계층 구조는 최대 2개 수준까지 사용한다.">
+<FrameworkPreview kind="bad" title="메뉴의 계층 구조는 최대 2개 수준까지 사용한다.">
   <div slot="react">
     <ReactSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -281,7 +280,7 @@ import { SideNavigation } from '@krds-community/astro';
     <VueSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -303,7 +302,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SvelteSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -325,7 +324,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SolidSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -347,7 +346,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AstroSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -368,7 +367,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AngularSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -386,7 +385,7 @@ import { SideNavigation } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **하위 수준 메뉴 표시에 확장 가능한 영역을 사용하는 방안을 고려한다.**
 긴 계층 구조를 한 번에 표시할 경우 정보가 복잡해지며 사용자가 뷰포트 바깥에 제공된 링크를 놓칠 수 있다. 하위 수준 메뉴를 확장 가능한 영역으로 구성하고 페이지가 로딩되었을 때 사용자가 탐색 중인 메뉴의 하위 수준 메뉴를 확장된 상태로 제공하면 사용자가 목록을 보다 쉽게 탐색할 수 있다.
@@ -394,7 +393,7 @@ import { SideNavigation } from '@krds-community/astro';
 만약 모든 수준의 메뉴를 표시하였을 때 목록이 사이드 메뉴 영역을 벗어나지 않으며 간결하다면 기본으로 모든 메뉴가 보이도록 표현할 수 있다.
 **모범 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="good"
   title="하위 수준 메뉴 표시에 확장 가능한 영역을 사용하는 방안을 고려한다."
 >
@@ -402,10 +401,10 @@ import { SideNavigation } from '@krds-community/astro';
     <ReactSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
-          active: true,
+          current: true,
           children: [
             { id: "nav-1-1", label: "하위 메뉴 1-1", href: "#" },
             { id: "nav-1-2", label: "하위 메뉴 1-2", href: "#" },
@@ -428,10 +427,10 @@ import { SideNavigation } from '@krds-community/astro';
     <VueSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
-          active: true,
+          current: true,
           children: [
             { id: "nav-1-1", label: "하위 메뉴 1-1", href: "#" },
             { id: "nav-1-2", label: "하위 메뉴 1-2", href: "#" },
@@ -454,10 +453,10 @@ import { SideNavigation } from '@krds-community/astro';
     <SvelteSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
-          active: true,
+          current: true,
           children: [
             { id: "nav-1-1", label: "하위 메뉴 1-1", href: "#" },
             { id: "nav-1-2", label: "하위 메뉴 1-2", href: "#" },
@@ -480,10 +479,10 @@ import { SideNavigation } from '@krds-community/astro';
     <SolidSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
-          active: true,
+          current: true,
           children: [
             { id: "nav-1-1", label: "하위 메뉴 1-1", href: "#" },
             { id: "nav-1-2", label: "하위 메뉴 1-2", href: "#" },
@@ -506,10 +505,10 @@ import { SideNavigation } from '@krds-community/astro';
     <AstroSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
-          active: true,
+          current: true,
           children: [
             { id: "nav-1-1", label: "하위 메뉴 1-1", href: "#" },
             { id: "nav-1-2", label: "하위 메뉴 1-2", href: "#" },
@@ -531,10 +530,10 @@ import { SideNavigation } from '@krds-community/astro';
     <AngularSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
-          active: true,
+          current: true,
           children: [
             { id: "nav-1-1", label: "하위 메뉴 1-1", href: "#" },
             { id: "nav-1-2", label: "하위 메뉴 1-2", href: "#" },
@@ -553,11 +552,11 @@ import { SideNavigation } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample
+<FrameworkPreview
   kind="bad"
   title="하위 수준 메뉴 표시에 확장 가능한 영역을 사용하는 방안을 고려한다."
 >
@@ -566,7 +565,7 @@ import { SideNavigation } from '@krds-community/astro';
       <ReactSideNavigation
         title="내비게이션"
         items={[
-          { id: "nav-1", label: "메뉴 1", href: "#" },
+          { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
           { id: "nav-2", label: "메뉴 2", href: "#" },
           { id: "nav-3", label: "메뉴 3", href: "#" },
           { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -586,7 +585,7 @@ import { SideNavigation } from '@krds-community/astro';
       <VueSideNavigation
         title="내비게이션"
         items={[
-          { id: "nav-1", label: "메뉴 1", href: "#" },
+          { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
           { id: "nav-2", label: "메뉴 2", href: "#" },
           { id: "nav-3", label: "메뉴 3", href: "#" },
           { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -606,7 +605,7 @@ import { SideNavigation } from '@krds-community/astro';
       <SvelteSideNavigation
         title="내비게이션"
         items={[
-          { id: "nav-1", label: "메뉴 1", href: "#" },
+          { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
           { id: "nav-2", label: "메뉴 2", href: "#" },
           { id: "nav-3", label: "메뉴 3", href: "#" },
           { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -626,7 +625,7 @@ import { SideNavigation } from '@krds-community/astro';
       <SolidSideNavigation
         title="내비게이션"
         items={[
-          { id: "nav-1", label: "메뉴 1", href: "#" },
+          { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
           { id: "nav-2", label: "메뉴 2", href: "#" },
           { id: "nav-3", label: "메뉴 3", href: "#" },
           { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -646,7 +645,7 @@ import { SideNavigation } from '@krds-community/astro';
       <AstroSideNavigation
         title="내비게이션"
         items={[
-          { id: "nav-1", label: "메뉴 1", href: "#" },
+          { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
           { id: "nav-2", label: "메뉴 2", href: "#" },
           { id: "nav-3", label: "메뉴 3", href: "#" },
           { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -665,7 +664,7 @@ import { SideNavigation } from '@krds-community/astro';
       <AngularSideNavigation
         title="내비게이션"
         items={[
-          { id: "nav-1", label: "메뉴 1", href: "#" },
+          { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
           { id: "nav-2", label: "메뉴 2", href: "#" },
           { id: "nav-3", label: "메뉴 3", href: "#" },
           { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -680,18 +679,18 @@ import { SideNavigation } from '@krds-community/astro';
       />
     </div>
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **메뉴의 계층 구조를 명확하게 구분하여 표현한다.**
 사용자의 탐색을 방해하지 않도록 수직으로 나란히 배치된 링크 간 수준을 들여쓰기, 배경 구분 등의 방식을 활용하여 명확하게 구분해야 한다.
 **모범 사례**
 
-<PracticeExample kind="good" title="메뉴의 계층 구조를 명확하게 구분하여 표현한다.">
+<FrameworkPreview kind="good" title="메뉴의 계층 구조를 명확하게 구분하여 표현한다.">
   <div slot="react">
     <ReactSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -715,7 +714,7 @@ import { SideNavigation } from '@krds-community/astro';
     <VueSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -739,7 +738,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SvelteSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -763,7 +762,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SolidSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -787,7 +786,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AstroSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -810,7 +809,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AngularSideNavigation
       title="내비게이션"
       items={[
-        {
+        { current: true,
           id: "nav-1",
           label: "메뉴 1",
           children: [
@@ -830,16 +829,16 @@ import { SideNavigation } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 **피해야 할 사례**
 
-<PracticeExample kind="bad" title="메뉴의 계층 구조를 명확하게 구분하여 표현한다.">
+<FrameworkPreview kind="bad" title="메뉴의 계층 구조를 명확하게 구분하여 표현한다.">
   <div slot="react">
     <ReactSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         { id: "nav-2", label: "메뉴 2", href: "#" },
         { id: "nav-3", label: "메뉴 3", href: "#" },
         { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -853,7 +852,7 @@ import { SideNavigation } from '@krds-community/astro';
     <VueSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         { id: "nav-2", label: "메뉴 2", href: "#" },
         { id: "nav-3", label: "메뉴 3", href: "#" },
         { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -867,7 +866,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SvelteSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         { id: "nav-2", label: "메뉴 2", href: "#" },
         { id: "nav-3", label: "메뉴 3", href: "#" },
         { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -881,7 +880,7 @@ import { SideNavigation } from '@krds-community/astro';
     <SolidSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         { id: "nav-2", label: "메뉴 2", href: "#" },
         { id: "nav-3", label: "메뉴 3", href: "#" },
         { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -895,7 +894,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AstroSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         { id: "nav-2", label: "메뉴 2", href: "#" },
         { id: "nav-3", label: "메뉴 3", href: "#" },
         { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -908,7 +907,7 @@ import { SideNavigation } from '@krds-community/astro';
     <AngularSideNavigation
       title="내비게이션"
       items={[
-        { id: "nav-1", label: "메뉴 1", href: "#" },
+        { current: true,  id: "nav-1", label: "메뉴 1", href: "#" },
         { id: "nav-2", label: "메뉴 2", href: "#" },
         { id: "nav-3", label: "메뉴 3", href: "#" },
         { id: "nav-4", label: "메뉴 4", href: "#" },
@@ -918,7 +917,7 @@ import { SideNavigation } from '@krds-community/astro';
       client:only="@analogjs/astro-angular"
     />
   </div>
-</PracticeExample>
+</FrameworkPreview>
 
 ### 플랫폼에 대한 고려 사항
 
