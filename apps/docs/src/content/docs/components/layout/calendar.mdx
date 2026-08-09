@@ -18,13 +18,31 @@ import { Table as SolidTable } from "@krds-community/solid";
 import { AngularTable } from "@docs/angular-previews.ts";
 import { Table as AstroTable } from "@krds-community/astro";
 
+export const calendarProps = {
+  year: 2024,
+  month: 3,
+  years: [2023, 2024, 2025],
+  leadingDays: 5,
+  previousMonthDayCount: 29,
+  dayCount: 31,
+  weekdays: ["일", "월", "화", "수", "목", "금", "토"],
+  previousMonthLabel: "이전 달",
+  nextMonthLabel: "다음 달",
+  yearSelectLabel: "연도 선택",
+  monthSelectLabel: "월 선택",
+  todayLabel: "오늘",
+  cancelLabel: "취소",
+  confirmLabel: "확인",
+  eventLabel: "일정 있음",
+};
+
 <FrameworkPreview title="달력">
-  <ReactCalendar slot="react" label="레이블" calendarLabel="달력" client:only="react" />
-  <VueCalendar slot="vue" label="레이블" calendarLabel="달력" client:only="vue" />
-  <SvelteCalendar slot="svelte" label="레이블" calendarLabel="달력" client:only="svelte" />
-  <SolidCalendar slot="solid" label="레이블" calendarLabel="달력" client:only="solid-js" />
-  <AngularCalendar slot="angular" label="레이블" calendarLabel="달력" client:only="@analogjs/astro-angular" />
-  <AstroCalendar
+  <ReactCalendar {...calendarProps} slot="react" label="레이블" calendarLabel="달력" client:only="react" />
+  <VueCalendar {...calendarProps} slot="vue" label="레이블" calendarLabel="달력" client:only="vue" />
+  <SvelteCalendar {...calendarProps} slot="svelte" label="레이블" calendarLabel="달력" client:only="svelte" />
+  <SolidCalendar {...calendarProps} slot="solid" label="레이블" calendarLabel="달력" client:only="solid-js" />
+  <AngularCalendar {...calendarProps} slot="angular" label="레이블" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+  <AstroCalendar {...calendarProps}
     slot="astro"
     label="레이블"
     calendarLabel="달력"
@@ -144,7 +162,7 @@ import { Calendar } from '@krds-community/astro';
   title="날짜의 여러 가지 상태 정보가 서로 명확하게 구분되도록 표현한다."
 >
   <div slot="react">
-    <ReactCalendar
+    <ReactCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       todayDay={15}
@@ -154,7 +172,7 @@ import { Calendar } from '@krds-community/astro';
     />
   </div>
   <div slot="vue">
-    <VueCalendar
+    <VueCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       todayDay={15}
@@ -164,7 +182,7 @@ import { Calendar } from '@krds-community/astro';
     />
   </div>
   <div slot="svelte">
-    <SvelteCalendar
+    <SvelteCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       todayDay={15}
@@ -174,7 +192,7 @@ import { Calendar } from '@krds-community/astro';
     />
   </div>
   <div slot="solid">
-    <SolidCalendar
+    <SolidCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       todayDay={15}
@@ -184,7 +202,7 @@ import { Calendar } from '@krds-community/astro';
     />
   </div>
   <div slot="astro">
-    <AstroCalendar
+    <AstroCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       year={2024}
@@ -200,7 +218,7 @@ import { Calendar } from '@krds-community/astro';
     />
   </div>
   <div slot="angular">
-    <AngularCalendar
+    <AngularCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       todayDay={15}
@@ -215,19 +233,19 @@ import { Calendar } from '@krds-community/astro';
 
 <FrameworkPreview kind="bad" title="날짜의 여러 가지 상태 정보가 서로 명확하게 구분되도록 표현한다.">
   <div slot="react">
-    <ReactCalendar label="레이블" calendarLabel="달력" client:only="react" />
+    <ReactCalendar {...calendarProps} label="레이블" calendarLabel="달력" client:only="react" />
   </div>
   <div slot="vue">
-    <VueCalendar label="레이블" calendarLabel="달력" client:only="vue" />
+    <VueCalendar {...calendarProps} label="레이블" calendarLabel="달력" client:only="vue" />
   </div>
   <div slot="svelte">
-    <SvelteCalendar label="레이블" calendarLabel="달력" client:only="svelte" />
+    <SvelteCalendar {...calendarProps} label="레이블" calendarLabel="달력" client:only="svelte" />
   </div>
   <div slot="solid">
-    <SolidCalendar label="레이블" calendarLabel="달력" client:only="solid-js" />
+    <SolidCalendar {...calendarProps} label="레이블" calendarLabel="달력" client:only="solid-js" />
   </div>
   <div slot="astro">
-    <AstroCalendar
+    <AstroCalendar {...calendarProps}
       label="레이블"
       calendarLabel="달력"
       year={2024}
@@ -240,7 +258,7 @@ import { Calendar } from '@krds-community/astro';
     />
   </div>
   <div slot="angular">
-    <AngularCalendar label="레이블" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    <AngularCalendar {...calendarProps} label="레이블" calendarLabel="달력" client:only="@analogjs/astro-angular" />
   </div>
 </FrameworkPreview>
 
@@ -255,7 +273,7 @@ import { Calendar } from '@krds-community/astro';
 >
   <div slot="react">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <ReactCalendar
+      <ReactCalendar {...calendarProps}
         label="레이블"
         calendarLabel="달력"
         todayDay={15}
@@ -280,7 +298,7 @@ import { Calendar } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <VueCalendar
+      <VueCalendar {...calendarProps}
         label="레이블"
         calendarLabel="달력"
         todayDay={15}
@@ -305,7 +323,7 @@ import { Calendar } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <SvelteCalendar
+      <SvelteCalendar {...calendarProps}
         label="레이블"
         calendarLabel="달력"
         todayDay={15}
@@ -330,7 +348,7 @@ import { Calendar } from '@krds-community/astro';
   </div>
   <div slot="solid">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <SolidCalendar
+      <SolidCalendar {...calendarProps}
         label="레이블"
         calendarLabel="달력"
         todayDay={15}
@@ -355,7 +373,7 @@ import { Calendar } from '@krds-community/astro';
   </div>
   <div slot="astro">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <AstroCalendar
+      <AstroCalendar {...calendarProps}
         label="레이블"
         calendarLabel="달력"
         year={2024}
@@ -385,7 +403,7 @@ import { Calendar } from '@krds-community/astro';
   </div>
   <div slot="angular">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <AngularCalendar
+      <AngularCalendar {...calendarProps}
         label="레이블"
         calendarLabel="달력"
         todayDay={15}

@@ -18,13 +18,28 @@ import { TextInput as SolidTextInput } from "@krds-community/solid";
 import { AngularTextInput } from "@docs/angular-previews.ts";
 import { TextInput as AstroTextInput } from "@krds-community/astro";
 
+export const calendarProps = {
+  year: 2026,
+  month: 8,
+  years: [2025, 2026, 2027],
+  leadingDays: 6,
+  previousMonthDayCount: 31,
+  dayCount: 31,
+  weekdays: ["일", "월", "화", "수", "목", "금", "토"],
+  previousMonthLabel: "이전 달",
+  nextMonthLabel: "다음 달",
+  yearSelectLabel: "연도 선택",
+  monthSelectLabel: "월 선택",
+};
+
 <FrameworkPreview title="날짜 입력">
-  <ReactDateInput slot="react" label="날짜" calendarLabel="달력" client:only="react" />
-  <VueDateInput slot="vue" label="날짜" calendarLabel="달력" client:only="vue" />
-  <SvelteDateInput slot="svelte" label="날짜" calendarLabel="달력" client:only="svelte" />
-  <SolidDateInput slot="solid" label="날짜" calendarLabel="달력" client:only="solid-js" />
-  <AngularDateInput slot="angular" label="날짜" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+  <ReactDateInput {...calendarProps} slot="react" label="날짜" calendarLabel="달력" client:only="react" />
+  <VueDateInput {...calendarProps} slot="vue" label="날짜" calendarLabel="달력" client:only="vue" />
+  <SvelteDateInput {...calendarProps} slot="svelte" label="날짜" calendarLabel="달력" client:only="svelte" />
+  <SolidDateInput {...calendarProps} slot="solid" label="날짜" calendarLabel="달력" client:only="solid-js" />
+  <AngularDateInput {...calendarProps} slot="angular" label="날짜" calendarLabel="달력" client:only="@analogjs/astro-angular" />
   <AstroDateInput
+    {...calendarProps}
     slot="astro"
     label="날짜"
     calendarLabel="달력"
@@ -151,6 +166,7 @@ import { DateInput } from '@krds-community/astro';
 <FrameworkPreview kind="good" title="도움말 텍스트를 활용하여 날짜 입력 형식을 안내한다.">
   <div slot="react">
     <ReactDateInput
+      {...calendarProps}
       label="생년월일"
       hint="YYYY.MM.DD 형식으로 입력해 주세요. 예: 1990.01.31"
       calendarLabel="달력"
@@ -159,6 +175,7 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <VueDateInput
+      {...calendarProps}
       label="생년월일"
       hint="YYYY.MM.DD 형식으로 입력해 주세요. 예: 1990.01.31"
       calendarLabel="달력"
@@ -167,6 +184,7 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <SvelteDateInput
+      {...calendarProps}
       label="생년월일"
       hint="YYYY.MM.DD 형식으로 입력해 주세요. 예: 1990.01.31"
       calendarLabel="달력"
@@ -175,6 +193,7 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="solid">
     <SolidDateInput
+      {...calendarProps}
       label="생년월일"
       hint="YYYY.MM.DD 형식으로 입력해 주세요. 예: 1990.01.31"
       calendarLabel="달력"
@@ -183,6 +202,7 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="astro">
     <AstroDateInput
+      {...calendarProps}
       label="생년월일"
       hint="YYYY.MM.DD 형식으로 입력해 주세요. 예: 1990.01.31"
       calendarLabel="달력"
@@ -197,6 +217,7 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="angular">
     <AngularDateInput
+      {...calendarProps}
       label="생년월일"
       hint="YYYY.MM.DD 형식으로 입력해 주세요. 예: 1990.01.31"
       calendarLabel="달력"
@@ -209,19 +230,20 @@ import { DateInput } from '@krds-community/astro';
 
 <FrameworkPreview kind="bad" title="도움말 텍스트를 활용하여 날짜 입력 형식을 안내한다.">
   <div slot="react">
-    <ReactDateInput label="생년월일" calendarLabel="달력" client:only="react" />
+    <ReactDateInput {...calendarProps} label="생년월일" calendarLabel="달력" client:only="react" />
   </div>
   <div slot="vue">
-    <VueDateInput label="생년월일" calendarLabel="달력" client:only="vue" />
+    <VueDateInput {...calendarProps} label="생년월일" calendarLabel="달력" client:only="vue" />
   </div>
   <div slot="svelte">
-    <SvelteDateInput label="생년월일" calendarLabel="달력" client:only="svelte" />
+    <SvelteDateInput {...calendarProps} label="생년월일" calendarLabel="달력" client:only="svelte" />
   </div>
   <div slot="solid">
-    <SolidDateInput label="생년월일" calendarLabel="달력" client:only="solid-js" />
+    <SolidDateInput {...calendarProps} label="생년월일" calendarLabel="달력" client:only="solid-js" />
   </div>
   <div slot="astro">
     <AstroDateInput
+      {...calendarProps}
       label="생년월일"
       calendarLabel="달력"
       year={2026}
@@ -234,7 +256,7 @@ import { DateInput } from '@krds-community/astro';
     />
   </div>
   <div slot="angular">
-    <AngularDateInput label="생년월일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    <AngularDateInput {...calendarProps} label="생년월일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
   </div>
 </FrameworkPreview>
 
@@ -344,23 +366,25 @@ import { DateInput } from '@krds-community/astro';
 
 <FrameworkPreview kind="good" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
   <div slot="react" style="display:flex;gap:16px;flex-wrap:wrap">
-    <ReactDateInput label="시작일" calendarLabel="달력" client:only="react" />
-    <ReactDateInput label="종료일" calendarLabel="달력" client:only="react" />
+    <ReactDateInput {...calendarProps} id="date-range-start" label="시작일" calendarLabel="달력" client:only="react" />
+    <ReactDateInput {...calendarProps} id="date-range-end" label="종료일" calendarLabel="달력" client:only="react" />
   </div>
   <div slot="vue" style="display:flex;gap:16px;flex-wrap:wrap">
-    <VueDateInput label="시작일" calendarLabel="달력" client:only="vue" />
-    <VueDateInput label="종료일" calendarLabel="달력" client:only="vue" />
+    <VueDateInput {...calendarProps} id="date-range-start" label="시작일" calendarLabel="달력" client:only="vue" />
+    <VueDateInput {...calendarProps} id="date-range-end" label="종료일" calendarLabel="달력" client:only="vue" />
   </div>
   <div slot="svelte" style="display:flex;gap:16px;flex-wrap:wrap">
-    <SvelteDateInput label="시작일" calendarLabel="달력" client:only="svelte" />
-    <SvelteDateInput label="종료일" calendarLabel="달력" client:only="svelte" />
+    <SvelteDateInput {...calendarProps} id="date-range-start" label="시작일" calendarLabel="달력" client:only="svelte" />
+    <SvelteDateInput {...calendarProps} id="date-range-end" label="종료일" calendarLabel="달력" client:only="svelte" />
   </div>
   <div slot="solid" style="display:flex;gap:16px;flex-wrap:wrap">
-    <SolidDateInput label="시작일" calendarLabel="달력" client:only="solid-js" />
-    <SolidDateInput label="종료일" calendarLabel="달력" client:only="solid-js" />
+    <SolidDateInput {...calendarProps} id="date-range-start" label="시작일" calendarLabel="달력" client:only="solid-js" />
+    <SolidDateInput {...calendarProps} id="date-range-end" label="종료일" calendarLabel="달력" client:only="solid-js" />
   </div>
   <div slot="astro" style="display:flex;gap:16px;flex-wrap:wrap">
     <AstroDateInput
+      {...calendarProps}
+      inputId="date-range-start"
       label="시작일"
       calendarLabel="달력"
       year={2026}
@@ -372,6 +396,8 @@ import { DateInput } from '@krds-community/astro';
       weekdays={["일", "월", "화", "수", "목", "금", "토"]}
     />
     <AstroDateInput
+      {...calendarProps}
+      inputId="date-range-end"
       label="종료일"
       calendarLabel="달력"
       year={2026}
@@ -384,8 +410,8 @@ import { DateInput } from '@krds-community/astro';
     />
   </div>
   <div slot="angular" style="display:flex;gap:16px;flex-wrap:wrap">
-    <AngularDateInput label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
-    <AngularDateInput label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    <AngularDateInput {...calendarProps} id="date-range-start" label="시작일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+    <AngularDateInput {...calendarProps} id="date-range-end" label="종료일" calendarLabel="달력" client:only="@analogjs/astro-angular" />
   </div>
 </FrameworkPreview>
 
@@ -412,10 +438,10 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="vue" style="display:flex;gap:16px;flex-wrap:wrap">
     <div style="width:160px">
-      <VueTextInput name="start-month" label="시작 연월" placeholder="YYYY-MM" client:only="vue" />
+      <VueTextInput id="month-range-start" name="start-month" label="시작 연월" placeholder="YYYY-MM" client:only="vue" />
     </div>
     <div style="width:160px">
-      <VueTextInput name="end-month" label="종료 연월" placeholder="YYYY-MM" client:only="vue" />
+      <VueTextInput id="month-range-end" name="end-month" label="종료 연월" placeholder="YYYY-MM" client:only="vue" />
     </div>
   </div>
   <div slot="svelte" style="display:flex;gap:16px;flex-wrap:wrap">
@@ -486,19 +512,20 @@ import { DateInput } from '@krds-community/astro';
 
 <FrameworkPreview kind="bad" title="사용자가 대략적인 날짜를 입력할 수 있도록 한다.">
   <div slot="react">
-    <ReactDateInput label="여권 분실 일자" calendarLabel="달력" client:only="react" />
+    <ReactDateInput {...calendarProps} label="여권 분실 일자" calendarLabel="달력" client:only="react" />
   </div>
   <div slot="vue">
-    <VueDateInput label="여권 분실 일자" calendarLabel="달력" client:only="vue" />
+    <VueDateInput {...calendarProps} label="여권 분실 일자" calendarLabel="달력" client:only="vue" />
   </div>
   <div slot="svelte">
-    <SvelteDateInput label="여권 분실 일자" calendarLabel="달력" client:only="svelte" />
+    <SvelteDateInput {...calendarProps} label="여권 분실 일자" calendarLabel="달력" client:only="svelte" />
   </div>
   <div slot="solid">
-    <SolidDateInput label="여권 분실 일자" calendarLabel="달력" client:only="solid-js" />
+    <SolidDateInput {...calendarProps} label="여권 분실 일자" calendarLabel="달력" client:only="solid-js" />
   </div>
   <div slot="astro">
     <AstroDateInput
+      {...calendarProps}
       label="여권 분실 일자"
       calendarLabel="달력"
       year={2026}
@@ -512,6 +539,7 @@ import { DateInput } from '@krds-community/astro';
   </div>
   <div slot="angular">
     <AngularDateInput
+      {...calendarProps}
       label="여권 분실 일자"
       calendarLabel="달력"
       client:only="@analogjs/astro-angular"

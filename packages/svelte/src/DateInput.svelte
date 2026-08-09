@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import Calendar from './Calendar.svelte';
-  import { invoke, reflectValueAttribute } from './lib/shared.js';
+  import { reflectValueAttribute } from './lib/shared.js';
   import type { HTMLAttributes } from 'svelte/elements';
 
   type Props = {
@@ -51,7 +51,7 @@
   const rootClass = $derived(`${classProp} ${className}`.trim());
 
   let isOpen = $state(false);
-  const toggleOpen = invoke(() => { isOpen = !isOpen; });
+  const toggleOpen = () => { isOpen = !isOpen; };
 
   let localInputValue = $state('');
   $effect(() => { localInputValue = inputValue || ''; });
@@ -80,7 +80,12 @@
           {form}
           oninput={setInputValue}
         />
-        <button class="krds-btn medium icon form-btn-datepicker" type="button" onclick={toggleOpen}>
+        <button
+          class="krds-btn medium icon form-btn-datepicker"
+          type="button"
+          aria-expanded={isOpen}
+          onclick={toggleOpen}
+        >
           <span class="sr-only">{calendarOpenLabel}</span>
           <i class="svg-icon ico-calendar"></i>
         </button>

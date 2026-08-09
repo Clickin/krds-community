@@ -25,6 +25,7 @@ import { createStableId, CALENDAR_MONTHS, type AngularCalendarCell } from "../ki
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="form-group">
       <div class="form-tit">
@@ -45,7 +46,11 @@ import { createStableId, CALENDAR_MONTHS, type AngularCalendarCell } from "../ki
               (input)="setValue(inputValue($event))"
               (blur)="touch()"
             />
-            <button type="button" class="krds-btn medium icon form-btn-datepicker">
+            <button
+              type="button"
+              class="krds-btn medium icon form-btn-datepicker"
+              aria-expanded="false"
+            >
               <span class="sr-only">달력 열기</span>
               <i class="svg-icon ico-calendar"></i>
             </button>
@@ -53,7 +58,9 @@ import { createStableId, CALENDAR_MONTHS, type AngularCalendarCell } from "../ki
           <ng-container *ngTemplateOutlet="calendarSurface"></ng-container>
         </div>
       </div>
-      <p class="form-hint">{{ hint }}</p>
+      @if (hint) {
+        <p class="form-hint">{{ hint }}</p>
+      }
     </div>
 
     <ng-template #calendarSurface>
@@ -220,9 +227,9 @@ export class KrdsDateInputComponent implements ControlValueAccessor {
   @Input() years: number[] = [];
   @Input() disabledYears: number[] = [];
   @Input() disabledMonths: number[] = [];
-  @Input() leadingDays = 0;
-  @Input() previousMonthDayCount = 0;
-  @Input() dayCount = 0;
+  @Input() leadingDays: number | null = null;
+  @Input() previousMonthDayCount: number | null = null;
+  @Input() dayCount: number | null = null;
   @Input() rangeStartDay: number | null = null;
   @Input() rangeEndDay: number | null = null;
   @Input() todayDay: number | null = null;
@@ -249,11 +256,11 @@ export class KrdsDateInputComponent implements ControlValueAccessor {
   private readonly changeDetector = inject(ChangeDetectorRef, { optional: true });
 
   get calendarYear(): number {
-    return this.displayYear ?? this.year ?? this.years[0] ?? 0;
+    return this.displayYear ?? this.year ?? this.years[0] ?? new Date().getFullYear();
   }
 
   get calendarMonth(): number {
-    return this.displayMonth ?? this.month ?? 1;
+    return this.displayMonth ?? this.month ?? new Date().getMonth() + 1;
   }
 
   get calendarSelectedYear(): number {
@@ -275,10 +282,19 @@ export class KrdsDateInputComponent implements ControlValueAccessor {
   get calendarWeeks(): AngularCalendarCell[][] {
     const activeYear = this.calendarYear;
     const activeMonth = this.calendarMonth;
-    const leadingDays = Math.max(0, Math.min(6, this.leadingDays));
-    const dayCount = Math.max(0, this.dayCount);
-    const previousMonthDayCount = Math.max(0, this.previousMonthDayCount);
-    const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
+    const leadingDays = Math.max(
+      0,
+      Math.min(6, this.leadingDays ?? new Date(activeYear, activeMonth - 1, 1).getDay()),
+    );
+    const dayCount = Math.max(
+      0,
+      this.dayCount ?? new Date(activeYear, activeMonth, 0).getDate(),
+    );
+    const previousMonthDayCount = Math.max(
+      0,
+      this.previousMonthDayCount ?? new Date(activeYear, activeMonth - 1, 0).getDate(),
+    );
+    const totalCells = 42;
     const weeks: AngularCalendarCell[][] = [];
 
     for (let row = 0; row < totalCells / 7; row += 1) {

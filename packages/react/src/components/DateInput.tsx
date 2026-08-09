@@ -31,7 +31,11 @@ export function DateInput({
               placeholder="YYYY.MM.DD"
               value={value || undefined}
             />
-            <button type="button" className="krds-btn medium icon form-btn-datepicker">
+            <button
+              type="button"
+              className="krds-btn medium icon form-btn-datepicker"
+              aria-expanded="false"
+            >
               <span className="sr-only">{calendarOpenLabel}</span>
               <SvgIcon name="ico-calendar" />
             </button>

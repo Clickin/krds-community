@@ -326,9 +326,9 @@ export interface CalendarRenderData {
   id?: string | undefined;
   years: number[];
   disabledYears: number[];
-  leadingDays: number;
-  previousMonthDayCount: number;
-  dayCount: number;
+  leadingDays?: number | undefined;
+  previousMonthDayCount?: number | undefined;
+  dayCount?: number | undefined;
   calendarLabel?: string | undefined;
   previousMonthLabel?: string | undefined;
   nextMonthLabel?: string | undefined;

@@ -143,9 +143,11 @@
   let yearOpen = $state(false);
   let monthOpen = $state(false);
 
-  const calendarYear = $derived(displayYear ?? new Date().getFullYear());
-  const calendarMonth = $derived(displayMonth ?? new Date().getMonth() + 1);
-  const calendarYears = $derived(Array.from({ length: 11 }, (_, i) => calendarYear - 5 + i));
+  const calendarYear = $derived(displayYear ?? year ?? new Date().getFullYear());
+  const calendarMonth = $derived(displayMonth ?? month ?? new Date().getMonth() + 1);
+  const calendarSelectedYear = $derived(selectedYear ?? year ?? calendarYear);
+  const calendarSelectedMonth = $derived(selectedMonth ?? month ?? calendarMonth);
+  const calendarYears = $derived(years.length ? years : [calendarYear]);
 
   const calendarMonths = $derived([
     { value: 1, label: '01' },
@@ -250,8 +252,8 @@
               {#each (years.length ? years : calendarYears) as optionYear}
                 <li role="none">
                   <button type="button" role="option"
-                    class:active={optionYear === selectedYear}
-                    aria-selected={optionYear === selectedYear}
+                    class:active={optionYear === calendarSelectedYear}
+                    aria-selected={optionYear === calendarSelectedYear}
                     disabled={disabledYears.includes(optionYear)}
                   >{optionYear}{yearSuffix}</button>
                 </li>
@@ -270,8 +272,8 @@
               {#each calendarMonths as optionMonth}
                 <li role="none">
                   <button type="button" role="option"
-                    class:active={optionMonth.value === selectedMonth}
-                    aria-selected={optionMonth.value === selectedMonth}
+                    class:active={optionMonth.value === calendarSelectedMonth}
+                    aria-selected={optionMonth.value === calendarSelectedMonth}
                     disabled={disabledMonths.includes(optionMonth.value)}
                   >{optionMonth.label}{monthSuffix}</button>
                 </li>
@@ -313,7 +315,7 @@
                     class:today={cell?.isToday}
                     class:disabled={cell?.isDisabled}
                   >
-                    <button type="button" class="btn-set-date" aria-pressed={cell?.isPeriod ? 'true' : undefined} aria-label={cell?.isEvent ? `${cell?.day} 일정있음` : cell?.isToday ? `${cell?.day} 오늘` : undefined} disabled={cell?.isLeading || cell?.isTrailing || cell?.isDisabled}><span>{cell?.day}</span></button>
+                    <button type="button" class="btn-set-date" aria-pressed={cell?.isPeriod ? 'true' : undefined} aria-label={cell?.isEvent ? `${cell?.day} ${eventLabel ?? ''}`.trim() : cell?.isToday ? `${cell?.day} ${todayLabel ?? ''}`.trim() : undefined} disabled={cell?.isLeading || cell?.isTrailing || cell?.isDisabled}><span>{cell?.day}</span></button>
                   </td>
                 {/each}
               </tr>

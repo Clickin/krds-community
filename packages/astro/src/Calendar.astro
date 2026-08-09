@@ -90,7 +90,7 @@ const {
   calendarId: providedCalendarId,
   calendarClass,
   calendarAttributes = {},
-  surfaceOnly = false,
+  surfaceOnly = true,
   class: className,
   ...rest
 } = Astro.props;
@@ -162,6 +162,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
   <div
     {...calendarAttributes}
     class={cx('krds-calendar-area', open && 'active', calendarClass)}
+    data-astro-calendar-area
   >
     <div
       class={cx('calendar-wrap', 'bottom', selectionMode === 'single' && 'single')}
@@ -273,7 +274,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     </div>
   </div>
 ) : (
-  <div {...rest} class={cx('form-group', className)}>
+  <div {...rest} class={cx('form-group', className)} data-astro-calendar-root>
     {(label !== undefined || Astro.slots.has('label')) && (
       <div class="form-tit">
         {/* ponytail: label stays sr-only — react/vue render the calendar surface only, so a visible label breaks text parity; sr-only keeps the input's accessible name */}
@@ -342,7 +343,10 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
 
 <script>
   const calendarAreaFor = (element: Element) => element.closest<HTMLElement>('.krds-calendar-area');
-  const calendarRootFor = (element: Element) => element.closest<HTMLElement>('.form-group');
+  const calendarRootFor = (element: Element) => {
+    const area = element.closest<HTMLElement>('[data-astro-calendar-area]');
+    return area?.closest<HTMLElement>('[data-astro-calendar-root]') ?? area;
+  };
   const padCalendarPart = (value: number) => String(value).padStart(2, '0');
 
   const closeCalendarSelects = (area: HTMLElement, except?: HTMLElement) => {
@@ -356,13 +360,15 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
   };
 
   const closeCalendar = (root: HTMLElement, restoreFocus = false) => {
-    const area = root.querySelector<HTMLElement>('.krds-calendar-area');
+    const area = root.matches('.krds-calendar-area')
+      ? root
+      : root.querySelector<HTMLElement>('.krds-calendar-area');
     const trigger = root.querySelector<HTMLButtonElement>('.form-btn-datepicker');
-    if (!area || !trigger) return;
+    if (!area) return;
     closeCalendarSelects(area);
     area.classList.remove('active');
-    trigger.setAttribute('aria-expanded', 'false');
-    if (restoreFocus) trigger.focus();
+    trigger?.setAttribute('aria-expanded', 'false');
+    if (restoreFocus) trigger?.focus();
   };
 
   const selectedCalendarPart = (area: HTMLElement, part: 'year' | 'month') => {
@@ -457,9 +463,12 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
   };
 
   const calendarRoots = () =>
-    Array.from(document.querySelectorAll<HTMLElement>('.form-group')).filter((root) =>
-      root.querySelector('.calendar-conts'),
-    );
+    [
+      ...document.querySelectorAll<HTMLElement>('[data-astro-calendar-root]'),
+      ...Array.from(document.querySelectorAll<HTMLElement>('[data-astro-calendar-area]')).filter(
+        (area) => !area.closest('[data-astro-calendar-root]'),
+      ),
+    ];
 
   document.addEventListener('click', (event) => {
     const eventTarget = event.target;

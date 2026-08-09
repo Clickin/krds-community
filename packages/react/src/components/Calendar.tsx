@@ -124,7 +124,7 @@ export function CalendarSurface({
   const previousMonthDayCount =
     providedPreviousMonthDayCount ?? new Date(displayYear, displayMonth - 1, 0).getDate();
   const dayCount = providedDayCount ?? new Date(displayYear, displayMonth, 0).getDate();
-  const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
+  const totalCells = 42;
   const pad = (part: number) => String(part).padStart(2, "0");
   const chooseYear = (next: number) => {
     if (controlledDisplayYear === undefined) setUncontrolledDisplayYear(next);

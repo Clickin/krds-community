@@ -7,6 +7,7 @@ import { createStableId, CALENDAR_MONTHS, type AngularCalendarCell } from "../ki
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <ng-template #calendarSurface>
       <div class="krds-calendar-area">
@@ -161,9 +162,9 @@ export class KrdsCalendarRangeComponent {
   @Input() years: number[] = [];
   @Input() disabledYears: number[] = [];
   @Input() disabledMonths: number[] = [];
-  @Input() leadingDays = 0;
-  @Input() previousMonthDayCount = 0;
-  @Input() dayCount = 0;
+  @Input() leadingDays: number | null = null;
+  @Input() previousMonthDayCount: number | null = null;
+  @Input() dayCount: number | null = null;
   @Input() rangeStartDay: number | null = null;
   @Input() rangeEndDay: number | null = null;
   @Input() todayDay: number | null = null;
@@ -212,14 +213,14 @@ export class KrdsCalendarRangeComponent {
     const activeMonth = this.calendarMonth;
     const leadingDays = Math.max(
       0,
-      Math.min(6, this.leadingDays || new Date(activeYear, activeMonth - 1, 1).getDay()),
+      Math.min(6, this.leadingDays ?? new Date(activeYear, activeMonth - 1, 1).getDay()),
     );
-    const dayCount = Math.max(0, this.dayCount || new Date(activeYear, activeMonth, 0).getDate());
+    const dayCount = Math.max(0, this.dayCount ?? new Date(activeYear, activeMonth, 0).getDate());
     const previousMonthDayCount = Math.max(
       0,
-      this.previousMonthDayCount || new Date(activeYear, activeMonth - 1, 0).getDate(),
+      this.previousMonthDayCount ?? new Date(activeYear, activeMonth - 1, 0).getDate(),
     );
-    const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
+    const totalCells = 42;
     const weeks: AngularCalendarCell[][] = [];
 
     for (let row = 0; row < totalCells / 7; row += 1) {

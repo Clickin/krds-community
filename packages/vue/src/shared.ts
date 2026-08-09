@@ -831,10 +831,10 @@ export function calendarMarkup(
   const previousYear = month === 1 ? year - 1 : year;
   const nextMonth = month === 12 ? 1 : month + 1;
   const nextYear = month === 12 ? year + 1 : year;
-  const leadingDays = data.leadingDays || new Date(year, month - 1, 1).getDay();
+  const leadingDays = data.leadingDays ?? new Date(year, month - 1, 1).getDay();
   const previousMonthDayCount =
-    data.previousMonthDayCount || new Date(year, month - 1, 0).getDate();
-  const dayCount = data.dayCount || new Date(year, month, 0).getDate();
+    data.previousMonthDayCount ?? new Date(year, month - 1, 0).getDate();
+  const dayCount = data.dayCount ?? new Date(year, month, 0).getDate();
   const years = data.years.length ? data.years : [year];
   const weekdays = data.weekdays.length
     ? data.weekdays
@@ -846,7 +846,7 @@ export function calendarMarkup(
     const day = old
       ? previousMonthDayCount + currentOffset + 1
       : next
-        ? currentOffset - data.dayCount + 1
+        ? currentOffset - dayCount + 1
         : currentOffset + 1;
     const cellYear = old ? previousYear : next ? nextYear : year;
     const cellMonth = old ? previousMonth : next ? nextMonth : month;

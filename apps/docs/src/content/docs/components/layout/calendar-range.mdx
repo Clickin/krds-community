@@ -18,13 +18,31 @@ import { Table as SolidTable } from "@krds-community/solid";
 import { AngularTable } from "@docs/angular-previews.ts";
 import { Table as AstroTable } from "@krds-community/astro";
 
+export const calendarProps = {
+  year: 2024,
+  month: 3,
+  years: [2023, 2024, 2025],
+  leadingDays: 5,
+  previousMonthDayCount: 29,
+  dayCount: 31,
+  weekdays: ["일", "월", "화", "수", "목", "금", "토"],
+  previousMonthLabel: "이전 달",
+  nextMonthLabel: "다음 달",
+  yearSelectLabel: "연도 선택",
+  monthSelectLabel: "월 선택",
+  todayLabel: "오늘",
+  cancelLabel: "취소",
+  confirmLabel: "확인",
+  eventLabel: "일정 있음",
+};
+
 <FrameworkPreview title="기간 달력">
-  <ReactCalendarRange slot="react" label="기간 선택" calendarLabel="달력" client:only="react" />
-  <VueCalendarRange slot="vue" label="기간 선택" calendarLabel="달력" client:only="vue" />
-  <SvelteCalendarRange slot="svelte" label="기간 선택" calendarLabel="달력" client:only="svelte" />
-  <SolidCalendarRange slot="solid" label="기간 선택" calendarLabel="달력" client:only="solid-js" />
-  <AngularCalendarRange slot="angular" label="기간 선택" calendarLabel="달력" client:only="@analogjs/astro-angular" />
-  <AstroCalendarRange
+  <ReactCalendarRange {...calendarProps} slot="react" label="기간 선택" calendarLabel="달력" client:only="react" />
+  <VueCalendarRange {...calendarProps} slot="vue" label="기간 선택" calendarLabel="달력" client:only="vue" />
+  <SvelteCalendarRange {...calendarProps} slot="svelte" label="기간 선택" calendarLabel="달력" client:only="svelte" />
+  <SolidCalendarRange {...calendarProps} slot="solid" label="기간 선택" calendarLabel="달력" client:only="solid-js" />
+  <AngularCalendarRange {...calendarProps} slot="angular" label="기간 선택" calendarLabel="달력" client:only="@analogjs/astro-angular" />
+  <AstroCalendarRange {...calendarProps}
     slot="astro"
     label="기간 선택"
     calendarLabel="달력"
@@ -144,7 +162,7 @@ import { CalendarRange } from '@krds-community/astro';
   title="날짜의 여러 가지 상태 정보가 서로 명확하게 구분되도록 표현한다."
 >
   <div slot="react">
-    <ReactCalendarRange
+    <ReactCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       rangeStartDay={10}
@@ -156,7 +174,7 @@ import { CalendarRange } from '@krds-community/astro';
     />
   </div>
   <div slot="vue">
-    <VueCalendarRange
+    <VueCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       rangeStartDay={10}
@@ -168,7 +186,7 @@ import { CalendarRange } from '@krds-community/astro';
     />
   </div>
   <div slot="svelte">
-    <SvelteCalendarRange
+    <SvelteCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       rangeStartDay={10}
@@ -180,7 +198,7 @@ import { CalendarRange } from '@krds-community/astro';
     />
   </div>
   <div slot="solid">
-    <SolidCalendarRange
+    <SolidCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       rangeStartDay={10}
@@ -192,7 +210,7 @@ import { CalendarRange } from '@krds-community/astro';
     />
   </div>
   <div slot="astro">
-    <AstroCalendarRange
+    <AstroCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       year={2024}
@@ -210,7 +228,7 @@ import { CalendarRange } from '@krds-community/astro';
     />
   </div>
   <div slot="angular">
-    <AngularCalendarRange
+    <AngularCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       rangeStartDay={10}
@@ -227,19 +245,19 @@ import { CalendarRange } from '@krds-community/astro';
 
 <FrameworkPreview kind="bad" title="날짜의 여러 가지 상태 정보가 서로 명확하게 구분되도록 표현한다.">
   <div slot="react">
-    <ReactCalendarRange label="기간 선택" calendarLabel="달력" client:only="react" />
+    <ReactCalendarRange {...calendarProps} label="기간 선택" calendarLabel="달력" client:only="react" />
   </div>
   <div slot="vue">
-    <VueCalendarRange label="기간 선택" calendarLabel="달력" client:only="vue" />
+    <VueCalendarRange {...calendarProps} label="기간 선택" calendarLabel="달력" client:only="vue" />
   </div>
   <div slot="svelte">
-    <SvelteCalendarRange label="기간 선택" calendarLabel="달력" client:only="svelte" />
+    <SvelteCalendarRange {...calendarProps} label="기간 선택" calendarLabel="달력" client:only="svelte" />
   </div>
   <div slot="solid">
-    <SolidCalendarRange label="기간 선택" calendarLabel="달력" client:only="solid-js" />
+    <SolidCalendarRange {...calendarProps} label="기간 선택" calendarLabel="달력" client:only="solid-js" />
   </div>
   <div slot="astro">
-    <AstroCalendarRange
+    <AstroCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       year={2024}
@@ -252,7 +270,7 @@ import { CalendarRange } from '@krds-community/astro';
     />
   </div>
   <div slot="angular">
-    <AngularCalendarRange
+    <AngularCalendarRange {...calendarProps}
       label="기간 선택"
       calendarLabel="달력"
       client:only="@analogjs/astro-angular"
@@ -271,7 +289,7 @@ import { CalendarRange } from '@krds-community/astro';
 >
   <div slot="react">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <ReactCalendarRange
+      <ReactCalendarRange {...calendarProps}
         label="기간 선택"
         calendarLabel="달력"
         rangeStartDay={10}
@@ -298,7 +316,7 @@ import { CalendarRange } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <VueCalendarRange
+      <VueCalendarRange {...calendarProps}
         label="기간 선택"
         calendarLabel="달력"
         rangeStartDay={10}
@@ -325,7 +343,7 @@ import { CalendarRange } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <SvelteCalendarRange
+      <SvelteCalendarRange {...calendarProps}
         label="기간 선택"
         calendarLabel="달력"
         rangeStartDay={10}
@@ -352,7 +370,7 @@ import { CalendarRange } from '@krds-community/astro';
   </div>
   <div slot="solid">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <SolidCalendarRange
+      <SolidCalendarRange {...calendarProps}
         label="기간 선택"
         calendarLabel="달력"
         rangeStartDay={10}
@@ -379,7 +397,7 @@ import { CalendarRange } from '@krds-community/astro';
   </div>
   <div slot="astro">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <AstroCalendarRange
+      <AstroCalendarRange {...calendarProps}
         label="기간 선택"
         calendarLabel="달력"
         year={2024}
@@ -411,7 +429,7 @@ import { CalendarRange } from '@krds-community/astro';
   </div>
   <div slot="angular">
     <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start;">
-      <AngularCalendarRange
+      <AngularCalendarRange {...calendarProps}
         label="기간 선택"
         calendarLabel="달력"
         rangeStartDay={10}

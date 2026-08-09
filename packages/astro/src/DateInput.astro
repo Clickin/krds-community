@@ -120,7 +120,7 @@ const calendarSurface = {
 } satisfies CalendarProps;
 ---
 
-<div {...rest} class={cx('form-group', rootClass)}>
+<div {...rest} class={cx('form-group', rootClass)} data-astro-calendar-root>
   {(label !== undefined || Astro.slots.has('label')) && (
     <div class="form-tit">
       <label for={inputId}><slot name="label">{label}</slot></label>
@@ -144,6 +144,7 @@ const calendarSurface = {
         <button
           type="button"
           class="krds-btn medium icon form-btn-datepicker"
+          aria-expanded="false"
           disabled={disabled}
         >
           <span class="sr-only">{openCalendarLabel}</span>

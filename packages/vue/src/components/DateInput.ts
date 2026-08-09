@@ -22,9 +22,9 @@ export const DateInput = defineComponent({
     selectedMonth: { type: Number, default: undefined },
     years: { type: Array as any, default: () => [] },
     disabledYears: { type: Array as any, default: () => [] },
-    leadingDays: { type: Number, default: 0 },
-    previousMonthDayCount: { type: Number, default: 0 },
-    dayCount: { type: Number, default: 0 },
+    leadingDays: { type: Number, default: undefined },
+    previousMonthDayCount: { type: Number, default: undefined },
+    dayCount: { type: Number, default: undefined },
     calendarLabel: { type: String, default: undefined },
     calendarOpenLabel: { type: String, default: undefined },
     previousMonthLabel: { type: String, default: undefined },
@@ -95,7 +95,11 @@ export const DateInput = defineComponent({
               }),
               create(
                 "button",
-                { type: "button", class: ["form-btn-datepicker", "icon", "krds-btn", "medium"] },
+                {
+                  type: "button",
+                  class: ["form-btn-datepicker", "icon", "krds-btn", "medium"],
+                  "aria-expanded": "false",
+                },
                 [
                   create("span", { class: "sr-only" }, "달력 열기"),
                   create("i", { class: ["ico-calendar", "svg-icon"] }),

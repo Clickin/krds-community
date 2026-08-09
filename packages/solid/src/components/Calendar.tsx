@@ -163,7 +163,7 @@ const renderCalendarSurface = (
       0,
       numberValue(p.dayCount, new Date(displayYear, displayMonth, 0).getDate()),
     );
-    const totalCells = Math.ceil((leadingDays + dayCount) / 7) * 7;
+    const totalCells = 42;
     const selectedDate = calendarSelectedDate();
     return Array.from({ length: totalCells / 7 }, (_, row) =>
       Array.from({ length: 7 }, (_, column) => {
@@ -604,7 +604,11 @@ export function DateInput(rawProps: CalendarProps) {
               value={value()}
               onInput={updateInput}
             />
-            <button type="button" class="krds-btn medium icon form-btn-datepicker">
+            <button
+              type="button"
+              class="krds-btn medium icon form-btn-datepicker"
+              aria-expanded="false"
+            >
               <span class="sr-only">{`${props.calendarLabel ?? "달력"} 열기`}</span>
               <i class="svg-icon ico-calendar" />
             </button>
