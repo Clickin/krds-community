@@ -31,6 +31,7 @@ const stateAttributes = [
   "open",
   "selected",
 ];
+const booleanStateAttributes = new Set(["checked", "disabled", "hidden", "open", "selected"]);
 const styleGroups = {
   paint: ["display", "visibility", "opacity", "color", "backgroundColor", "backgroundImage"],
   typography: [
@@ -184,10 +185,13 @@ const normalizeReference = (value, ids) =>
 
 const elementIds = (panel) => {
   const ids = new Map();
-  let index = 0;
+  const occurrences = new Map();
   for (const element of panel.querySelectorAll("[id]")) {
-    index += 1;
-    ids.set(element.id, `generated-${index}`);
+    const classes = Array.from(element.classList).sort().join(".");
+    const signature = [element.localName, element.getAttribute("role") ?? "", classes].join("|");
+    const occurrence = (occurrences.get(signature) ?? 0) + 1;
+    occurrences.set(signature, occurrence);
+    ids.set(element.id, `${signature}|${occurrence}`);
   }
   return ids;
 };
@@ -197,8 +201,9 @@ const state = (element, ids) => {
   for (const attribute of element.getAttributeNames()) {
     if (stateAttributes.includes(attribute) || attribute.startsWith("aria-")) {
       const value = element.getAttribute(attribute) ?? "";
-      result[attribute] =
-        /^(aria-(?:controls|describedby|labelledby|owns|activedescendant)|for)$/.test(attribute)
+      result[attribute] = booleanStateAttributes.has(attribute)
+        ? String(element.hasAttribute(attribute))
+        : /^(aria-(?:controls|describedby|labelledby|owns|activedescendant)|for)$/.test(attribute)
           ? normalizeReference(value, ids)
           : value;
     }
@@ -242,6 +247,11 @@ const style = (element, kind) => {
 
 const geometry = (element, panel) => {
   const rect = element.getBoundingClientRect();
+  const view = element.ownerDocument.defaultView;
+  for (let current = element; current && current !== panel; current = current.parentElement) {
+    if (view.getComputedStyle(current).position === "fixed")
+      return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+  }
   const root = panel.getBoundingClientRect();
   return {
     x: rect.left - root.left,
@@ -332,11 +342,11 @@ const waitForIslands = async (panel) => {
 const settleIslands = async (panel) => {
   let previous = "";
   let stable = 0;
-  const deadline = performance.now() + 5000;
+  const deadline = performance.now() + 2000;
   while (performance.now() < deadline) {
     const current = panel.innerHTML;
     if (current === previous) {
-      if (++stable >= 5) return;
+      if (++stable >= 3) return;
     } else {
       previous = current;
       stable = 0;
@@ -345,22 +355,7 @@ const settleIslands = async (panel) => {
   }
 };
 
-const readStableSnapshot = async (panel) => {
-  let previous = "";
-  let stable = 0;
-  const start = performance.now();
-  while (performance.now() - start < 15000) {
-    const current = JSON.stringify(snapshot(panel));
-    if (current === previous) {
-      if (++stable >= 3) return JSON.parse(current);
-    } else {
-      stable = 0;
-      previous = current;
-    }
-    await sleep(200);
-  }
-  return snapshot(panel);
-};
+const readStableSnapshot = (panel) => snapshot(panel);
 
 const hasHydratedIsland = (panel) =>
   [...panel.querySelectorAll("astro-island")].some((island) => island.children.length > 0);
@@ -387,98 +382,108 @@ const activateFramework = async (example, framework) => {
   );
 };
 
-const addFailure = (failures, example, framework, category, message) => {
+const addFailure = (
+  failures,
+  example,
+  framework,
+  category,
+  message,
+  path,
+  reason,
+  primary = true,
+) => {
   const key = `${example}\0${framework}\0${category}\0${message}`;
   if (failures.some((failure) => failure.key === key)) return;
-  failures.push({ key, example, framework, category, message });
+  failures.push({ key, example, framework, category, message, path, reason, primary });
 };
 
-const geometryDifferences = (left, right) =>
-  ["x", "y", "width", "height"].filter(
+const geometryDifferences = (left, right) => {
+  if (left.width === 0 && left.height === 0 && right.width === 0 && right.height === 0) return [];
+  return ["x", "y", "width", "height"].filter(
     (property) => Math.abs(left[property] - right[property]) > GEOMETRY_TOLERANCE_PX,
   );
+};
 
 const styleDifferences = (left, right) =>
   Object.keys(left).filter(
     (property) => JSON.stringify(left[property]) !== JSON.stringify(right[property]),
   );
 
-const compareNodes = (left, right, path, failures, example, framework) => {
-  if (!left || !right) {
-    addFailure(failures, example, framework, "missing", `${path}: normalized node is missing`);
-    return;
-  }
-  if (left.type !== right.type) {
+const serializeState = (state) =>
+  JSON.stringify(Object.fromEntries(Object.entries(state).sort(([left], [right]) => left.localeCompare(right))));
+
+const compareNodes = (left, right, path, failures, example, framework, cascade = false) => {
+  let primaryAvailable = !cascade;
+  let structuralMismatch = cascade;
+  const fail = (category, reason, message) => {
     addFailure(
       failures,
       example,
       framework,
-      "identity",
-      `${path}: node type differs (${left.type} vs ${right.type})`,
+      category,
+      message,
+      path,
+      reason,
+      primaryAvailable,
     );
+    primaryAvailable = false;
+    structuralMismatch = true;
+  };
+  if (!left || !right) {
+    fail("missing", "missing", `${path}: normalized node is missing`);
+    return;
+  }
+  if (left.type !== right.type) {
+    fail("identity", "tag-role-name", `${path}: node type differs (${left.type} vs ${right.type})`);
     return;
   }
   if (left.type === "text") {
     if (left.visible && right.visible && left.text !== right.text)
-      addFailure(
-        failures,
-        example,
-        framework,
-        "identity",
-        `${path}: visible text differs ("${left.text}" vs "${right.text}")`,
-      );
+      fail("identity", "visible-text", `${path}: visible text differs ("${left.text}" vs "${right.text}")`);
     if (left.visible !== right.visible)
-      addFailure(failures, example, framework, "state", `${path}: visibility differs`);
+      fail("state", "state", `${path}: visibility differs`);
     return;
   }
   if (left.tag !== right.tag || left.role !== right.role || left.name !== right.name) {
-    addFailure(
-      failures,
-      example,
-      framework,
+    fail(
       "identity",
+      "tag-role-name",
       `${path}: tag/role/name differs (${left.tag}/${left.role}/${left.name} vs ${right.tag}/${right.role}/${right.name})`,
     );
   }
   if (left.visible !== right.visible)
-    addFailure(failures, example, framework, "state", `${path}: visibility differs`);
-  if (JSON.stringify(left.state) !== JSON.stringify(right.state))
-    addFailure(
-      failures,
-      example,
-      framework,
+    fail("state", "state", `${path}: visibility differs`);
+  const leftState = serializeState(left.state);
+  const rightState = serializeState(right.state);
+  if (leftState !== rightState)
+    fail(
       "state",
-      `${path}: accessibility or native state differs`,
+      "state",
+      `${path}: accessibility or native state differs (${leftState} vs ${rightState})`,
     );
   const geometry = geometryDifferences(left.rect, right.rect);
   if (geometry.length)
-    addFailure(
-      failures,
-      example,
-      framework,
+    fail(
+      "geometry",
       "geometry",
       `${path}: geometry differs by more than ${GEOMETRY_TOLERANCE_PX} CSS px (${geometry.map((property) => `${property} ${left.rect[property]} vs ${right.rect[property]}`).join(", ")})`,
     );
   for (const kind of ["paint", "border", "pseudo"]) {
     const differences = styleDifferences(left[kind], right[kind]);
     if (differences.length)
-      addFailure(
-        failures,
-        example,
-        framework,
+      fail(
+        "paint",
         "paint",
         `${path}: ${kind} differs (${differences.map((property) => `${property} ${JSON.stringify(left[kind][property])} vs ${JSON.stringify(right[kind][property])}`).join(", ")})`,
       );
   }
   if (JSON.stringify(left.typography) !== JSON.stringify(right.typography))
-    addFailure(failures, example, framework, "typography", `${path}: typography differs`);
+    fail("typography", "typography", `${path}: typography differs`);
   const count = Math.max(left.children.length, right.children.length);
   if (left.children.length !== right.children.length)
-    addFailure(
-      failures,
-      example,
-      framework,
+    fail(
       "identity",
+      "child-count",
       `${path}: hierarchy child count differs (${left.children.length} vs ${right.children.length})`,
     );
   for (let index = 0; index < count; index += 1)
@@ -489,6 +494,7 @@ const compareNodes = (left, right, path, failures, example, framework) => {
       failures,
       example,
       framework,
+      structuralMismatch,
     );
 };
 
@@ -518,6 +524,9 @@ const auditExample = async (example, failures) => {
           framework,
           "identity",
           `visible text differs (react: "${reactSnapshot.text.slice(0, 80)}" | ${framework}: "${current.text.slice(0, 80)}")`,
+          "panel",
+          "visible-text",
+          false,
         );
       compareNodes(
         {
@@ -561,6 +570,8 @@ const auditExample = async (example, failures) => {
         framework,
         HYDRATION_ERROR.test(message) ? "hydration" : "missing",
         message,
+        "panel",
+        HYDRATION_ERROR.test(message) ? "hydration" : "missing",
       );
     }
   }
@@ -599,7 +610,16 @@ const auditRoute = async (route) => {
       }
     }, 15000);
     if (!frameDoc) throw new Error("page did not render [data-framework-preview] within 15s");
+    const motionGuard = frameDoc.createElement("style");
+    motionGuard.textContent =
+      "*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}";
+    frameDoc.head.appendChild(motionGuard);
     await frameDoc.fonts?.ready;
+    const frameworkSyncReady = await waitFor(
+      () => frameDoc.documentElement.dataset.frameworkSyncReady === "true",
+      15000,
+    );
+    if (!frameworkSyncReady) throw new Error("framework tab synchronization was not ready");
     const ids = new Map();
     // Component demos intentionally mount six framework copies; their own
     // generated control ids may repeat while hidden. Preview tab/panel ids
@@ -608,7 +628,15 @@ const auditRoute = async (route) => {
       const count = (ids.get(element.id) ?? 0) + 1;
       ids.set(element.id, count);
       if (count === 2)
-        addFailure(failures, "(route)", "-", "identity", `duplicate id: ${element.id}`);
+        addFailure(
+          failures,
+          "(route)",
+          "-",
+          "identity",
+          `duplicate id: ${element.id}`,
+          `#${element.id}`,
+          "duplicate-id",
+        );
     }
     const examples = Array.from(frameDoc.querySelectorAll("[data-framework-preview]"));
     if (!examples.length) throw new Error("no [data-framework-preview] examples on page");
@@ -628,11 +656,14 @@ const auditRoute = async (route) => {
           "-",
           "missing",
           error instanceof Error ? error.message : String(error),
+          "panel",
+          "missing",
         );
       }
     }
     for (const message of [...windowErrors, ...windowRejections]) {
-      if (HYDRATION_ERROR.test(message)) addFailure(failures, "(route)", "-", "hydration", message);
+      if (HYDRATION_ERROR.test(message))
+        addFailure(failures, "(route)", "-", "hydration", message, "iframe", "hydration");
     }
   } catch (error) {
     addFailure(
@@ -641,6 +672,8 @@ const auditRoute = async (route) => {
       "-",
       "missing",
       error instanceof Error ? error.message : String(error),
+      "iframe",
+      "missing",
     );
   } finally {
     iframe.remove();

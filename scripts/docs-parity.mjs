@@ -36,6 +36,16 @@ const routeFilter = args
   .filter(Boolean);
 const skipBuild = args.includes("--skip-build");
 
+const stableSignature = (failure) => {
+  const shape = failure.message
+    .replace(/"[^"]*"/g, '"*"')
+    .replace(/#[\w-]+/g, "#*")
+    .replace(/\b-?\d+(?:\.\d+)?(?:px|rem|em|%)?\b/g, "#")
+    .replace(/rgba?\([^)]*\)|#[\da-f]{3,8}/gi, "<color>")
+    .replace(/\([^)]*\)/g, "(*)");
+  return `${failure.reason ?? "unknown"}:${shape}`;
+};
+
 // 라우트 = FrameworkPreview을 렌더하는 모든 콘텐츠 페이지: 패턴 그룹(index 제외)
 // + 컴포넌트 페이지(index, live-only 제외).
 const listRoutes = () => {
@@ -104,6 +114,35 @@ const writeReports = async ({ routes, summaries, missing, failures, wtrExit }) =
     mismatchesByCategory[category] += 1;
     if (category === "unknown") unknowns.push(failure);
   }
+  const primaryFailures = failures.filter((failure) => failure.primary);
+  const cascadeFailures = failures.filter((failure) => !failure.primary);
+  const routeFrameworkCategory = {};
+  const signatures = new Map();
+  for (const failure of failures) {
+    const route = (routeFrameworkCategory[failure.route] ??= {});
+    const framework = (route[failure.framework] ??= {});
+    framework[failure.category] = (framework[failure.category] ?? 0) + 1;
+    const signature = stableSignature(failure);
+    const group = signatures.get(signature) ?? {
+      signature,
+      reason: failure.reason,
+      count: 0,
+      routes: new Set(),
+      frameworks: new Set(),
+      sample: failure,
+    };
+    group.count += 1;
+    group.routes.add(failure.route);
+    group.frameworks.add(failure.framework);
+    signatures.set(signature, group);
+  }
+  const reasonSignatures = [...signatures.values()]
+    .map(({ routes, frameworks, ...group }) => ({
+      ...group,
+      routes: [...routes].sort(),
+      frameworks: [...frameworks].sort(),
+    }))
+    .sort((left, right) => right.count - left.count);
   const frameworkNodeCounts = Object.fromEntries(
     ["react", "vue", "svelte", "solid", "angular", "astro"].map((framework) => [framework, 0]),
   );
@@ -141,7 +180,12 @@ const writeReports = async ({ routes, summaries, missing, failures, wtrExit }) =
     missingRoutes: missing,
     workerExitCode: wtrExit,
     failureCount: failures.length,
+    rawFailureCount: failures.length,
+    primaryFailureCount: primaryFailures.length,
+    cascadeFailureCount: cascadeFailures.length,
     mismatchesByCategory,
+    routeFrameworkCategory,
+    reasonSignatures,
     unknowns,
     failures,
     routes: summaries.map((summary) => ({
@@ -153,6 +197,9 @@ const writeReports = async ({ routes, summaries, missing, failures, wtrExit }) =
       },
       comparisonCount: summary.metrics?.comparisonCount ?? 0,
       failureCount: summary.failures?.length ?? 0,
+      rawFailureCount: summary.failures?.length ?? 0,
+      primaryFailureCount: summary.failures?.filter((failure) => failure.primary).length ?? 0,
+      cascadeFailureCount: summary.failures?.filter((failure) => !failure.primary).length ?? 0,
     })),
     status: wtrExit === 0 && missing.length === 0 && failures.length === 0 ? "passing" : "failing",
   };
@@ -166,6 +213,8 @@ const writeReports = async ({ routes, summaries, missing, failures, wtrExit }) =
     `- Comparisons: ${report.comparisonCount}`,
     `- Geometry tolerance: ${report.tolerance.geometryPx} CSS px`,
     `- Failures: ${report.failureCount}`,
+    `- Primary failures: ${report.primaryFailureCount}`,
+    `- Cascade failures: ${report.cascadeFailureCount}`,
     `- Unknowns: ${report.unknowns.length}`,
     `- Worker exit: ${report.workerExitCode}`,
     "",
@@ -174,6 +223,15 @@ const writeReports = async ({ routes, summaries, missing, failures, wtrExit }) =
     ...Object.entries(report.mismatchesByCategory).map(
       ([category, count]) => `- ${category}: ${count}`,
     ),
+    "",
+    "## Top reason signatures",
+    "",
+    ...report.reasonSignatures
+      .slice(0, 30)
+      .map(
+        (group) =>
+          `- ${group.count} · ${group.reason} · ${group.routes.length} route(s) · ${group.frameworks.join(", ")} · ${group.signature}`,
+      ),
     "",
     "## Environment",
     "",
@@ -264,6 +322,9 @@ const main = async () => {
         framework: "-",
         category: "hydration",
         message: `web-test-runner exited with ${wtrExit}`,
+        path: "worker",
+        reason: "hydration",
+        primary: true,
       });
     const report = await writeReports({ routes, summaries, missing, failures, wtrExit });
     if (missing.length)
