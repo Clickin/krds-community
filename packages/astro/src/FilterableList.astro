@@ -11,9 +11,8 @@ import { cx } from '@krds-community/recipes';
  *
  * SSR은 항상 기본 상태(필터 전체·오름차순)로 렌더링하며, 상호작용은
  * `<script>`(module)에서 서버 렌더 DOM에 배선된다(Calendar.astro 패턴).
- * 설정(items/filters/sort 등)은 비교 대상이 되는 `.krds-filterable-list` 밖의
- * wrapper(`krds-filterable-list-wrap`)의 data-* 속성에 둔다(DOM 계약이 루트에
- * 추가 data-* 속성을 허용하지 않는다).
+ * 설정(items/filters/sort 등)은 의미 구조를 바꾸지 않는 root data-* 속성으로
+ * 전달한다.
  */
 
 export interface FilterableItem {
@@ -73,7 +72,8 @@ const sortedItems = sortField
 ---
 
 <div
-  class="krds-filterable-list-wrap"
+  class={cx('krds-filterable-list', className)}
+  data-filterable-list-astro
   data-items={JSON.stringify(items)}
   data-filters={filters ? JSON.stringify(filters) : undefined}
   data-sort={sort ? JSON.stringify(sort) : undefined}
@@ -82,8 +82,7 @@ const sortedItems = sortField
   data-sort-ascending-label={sortAscendingLabel}
   data-sort-descending-label={sortDescendingLabel}
 >
-  <div class={cx('krds-filterable-list', className)}>
-    <div class="krds-filterable-controls">
+  <div class="krds-filterable-controls">
       {filters?.map((filter) => (
         <div class="form-group">
           <div class="form-tit">
@@ -112,14 +111,13 @@ const sortedItems = sortField
           </div>
         </div>
       )}
-    </div>
-    <p class="krds-filterable-result">검색 결과 {sortedItems.length}건</p>
-    <ul class="krds-filterable-items">
-      {sortedItems.map((item) => (
-        <li class="krds-filterable-item">{item.label}</li>
-      ))}
-    </ul>
   </div>
+  <p class="krds-filterable-result">검색 결과 {sortedItems.length}건</p>
+  <ul class="krds-filterable-items">
+    {sortedItems.map((item) => (
+      <li class="krds-filterable-item">{item.label}</li>
+    ))}
+  </ul>
 </div>
 
 <script>
@@ -142,28 +140,22 @@ const sortedItems = sortField
     field: string;
   }
 
-  document.querySelectorAll<HTMLElement>('.krds-filterable-list').forEach((root) => {
-    // 설정은 비교 대상이 되는 .krds-filterable-list 밖의 wrapper에 둔다
-    // (DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
-    const configRoot =
-      root.parentElement?.classList.contains('krds-filterable-list-wrap')
-        ? root.parentElement
-        : root;
+  document.querySelectorAll<HTMLElement>('[data-filterable-list-astro]').forEach((root) => {
     let items: FilterableItem[] = [];
     let filters: FilterableFilter[] = [];
     let sort: FilterableSort | undefined;
     try {
-      items = JSON.parse(configRoot.dataset.items ?? '[]') as FilterableItem[];
-      filters = JSON.parse(configRoot.dataset.filters ?? '[]') as FilterableFilter[];
-      const rawSort = configRoot.dataset.sort;
+      items = JSON.parse(root.dataset.items ?? '[]') as FilterableItem[];
+      filters = JSON.parse(root.dataset.filters ?? '[]') as FilterableFilter[];
+      const rawSort = root.dataset.sort;
       sort = rawSort ? (JSON.parse(rawSort) as FilterableSort) : undefined;
     } catch {
       items = [];
       filters = [];
       sort = undefined;
     }
-    const sortAscendingLabel = configRoot.dataset.sortAscendingLabel ?? '오름차순';
-    const sortDescendingLabel = configRoot.dataset.sortDescendingLabel ?? '내림차순';
+    const sortAscendingLabel = root.dataset.sortAscendingLabel ?? '오름차순';
+    const sortDescendingLabel = root.dataset.sortDescendingLabel ?? '내림차순';
 
     // DOM의 select 순서 = filters 배열 순서 + (sort가 있으면) 마지막 정렬 select.
     const selects = Array.from(root.querySelectorAll<HTMLSelectElement>('select.krds-form-select'));
