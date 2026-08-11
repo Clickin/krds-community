@@ -31,12 +31,12 @@
     id = '',
     tabs = [],
     panels = {},
-    defaultValue = '',
+    defaultValue = undefined,
     selection = $bindable<string | undefined>(),
     selected = $bindable<string | undefined>(),
     modelValue = $bindable<string | undefined>(),
     description = '',
-    message = '도움말',
+    message = '',
     panelTitle = '',
     onclick,
     className = '',
@@ -101,7 +101,7 @@
             onkeydown={(event) => handleTabKeydown(event, index)}
           >
             {tab.label}
-            {#if active === tab.id}<i class="created sr-only">{message}</i>{/if}
+            {#if active === tab.id && message}<i class="created sr-only">{message}</i>{/if}
           </button>
         </li>
       {/each}
@@ -117,7 +117,7 @@
         data-quick-nav="false"
         class={`tab-conts ${active === tab.id ? 'active' : ''}`}
         hidden={active !== tab.id}
-      ><h3 class="sr-only">{panelTitle || '탭 영역 타이틀'}</h3>{panels[tab.id] ?? (tab.id === active ? description : '')}</section>
+      >{#if panelTitle}<h3 class="sr-only">{panelTitle}</h3>{/if}{panels[tab.id] ?? (tab.id === active ? description : '')}</section>
     {/each}
   </div>
 </div>

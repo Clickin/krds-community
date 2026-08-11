@@ -283,6 +283,9 @@ const normalizeChildren = (parent, ids, panel) => {
     if (child.nodeType !== Node.ELEMENT_NODE) continue;
     const element = /** @type {HTMLElement} */ (child);
     if (["script", "style", "template"].includes(element.localName)) continue;
+    // The Angular tab contract includes a non-semantic selection test hook;
+    // the approved errata explicitly excludes it from DOM parity.
+    if (element.matches('[data-testid="selected-tab"]')) continue;
     // Angular standalone components retain their selector host in the DOM;
     // it is framework bookkeeping, not the native component shape.
     if (transparentTags.has(element.localName) || element.localName.startsWith("krds-")) {

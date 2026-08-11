@@ -9,8 +9,9 @@ import type { KrdsTabItem } from "@krds-community/recipes";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <div [class]="tabClasses.root">
+    <div [class]="tabClasses.root" [attr.aria-label]="ariaLabel || null">
       <div [class]="tabClasses.listContainer">
         <ul role="tablist">
           @for (tab of tabs; track tab.id) {
@@ -23,10 +24,11 @@ import type { KrdsTabItem } from "@krds-community/recipes";
                 [attr.aria-selected]="(selected || tabs[0]?.id) === tab.id"
                 [attr.aria-controls]="'panel_' + tab.id"
                 [attr.tabindex]="(selected || tabs[0]?.id) === tab.id ? '0' : '-1'"
+                [disabled]="tab.disabled"
                 (click)="setSelected(tab.id)"
               >
                 {{ tab.label }}
-                @if ((selected || tabs[0]?.id) === tab.id) {
+                @if ((selected || tabs[0]?.id) === tab.id && (selectedLabel || message)) {
                   <i class="sr-only created"> {{ selectedLabel || message }}</i>
                 }
               </button>
@@ -58,9 +60,10 @@ import type { KrdsTabItem } from "@krds-community/recipes";
 })
 export class KrdsTabComponent {
   @Input() id = createStableId("krds-tab");
+  @Input("aria-label") ariaLabel = "";
   @Input() selected = "";
   @Input() selectedLabel = "";
-  @Input() message = "도움말";
+  @Input() message = "";
   @Input() panelTitle = "";
   @Input() tabs: Array<KrdsTabItem> = [];
   @Input() panels: Record<string, string> = {};

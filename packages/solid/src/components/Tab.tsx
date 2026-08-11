@@ -74,7 +74,7 @@ export function Tab(rawProps: TabProps) {
                     }}
                   >
                     {tab.label}
-                    <Show when={active()}>
+                    <Show when={active() && props.message}>
                       <i class="sr-only created"> {props.message}</i>
                     </Show>
                   </button>

@@ -56,7 +56,6 @@ const tabClasses = tabRecipe({ full: true });
               role="tab"
               aria-selected={active ? 'true' : 'false'}
               aria-controls={panelId(tab)}
-              aria-disabled={tab.disabled ? 'true' : undefined}
               tabindex={active ? 0 : -1}
               class={tabClasses.trigger}
               disabled={tab.disabled}

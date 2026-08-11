@@ -112,11 +112,11 @@ export const Tab = defineComponent({
                   },
                   [
                     tab.label,
-                    isActive
+                    isActive && props.message
                       ? create(
                           "i",
                           { class: ["sr-only", "created"] },
-                          ` ${props.message ?? "선택됨"}`,
+                          ` ${props.message}`,
                         )
                       : null,
                   ],
