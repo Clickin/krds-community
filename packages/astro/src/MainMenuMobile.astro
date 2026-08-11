@@ -88,7 +88,7 @@ const resolvedStyle = sample
   role={standalone ? 'navigation' : undefined}
   class={cx('krds-main-menu-mobile', sample && 'sample', open && 'is-open', className)}
   style={resolvedStyle}
-  aria-label={ariaLabel ?? navigationLabel ?? '전체 메뉴'}
+  aria-label={standalone ? (ariaLabel ?? navigationLabel ?? '전체 메뉴') : ariaLabel}
 >
   <div class="gnb-wrap">
     <div class="gnb-header">
@@ -96,22 +96,9 @@ const resolvedStyle = sample
         <ul class="utility-list">
           {utilityItems.map((item) => (
             <li>
-              {item.href ? (
-                <a
-                  href={item.href}
-                  class="krds-btn xsmall text"
-                  target={item.target}
-                  rel={item.rel}
-                  title={item.title}
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <button type="button" class="krds-btn xsmall text" disabled={item.disabled}>
-                  {item.label}
-                </button>
-              )}
+              <button type="button" class="krds-btn xsmall text" disabled={item.disabled}>
+                {item.label}
+              </button>
             </li>
           ))}
         </ul>

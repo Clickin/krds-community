@@ -124,7 +124,7 @@ const {
   desktopItems,
   nav,
   links,
-  mobileMenu = {},
+  mobileMenu,
   mobileMenuId = 'mobile-nav',
   desktopNavigationLabel,
   mobileNavigationLabel,
@@ -135,7 +135,7 @@ const {
 } = Astro.props;
 const resolvedDesktopItems = desktopItems ?? nav ?? links ?? [];
 const resolvedLogoLabel = logoLabel ?? title;
-const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
+const resolvedMobileId = mobileMenu?.id ?? mobileMenuId;
 ---
 
 <header {...rest} id={id} class={className}>
@@ -155,13 +155,7 @@ const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
                       rel={item.rel}
                       title={item.title}
                     >
-                      {item.label}
-                      {item.target && (
-                        <Fragment>
-                          {' '}
-                          <i class="svg-icon ico-go"></i>
-                        </Fragment>
-                      )}
+                      {item.label} <i class="svg-icon ico-go"></i>
                     </a>
                   ) : (
                     <button type="button" class="krds-btn small text" disabled={item.disabled}>
@@ -172,10 +166,15 @@ const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
                   <div
                     class="krds-drop-wrap krds-resize"
                   >
-                    <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
+                    <button
+                      type="button"
+                      class="krds-btn small text drop-btn"
+                      aria-expanded="false"
+                      aria-controls={`${id}-utility-${item.id}`}
+                    >
                       {item.label} <i class="svg-icon ico-toggle"></i>
                     </button>
-                    <div class="drop-menu">
+                    <div class="drop-menu" id={`${id}-utility-${item.id}`}>
                       <div class="drop-in">
                         <ul class="drop-list">
                           {item.items?.map((option) => {
@@ -206,10 +205,15 @@ const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
                   </div>
                 ) : (
                   <div class="krds-drop-wrap">
-                    <button type="button" class="krds-btn small text drop-btn" aria-expanded="false">
+                    <button
+                      type="button"
+                      class="krds-btn small text drop-btn"
+                      aria-expanded="false"
+                      aria-controls={`${id}-utility-${item.id}`}
+                    >
                       {item.label} <i class="svg-icon ico-toggle"></i>
                     </button>
-                    <div class="drop-menu">
+                    <div class="drop-menu" id={`${id}-utility-${item.id}`}>
                       <div class="drop-in">
                         <ul class="drop-list">
                           {item.items?.map((option) => (
@@ -257,11 +261,7 @@ const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
           </h2>
           <div class="header-actions">
             <button type="button" class="btn-navi sch" title={searchTitle}>{searchLabel}</button>
-            {loginHref ? (
-              <a href={loginHref} class="btn-navi login">{loginLabel}</a>
-            ) : (
-              <button type="button" class="btn-navi login">{loginLabel}</button>
-            )}
+            <a href={loginHref} class="btn-navi login">{loginLabel}</a>
             {joinHref ? (
               <a href={joinHref} class="btn-navi join">{joinLabel}</a>
             ) : (
@@ -334,16 +334,18 @@ const resolvedMobileId = mobileMenu.id ?? mobileMenuId;
       items={resolvedDesktopItems}
       sample={false}
       menuLabel={menuLabel}
-      navigationLabel={desktopNavigationLabel ?? '메인 메뉴'}
+      navigationLabel={desktopNavigationLabel}
     />
   </div>
-  <MainMenuMobile
-    {...mobileMenu}
-    id={resolvedMobileId}
-    sample={false}
-    standalone={false}
-    navigationLabel={mobileMenu.navigationLabel ?? mobileNavigationLabel}
-  />
+  {mobileMenu && (
+    <MainMenuMobile
+      {...mobileMenu}
+      id={resolvedMobileId}
+      sample={false}
+      standalone={false}
+      navigationLabel={mobileMenu.navigationLabel ?? mobileNavigationLabel}
+    />
+  )}
 </header>
 
 <script>

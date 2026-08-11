@@ -37,11 +37,11 @@
     nav = [],
     desktopItems = [],
     utilityItems = [],
-    logoHref = '#',
+    logoHref,
     logoLabel = '',
     searchTitle = '',
     searchLabel = '',
-    loginHref = '#',
+    loginHref,
     loginLabel = '',
     joinLabel = '',
     myMenu,
@@ -61,6 +61,7 @@
   const navigationItems = $derived(items.length ? items : links.length ? links : nav);
   const myMenuData = $derived(myMenu ?? {});
   const mobileData = $derived(mobileMenu ?? {});
+  const mobileId = $derived(fieldOf(mobileData, 'id') || 'mobile-nav');
   const headerItems = $derived(desktopItems.length ? desktopItems : navigationItems);
   const isOpen = $derived(open ?? false);
 
@@ -147,6 +148,7 @@
             <button type="button" class="btn-navi sch" title={searchTitle}>{searchLabel}</button>
             <a href={loginHref} class="btn-navi login">{loginLabel}</a>
             <button type="button" class="btn-navi join">{joinLabel}</button>
+            {#if myMenu}
             <div class="krds-drop-wrap my-drop">
               <button
                 type="button"
@@ -179,10 +181,11 @@
                 </div>
               </div>
             </div>
+            {/if}
             <button
               type="button"
               class="btn-navi all"
-              aria-controls={`${id}-mobile`}
+              aria-controls={mobileId}
               onclick={toggleOpen}
             >{allMenuLabel}</button>
           </div>
@@ -355,7 +358,8 @@
       </div>
     </nav>
   </div>
-  <div id={`${id}-mobile`} class="krds-main-menu-mobile" style:display={isOpen ? 'block' : 'none'}>
+  {#if mobileMenu}
+  <div id={mobileId} class="krds-main-menu-mobile" style:display={isOpen ? 'block' : 'none'}>
     <div class="gnb-wrap">
       <div class="gnb-header">
         <div class="gnb-utils">
@@ -496,4 +500,5 @@
       </button>
     </div>
   </div>
+  {/if}
 </header>

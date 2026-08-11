@@ -46,6 +46,7 @@ export type HeaderMyMenu = {
 };
 
 export type HeaderMobileMenu = {
+  id?: string;
   menuLabel?: string;
   utilityItems: HeaderUtilityItem[];
   loginLabel: string;

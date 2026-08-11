@@ -149,16 +149,17 @@ const uid = previewId ?? `fp-${kind ? `${kind}-` : ''}${(title ?? 'example').toL
 <script is:inline>
   (() => {
     const script = document.currentScript;
-    const preview = script?.previousElementSibling?.matches('[data-framework-preview]')
+    const preview = /** @type {HTMLElement | null} */ (script?.previousElementSibling?.matches('[data-framework-preview]')
       ? script.previousElementSibling
-      : script?.closest('[data-framework-preview]');
+      : script?.closest('[data-framework-preview]'));
     if (!preview || preview.dataset.frameworkRadioIsolation === 'true') return;
     preview.dataset.frameworkRadioIsolation = 'true';
 
     const scope = preview.dataset.frameworkRadioScope ?? Math.random().toString(36).slice(2);
+    /** @param {Element} input */
     const isolate = (input) => {
       if (!(input instanceof HTMLInputElement) || input.type !== 'radio' || !input.name) return;
-      const panel = input.closest('[data-preview-panel][data-framework]');
+      const panel = /** @type {HTMLElement | null} */ (input.closest('[data-preview-panel][data-framework]'));
       if (!panel || !preview.contains(panel)) return;
       const original = input.dataset.frameworkRadioName ?? input.name;
       input.dataset.frameworkRadioName = original;

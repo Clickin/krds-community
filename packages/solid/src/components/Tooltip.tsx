@@ -24,6 +24,8 @@ export function Tooltip(rawProps: TooltipProps) {
   ]);
   const className = () => props.class ?? props.className ?? "";
   const content = () => props.children ?? props.label;
+  const spacedContent = () =>
+    typeof content() === "string" ? `${content()} ` : content();
   return (
     <>
       <button
@@ -33,7 +35,7 @@ export function Tooltip(rawProps: TooltipProps) {
         data-tooltip={props.message}
         aria-labelledby={`${props.id}-tooltip`}
       >
-        {content()} {props.icon ?? <i class="svg-icon ico-angle right" />}
+        {spacedContent()}{props.icon ?? <i class="svg-icon ico-angle right" />}
       </button>
       <div
         id={`${props.id}-tooltip`}
@@ -60,6 +62,8 @@ export function TooltipBox(rawProps: TooltipProps) {
   ]);
   const className = () => props.class ?? props.className ?? "";
   const content = () => props.children ?? props.label;
+  const spacedContent = () =>
+    typeof content() === "string" ? `${content()} ` : content();
   return (
     <>
       <button
@@ -71,7 +75,7 @@ export function TooltipBox(rawProps: TooltipProps) {
         data-tooltip={props.message}
         aria-labelledby={`${props.id}-tooltip`}
       >
-        {content()} {props.icon ?? <i class="svg-icon ico-angle right" />}
+        {spacedContent()}{props.icon ?? <i class="svg-icon ico-angle right" />}
       </button>
       <div
         id={`${props.id}-tooltip`}
@@ -98,6 +102,8 @@ export function TooltipVertical(rawProps: TooltipProps) {
   ]);
   const className = () => props.class ?? props.className ?? "";
   const content = () => props.children ?? props.label;
+  const spacedContent = () =>
+    typeof content() === "string" ? `${content()} ` : content();
   return (
     <>
       <button
@@ -109,7 +115,7 @@ export function TooltipVertical(rawProps: TooltipProps) {
         data-tooltip={props.message}
         aria-labelledby={`${props.id}-tooltip`}
       >
-        {content()} {props.icon ?? <i class="svg-icon ico-angle right" />}
+        {spacedContent()}{props.icon ?? <i class="svg-icon ico-angle right" />}
       </button>
       <div
         id={`${props.id}-tooltip`}

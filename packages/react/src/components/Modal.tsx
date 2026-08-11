@@ -41,7 +41,7 @@ export function Modal({
   items,
   cancelLabel,
   confirmLabel,
-  closeLabel,
+  closeLabel = "닫기",
   onOpenChange,
   onClose,
   onCancel,

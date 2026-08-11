@@ -14,7 +14,7 @@ import {
   imports: [CommonModule, NgStyle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <header [id]="'krds-header'" [attr.class]="className || null" [ngStyle]="style">
+    <header [id]="'krds-header'" [attr.aria-label]="ariaLabel || null" [attr.class]="className || null" [ngStyle]="style">
       <div class="header-in">
         <div class="header-container">
           <div class="inner">
@@ -94,7 +94,7 @@ import {
             </div>
             <div class="header-branding">
               <h2 class="logo">
-                <a [href]="logoHref">
+                <a [attr.href]="logoHref || null">
                   <span class="sr-only">{{ logoLabel }}</span>
                 </a>
               </h2>
@@ -102,7 +102,7 @@ import {
                 <button type="button" class="btn-navi sch" [attr.title]="searchTitle || null">
                   {{ searchLabel }}
                 </button>
-                <a [href]="loginHref" class="btn-navi login">{{ loginLabel }}</a>
+                <a [attr.href]="loginHref || null" class="btn-navi login">{{ loginLabel }}</a>
                 <button type="button" class="btn-navi join">{{ joinLabel }}</button>
                 @if (myMenu) {
                   <div class="krds-drop-wrap my-drop">
@@ -341,8 +341,6 @@ import {
           [id]="headerMobileId"
           class="krds-main-menu-mobile"
           style="display: none"
-          role="navigation"
-          [attr.aria-label]="mobileMenu.menuLabel ?? '전체 메뉴'"
         >
           <div class="gnb-wrap">
             <div class="gnb-header">
@@ -371,7 +369,7 @@ import {
                   class="krds-input"
                   [placeholder]="mobileMenu.searchPlaceholder"
                   [attr.title]="mobileMenu.searchTitle || null"
-                  [attr.aria-label]="mobileMenu.searchTitle || mobileMenu.searchLabel || null"
+                  [attr.aria-label]="mobileMenu.searchLabel || mobileMenu.searchTitle || null"
                 />
                 <button type="button" class="krds-btn medium icon ico-search">
                   <span class="sr-only">{{ mobileMenu.searchLabel }}</span>
@@ -517,14 +515,15 @@ import {
 })
 export class KrdsHeaderComponent {
   @Input() id = createStableId("krds-header");
+  @Input("aria-label") ariaLabel = "";
   @Input() className = "";
   @Input() style: Record<string, string> = {};
-  @Input() logoHref = "#";
+  @Input() logoHref?: string;
   @Input() logoLabel = "";
   @Input() searchTitle = "";
   @Input() searchLabel = "";
   @Input() loginLabel = "";
-  @Input() loginHref = "#";
+  @Input() loginHref?: string;
   @Input() joinLabel = "";
   @Input() allMenuLabel = "";
   @Input() menuLabel = "";
@@ -551,11 +550,11 @@ export class KrdsHeaderComponent {
   }
 
   get headerMobileId(): string {
-    return `${this.id}-mobile-nav`;
+    return this.mobileMenu?.id ?? "mobile-nav";
   }
 
   mobileMenuId(item: AngularNavItem): string {
-    return item.href?.startsWith("#") ? item.href.slice(1) : (item.id ?? "");
+    return item.id ?? (item.href?.startsWith("#") ? item.href.slice(1) : "");
   }
 
   mobileMenuTabId(index: number): string {

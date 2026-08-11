@@ -34,7 +34,6 @@ export function DateInput({
             <button
               type="button"
               className="krds-btn medium icon form-btn-datepicker"
-              aria-expanded="false"
             >
               <span className="sr-only">{calendarOpenLabel}</span>
               <SvgIcon name="ico-calendar" />

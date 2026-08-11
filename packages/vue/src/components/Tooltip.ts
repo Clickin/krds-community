@@ -38,8 +38,7 @@ export const Tooltip = defineComponent({
             "data-tooltip": props.message,
           },
           [
-            slotChildren.length ? slotChildren : props.label,
-            " ",
+            slotChildren.length ? slotChildren : `${props.label ?? ""} `,
             create("i", { class: ["svg-icon", "ico-angle", "right"] }),
           ],
         ),
@@ -97,8 +96,7 @@ export const TooltipBox = defineComponent({
             "data-tooltip": props.message,
           },
           [
-            slotChildren.length ? slotChildren : props.label,
-            " ",
+            slotChildren.length ? slotChildren : `${props.label ?? ""} `,
             create("i", { class: ["svg-icon", "ico-angle", "right"] }),
           ],
         ),
@@ -153,8 +151,7 @@ export const TooltipVertical = defineComponent({
             "data-tooltip": props.message,
           },
           [
-            slotChildren.length ? slotChildren : props.label,
-            " ",
+            slotChildren.length ? slotChildren : `${props.label ?? ""} `,
             create("i", { class: ["svg-icon", "ico-angle", "right"] }),
           ],
         ),

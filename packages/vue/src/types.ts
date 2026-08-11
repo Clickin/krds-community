@@ -164,6 +164,7 @@ export interface AdditionalMyMenu {
 }
 
 export interface AdditionalMobileMenu {
+  id?: string;
   utilityItems: AdditionalMenuItem[];
   loginLabel: string;
   serviceItems: AdditionalMenuItem[];

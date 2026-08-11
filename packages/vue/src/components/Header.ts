@@ -55,7 +55,7 @@ export const Header = defineComponent({
     const id = computed(() => props.id ?? generatedId);
     return () => {
       const className = attrs.class as string | undefined;
-      const mobileId = `${id.value}-mobile`;
+      const mobileId = props.mobileMenu?.id ?? "mobile-nav";
       const headerItems = props.desktopItems.length
         ? props.desktopItems
         : (props.nav as AdditionalMenuItem[]);

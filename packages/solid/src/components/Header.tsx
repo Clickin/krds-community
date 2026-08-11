@@ -256,7 +256,8 @@ export function Header(rawProps: HeaderProps) {
                 <button type="button" class="btn-navi join">
                   {props.joinLabel}
                 </button>
-                <div class="krds-drop-wrap my-drop">
+                <Show when={props.myMenu}>
+                  <div class="krds-drop-wrap my-drop">
                   <button
                     type="button"
                     class="btn-navi my drop-btn"
@@ -309,7 +310,8 @@ export function Header(rawProps: HeaderProps) {
                       </div>
                     </div>
                   </div>
-                </div>
+                  </div>
+                </Show>
                 <button
                   ref={(element) => {
                     headerMobileTrigger = element;
@@ -330,6 +332,7 @@ export function Header(rawProps: HeaderProps) {
           {...(props.menuLabel === undefined ? {} : { menuLabel: props.menuLabel })}
         />
       </div>
+      <Show when={props.mobileMenu}>
       <MainMenuMobile
         id="mobile-nav"
         standalone={false}
@@ -359,6 +362,7 @@ export function Header(rawProps: HeaderProps) {
           invokeHandler(native.onClose, event);
         }}
       />
+      </Show>
     </header>
   );
 }

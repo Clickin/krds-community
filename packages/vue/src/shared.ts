@@ -1,4 +1,4 @@
-import { h, type VNode } from "vue";
+import { getCurrentInstance, h, type VNode } from "vue";
 import type { KrdsNavItem, KrdsTone } from "@krds-community/recipes";
 import type {
   AdditionalMenuBanner,
@@ -18,7 +18,12 @@ export const createVueInstanceId = (prefix: string) => {
   // Each `client:only="vue"` preview is mounted as a separate Vue app and
   // therefore gets its own module instance. Keep the browser-side suffix in
   // global scope so labels and controls from sibling islands cannot collide.
-  if (typeof window !== "undefined") {
+  const appProvides = getCurrentInstance()?.appContext.provides;
+  // Avoid calling useSSRContext() in client hydration, where it emits a warning.
+  const isServerRender = appProvides
+    ? Object.getOwnPropertySymbols(appProvides).some((symbol) => symbol.description === "v-scx")
+    : false;
+  if (typeof window !== "undefined" && !isServerRender) {
     const globalObject = globalThis as VueGlobal;
     globalObject.__krdsVueInstanceId = (globalObject.__krdsVueInstanceId ?? 0) + 1;
     return `${prefix}-${globalObject.__krdsVueInstanceId}`;
@@ -622,7 +627,9 @@ export function mobileMenuMarkup(
         className,
       ],
       role: visible ? "navigation" : undefined,
-      "aria-label": data.menuLabel ?? attrs["aria-label"] ?? attrs.menuLabel ?? "전체 메뉴",
+      "aria-label": standalone || visible
+        ? (data.menuLabel ?? attrs["aria-label"] ?? attrs.menuLabel ?? "전체 메뉴")
+        : attrs["aria-label"],
       style: standalone
         ? "display: block; position: static; visibility: visible;"
         : visible

@@ -98,7 +98,6 @@ export const DateInput = defineComponent({
                 {
                   type: "button",
                   class: ["form-btn-datepicker", "icon", "krds-btn", "medium"],
-                  "aria-expanded": "false",
                 },
                 [
                   create("span", { class: "sr-only" }, "달력 열기"),

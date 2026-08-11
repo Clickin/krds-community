@@ -49,7 +49,6 @@ import { createStableId, CALENDAR_MONTHS, type AngularCalendarCell } from "../ki
             <button
               type="button"
               class="krds-btn medium icon form-btn-datepicker"
-              aria-expanded="false"
             >
               <span class="sr-only">달력 열기</span>
               <i class="svg-icon ico-calendar"></i>

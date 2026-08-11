@@ -607,7 +607,6 @@ export function DateInput(rawProps: CalendarProps) {
             <button
               type="button"
               class="krds-btn medium icon form-btn-datepicker"
-              aria-expanded="false"
             >
               <span class="sr-only">{`${props.calendarLabel ?? "달력"} 열기`}</span>
               <i class="svg-icon ico-calendar" />

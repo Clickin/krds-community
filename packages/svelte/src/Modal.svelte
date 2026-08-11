@@ -26,7 +26,7 @@
     description = '',
     cancelLabel = '',
     confirmLabel = '',
-    closeLabel = '',
+    closeLabel = '닫기',
     open = $bindable<boolean | undefined>(),
     oncancel,
     onclose,

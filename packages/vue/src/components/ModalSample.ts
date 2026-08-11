@@ -24,7 +24,7 @@ export const ModalSample = defineComponent({
     items: { type: Array as PropType<AnyItem[]>, default: () => [] },
     cancelLabel: { type: String, default: undefined },
     confirmLabel: { type: String, default: undefined },
-    closeLabel: { type: String, default: undefined },
+    closeLabel: { type: String, default: "닫기" },
     sample: Boolean,
   },
   emits: {

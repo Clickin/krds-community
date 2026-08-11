@@ -24,7 +24,7 @@ export const captureDomTree = async (
   { normalizationRules = [], snapshotSide = "framework" } = {},
 ) => {
   const generatedAttribute =
-    /^(?:data-v-|data-conformance-|_ng(?:content|host)-|ng-reflect-|data-svelte)/;
+    /^(?:data-v-|data-conformance-|data-astro-calendar-|data-(?:filterable-list-astro|all-label|empty-message|filters|items|sort|sort-ascending-label|sort-descending-label)|_ng(?:content|host)-|ng-reflect-|data-svelte)/;
   const referenceAttributes = new Set([
     "aria-controls",
     "aria-describedby",

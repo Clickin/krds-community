@@ -83,7 +83,6 @@
         <button
           class="krds-btn medium icon form-btn-datepicker"
           type="button"
-          aria-expanded={isOpen}
           onclick={toggleOpen}
         >
           <span class="sr-only">{calendarOpenLabel}</span>

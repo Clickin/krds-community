@@ -93,7 +93,7 @@ export class KrdsModalComponent {
   @Input() description = "";
   @Input() cancelLabel = "";
   @Input() confirmLabel = "";
-  @Input() closeLabel = "";
+  @Input() closeLabel = "닫기";
   @Input() kind: "modal" | "modal-sample" = "modal";
   @Input() items: (AngularNavItem | string)[] = [];
 
