@@ -32,7 +32,7 @@ import { createStableId } from "../kinds";
                         viewBox="0 0 243 178"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        [attr.aria-label]="imageLabel"
+                        [attr.aria-label]="imageLabel || null"
                       >
                         <rect width="243" height="178" fill="#E6E8EA"></rect>
                       </svg>
@@ -103,7 +103,7 @@ export class KrdsCarouselComponent {
                   viewBox="0 0 243 178"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  [attr.aria-label]="imageLabel"
+                  [attr.aria-label]="imageLabel || null"
                 >
                   <rect width="243" height="178" fill="#E6E8EA"></rect>
                 </svg>

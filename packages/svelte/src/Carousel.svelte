@@ -76,7 +76,7 @@
                 viewBox="0 0 243 178"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                aria-label={imageLabel}
+                aria-label={imageLabel || undefined}
               >
                 <rect width="243" height="178" fill="#E6E8EA"></rect>
               </svg>
@@ -134,7 +134,7 @@
                       viewBox="0 0 243 178"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      aria-label={imageLabel}
+                      aria-label={imageLabel || undefined}
                     >
                       <rect width="243" height="178" fill="#E6E8EA"></rect>
                     </svg>
