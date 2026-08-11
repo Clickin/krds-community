@@ -411,6 +411,24 @@ const uid = previewId ?? `fp-${kind ? `${kind}-` : ''}${(title ?? 'example').toL
     margin: 0;
   }
 
+  /* Keep the preview's shared display contract above the surrounding
+     documentation chrome. The KRDS foundation defines badges as inline-flex
+     and link buttons as inline-block; Starlight's page styles can otherwise
+     leak `display` onto the React reference island and change its intrinsic
+     width. */
+  .preview-viewport :global(.krds-badge) {
+    display: inline-flex;
+  }
+
+  .preview-viewport :global(krds-badge) {
+    display: contents;
+  }
+
+  .preview-viewport :global(a.krds-btn.link) {
+    align-self: flex-start;
+    display: inline-block;
+  }
+
   /* 피해야 할 사례 예시가 원시 앵커로 렌더될 때 (인디케이터/밑줄 없음). */
   .preview-viewport :global(.practice-link-color-only) {
     color: var(--krds-light-color-link-default, var(--krds-mode-light-color-text-link, #256ef4));

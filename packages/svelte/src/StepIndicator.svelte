@@ -15,8 +15,8 @@ label?: string;
   let {
     steps = [],
     current,
-    message = '도움말',
-    label,
+    message = '현재단계',
+    label = '단계',
     className = '',
     class: classProp = '',
     children,
@@ -31,7 +31,7 @@ label?: string;
     <li class:done={index < (current ?? 0)} class:active={index === (current ?? 0)}>
       <span>
         {#if index === (current ?? 0)}<em class="sr-only">{message}</em>{/if}
-        <i class="step">{index + 1}단계</i>
+        <i class="step">{index + 1}{label}</i>
         <span class="step-tit">{item.label}</span>
       </span>
     </li>

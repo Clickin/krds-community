@@ -224,19 +224,25 @@ const style = (element, kind) => {
     return Object.fromEntries(
       styleGroups[kind].map((property) => {
         let value = computed[property];
-        // The generated docs page can expose a native `.krds-btn` as `flex`
-        // in a framework preview even though the matched KRDS rule is
-        // `inline-flex` (React/Astro island and preview layout interaction).
-        // Normalize only this canonical button class inside a preview; other
-        // native elements and component-specific display values remain exact.
+        // Flex items are blockified by CSS Display: a canonical inline-flex
+        // or inline-block child reports flex/block from getComputedStyle when
+        // it is mounted directly in the preview's flex layout. Compare the
+        // declared KRDS outer display for these exact component classes; all
+        // other native elements and component-specific display values remain
+        // exact.
         if (
           property === "display" &&
-          element.localName === "button" &&
-          element.classList.contains("krds-btn") &&
           element.closest("[data-framework-preview]") &&
-          value === "flex"
+          ((element.localName === "button" &&
+            element.classList.contains("krds-btn") &&
+            value === "flex") ||
+            (element.classList.contains("krds-badge") && value === "flex") ||
+            (element.localName === "a" &&
+              element.classList.contains("krds-btn") &&
+              element.classList.contains("link") &&
+              value === "block"))
         ) {
-          value = "inline-flex";
+          value = element.localName === "a" ? "inline-block" : "inline-flex";
         }
         return [property, value];
       }),
@@ -248,11 +254,23 @@ const style = (element, kind) => {
 const geometry = (element, panel) => {
   const rect = element.getBoundingClientRect();
   const view = element.ownerDocument.defaultView;
+  const root = panel.getBoundingClientRect();
+  // Framework tabs are synchronized across the whole page. Switching the
+  // active framework therefore reflows earlier previews and changes the
+  // document/viewport coordinate of fixed demos. A fixed element contained by
+  // this preview still has the same position relative to its preview stage;
+  // compare in that stable local coordinate space.
+  if (element.closest("[data-preview-panel]") === panel)
+    return {
+      x: rect.left - root.left,
+      y: rect.top - root.top,
+      width: rect.width,
+      height: rect.height,
+    };
   for (let current = element; current && current !== panel; current = current.parentElement) {
     if (view.getComputedStyle(current).position === "fixed")
       return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
   }
-  const root = panel.getBoundingClientRect();
   return {
     x: rect.left - root.left,
     y: rect.top - root.top,

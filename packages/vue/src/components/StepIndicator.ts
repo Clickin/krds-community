@@ -12,7 +12,7 @@ export const StepIndicator = defineComponent({
     current: { type: Number, default: undefined },
     defaultCurrent: { type: Number, default: 0 },
     label: { type: String, default: "단계" },
-    message: { type: String, default: undefined },
+    message: { type: String, default: "현재단계" },
   },
   setup(props, { attrs }) {
     return () => {

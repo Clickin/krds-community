@@ -20,8 +20,8 @@ export interface Props extends Omit<HTMLAttributes<'ol'>, 'class' | 'class:list'
 const {
   steps = [],
   current = 0,
-  label,
-  message,
+  label = '단계',
+  message = '현재단계',
   class: className,
   ...rest
 } = Astro.props;
@@ -34,8 +34,8 @@ const {
       aria-disabled={item.disabled ? 'true' : undefined}
     >
       <span>
-        {index === current && message && <em class="sr-only">{message}</em>}
-        <i class="step">{index + 1}{label ?? "단계"}</i>
+        {index === current && <em class="sr-only">{message}</em>}
+        <i class="step">{index + 1}{label}</i>
         <span class="step-tit">{item.label}</span>
         {item.description && <span class="sr-only">{item.description}</span>}
       </span>

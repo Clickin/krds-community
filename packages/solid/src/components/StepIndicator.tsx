@@ -13,7 +13,7 @@ export interface StepIndicatorProps {
 }
 
 export function StepIndicator(rawProps: StepIndicatorProps) {
-  const merged = mergeProps({}, rawProps);
+  const merged = mergeProps({ label: "단계", message: "현재단계" }, rawProps);
   const [props, native] = splitProps(merged, [
     "class",
     "className",
