@@ -74,7 +74,7 @@ const shikiThemes = { light: krdsShikiLight, dark: krdsShikiHighContrast };
 const uid = previewId ?? `fp-${kind ? `${kind}-` : ''}${(title ?? 'example').toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-+|-+$/g, '')}`;
 ---
 
-<section class="framework-preview not-content" data-framework-preview data-kind={kind} data-title={title ?? ''}>
+<section class="framework-preview not-content" data-framework-preview data-framework-radio-scope={uid} data-kind={kind} data-title={title ?? ''}>
   {kind ? (
     <header class="practice-header">
       <span class="practice-badge">{kind === 'good' ? '모범 사례' : '피해야 할 사례'}</span>
@@ -145,6 +145,44 @@ const uid = previewId ?? `fp-${kind ? `${kind}-` : ''}${(title ?? 'example').toL
     </div>
   )}
 </section>
+
+<script is:inline>
+  (() => {
+    const script = document.currentScript;
+    const preview = script?.previousElementSibling?.matches('[data-framework-preview]')
+      ? script.previousElementSibling
+      : script?.closest('[data-framework-preview]');
+    if (!preview || preview.dataset.frameworkRadioIsolation === 'true') return;
+    preview.dataset.frameworkRadioIsolation = 'true';
+
+    const scope = preview.dataset.frameworkRadioScope ?? Math.random().toString(36).slice(2);
+    const isolate = (input) => {
+      if (!(input instanceof HTMLInputElement) || input.type !== 'radio' || !input.name) return;
+      const panel = input.closest('[data-preview-panel][data-framework]');
+      if (!panel || !preview.contains(panel)) return;
+      const original = input.dataset.frameworkRadioName ?? input.name;
+      input.dataset.frameworkRadioName = original;
+      const namespaced = `${original}--framework-preview-${scope}-${panel.dataset.framework}`;
+      if (input.name !== namespaced) input.name = namespaced;
+    };
+
+    const isolateAll = () => {
+      preview.querySelectorAll('input[type="radio"][name]').forEach(isolate);
+    };
+    isolateAll();
+    new MutationObserver((records) => {
+      for (const record of records) {
+        if (record.type === 'attributes' && record.target instanceof HTMLInputElement) {
+          isolate(record.target);
+        }
+        for (const node of record.addedNodes) {
+          if (node instanceof HTMLInputElement) isolate(node);
+          if (node instanceof Element) node.querySelectorAll('input[type="radio"][name]').forEach(isolate);
+        }
+      }
+    }).observe(preview, { subtree: true, childList: true, attributes: true, attributeFilter: ['name'] });
+  })();
+</script>
 
 <script>
   import '../scripts/framework-sync.ts';

@@ -27,7 +27,7 @@ import { createStableId } from "../kinds";
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="krds-check-area">
-      <div class="krds-form-check medium">
+      <div class="krds-form-check" [class.medium]="!size || size === 'medium'" [class.large]="size === 'large'">
         <input
           [id]="id"
           type="radio"
@@ -45,7 +45,6 @@ import { createStableId } from "../kinds";
           [id]="id + '-large'"
           type="radio"
           [attr.name]="name || null"
-          [attr.value]="value || null"
           [disabled]="disabled"
           (change)="setSelected(value || 'on')"
           (blur)="touch()"
@@ -62,6 +61,7 @@ export class KrdsRadioSizeComponent implements ControlValueAccessor {
   @Input() value = "";
   @Input() disabled = false;
   @Input() checked = false;
+  @Input() size = "medium";
   @Input() selected = "";
   @Output() selectedChange = new EventEmitter<string>();
 

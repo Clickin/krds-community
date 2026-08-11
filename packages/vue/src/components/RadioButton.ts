@@ -6,6 +6,7 @@ import {
   withoutClass,
   withoutNativeEvents,
   invokeNativeEvent,
+  createVueInstanceId,
 } from "../shared.js";
 import type { AdditionalValue } from "../types.js";
 
@@ -38,7 +39,7 @@ export const RadioButton = defineComponent({
     valueChange: (_value: string | number | boolean) => true,
   },
   setup(props, { attrs, emit, slots }) {
-    const generatedId = `krds-radio-${useId()}`;
+    const generatedId = `krds-radio-${useId()}-${createVueInstanceId("radio")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialSelected =

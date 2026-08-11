@@ -6,6 +6,7 @@ import {
   invokeNativeEvent,
   withoutClass,
   withoutNativeEvents,
+  createVueInstanceId,
 } from "../shared.js";
 
 export const RadioSize = defineComponent({
@@ -40,7 +41,7 @@ export const RadioSize = defineComponent({
     valueChange: (_value: string | number | boolean) => true,
   },
   setup(props, { attrs, emit, slots }) {
-    const generatedId = `krds-radio-size-${useId()}`;
+    const generatedId = `krds-radio-size-${useId()}-${createVueInstanceId("radio-size")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialSelected =
@@ -97,7 +98,7 @@ export const RadioSize = defineComponent({
           "div",
           {
             ...withoutNativeEvents(attrs),
-            class: ["krds-form-check", "medium", className],
+            class: ["krds-form-check", props.size ?? "medium", className],
           },
           [
             input,

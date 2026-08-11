@@ -11,6 +11,9 @@ import type {
 
 export const create = h as unknown as (...args: unknown[]) => VNode;
 
+let vueInstanceId = 0;
+export const createVueInstanceId = (prefix: string) => `${prefix}-${++vueInstanceId}`;
+
 export const tones: Record<KrdsTone, string> = {
   primary: "primary",
   secondary: "secondary",

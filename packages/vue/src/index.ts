@@ -1,5 +1,6 @@
 import { computed, defineComponent, h, ref, useId, type Component, type PropType } from "vue";
 import { accordionRecipe, buttonRecipe } from "@krds-community/recipes";
+import { createVueInstanceId } from "./shared.js";
 import type {
   AccordionContractProps,
   AccordionItemContract,
@@ -327,7 +328,7 @@ export const Radio = defineComponent<RadioProps>({
     "update:modelValue": (_value: string | number | boolean) => true,
   },
   setup(props, { emit, attrs }) {
-    const generatedId = `krds-radio-${useId()}`;
+    const generatedId = `krds-radio-${useId()}-${createVueInstanceId("radio")}`;
     const id = computed(() => props.id ?? generatedId);
     const descriptionId = computed(() =>
       props.description ? `${id.value}-description` : undefined,

@@ -6,6 +6,7 @@ import {
   invokeNativeEvent,
   withoutClass,
   withoutNativeEvents,
+  createVueInstanceId,
 } from "../shared.js";
 
 export const RadioChip = defineComponent({
@@ -40,7 +41,7 @@ export const RadioChip = defineComponent({
     valueChange: (_value: string | number | boolean) => true,
   },
   setup(props, { attrs, emit, slots }) {
-    const generatedId = `krds-radio-chip-${useId()}`;
+    const generatedId = `krds-radio-chip-${useId()}-${createVueInstanceId("radio-chip")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialSelected =
