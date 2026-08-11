@@ -200,6 +200,7 @@ const KRDS_TABLE_TEMPLATE = `
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: KRDS_TABLE_TEMPLATE,
 })
 export class KrdsTableComponent {
