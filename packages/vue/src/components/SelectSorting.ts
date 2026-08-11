@@ -3,7 +3,7 @@ import { computed, defineComponent, ref, useId, type PropType, type VNode } from
 import { selectRecipe } from "@krds-community/recipes";
 import type { KrdsOption } from "@krds-community/recipes";
 
-import { create, invokeNativeEvent } from "../shared.js";
+import { create, createVueInstanceId, invokeNativeEvent } from "../shared.js";
 
 import type { AdditionalValue, InputState as InputStateT } from "../types.js";
 
@@ -43,7 +43,7 @@ export const SelectSorting = defineComponent({
     const selectElement = ref<HTMLSelectElement | null>(null);
     expose({ element: selectElement });
 
-    const generatedId = `krds-select-${useId()}`;
+    const generatedId = `krds-select-${useId()}-${createVueInstanceId("select-sorting")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialSelected =

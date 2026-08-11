@@ -68,6 +68,7 @@ function SelectInner(rawProps: SelectProps, kind: string) {
       props.defaultValue ??
       (props.options?.find((option) => (option as KrdsOption & { selected?: boolean }).selected)
         ?.value as string | undefined) ??
+      props.options?.[0]?.value ??
       ""
     );
   };

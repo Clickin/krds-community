@@ -12,7 +12,19 @@ import type {
 export const create = h as unknown as (...args: unknown[]) => VNode;
 
 let vueInstanceId = 0;
-export const createVueInstanceId = (prefix: string) => `${prefix}-${++vueInstanceId}`;
+type VueGlobal = typeof globalThis & { __krdsVueInstanceId?: number };
+
+export const createVueInstanceId = (prefix: string) => {
+  // Each `client:only="vue"` preview is mounted as a separate Vue app and
+  // therefore gets its own module instance. Keep the browser-side suffix in
+  // global scope so labels and controls from sibling islands cannot collide.
+  if (typeof window !== "undefined") {
+    const globalObject = globalThis as VueGlobal;
+    globalObject.__krdsVueInstanceId = (globalObject.__krdsVueInstanceId ?? 0) + 1;
+    return `${prefix}-${globalObject.__krdsVueInstanceId}`;
+  }
+  return `${prefix}-${++vueInstanceId}`;
+};
 
 export const tones: Record<KrdsTone, string> = {
   primary: "primary",

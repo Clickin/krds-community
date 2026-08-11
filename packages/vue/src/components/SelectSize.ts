@@ -2,7 +2,7 @@ import { computed, defineComponent, ref, useId, type PropType, type VNode } from
 
 import { selectRecipe } from "@krds-community/recipes";
 import type { KrdsOption, SelectRecipeSize } from "@krds-community/recipes";
-import { create, invokeNativeEvent } from "../shared.js";
+import { create, createVueInstanceId, invokeNativeEvent } from "../shared.js";
 
 import type { AdditionalValue, InputState as InputStateT } from "../types.js";
 
@@ -45,7 +45,7 @@ export const SelectSize = defineComponent({
     const selectElement = ref<HTMLSelectElement | null>(null);
     expose({ element: selectElement });
 
-    const generatedId = `krds-select-${useId()}`;
+    const generatedId = `krds-select-${useId()}-${createVueInstanceId("select-size")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialSelected =

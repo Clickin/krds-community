@@ -124,7 +124,7 @@ export const TextInput = defineComponent<TextInputProps>({
     blur: (_event: FocusEvent) => true,
   },
   setup(props, { emit, attrs }) {
-    const generatedId = `krds-input-${useId()}`;
+    const generatedId = `krds-input-${useId()}-${createVueInstanceId("input")}`;
     const id = computed(() => props.id ?? generatedId);
     const message = computed(() =>
       props.state === "error" ? (props.error ?? props.hint) : props.hint,
@@ -230,7 +230,7 @@ export const Checkbox = defineComponent<CheckboxProps>({
     "update:modelValue": (_value: boolean) => true,
   },
   setup(props, { emit, attrs }) {
-    const generatedId = `krds-checkbox-${useId()}`;
+    const generatedId = `krds-checkbox-${useId()}-${createVueInstanceId("checkbox")}`;
     const id = computed(() => props.id ?? generatedId);
     const descriptionId = computed(() =>
       props.description ? `${id.value}-description` : undefined,
@@ -418,7 +418,7 @@ export const Switch = defineComponent<SwitchProps>({
     "update:modelValue": (_value: boolean) => true,
   },
   setup(props, { emit, attrs }) {
-    const generatedId = `krds-switch-${useId()}`;
+    const generatedId = `krds-switch-${useId()}-${createVueInstanceId("switch")}`;
     const id = computed(() => props.id ?? generatedId);
     const localChecked = ref(Boolean(props.defaultChecked));
     const checked = computed<boolean>({
@@ -493,7 +493,7 @@ export const Accordion = defineComponent<AccordionProps>({
     "update:modelValue": (_value: string[]) => true,
   },
   setup(props, { emit, attrs }) {
-    const generatedId = `krds-accordion-${useId()}`;
+    const generatedId = `krds-accordion-${useId()}-${createVueInstanceId("accordion")}`;
     const localOpen = ref<string[]>([...(props.defaultOpen ?? [])]);
     const openItems = computed(() => props.modelValue ?? localOpen.value);
     const toggle = (id: string) => {
