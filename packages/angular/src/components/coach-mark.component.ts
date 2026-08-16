@@ -1,15 +1,17 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "krds-coach-mark",
   standalone: true,
   imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="txt-box bg-white bg-white krds-coach-mark">
       <div class="coach-balloon">
-        <h5 class="sr-only">{{ title }}</h5>
+        @if (title) {
+          <h5 class="sr-only">{{ title }}</h5>
+        }
         <h6 class="coach-tit">{{ stepTitle }}</h6>
         <p class="desc">{{ description }}</p>
         <div class="coach-controls">
@@ -32,15 +34,15 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   `,
 })
 export class KrdsCoachMarkComponent {
-  @Input() title = "제목";
+  @Input() title = "";
   @Input() stepTitle = "";
   @Input() description = "";
   @Input() contentTitle = "";
-  @Input() currentStepLabel = "";
-  @Input() totalStepsLabel = "";
+  @Input() currentStepLabel = "현재 단계";
+  @Input() totalStepsLabel = "총 단계";
   @Input() stopLabel = "";
   @Input() nextLabel = "";
-  @Input() step = "1/1";
+  @Input() step = "1 / 1";
 
   get currentStep(): string {
     return this.step.split("/")[0]?.trim() ?? "";

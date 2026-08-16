@@ -37,6 +37,7 @@ const {
 const activeValue = value ?? selected ?? defaultValue ?? options[0]?.value;
 const resetValue = defaultValue ?? activeValue;
 const openState = open ?? defaultOpen;
+const menuId = `krds-resize-${crypto.randomUUID()}-drop-menu`;
 ---
 
 <div
@@ -48,10 +49,11 @@ const openState = open ?? defaultOpen;
     type="button"
     class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
     aria-expanded={openState ? 'true' : 'false'}
+    aria-controls={menuId}
   >
     {label} <i class="svg-icon ico-toggle"></i>
   </button>
-  <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
+  <div id={menuId} class="drop-menu" style={openState ? 'display: block;' : undefined}>
     <div class="drop-in">
       <ul class="drop-list">
         {options.map((option) => {

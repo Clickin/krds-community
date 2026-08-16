@@ -27,6 +27,7 @@ import { createStableId } from "../kinds";
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="form-group">
       <div class="form-tit">
@@ -39,7 +40,7 @@ import { createStableId } from "../kinds";
           [attr.type]="type"
           [value]="value"
           [attr.value]="value || null"
-          [placeholder]="placeholder"
+          [attr.placeholder]="placeholder || null"
           [disabled]="disabled"
           [readonly]="readonly"
           [required]="required"
@@ -143,7 +144,7 @@ const TEXT_INPUT_FORM_GROUP_TEMPLATE = `
         [attr.type]="type"
         [value]="value"
         [attr.value]="value || null"
-        [placeholder]="placeholder"
+        [attr.placeholder]="placeholder || null"
         [disabled]="disabled"
         [readonly]="readonly"
         [required]="required"
@@ -172,6 +173,7 @@ const TEXT_INPUT_FORM_GROUP_TEMPLATE = `
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: TEXT_INPUT_FORM_GROUP_TEMPLATE,
 })
 export class KrdsTextInputSizeComponent extends KrdsTextInputIconComponent {
@@ -179,8 +181,10 @@ export class KrdsTextInputSizeComponent extends KrdsTextInputIconComponent {
     return `form-conts${this.state === "default" ? "" : ` is-${this.state}`}`;
   }
 
+  @Input() override size = "";
+
   override get textInputClass(): string {
-    return `krds-input ${this.size}`;
+    return ["krds-input", this.size].filter(Boolean).join(" ");
   }
 }
 
@@ -196,6 +200,7 @@ export class KrdsTextInputSizeComponent extends KrdsTextInputIconComponent {
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: TEXT_INPUT_FORM_GROUP_TEMPLATE,
 })
 export class KrdsTextInputStateComponent extends KrdsTextInputIconComponent {

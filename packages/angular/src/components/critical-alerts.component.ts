@@ -7,6 +7,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="main-urgent-wrap" role="alert">
       <ul class="krds-critical-alerts">
@@ -48,8 +49,11 @@ export class KrdsCriticalAlertsComponent {
   }
 
   criticalTone(item: unknown): string {
-    if (!item || typeof item !== "object" || !("tone" in item)) return "info";
-    return String(item.tone ?? "info");
+    if (!item || typeof item !== "object") return "info";
+    if ("tone" in item && item.tone) return String(item.tone);
+    const badge = "badge" in item ? item.badge : undefined;
+    if (badge === "danger" || badge === "ok" || badge === "info") return String(badge);
+    return "info";
   }
 
   criticalLabel(item: unknown): string {

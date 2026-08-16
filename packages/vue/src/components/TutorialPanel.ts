@@ -1,6 +1,37 @@
-import { computed, defineComponent, ref, useId, type PropType } from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  useId,
+  type PropType,
+  type VNode,
+} from "vue";
 
 import { create } from "../shared.js";
+
+function inlineSpacedText(
+  value: string | undefined,
+  leading: boolean,
+  trailing: boolean,
+): Array<VNode | string | null> | undefined {
+  if (!value) return undefined;
+  const parts = value.split(" ");
+  if (parts.length < 2) {
+    return [`${leading ? " " : ""}${value}${trailing ? " " : ""}`];
+  }
+  const className = [
+    leading ? "krds-icon-space-left" : undefined,
+    trailing ? "krds-icon-space-right" : undefined,
+  ];
+  return [
+    leading ? " " : null,
+    ...parts.flatMap((part, index) => [
+      index > 0 ? " " : null,
+      create("span", { class: className }, part),
+    ]),
+    trailing ? " " : null,
+  ];
+}
 
 import type {
   AdditionalLinkItem,
@@ -16,7 +47,7 @@ export const TutorialPanel = defineComponent({
     id: { type: String, default: undefined },
     open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
     defaultOpen: { type: Boolean, default: false },
-    label: { type: String, default: undefined },
+    label: { type: String, default: "튜토리얼 패널" },
     tabs: { type: Array as PropType<AdditionalTabItem[]>, default: () => [] },
     activeTab: { type: String, default: undefined },
     selected: { type: String, default: undefined },
@@ -85,14 +116,29 @@ export const TutorialPanel = defineComponent({
     return () => {
       const className = attrs.class as string | undefined;
       const activeTab = props.activeTab ?? props.tabs[0]?.value ?? props.tabs[0]?.id;
-      return create(
-        "div",
-        {
-          ...attrs,
-          class: ["krds-help-panel", open.value ? "expand" : undefined, className],
-        },
-        [
-          create("div", { class: "help-panel-wrap", tabindex: open.value ? 0 : undefined }, [
+      return [
+        create(
+          "button",
+          {
+            type: "button",
+            id: `${id.value}-trigger`,
+            class: ["krds-btn", "small", "tertiary", "btn-help-panel", "expand", "btn-help-exec"],
+            "aria-controls": id.value,
+            "aria-expanded": open.value,
+            onClick: () => setOpen(true),
+          },
+          [create("i", { class: ["svg-icon", "ico-fold"] }), ` ${props.label}`],
+        ),
+        create(
+          "div",
+          {
+            ...attrs,
+            id: id.value,
+            hidden: !open.value,
+            class: ["krds-help-panel", open.value ? "expand" : undefined, className],
+          },
+          [
+            create("div", { class: "help-panel-wrap", tabindex: open.value ? 0 : undefined }, [
             create("div", { class: "help-conts-area" }, [
               create("div", { class: ["krds-tab-area", "layer"] }, [
                 create("div", { class: ["tab", "line"] }, [
@@ -328,14 +374,14 @@ export const TutorialPanel = defineComponent({
                 },
                 [
                   create("span", { class: "sr-only" }, props.label),
-                  props.collapseLabel === undefined ? undefined : ` ${props.collapseLabel} `,
+                  ...(inlineSpacedText(props.collapseLabel ?? props.label ?? props.title, true, true) ?? []),
                   create("i", { class: ["svg-icon", "ico-angle", "right"] }),
                 ],
               ),
             ]),
           ]),
-        ],
-      );
+        ]),
+    ];
     };
   },
 });

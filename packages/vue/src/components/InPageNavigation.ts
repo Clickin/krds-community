@@ -28,7 +28,7 @@ export const InPageNavigation = defineComponent({
           [
             create("div", { class: "in-page-navigation-header" }, [
               create("p", { class: "quick-caption" }, props.title),
-              props.pageTitle ? create("p", { class: "quick-title" }, props.pageTitle) : null,
+              create("p", { class: "quick-title" }, props.pageTitle),
             ]),
             create("nav", { class: "in-page-navigation-list", "aria-label": props.title }, [
               create(
@@ -53,13 +53,11 @@ export const InPageNavigation = defineComponent({
                 { type: "button", class: ["krds-btn", "medium"] },
                 props.actionLabel,
               ),
-              props.actionInfo || props.actionCount
-                ? create("p", { class: "quick-info" }, [
-                    props.actionInfo,
-                    props.actionInfo && props.actionCount ? " " : null,
-                    props.actionCount ? create("strong", props.actionCount) : null,
-                  ])
-                : null,
+              create("p", { class: "quick-info" }, [
+                props.actionInfo,
+                props.actionInfo && props.actionCount ? " " : null,
+                props.actionCount ? create("strong", props.actionCount) : null,
+              ]),
             ]),
           ],
         ),

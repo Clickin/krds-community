@@ -24,7 +24,8 @@ export const Breadcrumb = defineComponent({
           ...attrs,
           id: id.value,
           class: ["krds-breadcrumb-wrap", className],
-          "aria-label": props.label ?? "현재 경로",
+          "aria-label":
+            (attrs["aria-label"] as string | undefined) ?? props.label ?? "현재 경로",
         },
         create(
           "ol",

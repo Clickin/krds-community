@@ -7,6 +7,7 @@ import { createStableId, type AngularNavItem } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     @if (kind === "modal-sample") {
       <section

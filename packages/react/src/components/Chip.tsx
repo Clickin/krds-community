@@ -25,7 +25,7 @@ export function Chip({
   selected: controlledSelected,
   defaultSelected,
   onChange,
-  ariaLabel,
+  ariaLabel = "선택",
   className,
 }: ChipProps) {
   const controlled = controlledSelected !== undefined;

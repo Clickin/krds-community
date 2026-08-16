@@ -21,7 +21,7 @@
   {...rest}
   type="button"
   class={`krds-tts medium ${rootClass}`.trim()}
-  aria-label={label || undefined}
 >
   <span class="krds-tts-icon" aria-hidden="true"><i class="ico-volume svg-icon"></i></span>
+  {#if label}<span class="sr-only">{label}</span>{/if}
 </button>

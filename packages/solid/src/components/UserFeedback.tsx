@@ -55,9 +55,10 @@ export function UserFeedback(rawProps: UserFeedbackProps) {
         <div class="feedback-options">
           <For each={props.options}>
             {(option) => (
-              <label class="krds-form-check">
+              <div class="krds-form-check">
                 <input
                   type="radio"
+                  id={`${name}-${option.value}`}
                   name={name}
                   value={option.value}
                   checked={selected() === option.value}
@@ -65,8 +66,8 @@ export function UserFeedback(rawProps: UserFeedbackProps) {
                     if (event.currentTarget.checked) setSelected(option.value);
                   }}
                 />
-                <span>{option.label}</span>
-              </label>
+                <label for={`${name}-${option.value}`}>{option.label}</label>
+              </div>
             )}
           </For>
         </div>

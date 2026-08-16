@@ -32,7 +32,7 @@
   </div>
   <div class="form-conts">
     <div class="form-spinner">
-      <input type="text" id={`${id}-input`} class="krds-input" aria-label={inputLabel} {placeholder} />
+      <input type="text" id={`${id}-input`} class="krds-input" {placeholder} />
       <div {...rest} class={`krds-spinner ${rootClass}`} role="status">
         <span class="sr-only">{label}</span>
       </div>

@@ -73,7 +73,7 @@
 <div {...rest} class={`krds-file-upload line ${rootClass}`}>
   <div class="file-head">
     <h3 class="tit">{title}</h3>
-    {#if description}<div><p>{description}</p></div>{/if}
+    <div><p>{description}</p></div>
   </div>
   <div class="file-upload">
     <p class="txt">{prompt}</p>

@@ -13,8 +13,8 @@ export const CoachMark = defineComponent({
     description: { type: String, default: undefined },
     currentStep: { type: String, default: undefined },
     totalSteps: { type: String, default: undefined },
-    currentStepLabel: { type: String, default: undefined },
-    totalStepsLabel: { type: String, default: undefined },
+    currentStepLabel: { type: String, default: "현재 단계" },
+    totalStepsLabel: { type: String, default: "총 단계" },
     stopLabel: { type: String, default: undefined },
     nextLabel: { type: String, default: undefined },
     contentTitle: { type: String, default: undefined },
@@ -38,9 +38,9 @@ export const CoachMark = defineComponent({
         },
         [
           create("div", { class: "coach-balloon" }, [
-            create("h5", { class: "sr-only" }, props.title),
+            props.title ? create("h5", { class: "sr-only" }, props.title) : null,
             create("h6", { class: "coach-tit" }, props.stepTitle),
-            props.description ? create("p", { class: "desc" }, props.description) : null,
+            create("p", { class: "desc" }, props.description),
             create("div", { class: "coach-controls" }, [
               create("div", { class: "num" }, [
                 create("span", { class: "sr-only" }, props.currentStepLabel),

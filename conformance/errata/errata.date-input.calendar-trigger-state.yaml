@@ -1,0 +1,37 @@
+id: errata.date-input.calendar-trigger-state
+component: date-input
+upstream:
+  version: 1.1.0
+  files:
+    - upstream/krds-html/html/code/date_input.html
+defect:
+  type: inappropriate-calendar-trigger-expanded-state
+  literalSource:
+    selectors:
+      - ".form-btn-datepicker"
+    behavior: >-
+      The upstream date-input calendar trigger does not expose aria-expanded. The community
+      foundation keeps .krds-calendar-area displayed, so this trigger does not own a collapsible
+      calendar state in the docs runtime.
+correction:
+  behavior: >-
+    Omit aria-expanded from the date-input calendar trigger. The calendar remains rendered and
+    the trigger retains native button semantics without advertising a nonexistent expanded state.
+  attributes:
+    - selector: ".form-btn-datepicker"
+      attribute: aria-expanded
+      rule: "must-be-absent"
+fixtures:
+  - date-input.default
+normalization:
+  whitelist:
+    - selector: ".form-btn-datepicker"
+      attribute: aria-expanded
+      rule: "must-be-absent"
+evidence:
+  sourceUrls:
+    - https://www.w3.org/WAI/ARIA/states_and_properties#aria-expanded
+  rationale: >-
+    The community foundation intentionally keeps the calendar surface visible, while the pinned
+    upstream date-input fixture omits aria-expanded. The Astro runtime therefore must not add a
+    false disclosure state to the trigger.

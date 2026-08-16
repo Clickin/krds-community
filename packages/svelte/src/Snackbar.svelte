@@ -89,8 +89,7 @@
     </div>
     {#if actionLabel}
       <button type="button" class="krds-btn small text snackbar-action" onclick={onaction}>{actionLabel}</button>
-    {/if}
-    <button type="button" class="krds-btn small icon snackbar-close" aria-label={closeLabel} onclick={requestClose}>
+    {/if}<button type="button" class="krds-btn small icon snackbar-close" aria-label={closeLabel} onclick={requestClose}>
       <i class="svg-icon ico-modal-close"></i>
     </button>
   </div>

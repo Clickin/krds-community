@@ -25,6 +25,7 @@ import { createStableId } from "../kinds";
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-form-check">
       <input

@@ -121,9 +121,12 @@ export function HelpPanelSurface({
   onStop,
   className,
   ref,
+  id: providedId,
   ...props
 }: HelpPanelProps & { tutorialDefault?: boolean } & { ref?: Ref<HTMLDivElement> }) {
   const generatedId = useId();
+  const panelId = providedId ?? `${generatedId}-panel`;
+  const triggerLabel = label ?? "도움 패널";
   const initialTab =
     defaultActiveTab ??
     (tutorialDefault
@@ -146,8 +149,25 @@ export function HelpPanelSurface({
     onActiveTabChange?.(next);
   };
   return (
-    <div {...props} ref={ref} className={cx("krds-help-panel", open && "expand", className)}>
-      <div className="help-panel-wrap" tabIndex={open ? 0 : undefined}>
+    <>
+      <button
+        type="button"
+        id={`${panelId}-trigger`}
+        className="krds-btn small tertiary btn-help-panel expand btn-help-exec"
+        aria-controls={panelId}
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+      >
+        <SvgIcon name="ico-fold" /> {triggerLabel}
+      </button>
+      <div
+        {...props}
+        ref={ref}
+        id={panelId}
+        hidden={!open}
+        className={cx("krds-help-panel", open && "expand", className)}
+      >
+        <div className="help-panel-wrap" tabIndex={open ? 0 : undefined}>
         <div className="help-conts-area">
           <div className="krds-tab-area layer">
             <div className="tab line">
@@ -305,8 +325,9 @@ export function HelpPanelSurface({
             <SvgIcon name="ico-angle right" />
           </button>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -4,10 +4,17 @@ import type { SelectProps } from "./Select.js";
 
 export function SelectSorting({
   ref,
-  label = "선택",
+  label,
+  title,
   ...props
-}: Omit<SelectProps, "label"> & { label?: string } & { ref?: Ref<HTMLSelectElement> }) {
+}: Omit<SelectProps, "label"> & { label?: string; title?: string } & { ref?: Ref<HTMLSelectElement> }) {
   return (
-    <Select {...props} label={label} {...(ref !== undefined ? { ref } : {})} variant="sorting" />
+    <Select
+      {...props}
+      title={title}
+      label={label ?? title}
+      {...(ref !== undefined ? { ref } : {})}
+      variant="sorting"
+    />
   );
 }

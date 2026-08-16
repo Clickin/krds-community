@@ -3,6 +3,13 @@
   import type { HTMLAttributes } from 'svelte/elements';
   import { fieldOf, labelOf, flagOf, listOf } from './lib/shared.js';
 
+  const pageMax = (value: Record<string, unknown>) =>
+    Math.max(
+      1,
+      ...listOf(value, 'items')
+        .map((item) => Number(labelOf(item)))
+        .filter((item) => Number.isFinite(item)),
+    );
   type StructuredListTableRow = {
     selectionLabel?: string;
     [key: string]: string | number | boolean | null | undefined;
@@ -75,10 +82,10 @@
       <li>
         <strong class="sort-label"><label for={`${id}-result-count`}>{countLabel}</label></strong>
         {' '}
-        <select class="krds-form-select-sort" id={`${id}-result-count`} aria-label={countLabel}>
+        <select class="krds-form-select-sort" id={`${id}-result-count`}>
           {#each countOptions as option}<option>{option}</option>{/each}
         </select>
-      </li>
+</li>
       <li>
         <strong class="sort-label"><label for={`${id}-sort`}>{sortLabel}</label></strong>
         <div class="w-sort-btn">
@@ -88,7 +95,7 @@
           {/each}
         </div>
         <div class="m-sort-btn">
-          <select class="krds-form-select-sort" id={`${id}-sort`} value={sortValue} aria-label={sortLabel}>
+          <select class="krds-form-select-sort" id={`${id}-sort`} value={sortValue}>
             {#each sortOptions as option}<option>{option}</option>{/each}
           </select>
         </div>
@@ -116,7 +123,7 @@
       <tbody>
         {#each rows as row, rowIndex}
           <tr>
-            {#each columns as column}
+            {#each columns as column, columnIndex}
               {#if column.key === 'selected'}
                 <th scope="row">
                   <div class="krds-form-check">
@@ -136,6 +143,8 @@
                     <i class="svg-icon ico-down"></i>{' '}{row[column.key]}
                   </button>
                 </td>
+              {:else if columnIndex === 0}
+                <th scope="row">{row[column.key]}</th>
               {:else}
                 <td>{row[column.key]}</td>
               {/if}
@@ -165,7 +174,11 @@
           {/if}
         {/each}
       </div>
-      <a class="page-navi next" href={href}>{fieldOf(pagination, 'nextLabel')}</a>
+      {#if Number(fieldOf(pagination, 'current')) >= pageMax(pagination)}
+        <span class="page-navi next disabled">{fieldOf(pagination, 'nextLabel')}</span>
+      {:else}
+        <a class="page-navi next" href={href}>{fieldOf(pagination, 'nextLabel')}</a>
+      {/if}
     </div>
   {/if}
 </div>

@@ -491,49 +491,37 @@ import { RadioButton } from "@krds-community/astro";
   <div slot="react">
     <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
       <ReactToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="react" />
-      <ReactTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="react">
-        잠김
-      </ReactTooltip>
+      <ReactTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="react">      </ReactTooltip>
     </div>
   </div>
   <div slot="vue">
     <div style="display: flex; align-items: center; gap: .5rem">
       <VueToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="vue" />
-      <VueTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="vue">
-        잠김
-      </VueTooltip>
+      <VueTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="vue">      </VueTooltip>
     </div>
   </div>
   <div slot="svelte">
     <div style="display: flex; align-items: center; gap: .5rem">
       <SvelteToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="svelte" />
-      <SvelteTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="svelte">
-        잠김
-      </SvelteTooltip>
+      <SvelteTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="svelte">      </SvelteTooltip>
     </div>
   </div>
   <div slot="solid">
     <div style={{ display: "flex", alignItems: "center", gap: ".5rem" }}>
       <SolidToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled client:only="solid-js" />
-      <SolidTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="solid-js">
-        잠김
-      </SolidTooltip>
+      <SolidTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="solid-js">      </SolidTooltip>
     </div>
   </div>
   <div slot="astro">
     <div style="display: flex; align-items: center; gap: .5rem">
       <AstroToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled />
-      <AstroTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">
-        잠김
-      </AstroTooltip>
+      <AstroTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다.">      </AstroTooltip>
     </div>
   </div>
   <div slot="angular">
     <div style="display: flex; align-items: center; gap: .5rem">
       <AngularToggleSwitch name="screen-capture" label="화면 캡처 방지" disabled={true} client:only="@analogjs/astro-angular" />
-      <AngularTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="@analogjs/astro-angular">
-        잠김
-      </AngularTooltip>
+      <AngularTooltip label="잠김" message="조직 정책으로 변경할 수 없습니다." client:only="@analogjs/astro-angular" />
     </div>
   </div>
 

@@ -21,6 +21,7 @@ const CLOSE_ANIMATION_MS = 200;
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     @if (rendered) {
       <div

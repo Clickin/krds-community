@@ -48,7 +48,7 @@ const popupMenuId = (item: SideNavigationItem) => item.controlsId ?? `lnbmenu-${
     {items.map((item) => {
       const active = containsCurrent(item);
       const menuId = topMenuId(item);
-      return (
+      return item.children?.length ? (
         <li class={cx('lnb-item', active && 'active')} role="none">
           <button
             type="button"
@@ -140,6 +140,19 @@ const popupMenuId = (item: SideNavigationItem) => item.controlsId ?? `lnbmenu-${
               })}
             </ul>
           </div>
+        </li>
+      ) : (
+        <li class={cx('lnb-item', item.current && 'active')} role="none">
+          <a
+            href={item.href ?? '#'}
+            class="lnb-btn lnb-link"
+            role="menuitem"
+            target={item.target}
+            title={item.title}
+            aria-current={item.current ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
         </li>
       );
     })}

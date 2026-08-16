@@ -69,14 +69,17 @@ export const Card = defineComponent({
                     })
                   : null,
                 props.badges.length
-                  ? props.badges.map((badge, badgeIndex) =>
-                      create(Badge, {
-                        key: badgeIndex,
-                        label: badge,
-                        tone: "primary",
-                        appearance: "bg",
-                        class: "card-badge",
-                      }),
+                  ? create(
+                      "div",
+                      { class: "card-badge" },
+                      props.badges.map((badge, badgeIndex) =>
+                        create(Badge, {
+                          key: badgeIndex,
+                          label: badge,
+                          tone: "primary",
+                          appearance: "bg",
+                        }),
+                      ),
                     )
                   : null,
               ])

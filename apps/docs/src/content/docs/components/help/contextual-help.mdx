@@ -154,9 +154,7 @@ import { ContextualHelp } from '@krds-community/astro';
         </p>
         <p style="margin:0">기한 내 접수된 신청만 검토 대상입니다.</p>
       </div>
-      <VueContextualHelp label="도움말" title="신청 방법" defaultOpen client:only="vue">
-        신청서 작성에 도움이 되는 부가 정보입니다.
-      </VueContextualHelp>
+      <VueContextualHelp label="도움말" title="신청 방법" description="신청서 작성에 도움이 되는 부가 정보입니다." defaultOpen client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
@@ -167,9 +165,7 @@ import { ContextualHelp } from '@krds-community/astro';
         </p>
         <p style="margin:0">기한 내 접수된 신청만 검토 대상입니다.</p>
       </div>
-      <SvelteContextualHelp label="도움말" title="신청 방법" open client:only="svelte">
-        신청서 작성에 도움이 되는 부가 정보입니다.
-      </SvelteContextualHelp>
+      <SvelteContextualHelp label="도움말" title="신청 방법" description="신청서 작성에 도움이 되는 부가 정보입니다." open client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
@@ -244,9 +240,7 @@ import { ContextualHelp } from '@krds-community/astro';
   </div>
   <div slot="vue">
     <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
-      <VueContextualHelp label="도움말" title="안내" defaultOpen client:only="vue">
-        부가 정보입니다.
-      </VueContextualHelp>
+      <VueContextualHelp label="도움말" title="안내" description="부가 정보입니다." defaultOpen client:only="vue" />
       <VueHelpPanel
         defaultOpen
         title="도움말"
@@ -260,9 +254,7 @@ import { ContextualHelp } from '@krds-community/astro';
   </div>
   <div slot="svelte">
     <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
-      <SvelteContextualHelp label="도움말" title="안내" open client:only="svelte">
-        부가 정보입니다.
-      </SvelteContextualHelp>
+      <SvelteContextualHelp label="도움말" title="안내" description="부가 정보입니다." open client:only="svelte" />
       <SvelteHelpPanel
         open
         title="도움말"
@@ -300,7 +292,6 @@ import { ContextualHelp } from '@krds-community/astro';
         helpDescription="부가 정보입니다."
         title="도움말"
         tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
-        selectedLabel="선택됨"
         helpTitle="도움말"
         downloadLinks={[]}
         relatedGroups={[]}

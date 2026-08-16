@@ -168,7 +168,13 @@ export function MainMenuMobile(rawProps: MainMenuMobileProps) {
       role={
         props.navigationRole === false ? undefined : ((props.navigationRole ?? "navigation") as any)
       }
-      aria-label={props.navigationRole === false ? undefined : (props.menuLabel ?? "전체 메뉴")}
+      aria-label={
+        props.navigationRole === false
+          ? undefined
+          : (((native as Record<string, unknown>)["aria-label"] as string | undefined) ??
+            props.menuLabel ??
+            "전체 메뉴")
+      }
       onClick={(event) => {
         invokeHandler(native.onClick, event);
         if (

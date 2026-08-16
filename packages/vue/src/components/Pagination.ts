@@ -1,20 +1,21 @@
 import { computed, defineComponent, ref, type PropType } from "vue";
 
 import { create, itemLabel } from "../shared.js";
-
+import type { AnyItem } from "../types.js";
 export const Pagination = defineComponent({
   name: "KrdsPagination",
   inheritAttrs: false,
   props: {
     id: { type: String, default: undefined },
-    items: { type: Array as PropType<any[]>, default: () => [1, 2, 3, 4, 5] },
+    items: { type: Array as PropType<AnyItem[]>, default: () => [1, 2, 3, 4, 5] },
     previousDisabled: Boolean,
+    nextDisabled: Boolean,
     title: { type: String, default: undefined },
     label: { type: String, default: undefined },
     previousLabel: { type: String, default: "이전" },
     nextLabel: { type: String, default: "다음" },
-    navigationLabel: { type: String, default: undefined },
-    message: { type: String, default: undefined },
+    navigationLabel: { type: String, default: "페이지 이동" },
+    message: { type: String, default: "현재페이지" },
     current: { type: Number, default: undefined },
     defaultCurrent: { type: Number, default: 1 },
   },
@@ -25,7 +26,10 @@ export const Pagination = defineComponent({
     const initialIndex = Math.max(0, (props.defaultCurrent ?? props.current ?? 1) - 1);
     const localIndex = ref(initialIndex);
     const currentPage = computed(() =>
-      props.current === undefined ? localIndex.value + 1 : props.current,
+      props.current === undefined ? localIndex.value + 1 : Number(props.current) || 1,
+    );
+    const maxPage = computed(() =>
+      Math.max(1, ...props.items.map((item) => Number(itemLabel(item))).filter(Number.isFinite)),
     );
     const setPage = (next: number) => {
       if (props.current === undefined) localIndex.value = Math.max(0, next - 1);
@@ -44,7 +48,7 @@ export const Pagination = defineComponent({
           "aria-label": props.navigationLabel ?? props.label ?? props.title,
         },
         [
-          props.previousDisabled
+          props.previousDisabled || currentPage.value <= 1
             ? create(
                 "span",
                 { class: ["page-navi", "prev", "disabled"], href: "#" },
@@ -65,7 +69,7 @@ export const Pagination = defineComponent({
           create(
             "div",
             { class: "page-links" },
-            pages.map((item: any, itemIndex: number) => {
+            pages.map((item, itemIndex) => {
               if (item === "ellipsis")
                 return create("span", {
                   key: itemIndex,
@@ -85,25 +89,31 @@ export const Pagination = defineComponent({
                 },
                 [
                   page === currentPage.value
-                    ? create("span", { class: "sr-only" }, props.message)
+                    ? create("span", { class: "sr-only" }, `${props.message} `)
                     : null,
                   String(page),
                 ],
               );
             }),
           ),
-          create(
-            "a",
-            {
-              class: ["page-navi", "next"],
-              href: "#",
-              onClick: (event: Event) => {
-                event.preventDefault();
-                setPage(currentPage.value + 1);
-              },
-            },
-            props.nextLabel,
-          ),
+          props.nextDisabled || currentPage.value >= maxPage.value
+            ? create(
+                "span",
+                { class: ["page-navi", "next", "disabled"], href: "#" },
+                props.nextLabel,
+              )
+            : create(
+                "a",
+                {
+                  class: ["page-navi", "next"],
+                  href: "#",
+                  onClick: (event: Event) => {
+                    event.preventDefault();
+                    setPage(currentPage.value + 1);
+                  },
+                },
+                props.nextLabel,
+              ),
         ],
       );
     };

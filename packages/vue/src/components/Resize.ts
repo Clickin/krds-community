@@ -51,12 +51,14 @@ export const Resize = defineComponent({
     const initialValue =
       props.defaultValue ??
       props.value ??
+      props.selected ??
       (typeof props.modelValue === "string" || typeof props.modelValue === "number"
         ? props.modelValue
         : "");
     const localValue = ref(String(initialValue));
     const value = computed(() => {
       if (props.value !== undefined) return String(props.value);
+      if (props.selected !== undefined) return String(props.selected);
       if (typeof props.modelValue === "string" || typeof props.modelValue === "number") {
         return String(props.modelValue);
       }
@@ -65,6 +67,7 @@ export const Resize = defineComponent({
     const setValue = (next: string) => {
       if (
         props.value === undefined &&
+        props.selected === undefined &&
         typeof props.modelValue !== "string" &&
         typeof props.modelValue !== "number"
       ) {

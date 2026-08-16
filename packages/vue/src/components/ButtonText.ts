@@ -12,7 +12,7 @@ export const ButtonText = defineComponent({
   },
   setup(props, { attrs, slots }) {
     return () => {
-      const className = attrs.class as string | undefined;
+      const className = (attrs.className ?? attrs.class) as string | undefined;
       const slotChildren = children(slots);
       return create(
         "button",
@@ -37,7 +37,7 @@ export const ButtonWithIcon = defineComponent({
   },
   setup(props, { attrs, slots }) {
     return () => {
-      const className = attrs.class as string | undefined;
+      const className = (attrs.className ?? attrs.class) as string | undefined;
       const slotChildren = children(slots);
       return create(
         "button",

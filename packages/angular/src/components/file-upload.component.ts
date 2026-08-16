@@ -6,6 +6,7 @@ import { createStableId } from "../kinds";
   selector: "krds-file-upload",
   standalone: true,
   imports: [CommonModule],
+  styles: [":host { display: contents; }"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="krds-file-upload line">

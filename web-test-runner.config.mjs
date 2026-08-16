@@ -33,8 +33,13 @@ const docsStatic = {
         response.end("bad request");
         return;
       }
-      if (!pathname.startsWith("/docs")) return next();
-      let relative = pathname.slice("/docs".length);
+      const isDocsPage = pathname.startsWith("/docs");
+      const isDocsAsset =
+        pathname.startsWith("/_astro/") ||
+        pathname === "/favicon.svg" ||
+        pathname.startsWith("/pagefind/");
+      if (!isDocsPage && !isDocsAsset) return next();
+      let relative = isDocsPage ? pathname.slice("/docs".length) : pathname;
       if (relative === "" || relative.endsWith("/")) relative += "index.html";
       const filePath = normalize(join(docsDist, relative));
       if (!filePath.startsWith(docsDist)) {
@@ -58,8 +63,7 @@ const docsStatic = {
         });
         response.end(content);
       } catch {
-        response.writeHead(404);
-        response.end("not found");
+        next();
       }
     });
   },

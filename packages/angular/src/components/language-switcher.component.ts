@@ -1,13 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, ElementRef, inject, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { createStableId } from "../kinds";
 
-@Component({
-  selector: "krds-language-switcher, krds-language-switcher-page",
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+const LANGUAGE_SWITCHER_TEMPLATE = `
     <div class="krds-drop-wrap krds-language">
       <button
         type="button"
@@ -35,18 +30,18 @@ import { createStableId } from "../kinds";
                   href="#"
                   class="item-link"
                   [class.active]="
-                    effectiveKind === 'language-switcher' && option.value === selected
+                    effectiveKind === 'language-switcher' && option.value === selectedValue
                   "
                   [attr.lang]="option.value"
-                  [attr.target]="effectiveKind === 'language-switcher-page' ? '_blank' : null"
-                  [attr.title]="effectiveKind === 'language-switcher-page' ? externalTitle : null"
+                  [attr.target]="option.target || (effectiveKind === 'language-switcher-page' ? '_blank' : null)"
+                  [attr.title]="option.title || (effectiveKind === 'language-switcher-page' ? externalTitle : null)"
                 >
                   {{ option.label }}
                   @if (effectiveKind === "language-switcher-page") {
                     <i class="svg-icon ico-go"></i>
                   }
                   <span class="sr-only">{{
-                    effectiveKind === "language-switcher" && option.value === selected
+                    effectiveKind === "language-switcher" && option.value === selectedValue
                       ? selectedLabel
                       : ""
                   }}</span>
@@ -57,7 +52,15 @@ import { createStableId } from "../kinds";
         </div>
       </div>
     </div>
-  `,
+  `;
+
+@Component({
+  selector: "krds-language-switcher",
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
+  template: LANGUAGE_SWITCHER_TEMPLATE,
 })
 export class KrdsLanguageSwitcherComponent {
   @Input() id = createStableId("krds-language-switcher");
@@ -67,32 +70,53 @@ export class KrdsLanguageSwitcherComponent {
   @Input() currentLabel = "";
   @Input() externalTitle = "";
   @Input() kind: "language-switcher" | "language-switcher-page" | null = null;
-  @Input() options: Array<{ value: string; label: string }> = [];
-
-  private readonly hostTagKind = inject(ElementRef<HTMLElement>)
-    .nativeElement.tagName.toLocaleLowerCase("en-US")
-    .slice(5) as "language-switcher" | "language-switcher-page";
+  @Input() options: Array<{
+    value: string;
+    label: string;
+    target?: string;
+    title?: string;
+  }> = [];
 
   get effectiveKind(): "language-switcher" | "language-switcher-page" {
-    return this.kind ?? this.hostTagKind;
+    return this.kind ?? "language-switcher";
   }
 
   get languageMenuId(): string {
     return `${this.id}-menu`;
   }
-
+  get selectedValue(): string {
+    return this.selected || this.options[0]?.value || "";
+  }
   get selectedOptionLabel(): string {
     return (
-      this.options.find((option) => option.value === this.selected)?.label ??
+      this.options.find((option) => option.value === this.selectedValue)?.label ??
       this.options[0]?.label ??
       ""
     );
   }
 
-  get visibleLanguageOptions(): Array<{ value: string; label: string }> {
+  get visibleLanguageOptions(): Array<{
+    value: string;
+    label: string;
+    target?: string;
+    title?: string;
+  }> {
     return this.effectiveKind === "language-switcher-page"
-      ? this.options.filter((option) => option.value !== this.selected)
+      ? this.options.filter((option) => option.value !== this.selectedValue)
       : this.options;
   }
 }
-export { KrdsLanguageSwitcherComponent as KrdsLanguageSwitcherPageComponent };
+
+@Component({
+  selector: "krds-language-switcher-page",
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
+  template: LANGUAGE_SWITCHER_TEMPLATE,
+})
+export class KrdsLanguageSwitcherPageComponent extends KrdsLanguageSwitcherComponent {
+  override get effectiveKind(): "language-switcher" | "language-switcher-page" {
+    return "language-switcher-page";
+  }
+}

@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <ng-template #unorderedList let-list let-level="level" let-root="root">
       <ul
@@ -62,6 +63,7 @@ export class KrdsTextListComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <ng-template #orderedList let-list let-level="level" let-root="root">
       <ol

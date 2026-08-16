@@ -12,29 +12,30 @@ const DEFAULT_FEEDBACK_OPTIONS = [
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-user-feedback">
       <fieldset>
         <legend class="feedback-title">{{ title }}</legend>
         <div class="feedback-options">
           @for (option of options; track $index) {
-            <label class="krds-form-check">
+            <div class="krds-form-check">
               <input
                 type="radio"
+                [id]="optionId(option)"
                 [name]="id"
                 [value]="option.value"
                 [checked]="selectedValue === option.value"
                 (change)="selectedValue = option.value"
               />
-              <span>{{ option.label }}</span>
-            </label>
+              <label [for]="optionId(option)">{{ option.label }}</label>
+            </div>
           }
         </div>
         <button
           type="button"
           class="krds-btn small primary"
-          [disabled]="selectedValue === null"
-          (click)="submit.emit(selectedValue!)"
+          (click)="selectedValue ? submit.emit(selectedValue) : null"
         >
           {{ submitLabel }}
         </button>
@@ -50,4 +51,8 @@ export class KrdsUserFeedbackComponent {
   @Output() submit = new EventEmitter<string>();
 
   selectedValue: string | null = null;
+
+  optionId(option: { value: string; label: string }): string {
+    return `${this.id}-${option.value}`;
+  }
 }

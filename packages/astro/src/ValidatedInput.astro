@@ -15,9 +15,8 @@ import { cx } from '@krds-community/recipes';
  * min-length:N→"{N}자 이상 입력해 주세요.", email→"올바른 이메일 형식으로 입력해 주세요.").
  *
  * SSR은 항상 검증 전(hint) 상태로 렌더링하며, 상호작용은 `<script>`(module)에서
- * 서버 렌더 DOM에 배선된다(Calendar.astro 패턴). 설정은 비교 대상이 되는
- * `.krds-validated-input` 밖의 wrapper(`krds-validated-input-wrap`)의 data-*
- * 속성에 둔다(DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
+ * 서버 렌더 DOM에 배선된다(Calendar.astro 패턴). 검증 설정은 비교 대상 루트에
+ * data-* 속성으로 둔다.
  */
 
 export interface Props {
@@ -65,33 +64,31 @@ const messageId = `${id}-message`;
 ---
 
 <div
-  class="krds-validated-input-wrap"
+  class={cx('krds-validated-input', className)}
   data-validate={validate}
   data-mode={mode}
   data-debounce-ms={debounceMs}
   data-success-message={successMessage}
   data-hint={hint}
 >
-  <div class={cx('krds-validated-input', className)}>
-    <div class="form-group">
-      <div class="form-tit">
-        <label for={id}>{label}</label>
-      </div>
-      <div class="form-conts">
-        <input
-          id={id}
-          class="krds-input"
-          type={type}
-          name={name}
-          value={value || undefined}
-          placeholder={placeholder}
-          disabled={disabled || undefined}
-          required={required || undefined}
-          aria-describedby={messageId}
-        />
-      </div>
-      <p id={messageId} class="form-hint">{hint}</p>
+  <div class="form-group">
+    <div class="form-tit">
+      <label for={id}>{label}</label>
     </div>
+    <div class="form-conts">
+      <input
+        id={id}
+        class="krds-input"
+        type={type}
+        name={name}
+        value={value || undefined}
+        placeholder={placeholder}
+        disabled={disabled || undefined}
+        required={required || undefined}
+        aria-describedby={messageId}
+      />
+    </div>
+    <p id={messageId} class="form-hint">{hint}</p>
   </div>
 </div>
 
@@ -128,12 +125,7 @@ const messageId = `${id}-message`;
     const messageEl = root.querySelector<HTMLElement>('p.form-hint, p.form-hint-invalid, p.form-hint-success');
     if (!input || !conts || !messageEl) return;
 
-    // 설정은 비교 대상이 되는 .krds-validated-input 밖의 wrapper에 둔다
-    // (DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
-    const configRoot =
-      root.parentElement?.classList.contains('krds-validated-input-wrap')
-        ? root.parentElement
-        : root;
+    const configRoot = root;
     const rule = configRoot.dataset.validate ?? '';
     const mode = configRoot.dataset.mode ?? 'focusout';
     const debounceMs = Number(configRoot.dataset.debounceMs ?? 300);

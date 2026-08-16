@@ -46,12 +46,12 @@ export interface HelpPanelTask {
 }
 
 export interface HelpPanelProps {
+  id?: string;
   class?: string;
   className?: string;
   children?: JSX.Element;
   open?: boolean;
   defaultOpen?: boolean;
-  activeTab?: string;
   defaultActiveTab?: string;
   tabs?: HelpPanelTab[];
   label?: JSX.Element;
@@ -85,21 +85,28 @@ function inlineSpacedText(
   leading: boolean,
   trailing: boolean,
 ): JSX.Element | undefined {
-  const val = value;
-  if (typeof val === "string") {
-    const parts = val.split(" ");
-    if (parts.length < 2) {
-      let result = val;
-      if (leading) result = " " + result;
-      if (trailing) result = result + " ";
-      return result as unknown as JSX.Element;
-    }
-    let result = val;
-    if (leading) result = " " + result;
-    if (trailing) result = result + " ";
-    return result as unknown as JSX.Element;
+  if (typeof value !== "string") return value as JSX.Element | undefined;
+  const parts = value.split(" ");
+  if (parts.length < 2) {
+    const text = `${leading ? " " : ""}${value}${trailing ? " " : ""}`;
+    return text as unknown as JSX.Element;
   }
-  return val as JSX.Element;
+  const className =
+    [leading ? "krds-icon-space-left" : undefined, trailing ? "krds-icon-space-right" : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
+  return (
+    <>
+      {leading && " "}
+      {parts.map((part, index) => (
+        <>
+          {index > 0 && " "}
+          <span class={className}>{part}</span>
+        </>
+      ))}
+      {trailing && " "}
+    </>
+  );
 }
 
 // ====== Task disclosure subcomponent ======
@@ -171,10 +178,11 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
     rawProps,
   );
   const [props, native] = splitProps(merged, [
+    "id",
     "class",
     "className",
-    "children",
     "open",
+    "children",
     "defaultOpen",
     "activeTab",
     "defaultActiveTab",
@@ -199,7 +207,7 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
     "tutorialDefault",
   ]);
 
-  const className = () => props.class ?? props.className ?? "";
+  const panelId = () => props.id ?? `krds-help-panel-${uid}`;
 
   const initialTab =
     props.defaultActiveTab ??
@@ -228,14 +236,27 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
   };
 
   return (
-    <div
-      {...(native as Record<string, any>)}
-      classList={{
-        "krds-help-panel": true,
-        expand: open(),
-        [className()]: !!className(),
-      }}
-    >
+    <>
+      <button
+        type="button"
+        id={`${panelId()}-trigger`}
+        class="krds-btn small tertiary btn-help-panel expand btn-help-exec"
+        aria-controls={panelId()}
+        aria-expanded={open()}
+        onClick={() => setOpen(true)}
+      >
+        <SvgIcon name="ico-fold" /> {props.label ?? props.title ?? "도움 패널"}
+      </button>
+      <div
+        {...(native as Record<string, any>)}
+        id={panelId()}
+        hidden={!open()}
+        classList={{
+          "krds-help-panel": true,
+          expand: open(),
+          [props.className ?? ""]: !!props.className,
+        }}
+      >
       <div class="help-panel-wrap" tabIndex={open() ? 0 : undefined}>
         <div class="help-conts-area">
           <div class="krds-tab-area layer">
@@ -265,7 +286,7 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
                         >
                           {tab.label}
                           {active() && props.selectedLabel ? (
-                            <i class="sr-only created"> {props.selectedLabel}</i>
+                            <i class="sr-only created">{` ${props.selectedLabel}`}</i>
                           ) : null}
                         </button>
                       </li>
@@ -322,7 +343,7 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
                                         title={link.title ?? props.externalTitle}
                                         class="krds-btn xsmall link basic"
                                       >
-                                        {inlineSpacedText(link.label, false, true)}
+                                        {link.label + " "}
                                         <SvgIcon name="ico-go" />
                                       </a>
                                     </li>
@@ -356,11 +377,9 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
                                               class="krds-btn xsmall link basic"
                                             >
                                               {hasLeadingIcon ? <SvgIcon name={icon!} /> : null}
-                                              {inlineSpacedText(
-                                                link.label,
-                                                hasLeadingIcon,
-                                                hasTrailingIcon,
-                                              )}
+                                              {hasLeadingIcon
+                                                ? " " + link.label
+                                                : link.label + " "}
                                               {hasTrailingIcon ? (
                                                 <SvgIcon name="ico-angle right" />
                                               ) : null}
@@ -432,15 +451,22 @@ function HelpPanelSurface(rawProps: HelpPanelProps & { tutorialDefault?: boolean
         </div>
       </div>
     </div>
+    </>
   );
 }
 
 // ====== Public exports ======
 
 export function HelpPanel(props: HelpPanelProps) {
-  return <HelpPanelSurface {...props} />;
+  return <HelpPanelSurface {...props} label={props.label} />;
 }
 
 export function TutorialPanel(props: HelpPanelProps) {
-  return <HelpPanelSurface {...props} tutorialDefault={true} />;
+  return (
+    <HelpPanelSurface
+      {...props}
+      label={props.label ?? "튜토리얼 패널"}
+      tutorialDefault={true}
+    />
+  );
 }

@@ -23,7 +23,6 @@ const {
 } = Astro.props;
 const id = providedId ?? `krds-input-${crypto.randomUUID()}`;
 const message = state === 'error' ? (error ?? hint) : hint;
-const hasLabel = label !== undefined || Astro.slots.has('label');
 const hasMessage = message !== undefined || Astro.slots.has('hint');
 const messageId = hasMessage ? `${id}-message` : undefined;
 const ariaDescribedBy = [consumerDescribedBy, messageId].filter(Boolean).join(' ') || undefined;
@@ -38,11 +37,9 @@ const recipe = inputRecipe({ state, size, className });
 ---
 
 <div class="form-group">
-  {hasLabel && (
-    <div class="form-tit">
-      <label for={id}><slot name="label">{label}</slot></label>
-    </div>
-  )}
+  <div class="form-tit">
+    <label for={id}><slot name="label">{label}</slot></label>
+  </div>
   <div class={cx('form-conts', state === 'default' ? undefined : `is-${state}`)}>
     <input
       {...rest}

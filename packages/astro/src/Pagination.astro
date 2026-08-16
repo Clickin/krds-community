@@ -34,22 +34,32 @@ export interface Props extends Omit<HTMLAttributes<'div'>, 'class' | 'class:list
 const {
   items = [1, 2, 3, 4, 5],
   current = 1,
-  previousDisabled = current <= 1,
-  nextDisabled = false,
+  previousDisabled,
+  nextDisabled,
   previousLabel,
   nextLabel,
   title,
   label,
-  message,
+  message = "현재페이지",
   previousHref = '#',
   nextHref = '#',
   pageHref = '#',
-  navigationLabel,
+  navigationLabel = "페이지 이동",
   class: className,
   ...rest
 } = Astro.props;
+const currentPage = Number(current) || 1;
+const resolvedPreviousDisabled = previousDisabled ?? currentPage <= 1;
 const resolvedPreviousLabel = previousLabel ?? title ?? "이전";
 const resolvedNextLabel = nextLabel ?? label ?? "다음";
+const maxPage = Math.max(
+  ...items
+    .filter((item) => item !== 'ellipsis')
+    .map((item) => typeof item === 'number' ? item : item.value)
+    .filter(Number.isFinite),
+  1,
+);
+const resolvedNextDisabled = nextDisabled ?? currentPage >= maxPage;
 const resolveHref = (page: number, explicit?: string) =>
   explicit ?? (typeof pageHref === 'function' ? pageHref(page) : pageHref);
 ---
@@ -60,7 +70,7 @@ const resolveHref = (page: number, explicit?: string) =>
   role="navigation"
   aria-label={navigationLabel}
 >
-  {previousDisabled ? (
+  {resolvedPreviousDisabled ? (
     <span {...{ href: previousHref }} class="page-navi prev disabled">{resolvedPreviousLabel}</span>
   ) : (
     <a class="page-navi prev" href={previousHref}>{resolvedPreviousLabel}</a>
@@ -76,19 +86,19 @@ const resolveHref = (page: number, explicit?: string) =>
       }
       return (
         <a
-          class={cx('page-link', page === current && 'active')}
+          class={cx('page-link', page === currentPage && 'active')}
           href={resolveHref(page, typeof item === 'number' ? undefined : item.href)}
           target={typeof item === 'number' ? undefined : item.target}
           rel={typeof item === 'number' ? undefined : item.rel}
           title={typeof item === 'number' ? undefined : item.title}
         >
-          {page === current && message && <span class="sr-only">{message} </span>}
+          {page === currentPage && message && <span class="sr-only">{message} </span>}
           {pageLabel}
         </a>
       );
     })}
   </div>
-  {nextDisabled ? (
+  {resolvedNextDisabled ? (
     <span {...{ href: nextHref }} class="page-navi next disabled">{resolvedNextLabel}</span>
   ) : (
     <a class="page-navi next" href={nextHref}>{resolvedNextLabel}</a>

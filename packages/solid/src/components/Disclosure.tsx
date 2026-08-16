@@ -1,4 +1,4 @@
-import { For, Show, createSignal, mergeProps, splitProps, type JSX } from "solid-js";
+import { For, Show, createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
 import type { KrdsListItem, KrdsNavItem } from "@krds-community/recipes";
 import { labelOf } from "../shared.js";
 
@@ -14,7 +14,7 @@ export interface DisclosureProps {
 }
 
 export function Disclosure(rawProps: DisclosureProps) {
-  const merged = mergeProps({ id: "disclosure" }, rawProps);
+  const merged = mergeProps({ id: `disclosure-${createUniqueId()}` }, rawProps);
   const [props, native] = splitProps(merged, [
     "class",
     "className",

@@ -68,7 +68,7 @@
   class:sample={sample}
   style={sample ? 'display: block; position: static; visibility: visible;' : 'display: none;'}
   role="navigation"
-  aria-label={menuLabel || "전체 메뉴"}
+  aria-label={menuLabel || (rest as Record<string, unknown>)["aria-label"] || "전체 메뉴"}
 >
   <div class="gnb-wrap">
     <div class="gnb-header">
@@ -91,8 +91,8 @@
         <input
           type="text"
           class="krds-input"
-          placeholder={searchPlaceholder}
-          title={searchTitle}
+          placeholder={searchPlaceholder || undefined}
+          title={searchTitle || undefined}
           aria-label={searchLabel || searchTitle || undefined}
         />
         <button type="button" class="krds-btn medium icon ico-search">

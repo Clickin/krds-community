@@ -1,4 +1,5 @@
-import { computed, defineComponent, h, onUnmounted, ref, useId, type PropType } from "vue";
+import { computed, defineComponent, h, onUnmounted, ref, type PropType } from "vue";
+import { createVueInstanceId } from "../shared.js";
 
 /**
  * 실시간 유효성 검사 입력 필드 (extra).
@@ -97,7 +98,7 @@ export const ValidatedInput = defineComponent<ValidatedInputProps>({
     const successMessage = props.successMessage ?? "입력이 유효합니다.";
     const validateRule = props.validate as ValidatedInputProps["validate"];
 
-    const generatedId = `krds-validated-input-${useId()}`;
+    const generatedId = `krds-validated-input-${createVueInstanceId("validated-input")}`;
     const id = computed(() => props.id ?? generatedId);
     const messageId = computed(() => `${id.value}-message`);
 

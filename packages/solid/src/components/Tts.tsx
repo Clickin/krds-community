@@ -110,6 +110,9 @@ export function TtsIcon(rawProps: TtsProps) {
       <span class="krds-tts-icon" aria-hidden="true">
         <i class={checked() ? "svg-icon ico-pause" : "svg-icon ico-volume"} />
       </span>
+      <Show when={props.label ?? props.text}>
+        <span class="sr-only">{props.label ?? props.text}</span>
+      </Show>
     </button>
   );
 }

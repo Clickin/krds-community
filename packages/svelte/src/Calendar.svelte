@@ -98,7 +98,7 @@
     calendarOpenLabel = '달력 열기',
     previousMonthLabel = '이전 달',
     nextMonthLabel = '다음 달',
-    yearSelectLabel = '년 선택',
+    yearSelectLabel = '연도 선택',
     monthSelectLabel = '월 선택',
     dateInputLabel = '',
     closeLabel = '닫기',

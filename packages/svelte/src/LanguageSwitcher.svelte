@@ -32,7 +32,7 @@
     selected = $bindable<string | undefined>(),
     modelValue = $bindable<string | undefined>(),
     defaultValue = '',
-    selectedLabel = '선택됨',
+    selectedLabel = '',
     currentLabel = '',
     externalTitle = '새 창 열림',
     onclick,
@@ -49,7 +49,7 @@
       ? String(modelValue)
       : selected !== undefined
         ? selected
-        : defaultValue || fieldOf(options[0], 'value'),
+      : defaultValue || fieldOf(languageItems[0], 'value'),
   );
   const currentLanguage = $derived(languageItems.find((language) => fieldOf(language, 'value') === selection));
   const isOpen = $derived(open ?? false);

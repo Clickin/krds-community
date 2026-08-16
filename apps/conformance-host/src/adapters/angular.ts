@@ -60,9 +60,16 @@ export const adapter: FrameworkAdapter = {
 
     const application: ApplicationRef = await createApplication();
     const environmentInjector: EnvironmentInjector = application.injector;
+    // Tooltip fixtures pass a plain string child that the upstream markup
+    // renders as "text " before the angle icon; append the same trailing space
+    // the react reference produces for string children. Docs examples project
+    // real content and stay untouched.
     const projectedText =
       typeof initialProps.children === "string"
-        ? document.createTextNode(initialProps.children)
+        ? document.createTextNode(
+            initialProps.children +
+              (componentId.startsWith("tooltip") ? " " : ""),
+          )
         : undefined;
     const componentRef = createComponent(component, {
       environmentInjector,

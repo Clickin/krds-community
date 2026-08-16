@@ -57,6 +57,7 @@ const resolvedIconClass =
       <span class="krds-tts-text"><slot>{label ?? children}</slot></span>
     </Fragment>
   )}
+  {iconOnly && (ariaLabel || label || children) && <span class="sr-only">{ariaLabel || label || children}</span>}
 </button>
 
 <script>

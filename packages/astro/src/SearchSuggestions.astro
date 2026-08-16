@@ -66,7 +66,7 @@ const statusId = `${id}-status`;
 ---
 
 <div
-  class="krds-search-suggestions-wrap"
+  class={cx('krds-search-suggestions', className)}
   data-endpoint={endpoint}
   data-suggestions={suggestions ? JSON.stringify(suggestions) : undefined}
   data-min-length={minLength}
@@ -74,8 +74,7 @@ const statusId = `${id}-status`;
   data-empty-message={emptyMessage}
   data-loading-message={loadingMessage}
 >
-  <div class={cx('krds-search-suggestions', className)}>
-    <div class="form-group">
+  <div class="form-group">
     <div class="form-tit">
       <label for={id}>{label}</label>
     </div>
@@ -97,7 +96,6 @@ const statusId = `${id}-status`;
   </div>
   <ul id={listboxId} role="listbox" aria-label="추천 검색어" class="krds-suggestions-list" hidden></ul>
   <p id={statusId} class="sr-only" aria-live="polite"></p>
-  </div>
 </div>
 
 <script>
@@ -113,12 +111,7 @@ const statusId = `${id}-status`;
     const status = root.querySelector<HTMLElement>('p.sr-only');
     if (!input || !listbox || !status) return;
 
-    // 설정은 비교 대상이 되는 .krds-search-suggestions 밖의 wrapper에 둔다
-    // (DOM 계약이 루트에 추가 data-* 속성을 허용하지 않는다).
-    const configRoot =
-      root.parentElement?.classList.contains('krds-search-suggestions-wrap')
-        ? root.parentElement
-        : root;
+    const configRoot = root;
     const id = input.id;
     const optionId = (index: number) => `${id}-option-${index}`;
     const endpoint = configRoot.dataset.endpoint || undefined;

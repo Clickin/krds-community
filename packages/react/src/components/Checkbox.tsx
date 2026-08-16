@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes, type ReactNode, type Ref } from "react";
+import { useEffect, useId, useRef, type InputHTMLAttributes, type ReactNode, type Ref } from "react";
 import { choiceRecipe } from "@krds-community/recipes";
 import type { ChoiceContractProps } from "@krds-community/recipes";
 
@@ -13,6 +13,7 @@ export interface CheckboxProps
     Omit<ChoiceContractProps, "label" | "description"> {
   label: ReactNode;
   description?: ReactNode;
+  indeterminate?: boolean;
 }
 export function Checkbox({
   label,
@@ -20,18 +21,28 @@ export function Checkbox({
   size,
   id: providedId,
   className,
+  indeterminate = false,
   ref,
   ...props
 }: CheckboxProps & { ref?: Ref<HTMLInputElement> }) {
   const generatedId = useId();
   const id = providedId ?? `krds-checkbox-${generatedId}`;
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+  const setInputRef = (input: HTMLInputElement | null) => {
+    inputRef.current = input;
+    if (typeof ref === "function") ref(input);
+    else if (ref) ref.current = input;
+  };
   const descriptionId = description ? `${id}-description` : undefined;
   const recipe = choiceRecipe({ size, className });
   return (
     <div className={recipe.className}>
       <input
         {...props}
-        ref={ref}
+        ref={setInputRef}
         id={id}
         type="checkbox"
         aria-describedby={joinAriaIds(props["aria-describedby"], descriptionId)}

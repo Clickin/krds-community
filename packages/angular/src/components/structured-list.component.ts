@@ -1,28 +1,34 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Input } from "@angular/core";
 import { createStableId } from "../kinds";
 
 @Component({
   selector: "krds-structured-list",
   standalone: true,
   imports: [CommonModule],
+  styles: [":host { display: contents; }"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ul class="krds-structured-list type-full">
+    <ul class="krds-structured-list type-full" [attr.aria-label]="ariaLabel || hostAriaLabel || null">
       @for (item of items; track $index) {
         <li class="structured-item">
           <div class="in">
             <div class="card-top">
-              <span [class]="'krds-badge ' + structuredBadgeTone(item)">
-                {{ itemBadge(item) }}
-              </span>
+              @if (itemBadge(item)) {
+                <span [class]="'krds-badge ' + structuredBadgeTone(item)">
+                  {{ itemBadge(item) }}
+                </span>
+              }
             </div>
             <div class="card-body">
               <a [href]="navHref(item)" class="c-text">
                 <p class="c-tit">
                   <span class="span">{{ navLabel(item) }}</span>
                 </p>
-                <p class="c-txt">{{ itemDescription(item) }}</p>
+                @if (itemDescription(item)) {
+                  {{ " " }}
+                  <p class="c-txt">{{ itemDescription(item) }}</p>
+                }
                 <p class="c-date">
                   <strong class="key">{{ dateLabel }}</strong>
                   <span class="value">{{ dateValue }}</span>
@@ -54,6 +60,9 @@ import { createStableId } from "../kinds";
   `,
 })
 export class KrdsStructuredListComponent {
+  readonly hostAriaLabel =
+    inject(ElementRef<HTMLElement>).nativeElement.getAttribute("aria-label");
+  @Input("aria-label") ariaLabel = "";
   @Input() id = createStableId("krds-structured-list");
   @Input() description = "";
   @Input() dateLabel = "";

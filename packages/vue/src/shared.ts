@@ -676,9 +676,9 @@ export function mobileMenuMarkup(
             create("input", {
               type: "text",
               class: "krds-input",
-              placeholder: data.searchPlaceholder,
-              title: data.searchTitle,
-              "aria-label": data.searchLabel || data.searchTitle,
+              placeholder: data.searchPlaceholder || undefined,
+              title: data.searchTitle || undefined,
+              "aria-label": data.searchLabel || data.searchTitle || undefined,
             }),
             create(
               "button",
@@ -940,7 +940,7 @@ export function calendarMarkup(
       [
         create("div", { class: "calendar-head" }, [
           create("button", { type: "button", class: ["btn-cal-move", "prev"] }, [
-            create("span", { class: "sr-only" }, data.previousMonthLabel),
+            create("span", { class: "sr-only" }, data.previousMonthLabel ?? "이전 달"),
           ]),
           create("div", { class: "calendar-switch-wrap" }, [
             create("div", { class: "calendar-drop-down" }, [
@@ -953,7 +953,7 @@ export function calendarMarkup(
                   "aria-expanded": "false",
                   "aria-controls": yearListId,
                   "aria-haspopup": "listbox",
-                  "aria-label": data.yearSelectLabel,
+                  "aria-label": data.yearSelectLabel ?? "연도 선택",
                 },
                 `${year}년`,
               ),
@@ -989,7 +989,7 @@ export function calendarMarkup(
                   "aria-expanded": "false",
                   "aria-controls": monthListId,
                   "aria-haspopup": "listbox",
-                  "aria-label": data.monthSelectLabel,
+                  "aria-label": data.monthSelectLabel ?? "월 선택",
                 },
                 `${pad(month)}월`,
               ),
@@ -1017,7 +1017,7 @@ export function calendarMarkup(
             ]),
           ]),
           create("button", { type: "button", class: ["btn-cal-move", "next"] }, [
-            create("span", { class: "sr-only" }, data.nextMonthLabel),
+            create("span", { class: "sr-only" }, data.nextMonthLabel ?? "다음 달"),
           ]),
         ]),
         create("div", { class: "calendar-body" }, [

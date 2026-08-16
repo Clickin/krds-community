@@ -3,13 +3,13 @@ import { cx } from "@krds-community/recipes";
 import type { KrdsStep } from "@krds-community/recipes";
 
 export function StepIndicator({
-  steps,
+  steps = [],
   current = 0,
   label = "단계",
   message = "현재단계",
   className,
 }: {
-  steps: KrdsStep[];
+  steps?: KrdsStep[];
   current?: number;
   label?: ReactNode;
   message?: ReactNode;

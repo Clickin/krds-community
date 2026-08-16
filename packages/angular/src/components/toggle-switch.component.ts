@@ -26,6 +26,7 @@ import { createStableId } from "../kinds";
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div
       [class]="
@@ -36,6 +37,7 @@ import { createStableId } from "../kinds";
       <input
         [id]="id"
         [attr.name]="name || null"
+        [attr.aria-label]="ariaLabel || null"
         type="checkbox"
         [checked]="checked"
         [disabled]="disabled"
@@ -52,6 +54,7 @@ export class KrdsToggleSwitchComponent implements ControlValueAccessor {
   @Input() id = createStableId("krds-toggle-switch");
   @Input() label = "";
   @Input() name = "";
+  @Input("aria-label") ariaLabel = "";
   @Input() disabled = false;
   @Input() size = "";
   @Input() kind: "toggle-switch" | "toggle-switch-size" | null = null;

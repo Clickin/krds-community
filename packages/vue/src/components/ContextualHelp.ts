@@ -8,7 +8,7 @@ export const ContextualHelp = defineComponent({
   props: {
     id: { type: String, default: undefined },
     label: { type: String, default: undefined },
-    position: { type: String, default: "top" },
+    position: { type: String, default: "top-left" },
     caption: { type: String, default: undefined },
     title: { type: String, default: undefined },
     description: { type: String, default: undefined },
@@ -22,7 +22,7 @@ export const ContextualHelp = defineComponent({
   emits: {
     openChange: (_open: boolean) => true,
   },
-  setup(props, { attrs, emit, slots: _slots }) {
+  setup(props, { attrs, emit, slots }) {
     const generatedId = `krds-contextual-help-${useId()}`;
     const id = computed(() => props.id ?? generatedId);
 
@@ -45,7 +45,7 @@ export const ContextualHelp = defineComponent({
           class: ["krds-contextual-help", props.position.split("-"), className],
         },
         [
-          props.caption ? create("p", { class: "tooltip-txt" }, props.caption) : null,
+          create("p", { class: "tooltip-txt" }, props.caption),
           create("div", { class: "tooltip-action" }, [
             create(
               "button",
@@ -69,10 +69,10 @@ export const ContextualHelp = defineComponent({
               "div",
               { id: `${id.value}-tooltip`, class: "tooltip-popover", role: "tooltip" },
               [
-                props.title ? create("h4", { class: "tooltip-title" }, props.title) : null,
+                create("h4", { class: "tooltip-title" }, props.title),
                 create("div", { class: "tooltip-contents" }, [
-                  props.description ? create("p", props.description) : null,
-                  props.href !== "#"
+                  create("p", {}, props.description ?? props.message ?? slots.default?.()),
+                  props.href !== "#" && props.linkLabel
                     ? create("div", { class: "btn-wrap" }, [
                         create(
                           "a",

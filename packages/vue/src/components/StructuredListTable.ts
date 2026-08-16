@@ -37,6 +37,10 @@ export const StructuredListTable = defineComponent({
       const countId = `${id.value}-count`;
       const sortId = `${id.value}-sort`;
       const pagination = props.pagination;
+      const pageMax = Math.max(
+        1,
+        ...(pagination?.items ?? []).filter((item): item is number => item !== "ellipsis"),
+      );
       return create(
         "div",
         { ...withoutNativeEvents(attrs), class: ["krds-structured-list-table", className] },
@@ -81,7 +85,6 @@ export const StructuredListTable = defineComponent({
                   {
                     id: countId,
                     class: "krds-form-select-sort",
-                    "aria-label": props.countLabel ?? "표시 개수",
                   },
                   props.countOptions.map((option) => create("option", {}, option)),
                 ),
@@ -113,7 +116,6 @@ export const StructuredListTable = defineComponent({
                     {
                       id: sortId,
                       class: "krds-form-select-sort",
-                      "aria-label": props.sortLabel ?? "정렬",
                     },
                     props.sortOptions.map((option) => create("option", {}, option)),
                   ),
@@ -199,18 +201,17 @@ export const StructuredListTable = defineComponent({
           ),
           pagination
             ? create("div", { class: "krds-pagination" }, [
-                create(
-                  "span",
-                  {
-                    class: [
-                      "page-navi",
-                      "prev",
-                      pagination.previousDisabled ? "disabled" : undefined,
-                    ],
-                    href: "#",
-                  },
-                  pagination.previousLabel,
-                ),
+                pagination.previousDisabled
+                  ? create(
+                      "span",
+                      { class: ["page-navi", "prev", "disabled"] },
+                      pagination.previousLabel,
+                    )
+                  : create(
+                      "a",
+                      { class: ["page-navi", "prev"], href: "#" },
+                      pagination.previousLabel,
+                    ),
                 create(
                   "div",
                   { class: "page-links" },
@@ -239,7 +240,17 @@ export const StructuredListTable = defineComponent({
                         ),
                   ),
                 ),
-                create("a", { class: ["page-navi", "next"], href: "#" }, pagination.nextLabel),
+                pagination.current >= pageMax
+                  ? create(
+                      "span",
+                      { class: ["page-navi", "next", "disabled"] },
+                      pagination.nextLabel,
+                    )
+                  : create(
+                      "a",
+                      { class: ["page-navi", "next"], href: "#" },
+                      pagination.nextLabel,
+                    ),
               ])
             : null,
         ],

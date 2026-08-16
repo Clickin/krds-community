@@ -7,6 +7,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div [class]="'krds-alert ' + state + ' ' + size" role="status">
       <i class="svg-icon alert-icon {{ stateIcon }}" aria-hidden="true"></i>

@@ -41,31 +41,25 @@
   {#each items as item}
     <li class="structured-item">
       <div class="in">
-        {#if fieldOf(item, 'badge')}
-          <div class="card-top">
+        <div class="card-top">
+          {#if fieldOf(item, 'badge')}
             <span class={`krds-badge ${fieldOf(item, 'badgeClass') || fieldOf(item, 'tone')}`}
               >{fieldOf(item, 'badge')}</span
             >
-          </div>
-        {/if}
+          {/if}
+        </div>
         <div class="card-body">
           <a class="c-text" href={hrefOf(item)}>
             <p class="c-tit"><span class="span">{labelOf(item)}</span></p>
             {#if fieldOf(item, 'description')}<p class="c-txt">{fieldOf(item, 'description')}</p>{/if}
-            {#if fieldOf(item, 'date') || dateValue}
-              <p class="c-date">
-                <strong class="key">{fieldOf(item, 'dateLabel') || dateLabel}</strong>
-                <span class="value">{fieldOf(item, 'date') || dateValue}</span>
-              </p>
-            {/if}
+            <p class="c-date">
+              <strong class="key">{fieldOf(item, 'dateLabel') || dateLabel}</strong>
+              <span class="value">{fieldOf(item, 'date') || dateValue}</span>
+            </p>
           </a>
-          {#if actionLabel}
-            <div class="c-btn"><a class="krds-btn secondary" href={hrefOf(item)} title={labelOf(item)}>{actionLabel}</a></div>
-          {/if}
+          <div class="c-btn"><a class="krds-btn secondary" href={hrefOf(item)} title={labelOf(item)}>{actionLabel}</a></div>
         </div>
-        {#if tags.length}
-          <div class="card-btm">{#each tags as tag}<span class="tag">{tag}</span>{/each}</div>
-        {/if}
+        <div class="card-btm">{#each tags as tag}<span class="tag">{tag}</span>{/each}</div>
         <div class="card-btn">
           <button class="krds-btn medium text" title={labelOf(item)} type="button"><i class="ico-share svg-icon"></i>{' '}{shareLabel}</button>
           <button class="krds-btn medium text" title={labelOf(item)} type="button"><i class="ico-like svg-icon"></i>{' '}{favoriteLabel}</button>

@@ -111,9 +111,7 @@ const renderCalendarSurface = (
     );
   const calendarYears = () => {
     const source =
-      p.years && p.years.length > 0
-        ? p.years
-        : Array.from({ length: 24 }, (_, offset) => calendarDisplayYear() - 1 + offset);
+      p.years && p.years.length > 0 ? p.years : [calendarDisplayYear()];
     return source.map((choice: CalendarChoiceInput) => {
       const year = choiceNumber(choice, calendarDisplayYear());
       const original = typeof choice === "number" ? undefined : choice;
@@ -251,7 +249,7 @@ const renderCalendarSurface = (
         <div class="calendar-head">
           <button type="button" class="btn-cal-move prev">
             <span class="sr-only">
-              {p.previousMonthLabel ?? p.previousmonthlabel ?? p.previousLabel}
+              {p.previousMonthLabel ?? p.previousmonthlabel ?? p.previousLabel ?? "이전 달"}
             </span>
           </button>
           <div class="calendar-switch-wrap">
@@ -260,7 +258,7 @@ const renderCalendarSurface = (
                 type="button"
                 class="btn-cal-switch year"
                 role="combobox"
-                aria-label={p.yearSelectLabel ?? p.yearLabel}
+                aria-label={p.yearSelectLabel ?? p.yearLabel ?? "연도 선택"}
                 aria-haspopup="listbox"
                 aria-expanded={calendarYearOpen()}
                 aria-controls={`${p.id}-calendar-year`}
@@ -293,7 +291,7 @@ const renderCalendarSurface = (
                 type="button"
                 class="btn-cal-switch month"
                 role="combobox"
-                aria-label={p.monthSelectLabel ?? p.monthLabel}
+                aria-label={p.monthSelectLabel ?? p.monthLabel ?? "월 선택"}
                 aria-haspopup="listbox"
                 aria-expanded={calendarMonthOpen()}
                 aria-controls={`${p.id}-calendar-month`}
@@ -323,7 +321,7 @@ const renderCalendarSurface = (
             </div>
           </div>
           <button type="button" class="btn-cal-move next">
-            <span class="sr-only">{p.nextMonthLabel ?? p.nextmonthlabel ?? p.nextLabel}</span>
+            <span class="sr-only">{p.nextMonthLabel ?? p.nextmonthlabel ?? p.nextLabel ?? "다음 달"}</span>
           </button>
         </div>
         <div class="calendar-body">

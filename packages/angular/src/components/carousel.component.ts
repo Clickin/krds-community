@@ -9,6 +9,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="main-vban-wrap bg">
       <div class="inner">
@@ -86,6 +87,7 @@ export class KrdsCarouselComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="main-d-ban-swiper">
       <div class="swiper">

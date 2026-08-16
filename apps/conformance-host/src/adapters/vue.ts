@@ -48,10 +48,22 @@ export const adapter: FrameworkAdapter = {
         if (className !== undefined) {
           renderProps.class = [renderProps.class, className];
         }
+        // The tooltip fixture passes a plain string child that the upstream
+        // markup renders as "text " before the angle icon (react's
+        // inlineSpacedText appends the same trailing space for string
+        // children). Append it here so every framework renders the literal
+        // upstream content; real (non-string) children in docs examples
+        // arrive untouched and match the react reference without the space.
+        const spacedChildren =
+          componentId.startsWith("tooltip") && typeof children === "string"
+            ? children + " "
+            : children;
         return h(
           component,
           renderProps,
-          children === undefined ? undefined : { default: () => String(children) },
+          spacedChildren === undefined
+            ? undefined
+            : { default: () => String(spacedChildren) },
         );
       },
     });

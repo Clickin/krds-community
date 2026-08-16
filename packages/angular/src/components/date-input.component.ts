@@ -46,10 +46,7 @@ import { createStableId, CALENDAR_MONTHS, type AngularCalendarCell } from "../ki
               (input)="setValue(inputValue($event))"
               (blur)="touch()"
             />
-            <button
-              type="button"
-              class="krds-btn medium icon form-btn-datepicker"
-            >
+            <button type="button" class="krds-btn medium icon form-btn-datepicker">
               <span class="sr-only">달력 열기</span>
               <i class="svg-icon ico-calendar"></i>
             </button>
@@ -235,11 +232,11 @@ export class KrdsDateInputComponent implements ControlValueAccessor {
   @Input() eventDays: number[] = [];
   @Input() disabledDays: number[] = [];
   @Input() calendarLabel = "";
-  @Input() previousMonthLabel = "";
-  @Input() nextMonthLabel = "";
-  @Input() yearSelectLabel = "";
-  @Input() monthSelectLabel = "";
-  @Input() weekdays: string[] = [];
+  @Input() previousMonthLabel = "이전 달";
+  @Input() nextMonthLabel = "다음 달";
+  @Input() yearSelectLabel = "연도 선택";
+  @Input() monthSelectLabel = "월 선택";
+  @Input() weekdays: string[] = ["일", "월", "화", "수", "목", "금", "토"];
   @Input() todayLabel = "";
   @Input() eventLabel = "";
   @Input() cancelLabel = "";
@@ -285,10 +282,7 @@ export class KrdsDateInputComponent implements ControlValueAccessor {
       0,
       Math.min(6, this.leadingDays ?? new Date(activeYear, activeMonth - 1, 1).getDay()),
     );
-    const dayCount = Math.max(
-      0,
-      this.dayCount ?? new Date(activeYear, activeMonth, 0).getDate(),
-    );
+    const dayCount = Math.max(0, this.dayCount ?? new Date(activeYear, activeMonth, 0).getDate());
     const previousMonthDayCount = Math.max(
       0,
       this.previousMonthDayCount ?? new Date(activeYear, activeMonth - 1, 0).getDate(),

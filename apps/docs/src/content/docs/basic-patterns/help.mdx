@@ -375,49 +375,37 @@ import { TextInput } from "@krds-community/astro";
   <div slot="react">
     <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
       <ReactButtonIcon label="검색" client:only="react" />
-      <ReactTooltip label="검색" message="검색 기능" client:only="react">
-        검색
-      </ReactTooltip>
+      <ReactTooltip label="검색" message="검색 기능" client:only="react" />
     </div>
   </div>
   <div slot="vue">
     <div style="display: flex; gap: .5rem; align-items: center">
       <VueButtonIcon label="검색" client:only="vue" />
-      <VueTooltip label="검색" message="검색 기능" client:only="vue">
-        검색
-      </VueTooltip>
+      <VueTooltip label="검색" message="검색 기능" client:only="vue" />
     </div>
   </div>
   <div slot="svelte">
     <div style="display: flex; gap: .5rem; align-items: center">
       <SvelteButtonIcon label="검색" client:only="svelte" />
-      <SvelteTooltip label="검색" message="검색 기능" client:only="svelte">
-        검색
-      </SvelteTooltip>
+      <SvelteTooltip label="검색" message="검색 기능" client:only="svelte" />
     </div>
   </div>
   <div slot="solid">
     <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
       <SolidButtonIcon label="검색" client:only="solid-js" />
-      <SolidTooltip label="검색" message="검색 기능" client:only="solid-js">
-        검색
-      </SolidTooltip>
+      <SolidTooltip label="검색" message="검색 기능" client:only="solid-js" />
     </div>
   </div>
   <div slot="astro">
     <div style="display: flex; gap: .5rem; align-items: center">
       <AstroButtonIcon label="검색" />
-      <AstroTooltip label="검색" message="검색 기능">
-        검색
-      </AstroTooltip>
+      <AstroTooltip label="검색" message="검색 기능" />
     </div>
   </div>
   <div slot="angular">
     <div style="display: flex; gap: .5rem; align-items: center">
       <AngularButtonIcon label="검색" client:only="@analogjs/astro-angular" />
-      <AngularTooltip label="검색" message="검색 기능" client:only="@analogjs/astro-angular">
-        검색
-      </AngularTooltip>
+      <AngularTooltip label="검색" message="검색 기능" client:only="@analogjs/astro-angular">검색</AngularTooltip>
     </div>
   </div>
 
@@ -584,11 +572,10 @@ import { ButtonIcon, Tooltip } from "@krds-community/astro";
       <AngularContextualHelp
         label="도움말"
         title="입금 안내"
+        description="입금은 영업일 기준 1~2일 소요됩니다."
         open={true}
         client:only="@analogjs/astro-angular"
-      >
-        입금은 영업일 기준 1~2일 소요됩니다.
-      </AngularContextualHelp>
+      ></AngularContextualHelp>
     </div>
   </div>
 
@@ -773,15 +760,15 @@ import { ContextualHelp } from "@krds-community/astro";
     <AstroHelpPanel
       open
       title="도움말"
+      label="도움 패널"
       tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
-      selectedLabel="선택됨"
       helpTitle="신청 방법 안내"
+      helpDescription="신청서 작성에 필요한 정보를 확인할 수 있습니다. 입력 필드의 구성과 작성 방법은 도움말을 참고해 주세요."
       downloadLinks={[]}
       relatedGroups={[]}
       tutorialTitle="튜토리얼"
       tasks={[]}
       stopLabel="중지"
-            label="도움 패널"
     />
   </div>
   <div slot="angular">
@@ -887,7 +874,6 @@ import { HelpPanel } from "@krds-community/astro";
   open
   title="도움말"
   tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
-  selectedLabel="선택됨"
   helpTitle="신청 방법 안내"
   downloadLinks={[]}
   relatedGroups={[]}

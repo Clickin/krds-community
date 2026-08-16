@@ -1,14 +1,18 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
-import { createStableId, type AngularNavItem } from "../kinds";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, inject } from "@angular/core";
+import { type AngularNavItem } from "../kinds";
 
 @Component({
   selector: "krds-main-menu-pc",
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <nav class="krds-main-menu sample" [attr.aria-label]="menuLabel || undefined">
+    <nav
+      class="krds-main-menu sample"
+      [attr.aria-label]="ariaLabel || hostAriaLabel || menuLabel || null"
+    >
       <div class="inner">
         <ul class="gnb-menu">
           @for (item of items; track item.id) {
@@ -173,9 +177,11 @@ import { createStableId, type AngularNavItem } from "../kinds";
   `,
 })
 export class KrdsMainMenuPcComponent {
-  @Input() id = createStableId("krds-main-menu-pc");
-  @Input() menuLabel = "";
+  readonly hostAriaLabel = inject(ElementRef<HTMLElement>).nativeElement.getAttribute("aria-label");
+
   @Input() items: AngularNavItem[] = [];
+  @Input() menuLabel = "";
+  @Input("aria-label") ariaLabel = "";
 
   isSingleDesktopMenu(item: AngularNavItem): boolean {
     return Boolean(item.title && item.banner);

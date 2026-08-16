@@ -282,25 +282,26 @@ import { CheckboxSize } from '@krds-community/astro';
       selectAll.indeterminate = true;`}</script>
   </div>
   <div slot="angular">
-    <div>
-      <input type="checkbox" id="select-all-angular" />
-      <label for="select-all-angular">전체 선택</label>
-      <AngularCheckboxSize
-        name="option-1"
-        label="옵션 1"
-        checked
-        client:only="@analogjs/astro-angular"
-      />
-      <AngularCheckboxSize
-        name="option-2"
-        label="옵션 2"
-        checked
-        client:only="@analogjs/astro-angular"
-      />
-      <AngularCheckboxSize name="option-3" label="옵션 3" client:only="@analogjs/astro-angular" />
-    </div>
-    <script>{`const selectAll = document.querySelector("#select-all-angular"); if (selectAll)
-      selectAll.indeterminate = true;`}</script>
+    <AngularCheckboxSize
+      name="select-all-angular"
+      label="전체 선택"
+      checked
+      indeterminate
+      client:only="@analogjs/astro-angular"
+    />
+    <AngularCheckboxSize
+      name="option-1"
+      label="옵션 1"
+      checked
+      client:only="@analogjs/astro-angular"
+    />
+    <AngularCheckboxSize
+      name="option-2"
+      label="옵션 2"
+      checked
+      client:only="@analogjs/astro-angular"
+    />
+    <AngularCheckboxSize name="option-3" label="옵션 3" client:only="@analogjs/astro-angular" />
   </div>
 </FrameworkPreview>
 

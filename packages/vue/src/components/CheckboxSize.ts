@@ -3,6 +3,7 @@ import { computed, defineComponent, ref, useId, type PropType } from "vue";
 import {
   children,
   create,
+  createVueInstanceId,
   invokeNativeEvent,
   withoutClass,
   withoutNativeEvents,
@@ -23,9 +24,10 @@ export const CheckboxSize = defineComponent({
       default: undefined,
     },
     label: { type: String, default: undefined },
-    disabled: Boolean,
     checked: { type: Boolean as PropType<boolean | undefined>, default: undefined },
-    defaultChecked: { type: Boolean, default: false },
+    defaultChecked: { type: Boolean, default: undefined },
+    indeterminate: { type: Boolean, default: false },
+    disabled: Boolean,
     required: Boolean,
     size: { type: String, default: undefined },
   },
@@ -35,7 +37,7 @@ export const CheckboxSize = defineComponent({
     change: (_event: Event) => true,
   },
   setup(props, { attrs, emit, slots }) {
-    const generatedId = `krds-checkbox-size-${useId()}`;
+    const generatedId = `krds-checkbox-size-${useId()}-${createVueInstanceId("checkbox-size")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialChecked =
@@ -66,6 +68,7 @@ export const CheckboxSize = defineComponent({
         name: props.name,
         value: props.value,
         checked: isChecked,
+        indeterminate: props.indeterminate,
         disabled: props.disabled,
         required: props.required,
         onChange: (event: Event) => {

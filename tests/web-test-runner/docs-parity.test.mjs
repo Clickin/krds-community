@@ -300,7 +300,7 @@ const normalizeChildren = (parent, ids, panel) => {
     }
     if (child.nodeType !== Node.ELEMENT_NODE) continue;
     const element = /** @type {HTMLElement} */ (child);
-    if (["script", "style", "template"].includes(element.localName)) continue;
+    if (["link", "script", "style", "template"].includes(element.localName)) continue;
     // The Angular tab contract includes a non-semantic selection test hook;
     // the approved errata explicitly excludes it from DOM parity.
     if (element.matches('[data-testid="selected-tab"]')) continue;
@@ -367,13 +367,18 @@ const settleIslands = async (panel) => {
   while (performance.now() < deadline) {
     const current = panel.innerHTML;
     if (current === previous) {
-      if (++stable >= 3) return;
+      if (++stable >= 3) break;
     } else {
       previous = current;
       stable = 0;
     }
     await sleep(200);
   }
+  // CSS keyframe animations (e.g. the 0.2s krds-snackbar mount animation)
+  // do not mutate innerHTML, so the stability loop can exit mid-flight and
+  // geometry gets measured during a transform. Wait them out before reading.
+  const running = panel.getAnimations().filter((animation) => animation.playState === "running");
+  if (running.length) await Promise.allSettled(running.map((animation) => animation.finished));
 };
 
 const readStableSnapshot = (panel) => snapshot(panel);

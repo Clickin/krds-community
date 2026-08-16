@@ -7,8 +7,19 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <div class="krds-help-panel" [class.expand]="open">
+    <button
+      type="button"
+      [id]="id + '-trigger'"
+      class="krds-btn small tertiary btn-help-panel expand btn-help-exec"
+      [attr.aria-controls]="id"
+      [attr.aria-expanded]="open"
+      (click)="open = true"
+    >
+      <i class="svg-icon ico-fold"></i> {{ label }}
+    </button>
+    <div [id]="id" class="krds-help-panel" [class.expand]="open" [hidden]="!open">
       <div class="help-panel-wrap" [attr.tabindex]="open ? '0' : null">
         <div class="help-conts-area">
           <div class="krds-tab-area layer">
@@ -156,7 +167,17 @@ import { createStableId } from "../kinds";
             class="krds-btn small tertiary btn-help-panel fold"
             (click)="open = false"
           >
-            <span class="sr-only">{{ label }}</span> {{ collapseLabel }}
+            <span class="sr-only">{{ label }}</span>
+            @if ((collapseLabel || label || title || "").split(" ").length < 2) {
+              {{ " " + (collapseLabel || label || title) + " " }}
+            } @else {
+              {{ " " }}
+              @for (part of (collapseLabel || label || title || "").split(" "); track $index) {
+                @if ($index > 0) { {{ " " }} }
+                <span class="krds-icon-space-left krds-icon-space-right">{{ part }}</span>
+              }
+              {{ " " }}
+            }
             <i class="svg-icon ico-angle right"></i>
           </button>
         </div>
@@ -170,7 +191,7 @@ export class KrdsTutorialPanelComponent {
   @Input() tabs: Array<{ id: string; label: string; panelId?: string; value?: string }> = [];
   @Input() activeTab = "tutorial";
   @Input() selectedLabel = "선택됨";
-  @Input() label = "";
+  @Input() label = "튜토리얼 패널";
   @Input() helpTitle = "";
   @Input() helpDescription = "";
   @Input() downloadLinks: Array<{ label: string; href: string; target?: string; title?: string }> =
@@ -182,7 +203,8 @@ export class KrdsTutorialPanelComponent {
   @Input() tutorialTitle = "";
   @Input() tutorialBackTitle = "";
   @Input() stopLabel = "";
-  @Input() collapseLabel = "접기";
+  @Input() collapseLabel = "";
+  @Input() title = "";
   @Input() tasks: Array<{
     title: string;
     current?: boolean;

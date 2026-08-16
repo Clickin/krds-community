@@ -8,6 +8,7 @@ import { createStableId, type AngularNavItem } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div [class]="accordionClass">
       @for (item of items; track $index) {

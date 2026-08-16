@@ -7,6 +7,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div [class]="'krds-progress-bar ' + size + ' ' + state">
       <progress class="krds-progress" [attr.value]="value" [attr.max]="max">

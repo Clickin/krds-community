@@ -34,8 +34,8 @@ const hintId = hint !== undefined || Astro.slots.has('hint') ? `${id}-hint` : un
 const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;
 const recipe = inputRecipe({ size, className });
 const visible = type !== 'password';
-const showLabel = showPasswordLabel ?? label;
-const hideLabel = hidePasswordLabel ?? showLabel;
+const showLabel = showPasswordLabel ?? passwordLabel ?? '입력한 비밀번호 보기';
+const hideLabel = hidePasswordLabel ?? passwordLabel ?? '입력한 비밀번호 가리기';
 const toggleLabel = visible ? hideLabel : showLabel;
 const toggleIcon = visible ? 'ico-pw-visible-on' : 'ico-pw-visible';
 ---
@@ -68,8 +68,6 @@ const toggleIcon = visible ? 'ico-pw-visible-on' : 'ico-pw-visible';
           data-input-action="password"
           data-show-label={showLabel}
           data-hide-label={hideLabel}
-          aria-controls={id}
-          aria-pressed={visible ? 'true' : 'false'}
         >
           <span class="sr-only">{toggleLabel}</span>
           <i class={cx('svg-icon', toggleIcon)}></i>
@@ -90,8 +88,6 @@ const toggleIcon = visible ? 'ico-pw-visible-on' : 'ico-pw-visible';
             data-input-action="password"
             data-show-label={showLabel}
             data-hide-label={hideLabel}
-            aria-controls={id}
-            aria-pressed={visible ? 'true' : 'false'}
           >
             <span class="sr-only">{toggleLabel}</span>
             <i class={cx('svg-icon', toggleIcon)}></i>

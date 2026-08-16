@@ -9,6 +9,7 @@
     form?: string;
     modelValue?: string | number | boolean | string[];
     checked?: boolean;
+    indeterminate?: boolean;
     onchange?: (event: Event) => void;
     class?: string;
     className?: string;
@@ -26,6 +27,7 @@
     form,
     modelValue = $bindable<string | number | boolean | string[] | undefined>(),
     checked = $bindable<boolean | undefined>(),
+    indeterminate = false,
     onchange,
     class: classProp = '',
     className = '',
@@ -33,6 +35,10 @@
     ...rest
   }: Props = $props();
   const rootClass = $derived(`${classProp} ${className}`.trim());
+  let input: HTMLInputElement;
+  $effect(() => {
+    input && (input.indeterminate = indeterminate);
+  });
   const chipChecked = $derived(
     Array.isArray(modelValue)
       ? modelValue.includes(String(value))
@@ -66,8 +72,9 @@
     type="checkbox"
     {id}
     name={name || undefined}
-    {value}
     checked={chipChecked}
+    bind:this={input}
+    {value}
     {disabled}
     {required}
     {form}

@@ -82,6 +82,10 @@ const selectableRows = rows.filter((row) => !row.disabled);
 const selectedRows = selectableRows.filter((row) => row.selected);
 const allSelected = selectableRows.length > 0 && selectedRows.length === selectableRows.length;
 const pageHref = (key: string | number) => pagination.hrefs?.[String(key)] ?? '#';
+const pageMax = Math.max(
+  1,
+  ...pagination.items.filter((item): item is number => item !== 'ellipsis'),
+);
 const displayCell = (value: StructuredListTableRow[string]) =>
   value === null || value === undefined ? '' : String(value);
 ---
@@ -258,13 +262,10 @@ const displayCell = (value: StructuredListTableRow[string]) =>
         ),
       )}
     </div>
-    {pagination.nextDisabled ? (
+    {pagination.current >= pageMax ? (
       <span class="page-navi next disabled">{pagination.nextLabel}</span>
     ) : (
-      <a
-        class="page-navi next"
-        href={pageHref('next')}
-      >
+      <a class="page-navi next" href={pageHref('next')}>
         {pagination.nextLabel}
       </a>
     )}

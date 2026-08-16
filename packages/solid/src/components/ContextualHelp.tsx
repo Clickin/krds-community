@@ -20,7 +20,7 @@ export interface ContextualHelpProps {
 export function ContextualHelp(rawProps: ContextualHelpProps) {
   const merged = mergeProps(
     {
-      closeLabel: "닫기",
+      closeLabel: "",
     },
     rawProps,
   );

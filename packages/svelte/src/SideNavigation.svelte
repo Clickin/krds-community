@@ -59,7 +59,7 @@
                       aria-controls={`${id}-side-${index}-${childIndex}`}
                     >{labelOf(child)}</button>
                     <div class="lnb-submenu-lv2" id={`${id}-side-${index}-${childIndex}`} role="menu">
-                      <button class="lnb-btn-tit" type="button">{fieldOf(child, 'description')}</button>
+                      <button class="lnb-btn-tit" type="button">{fieldOf(child, 'description') || labelOf(child)}</button>
                       <ul>
                         {#each childrenOf(child) as leaf}
                           <li role="none">
@@ -81,7 +81,12 @@
             </ul>
           </div>
         {:else}
-          <a class="lnb-btn lnb-link" href={hrefOf(item)} role="menuitem">{labelOf(item)}</a>
+          <a
+            class="lnb-btn lnb-link"
+            href={hrefOf(item)}
+            role="menuitem"
+            aria-current={flagOf(item, 'current') ? 'page' : undefined}
+          >{labelOf(item)}</a>
         {/if}
       </li>
     {/each}

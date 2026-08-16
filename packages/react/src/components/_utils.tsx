@@ -27,6 +27,7 @@ export function inlineSpacedText(value: ReactNode, leading: boolean, trailing: b
     );
     return (
       <>
+        {leading && " "}
         {parts.map((part, index) => (
           <>
             {index > 0 && " "}
@@ -35,6 +36,7 @@ export function inlineSpacedText(value: ReactNode, leading: boolean, trailing: b
             </span>
           </>
         ))}
+        {trailing && " "}
       </>
     );
   }

@@ -18,8 +18,8 @@ export interface PaginationProps extends Omit<CommonProps, "items"> {
 export function Pagination({
   items = [1, 2, 3, 4, 5],
   current = 1,
-  previousDisabled = current <= 1,
-  nextDisabled = current >=
+  previousDisabled = Number(current) <= 1,
+  nextDisabled = Number(current) >=
     Math.max(...items.filter((item): item is number => item !== "ellipsis")),
   previousLabel = "이전",
   nextLabel = "다음",
@@ -29,9 +29,10 @@ export function Pagination({
   ref,
   ..._props
 }: PaginationProps & { ref?: Ref<HTMLDivElement> }) {
+  const currentPage = Number(current) || 1;
   const pageLink = (page: number) => (
     <a
-      className={cx("page-link", page === current && "active")}
+      className={cx("page-link", page === currentPage && "active")}
       href="#"
       onClick={(event) => {
         event.preventDefault();
@@ -39,7 +40,7 @@ export function Pagination({
       }}
       key={page}
     >
-      {page === current ? <span className="sr-only">현재페이지 </span> : null}
+      {page === currentPage ? <span className="sr-only">현재페이지 </span> : null}
       {page}
     </a>
   );
@@ -60,7 +61,7 @@ export function Pagination({
           href="#"
           onClick={(event) => {
             event.preventDefault();
-            onPageChange?.(current - 1);
+            onPageChange?.(currentPage - 1);
           }}
         >
           {previousLabel}
@@ -85,7 +86,7 @@ export function Pagination({
           href="#"
           onClick={(event) => {
             event.preventDefault();
-            onPageChange?.(current + 1);
+            onPageChange?.(currentPage + 1);
           }}
         >
           {nextLabel}

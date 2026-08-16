@@ -7,6 +7,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <button [attr.type]="type" [class]="'krds-btn ' + (variant || tone)" [disabled]="disabled">
       @if (label) {
@@ -31,6 +32,7 @@ export class KrdsButtonHierarchyComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <button [attr.type]="type" [class]="'krds-btn ' + size" [disabled]="disabled">
       @if (label) {

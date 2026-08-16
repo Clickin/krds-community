@@ -7,6 +7,7 @@ import { createStableId, type AngularNavItem } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-in-page-navigation-type">
       <div class="krds-in-page-navigation-area">
@@ -18,7 +19,7 @@ import { createStableId, type AngularNavItem } from "../kinds";
           <ul>
             @for (item of items; track $index) {
               <li>
-                <a [href]="navHref(item)" [class.active]="$index === 0">
+                <a [href]="navHref(item)" [class.active]="item.current === true">
                   {{ navLabel(item) }}
                 </a>
               </li>
@@ -27,11 +28,12 @@ import { createStableId, type AngularNavItem } from "../kinds";
         </nav>
         <div class="in-page-navigation-action">
           <button type="button" class="krds-btn medium">{{ actionLabel }}</button>
-          @if (actionInfo || actionCount) {
-            <p class="quick-info">
-              {{ actionInfo }} <strong>{{ actionCount }}</strong>
-            </p>
-          }
+          <p class="quick-info">
+            {{ actionInfo }}
+            @if (actionCount) {
+              <strong>{{ actionCount }}</strong>
+            }
+          </p>
         </div>
       </div>
     </div>

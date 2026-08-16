@@ -40,7 +40,7 @@ const {
 } = Astro.props;
 const id = providedId ?? `krds-select-${crypto.randomUUID()}`;
 const hintId =
-  !surfaceOnly && ((hint !== undefined && hint !== '') || Astro.slots.has('hint'))
+  !surfaceOnly && hint !== undefined && hint !== ''
     ? `${id}-hint`
     : undefined;
 const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;

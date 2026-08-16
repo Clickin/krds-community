@@ -54,7 +54,7 @@ label?: string;
 
 <div {...rest} class={`bg-white bg-white krds-coach-mark txt-box ${rootClass}`} hidden={!isOpen}>
   <div class="coach-balloon">
-    <h5 class="sr-only">{title}</h5>
+    {#if title}<h5 class="sr-only">{title}</h5>{/if}
     <h6 class="coach-tit">{stepTitle}</h6>
     <p class="desc">{description}</p>
     <div class="coach-controls">

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { zoomOptions, invoke } from './lib/shared.js';
+  import { invoke } from './lib/shared.js';
   import type { Snippet } from 'svelte';
   type Props = {
     id?: string;
@@ -27,7 +27,7 @@
     selected = $bindable<string | undefined>(),
     modelValue = $bindable<string | undefined>(),
     defaultValue = '',
-    selectedLabel = '선택됨',
+    selectedLabel = '',
     resetLabel = '',
     onclick,
     onchange,
@@ -69,7 +69,7 @@
   <div class="drop-menu" id={`${id}-menu`}>
     <div class="drop-in">
       <ul class="drop-list">
-        {#each (options.length ? options : zoomOptions) as option}
+        {#each options as option}
           <li>
             <button
               type="button"

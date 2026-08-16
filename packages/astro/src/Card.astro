@@ -35,11 +35,13 @@ const {
 <article class={cx('krds-card', type, className)}>
   <div class="card-top">
     {image && <img class="card-image" src={image} alt={imageAlt} />}
-    {badges?.map((badge) => (
-      <Badge appearance="solid" class="card-badge">
-        {badge}
-      </Badge>
-    ))}
+    {badges?.length ? (
+      <div class="card-badge">
+        {badges.map((badge) => (
+          <Badge appearance="solid">{badge}</Badge>
+        ))}
+      </div>
+    ) : null}
     {checkbox && <Checkbox {...checkbox} />}
   </div>
   <div class="card-conts">

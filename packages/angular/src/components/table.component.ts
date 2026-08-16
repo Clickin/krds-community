@@ -116,7 +116,6 @@ const KRDS_TABLE_TEMPLATE = `
               <select
                 class="krds-form-select-sort"
                 [id]="id + '-result-count'"
-                [attr.aria-label]="countLabel || null"
               >
                 @for (option of countOptions; track option) {
                   <option>{{ option }}</option>
@@ -143,7 +142,6 @@ const KRDS_TABLE_TEMPLATE = `
                 <select
                   class="krds-form-select-sort"
                   [id]="id + '-sort'"
-                  [attr.aria-label]="sortLabel || null"
                   [value]="sortValue"
                   (change)="sortValue = inputValue($event)"
                 >
@@ -175,17 +173,17 @@ const KRDS_TABLE_TEMPLATE = `
                     (click)="setStructuredTablePage(page, $event)"
                   >
                     @if (paginationValue(page) === pagination.current.toString()) {
-                      <span class="sr-only">{{ pagination.currentLabel }} </span>
+                      <span class="sr-only">{{ pagination.currentLabel }}</span>
                     }
-                    {{ paginationValue(page) }}
+                    {{ " " }}{{ paginationValue(page) }}
                   </a>
                 }
               }
             </div>
-            @if (pagination.nextDisabled) {
-              <span class="page-navi next disabled">{{ pagination.nextLabel }}</span>
-            } @else {
+            @if (pagination.current < paginationPageMax(pagination)) {
               <a class="page-navi next" href="#">{{ pagination.nextLabel }}</a>
+            } @else {
+              <span class="page-navi next disabled">{{ pagination.nextLabel }}</span>
             }
           </div>
         }
@@ -254,6 +252,15 @@ export class KrdsTableComponent {
     return "";
   }
 
+  paginationPageMax(pagination: AngularTablePagination): number {
+    return Math.max(
+      1,
+      ...pagination.items
+        .map((item) => Number(this.paginationValue(item)))
+        .filter((item) => Number.isFinite(item)),
+    );
+  }
+
   setStructuredTablePage(page: unknown, event: Event): void {
     event.preventDefault();
     if (this.pagination === null) return;
@@ -271,6 +278,7 @@ export class KrdsTableComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: KRDS_TABLE_TEMPLATE,
 })
 export class KrdsStructuredListTableComponent extends KrdsTableComponent {

@@ -81,6 +81,7 @@
     />
     <button type="button" class="krds-btn medium icon">
       <span class="sr-only">{passwordLabel}</span>
+      <i class="svg-icon ico-pw-visible"></i>
     </button>
   </div>
   {#if hint}<p class="form-hint" id={`${id}-hint`}>{hint}</p>{/if}

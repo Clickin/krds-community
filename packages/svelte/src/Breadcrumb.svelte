@@ -28,11 +28,15 @@
     ...rest
   }: Props = $props();
 
+  const navigationLabel = $derived(
+    (rest as Record<string, unknown>)["aria-label"] ?? "현재 경로",
+  );
+
   const rootClass = $derived(`${classProp} ${className}`.trim());
   const navigationItems = $derived(items.length ? items : links.length ? links : nav);
 </script>
 
-<nav {...rest} id={id} class={`krds-breadcrumb-wrap ${rootClass}`} aria-label="현재 경로">
+<nav {...rest} id={id} class={`krds-breadcrumb-wrap ${rootClass}`} aria-label={navigationLabel}>
   <ol class="breadcrumb">
     {#each navigationItems as item, index}
       <li class:home={index === 0}>

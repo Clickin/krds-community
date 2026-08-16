@@ -27,7 +27,6 @@ export const Spinner = defineComponent({
               type: "text",
               class: "krds-input",
               placeholder: props.placeholder || "placeholder",
-              "aria-label": props.inputLabel ?? props.label ?? props.placeholder,
             }),
             create(
               "div",

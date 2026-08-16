@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div [id]="id">
       <div class="toggle-wrap">
@@ -28,6 +29,7 @@ export class KrdsMastheadComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-identifier">
       <span class="logo">

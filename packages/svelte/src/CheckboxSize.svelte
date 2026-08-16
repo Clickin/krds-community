@@ -10,7 +10,7 @@
     size?: string;
     modelValue?: string | number | boolean | string[];
     checked?: boolean;
-    onchange?: (event: Event) => void;
+    indeterminate?: boolean;
     class?: string;
     className?: string;
     children?: import('svelte').Snippet;
@@ -28,6 +28,7 @@
     size = '',
     modelValue = $bindable<string | number | boolean | string[] | undefined>(),
     checked = $bindable<boolean | undefined>(),
+    indeterminate = false,
     onchange,
     class: classProp = '',
     className = '',
@@ -35,6 +36,10 @@
     ...rest
   }: Props = $props();
   const rootClass = $derived(`${classProp} ${className}`.trim());
+  let input: HTMLInputElement;
+  $effect(() => {
+    input && (input.indeterminate = indeterminate);
+  });
   const chipChecked = $derived(
     Array.isArray(modelValue)
       ? modelValue.includes(String(value))
@@ -69,6 +74,7 @@
     name={name || undefined}
     value={value}
     checked={chipChecked}
+    bind:this={input}
     {disabled}
     {required}
     {form}

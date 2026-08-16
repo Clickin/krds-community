@@ -164,9 +164,7 @@ export const TextInput = defineComponent<TextInputProps>({
           .join(" ") || undefined;
 
       return h("div", { class: "form-group" }, [
-        props.label
-          ? h("div", { class: "form-tit" }, [h("label", { for: id.value }, props.label)])
-          : null,
+        h("div", { class: "form-tit" }, [h("label", { for: id.value }, props.label)]),
         h("div", { class: formContsClass }, [
           h("input", {
             ...attrs,
@@ -216,7 +214,7 @@ export const Checkbox = defineComponent<CheckboxProps>({
       type: Boolean as PropType<boolean | undefined>,
       default: undefined,
     },
-    defaultChecked: { type: Boolean, default: false },
+    defaultChecked: { type: Boolean, default: undefined },
     label: { type: String, required: true },
     description: { type: String, default: undefined },
     size: { type: String as PropType<"medium" | "large">, default: undefined },
@@ -342,7 +340,7 @@ export const Radio = defineComponent<RadioProps>({
       },
     });
     return () => {
-      const { class: rootClass, ...inputAttrs } = attrs;
+      const { class: rootClass, checked: checkedAttr, ...inputAttrs } = attrs;
       const describedBy =
         [
           typeof attrs["aria-describedby"] === "string" ? attrs["aria-describedby"] : undefined,
@@ -363,7 +361,9 @@ export const Radio = defineComponent<RadioProps>({
             name: props.name,
             type: "radio",
             value: props.value === undefined ? undefined : String(props.value),
-            checked: props.value !== undefined && selected.value === props.value,
+            checked:
+              checkedAttr === true ||
+              (props.value !== undefined && selected.value === props.value),
             disabled: props.disabled,
             required: props.required,
             readonly: props.readonly,

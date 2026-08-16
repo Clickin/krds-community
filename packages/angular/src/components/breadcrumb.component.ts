@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Input } from "@angular/core";
 import { createStableId, type AngularNavItem } from "../kinds";
 
 @Component({
@@ -7,8 +7,13 @@ import { createStableId, type AngularNavItem } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <nav class="krds-breadcrumb-wrap" aria-label="현재 경로" [id]="id">
+    <nav
+      class="krds-breadcrumb-wrap"
+      [attr.aria-label]="ariaLabel || hostAriaLabel || '현재 경로'"
+      [id]="id"
+    >
       <ol class="breadcrumb">
         @for (item of items; track $index) {
           <li [class.home]="$index === 0">
@@ -20,8 +25,11 @@ import { createStableId, type AngularNavItem } from "../kinds";
   `,
 })
 export class KrdsBreadcrumbComponent {
+  readonly hostAriaLabel =
+    inject(ElementRef<HTMLElement>).nativeElement.getAttribute("aria-label");
   @Input() id = createStableId("krds-badge");
   @Input() items: AngularNavItem[] = [];
+  @Input("aria-label") ariaLabel = "";
 
   navLabel(item: unknown): string {
     if (typeof item === "string" || typeof item === "number") return String(item);

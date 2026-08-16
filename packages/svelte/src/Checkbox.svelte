@@ -2,12 +2,14 @@
   import type { ChoiceContractProps } from '@krds-community/recipes';
   type Props = ChoiceContractProps & {
     checked?: boolean;
+    indeterminate?: boolean;
     class?: string;
     className?: string;
   };
   const generatedId = $props.id();
   let {
     checked = $bindable(false),
+    indeterminate = false,
     label = '',
     description = '',
     size,
@@ -17,10 +19,14 @@
     className = '',
     ...restProps
   }: Props = $props();
+  let input: HTMLInputElement;
+  $effect(() => {
+    input && (input.indeterminate = indeterminate);
+  });
 </script>
 
 <div class={`krds-form-check${size ? ` ${size}` : ''}${classValue ? ` ${classValue}` : ''}${className ? ` ${className}` : ''}`}>
-  <input {...restProps} type="checkbox" {id} bind:checked {disabled} aria-describedby={description ? `${id}-description` : undefined} />
+  <input {...restProps} type="checkbox" {id} bind:this={input} bind:checked {disabled} aria-describedby={description ? `${id}-description` : undefined} />
   <label for={id}>{label}</label>
   {#if description}
     <div class="krds-form-check-cnt">

@@ -13,8 +13,14 @@ import {
   standalone: true,
   imports: [CommonModule, NgStyle],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <header [id]="'krds-header'" [attr.aria-label]="ariaLabel || null" [attr.class]="className || null" [ngStyle]="style">
+    <header
+      [id]="'krds-header'"
+      [attr.aria-label]="ariaLabel || null"
+      [attr.class]="className || null"
+      [ngStyle]="style"
+    >
       <div class="header-in">
         <div class="header-container">
           <div class="inner">
@@ -337,11 +343,7 @@ import {
         </nav>
       </div>
       @if (mobileMenu) {
-        <div
-          [id]="headerMobileId"
-          class="krds-main-menu-mobile"
-          style="display: none"
-        >
+        <div [id]="headerMobileId" class="krds-main-menu-mobile" style="display: none">
           <div class="gnb-wrap">
             <div class="gnb-header">
               <div class="gnb-utils">

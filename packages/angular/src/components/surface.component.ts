@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <label class="krds-field"
       ><span class="krds-field-label">{{ label }}</span

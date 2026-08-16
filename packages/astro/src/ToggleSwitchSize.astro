@@ -18,7 +18,6 @@ const {
   ...rest
 } = Astro.props;
 const id = providedId ?? `krds-toggle-switch-size-${crypto.randomUUID()}`;
-const hasLabel = label !== undefined || Astro.slots.has('default');
 const hasDescription = description !== undefined || Astro.slots.has('description');
 const descriptionId = hasDescription ? `${id}-description` : undefined;
 const ariaDescribedBy = [consumerDescribedBy, descriptionId].filter(Boolean).join(' ') || undefined;
@@ -34,11 +33,9 @@ const recipe = switchRecipe({ size, className });
     checked={checked}
     aria-describedby={ariaDescribedBy}
   />
-  {hasLabel && (
-    <label for={id}>
-      <span class="switch-toggle"><i></i></span><slot>{label}</slot>
-    </label>
-  )}
+  <label for={id}>
+    <span class="switch-toggle"><i></i></span><slot>{label}</slot>
+  </label>
   {hasDescription && (
     <span id={descriptionId} class="krds-field-message">
       <slot name="description">{description}</slot>

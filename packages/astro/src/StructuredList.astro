@@ -59,7 +59,12 @@ const {
           <div class="card-body">
             <a href={item.href ?? '#'} class="c-text">
               <p class="c-tit"><span class="span">{item.title}</span></p>
-              {item.description && <p class="c-txt">{item.description}</p>}
+              {item.description && (
+                <>
+                  {' '}
+                  <p class="c-txt">{item.description}</p>
+                </>
+              )}
               <p class="c-date">
                 <strong class="key">{item.dateLabel ?? dateLabel}</strong>
                 <span class="value">{item.dateValue ?? dateValue}</span>

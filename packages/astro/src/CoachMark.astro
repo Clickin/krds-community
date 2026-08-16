@@ -30,14 +30,15 @@ const {
   label,
   currentStep,
   totalSteps,
-  currentStepLabel,
-  totalStepsLabel,
+  currentStepLabel = '현재 단계',
+  totalStepsLabel = '총 단계',
   stopLabel,
   nextLabel,
   open = true,
   class: className,
   ...rest
 } = Astro.props;
+
 const [parsedCurrentStep, parsedTotalSteps] = step?.split('/').map((part) => part.trim()) ?? [];
 const renderedCurrentStep = currentStep ?? parsedCurrentStep;
 const renderedTotalSteps = totalSteps ?? parsedTotalSteps;
@@ -49,7 +50,7 @@ const renderedTotalSteps = totalSteps ?? parsedTotalSteps;
   hidden={!open}
 >
   <div class="coach-balloon">
-    <h5 class="sr-only"><slot name="title">{title}</slot></h5>
+    {title ? <h5 class="sr-only"><slot name="title">{title}</slot></h5> : null}
     <h6 class="coach-tit"><slot name="step-title">{stepTitle}</slot></h6>
     <p class="desc"><slot name="description">{description}</slot></p>
     <div class="coach-controls">

@@ -7,9 +7,16 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-pagination" role="navigation" [attr.aria-label]="navigationLabel">
-      <span class="page-navi prev disabled" href="#">{{ previousLabel }}</span>
+      @if (previousDisabled || current <= 1) {
+        <span class="page-navi prev disabled" href="#">{{ previousLabel }}</span>
+      } @else {
+        <a class="page-navi prev" href="#" (click)="setCurrentPage(current - 1, $event)">{{
+          previousLabel
+        }}</a>
+      }
       <div class="page-links">
         @for (page of items; track $index) {
           @if (paginationValue(page) === "ellipsis") {
@@ -29,17 +36,25 @@ import { createStableId } from "../kinds";
           }
         }
       </div>
-      <a class="page-navi next" href="#">{{ nextLabel }}</a>
+      @if (nextDisabled || current >= maxPage) {
+        <span class="page-navi next disabled" href="#">{{ nextLabel }}</span>
+      } @else {
+        <a class="page-navi next" href="#" (click)="setCurrentPage(current + 1, $event)">{{
+          nextLabel
+        }}</a>
+      }
     </div>
   `,
 })
 export class KrdsPaginationComponent {
   @Input() id = createStableId("krds-pagination");
   @Input() current = 1;
-  @Input() message = "도움말";
+  @Input() message = "현재페이지";
   @Input() navigationLabel = "페이지 이동";
   @Input() previousLabel = "이전";
   @Input() nextLabel = "다음";
+  @Input() previousDisabled = false;
+  @Input() nextDisabled = false;
   @Input() items: (string | number | { label: string })[] = [1, 2, 3, 4, 5];
   @Output() currentChange = new EventEmitter<number>();
 
@@ -53,6 +68,15 @@ export class KrdsPaginationComponent {
       return String(item.label ?? "");
     }
     return "";
+  }
+
+  get maxPage(): number {
+    return Math.max(
+      1,
+      ...this.items
+        .map((item) => Number(this.paginationValue(item)))
+        .filter((value) => Number.isFinite(value)),
+    );
   }
 
   setCurrentPage(item: unknown, event: Event): void {

@@ -1,4 +1,4 @@
-import { createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
+import { createEffect, createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
 
 export interface CheckboxChipProps {
   class?: string;
@@ -8,8 +8,8 @@ export interface CheckboxChipProps {
   id?: string;
   name?: string;
   checked?: boolean;
+  indeterminate?: boolean;
   disabled?: boolean;
-  playing?: boolean;
   modelValue?: boolean;
   [key: string]: unknown;
 }
@@ -24,6 +24,7 @@ export function CheckboxChip(rawProps: CheckboxChipProps) {
     "id",
     "name",
     "checked",
+    "indeterminate",
     "disabled",
     "playing",
     "modelValue",
@@ -60,7 +61,11 @@ export function CheckboxChip(rawProps: CheckboxChipProps) {
         type="checkbox"
         name={props.name}
         checked={checked()}
-        disabled={props.disabled}
+        ref={(element) => {
+          createEffect(() => {
+            element.indeterminate = Boolean(props.indeterminate);
+          });
+        }}
         onChange={updateChecked}
       />
       <label class="krds-form-chip-outline" for={props.id}>

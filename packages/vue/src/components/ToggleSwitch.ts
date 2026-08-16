@@ -1,6 +1,11 @@
 import { computed, defineComponent, ref, useId, type PropType } from "vue";
 
-import { create, withoutClass, withoutNativeEvents, invokeNativeEvent } from "../shared.js";
+import {
+  create,
+  createVueInstanceId,
+  withoutClass,
+  invokeNativeEvent,
+} from "../shared.js";
 
 export const ToggleSwitch = defineComponent({
   name: "KrdsToggleSwitch",
@@ -21,7 +26,7 @@ export const ToggleSwitch = defineComponent({
     change: (_event: Event) => true,
   },
   setup(props, { attrs, emit, slots: _slots }) {
-    const generatedId = `krds-toggle-${useId()}`;
+    const generatedId = `krds-toggle-${useId()}-${createVueInstanceId("toggle")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialChecked =
@@ -46,7 +51,6 @@ export const ToggleSwitch = defineComponent({
       return create(
         "div",
         {
-          ...withoutNativeEvents(attrs),
           class: ["krds-form-toggle-switch", props.size, className],
         },
         [

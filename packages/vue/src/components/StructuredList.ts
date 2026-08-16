@@ -27,53 +27,47 @@ export const StructuredList = defineComponent({
           const listItem = item as AdditionalStructuredListItem;
           return create("li", { key: listItem.id ?? itemIndex, class: "structured-item" }, [
             create("div", { class: "in" }, [
-              listItem.badge
-                ? create("div", { class: "card-top" }, [
-                    create(
+              create("div", { class: "card-top" }, [
+                listItem.badge
+                  ? create(
                       "span",
                       { class: ["krds-badge", listItem.badgeClass ?? listItem.tone] },
                       listItem.badge,
-                    ),
-                  ])
-                : null,
+                    )
+                  : null,
+              ]),
               create("div", { class: "card-body" }, [
-                create("a", { class: "c-text", href: listItem.href }, [
+                create("a", { class: "c-text", href: listItem.href ?? "#" }, [
                   create("p", { class: "c-tit" }, [
                     create("span", { class: "span" }, listItem.title),
                   ]),
                   listItem.description
-                    ? create("p", { class: "c-txt" }, listItem.description)
+                    ? [" ", create("p", { class: "c-txt" }, listItem.description)]
                     : null,
-                  listItem.date || listItem.dateLabel || props.dateValue || props.dateLabel
-                    ? create("p", { class: "c-date" }, [
-                        create("strong", { class: "key" }, listItem.dateLabel ?? props.dateLabel),
-                        create("span", { class: "value" }, listItem.date ?? props.dateValue),
-                      ])
-                    : null,
+                  create("p", { class: "c-date" }, [
+                    create("strong", { class: "key" }, listItem.dateLabel ?? props.dateLabel),
+                    create("span", { class: "value" }, listItem.date ?? props.dateValue),
+                  ]),
                 ]),
-                listItem.actionLabel || props.actionLabel
-                  ? create("div", { class: "c-btn" }, [
-                      create(
-                        "a",
-                        {
-                          class: ["krds-btn", "secondary"],
-                          href: listItem.href,
-                          title: listItem.title,
-                        },
-                        listItem.actionLabel ?? props.actionLabel,
-                      ),
-                    ])
-                  : null,
+                create("div", { class: "c-btn" }, [
+                  create(
+                    "a",
+                    {
+                      class: ["krds-btn", "secondary"],
+                      href: listItem.href ?? "#",
+                      title: listItem.title,
+                    },
+                    listItem.actionLabel ?? props.actionLabel,
+                  ),
+                ]),
               ]),
-              (listItem.tags?.length ?? props.tags.length) > 0
-                ? create(
-                    "div",
-                    { class: "card-btm" },
-                    (listItem.tags?.length ? listItem.tags : props.tags).map((tag) =>
-                      create("span", { class: "tag" }, tag),
-                    ),
-                  )
-                : null,
+              create(
+                "div",
+                { class: "card-btm" },
+                (listItem.tags?.length ? listItem.tags : props.tags).map((tag) =>
+                  create("span", { class: "tag" }, tag),
+                ),
+              ),
               create("div", { class: "card-btn" }, [
                 create(
                   "button",

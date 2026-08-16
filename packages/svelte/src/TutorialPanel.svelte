@@ -34,7 +34,7 @@
     tabs = [],
     activeTab = $bindable<'help' | 'tutorial'>('tutorial'),
     selectedLabel = '',
-    label = '',
+    label = '튜토리얼 패널',
     title,
     helpTitle = '',
     helpDescription = '',
@@ -64,7 +64,18 @@
   };
 </script>
 
+<button
+  type="button"
+  id={`${id}-trigger`}
+  class="krds-btn small tertiary btn-help-panel expand btn-help-exec"
+  aria-controls={id}
+  aria-expanded={isOpen}
+  onclick={() => (open = true)}
+>
+  <i class="svg-icon ico-fold"></i> {label}
+</button>
 <div
+  id={id}
   {...rest}
   class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`}
   hidden={!isOpen}
@@ -213,7 +224,16 @@
         class="krds-btn small tertiary btn-help-panel fold"
         onclick={toggleOpen}
       >
-        <span class="sr-only">{label}</span> {collapseLabel}
+        <span class="sr-only">{label}</span>
+        {#if (collapseLabel || label || title).split(' ').length < 2}
+          {' '}{collapseLabel || label || title}{' '}
+        {:else}
+          {' '}
+          {#each (collapseLabel || label || title).split(' ') as part, index}
+            {#if index > 0}{' '}{/if}<span class="krds-icon-space-left krds-icon-space-right">{part}</span>
+          {/each}
+          {' '}
+        {/if}
         <i class="svg-icon ico-angle right"></i>
       </button>
     </div>

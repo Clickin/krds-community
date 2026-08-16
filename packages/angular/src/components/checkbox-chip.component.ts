@@ -14,8 +14,39 @@ import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/fo
 import type { ControlValueAccessor } from "@angular/forms";
 import { createStableId } from "../kinds";
 
+const CHECKBOX_TEMPLATE = `
+    @if (effectiveKind === "checkbox-size") {
+      <div [class]="'krds-form-check ' + size">
+        <input
+          [id]="id"
+          [attr.name]="name ?? null"
+          type="checkbox"
+          [checked]="checked"
+          [indeterminate]="indeterminate"
+          (blur)="touch()"
+        />
+        <label [for]="id">{{ label }}</label>
+      </div>
+    } @else {
+      <div class="krds-form-chip">
+        <input
+          class="checkbox"
+          [id]="id"
+          [attr.name]="name ?? null"
+          type="checkbox"
+          [checked]="checked"
+          [indeterminate]="indeterminate"
+          [disabled]="disabled"
+          (change)="setChecked(checkedValue($event))"
+          (blur)="touch()"
+        />
+        <label class="krds-form-chip-outline" [for]="id">{{ label }}</label>
+      </div>
+    }
+  `;
+
 @Component({
-  selector: "krds-checkbox-chip, krds-checkbox-size",
+  selector: "krds-checkbox-chip",
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [
@@ -26,42 +57,18 @@ import { createStableId } from "../kinds";
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    @if (kind === "checkbox-size") {
-      <div [class]="'krds-form-check ' + size">
-        <input
-          [id]="id"
-          type="checkbox"
-          [checked]="checked"
-          [disabled]="disabled"
-          (change)="setChecked(checkedValue($event))"
-          (blur)="touch()"
-        />
-        <label [for]="id">{{ label }}</label>
-      </div>
-    } @else {
-      <div class="krds-form-chip">
-        <input
-          class="checkbox"
-          [id]="id"
-          type="checkbox"
-          [checked]="checked"
-          [disabled]="disabled"
-          (change)="setChecked(checkedValue($event))"
-          (blur)="touch()"
-        />
-        <label class="krds-form-chip-outline" [for]="id">{{ label }}</label>
-      </div>
-    }
-  `,
+  styles: [":host { display: contents; }"],
+  template: CHECKBOX_TEMPLATE,
 })
 export class KrdsCheckboxChipComponent implements ControlValueAccessor {
   @Input() id = createStableId("krds-checkbox-chip");
+  @Input() name: string | undefined = undefined;
   @Input() label = "레이블";
   @Input() disabled = false;
   @Input() size = "medium";
   @Input() kind: "checkbox-chip" | "checkbox-size" | null = null;
   @Input() checked = false;
+  @Input() indeterminate = false;
   @Output() checkedChange = new EventEmitter<boolean>();
 
   private readonly hostTagKind = inject(ElementRef<HTMLElement>)
@@ -110,4 +117,24 @@ export class KrdsCheckboxChipComponent implements ControlValueAccessor {
     this.changeDetector?.markForCheck();
   }
 }
-export { KrdsCheckboxChipComponent as KrdsCheckboxSizeComponent };
+
+@Component({
+  selector: "krds-checkbox-size",
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => KrdsCheckboxSizeComponent),
+      multi: true,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
+  template: CHECKBOX_TEMPLATE,
+})
+export class KrdsCheckboxSizeComponent extends KrdsCheckboxChipComponent {
+  override get effectiveKind(): "checkbox-size" {
+    return "checkbox-size";
+  }
+}

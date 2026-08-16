@@ -38,7 +38,7 @@ export interface Props
   open?: boolean;
   activeTab?: string;
   tabs: HelpPanelTab[];
-  selectedLabel: string;
+  selectedLabel?: string;
   helpTitle: string;
   helpDescription?: string;
   downloadLinks: HelpPanelLink[];
@@ -62,7 +62,7 @@ const {
   open = false,
   activeTab,
   tabs,
-  selectedLabel,
+  selectedLabel = '',
   helpTitle,
   helpDescription,
   downloadLinks,
@@ -143,7 +143,9 @@ const foldLabel = collapseLabel ?? label;
                     disabled={tab.disabled}
                   >
                     {tab.label}
-                    {selected && <i class="sr-only created"> {selectedLabel}</i>}
+                    {selected && selectedLabel && (
+                      <i class="sr-only created">{` ${selectedLabel}`}</i>
+                    )}
                   </button>
                 </li>
               );
@@ -165,7 +167,16 @@ const foldLabel = collapseLabel ?? label;
                 <div class="conts-area help-conts">
                   <div class="conts-wrap">
                     <h4 class="help-title">
-                      {helpTitle}
+                      {helpTitle.split(' ').length < 2 ? (
+                        <>{helpTitle}{' '}</>
+                      ) : (
+                        <>
+                          {helpTitle.split(' ').map((part, index) => (
+                            <Fragment>{index > 0 && ' '}<span class="krds-icon-space-right">{part}</span></Fragment>
+                          ))}
+                          {' '}
+                        </>
+                      )}
                       <span class="krds-btn medium icon">
                         <span class="sr-only">{label}</span>
                         <i class="svg-icon ico-help"></i>
@@ -291,8 +302,23 @@ const foldLabel = collapseLabel ?? label;
         </div>
       </div>
 
-      <button type="button" class="krds-btn small tertiary btn-help-panel fold">
-        <span class="sr-only">{label}</span>{' '}{foldLabel}{' '}<i class="svg-icon ico-angle right"></i>
+      <button
+        type="button"
+        class="krds-btn small tertiary btn-help-panel fold"
+      >
+        <span class="sr-only">{label}</span>
+        {foldLabel.split(' ').length < 2 ? (
+          <>{' '}{foldLabel}{' '}</>
+        ) : (
+          <>
+            {' '}
+            {foldLabel.split(' ').map((part, index) => (
+              <Fragment>{index > 0 && ' '}<span class="krds-icon-space-left krds-icon-space-right">{part}</span></Fragment>
+            ))}
+            {' '}
+          </>
+        )}
+        <i class="svg-icon ico-angle right"></i>
       </button>
     </div>
   </div>

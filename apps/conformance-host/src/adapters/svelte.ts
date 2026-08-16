@@ -29,9 +29,20 @@ const escapeHtml = (value: string): string =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
-const renderProps = (props: Record<string, unknown>): Record<string, unknown> => {
+const renderProps = (
+  componentId: string,
+  props: Record<string, unknown>,
+): Record<string, unknown> => {
   const children = props.children;
   if (children === undefined) return props;
+  // Tooltip fixtures pass a plain string child. Pass it through as a string so
+  // the component can append the inter-word space before the angle icon (raw
+  // snippets strip trailing whitespace; the component's string branch handles
+  // the spacing the react reference produces). Docs examples pass real
+  // (snippet) children and stay untouched.
+  if (componentId.startsWith("tooltip") && typeof children === "string") {
+    return { ...props, children };
+  }
   return {
     ...props,
     children: createRawSnippet(() => ({ render: () => escapeHtml(String(children)) })),
@@ -51,13 +62,13 @@ export const adapter: FrameworkAdapter = {
     instance = createClassComponent({
       component,
       target,
-      props: renderProps(initialProps),
+      props: renderProps(componentId, initialProps),
     });
     await tick();
 
     return {
       async update(props) {
-        instance?.$set(renderProps(props));
+        instance?.$set(renderProps(componentId, props));
         await tick();
       },
       async dispose() {

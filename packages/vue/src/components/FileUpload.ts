@@ -59,7 +59,7 @@ export const FileUpload = defineComponent({
                 multiple: props.multiple,
                 disabled: props.disabled,
                 required: props.required,
-                "aria-label": props.selectLabel ?? props.label,
+                "aria-label": props.selectLabel ?? props.title,
                 onChange: (event: Event) => {
                   invokeNativeEvent(attrs.onChange as unknown, event);
                   emit("change", event);

@@ -57,9 +57,9 @@ export function Card(rawProps: CardProps) {
           </Show>
           <For each={props.badges}>
             {(badge) => (
-              <Badge class="card-badge" appearance="solid">
-                {badge}
-              </Badge>
+              <div class="card-badge">
+                <Badge appearance="solid">{badge}</Badge>
+              </div>
             )}
           </For>
         </div>

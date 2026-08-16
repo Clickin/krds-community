@@ -43,6 +43,7 @@ const {
   open,
   defaultOpen = false,
   class: className,
+  id: providedId,
   ...rest
 } = Astro.props;
 const entries = languages ?? options ?? [];
@@ -50,19 +51,22 @@ const activeValue = value ?? selected ?? defaultValue ?? entries[0]?.value;
 const current = entries.find((language) => language.value === activeValue);
 const links = entries.filter((language) => language.value !== activeValue);
 const openState = open ?? defaultOpen;
+const languageMenuId = `${providedId ?? `krds-language-${crypto.randomUUID()}`}-menu`;
 ---
 
-<div {...rest} class={cx('krds-drop-wrap', 'krds-language', className)}>
+
+<div {...rest} id={providedId} class={cx('krds-drop-wrap', 'krds-language', className)}>
   <button
     type="button"
     class={cx('krds-btn', 'small', 'text', 'drop-btn', openState && 'active')}
     aria-expanded={openState ? 'true' : 'false'}
+    aria-controls={languageMenuId}
   >
     <i class="svg-icon ico-global"></i>{' '}
     {label}{' '}
     <i class="svg-icon ico-toggle"></i>
   </button>
-  <div class="drop-menu" style={openState ? 'display: block;' : undefined}>
+  <div id={languageMenuId} class="drop-menu" style={openState ? 'display: block;' : undefined}>
     <div class="drop-in">
       <div class="drop-top">
         <p class="current-laguage">

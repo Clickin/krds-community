@@ -369,7 +369,8 @@ describe("Angular core component contracts", () => {
     expect(tabs()[0].textContent).toContain("First");
     expect(tabs()[1].textContent).toContain("Second");
     expect(fixture.nativeElement.querySelectorAll('li[role="tab"]')).toHaveLength(0);
-    expect(ttsButton.getAttribute("aria-label")).toBe("Icon speech");
+    expect(ttsButton.getAttribute("aria-label")).toBeNull();
+    expect(ttsButton.querySelector(".sr-only")?.textContent).toBe("Icon speech");
 
     parentUpdate.click();
     fixture.detectChanges();
@@ -657,7 +658,7 @@ describe("Angular core component contracts", () => {
     expect(directText(link)).toBe(" ");
     expect(Array.from(link.children).map((child) => child.className)).toEqual([
       "underline",
-      "svg-icon ico-go",
+      "svg-icon ico-angle right",
     ]);
 
     update({

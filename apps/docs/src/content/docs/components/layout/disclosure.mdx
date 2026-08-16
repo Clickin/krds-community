@@ -13,12 +13,12 @@ import { AngularDisclosure } from "@docs/angular-previews.ts";
 import { Disclosure as AstroDisclosure } from "@krds-community/astro";
 
 <FrameworkPreview title="디스클로저">
-  <ReactDisclosure slot="react" title="상세 내용" open="true" client:only="react" />
-  <VueDisclosure slot="vue" title="상세 내용" open="true" client:only="vue" />
-  <SvelteDisclosure slot="svelte" title="상세 내용" open="true" client:only="svelte" />
-  <SolidDisclosure slot="solid" title="상세 내용" open="true" client:only="solid-js" />
-  <AngularDisclosure slot="angular" title="상세 내용" open="true" client:only="@analogjs/astro-angular" />
-  <AstroDisclosure slot="astro" title="상세 내용" open="true" />
+  <ReactDisclosure slot="react" title="상세 내용" items={["상세 내용"]} open="true" client:only="react" />
+  <VueDisclosure slot="vue" title="상세 내용" items={["상세 내용"]} open="true" client:only="vue" />
+  <SvelteDisclosure slot="svelte" title="상세 내용" items={["상세 내용"]} open="true" client:only="svelte" />
+  <SolidDisclosure slot="solid" title="상세 내용" items={["상세 내용"]} open="true" client:only="solid-js" />
+  <AngularDisclosure slot="angular" title="상세 내용" items={["상세 내용"]} open="true" client:only="@analogjs/astro-angular" />
+  <AstroDisclosure slot="astro" title="상세 내용" items={["상세 내용"]} open="true" />
 
 ```tsx fw=react
 import { Disclosure } from "@krds-community/react";

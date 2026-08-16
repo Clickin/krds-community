@@ -25,9 +25,14 @@ import { createStableId } from "../kinds";
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-check-area">
-      <div class="krds-form-check" [class.medium]="!size || size === 'medium'" [class.large]="size === 'large'">
+      <div
+        class="krds-form-check"
+        [class.medium]="!size || size === 'medium'"
+        [class.large]="size === 'large'"
+      >
         <input
           [id]="id"
           type="radio"

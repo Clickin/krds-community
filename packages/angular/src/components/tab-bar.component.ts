@@ -15,6 +15,7 @@ export interface KrdsTabBarItem {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <nav class="krds-tab-bar" [attr.aria-label]="ariaLabel">
       @for (item of items; track $index) {

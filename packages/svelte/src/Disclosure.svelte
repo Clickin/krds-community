@@ -34,7 +34,7 @@
   };
 </script>
 
-<div {...rest} class={`conts-expand-area krds-disclosure ${rootClass}`}>
+<div {...rest} class={`conts-expand-area krds-disclosure ${rootClass}`} class:active={isOpen}>
   <button
     id={`${id}-trigger`}
     class="btn-conts-expand"

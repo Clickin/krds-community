@@ -23,6 +23,7 @@ export function Textarea({
   const generatedId = useId();
   const id = providedId ?? `krds-textarea-${generatedId}`;
   const hintId = hint ? `${id}-hint` : undefined;
+  const describedBy = [ariaDescribedBy, hintId].filter(Boolean).join(" ") || undefined;
   return (
     <>
       <textarea
@@ -30,7 +31,7 @@ export function Textarea({
         ref={ref}
         id={id}
         className={cx("krds-input", className)}
-        aria-describedby={ariaDescribedBy}
+        aria-describedby={describedBy}
       />
       <label htmlFor={id}>{label}</label>
       {hint ? <p id={hintId}>{hint}</p> : null}

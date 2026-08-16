@@ -70,10 +70,10 @@ const {
   eventDays = [],
   disabledDays = [],
   calendarLabel,
-  previousMonthLabel,
-  nextMonthLabel,
-  yearSelectLabel,
-  monthSelectLabel,
+  previousMonthLabel = '이전 달',
+  nextMonthLabel = '다음 달',
+  yearSelectLabel = '연도 선택',
+  monthSelectLabel = '월 선택',
   todayLabel,
   cancelLabel,
   confirmLabel,
@@ -101,23 +101,28 @@ const calendarId = providedCalendarId ?? `${instanceId}-popup`;
 const yearListId = `${calendarId}-year-list`;
 const monthListId = `${calendarId}-month-list`;
 const hintId = hint !== undefined || Astro.slots.has('hint') ? `${inputId}-hint` : undefined;
-const year = displayYear ?? providedYear;
-const month = displayMonth ?? providedMonth;
-const activeYear = selectedYear ?? providedYear;
-const activeMonth = selectedMonth ?? providedMonth;
+const year = displayYear ?? providedYear ?? new Date().getFullYear();
+const month = displayMonth ?? providedMonth ?? new Date().getMonth() + 1;
+const activeYear = selectedYear ?? providedYear ?? year;
+const activeMonth = selectedMonth ?? providedMonth ?? month;
+const yearOptions = years && years.length > 0 ? years : [year];
+const weekdayNames = weekdays && weekdays.length > 0 ? weekdays : ['일', '월', '화', '수', '목', '금', '토'];
 const pad = (value: number) => String(value).padStart(2, '0');
+const leadingDaysValue = leadingDays ?? new Date(year, month - 1, 1).getDay();
+const previousMonthDayCountValue = previousMonthDayCount ?? new Date(year, month - 1, 0).getDate();
+const dayCountValue = dayCount ?? new Date(year, month, 0).getDate();
 const previousMonth = month === 1 ? 12 : month - 1;
 const previousYear = month === 1 ? year - 1 : year;
 const nextMonth = month === 12 ? 1 : month + 1;
 const nextYear = month === 12 ? year + 1 : year;
 const cells = Array.from({ length: 42 }, (_, index) => {
-  const offset = index - leadingDays;
+  const offset = index - leadingDaysValue;
   const old = offset < 0;
-  const next = offset >= dayCount;
+  const next = offset >= dayCountValue;
   const day = old
-    ? previousMonthDayCount + offset + 1
+    ? previousMonthDayCountValue + offset + 1
     : next
-      ? offset - dayCount + 1
+      ? offset - dayCountValue + 1
       : offset + 1;
   const cellYear = old ? previousYear : next ? nextYear : year;
   const cellMonth = old ? previousMonth : next ? nextMonth : month;
@@ -186,7 +191,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
             >{year}년</button>
             <div class="calendar-select calendar-year-wrap">
               <ul class="sel year" id={yearListId} role="listbox">
-                {years.map((optionYear) => (
+                {yearOptions.map((optionYear) => (
                   <li role="none">
                     <button
                       type="button"
@@ -236,7 +241,7 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
           <table class="calendar-tbl">
             <caption>{year}년 {pad(month)}월</caption>
             <thead>
-              <tr>{weekdays.map((weekday) => <th>{weekday}</th>)}</tr>
+              <tr>{weekdayNames.map((weekday) => <th>{weekday}</th>)}</tr>
             </thead>
             <tbody>
               {Array.from({ length: 6 }, (_, rowIndex) => (
@@ -367,7 +372,6 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
     if (!area) return;
     closeCalendarSelects(area);
     area.classList.remove('active');
-    trigger?.setAttribute('aria-expanded', 'false');
     if (restoreFocus) trigger?.focus();
   };
 
@@ -534,7 +538,6 @@ const inputDescribedBy = [inputAttributes['aria-describedby'], hintId].filter(Bo
       const opening = !area.classList.contains('active');
       if (opening) calendarRoots().forEach((candidate) => candidate !== root && closeCalendar(candidate));
       area.classList.toggle('active', opening);
-      action.setAttribute('aria-expanded', opening ? 'true' : 'false');
       if (opening) area.querySelector<HTMLElement>('.calendar-wrap')?.focus();
       return;
     }

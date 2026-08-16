@@ -38,7 +38,9 @@ export function Badge(rawProps: BadgeProps) {
         "krds-badge",
         props.appearance === "outline"
           ? `outline-${tones[props.tone]}`
-          : `bg-${props.tone === "primary" ? "primary" : tones[props.tone]}`,
+          : props.appearance === "light"
+            ? `bg-light-${tones[props.tone]}`
+            : `bg-${props.tone === "primary" ? "primary" : tones[props.tone]}`,
         props.size,
         props.number && "number",
         className(),

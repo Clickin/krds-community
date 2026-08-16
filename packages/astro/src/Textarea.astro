@@ -26,40 +26,19 @@ const id = providedId ?? `krds-textarea-${crypto.randomUUID()}`;
 const hintId = hint !== undefined || Astro.slots.has('hint') ? `${id}-hint` : undefined;
 const initialValue = value === undefined ? '' : String(value);
 const count = currentLength ?? Array.from(initialValue).length;
+const describedBy = [consumerDescribedBy, hintId].filter(Boolean).join(' ') || undefined;
 const recipe = inputRecipe({ className });
+
 ---
 
-<div class="form-group">
-  {(label !== undefined || Astro.slots.has('label')) && (
-    <div class="form-tit">
-      <label for={id}><slot name="label">{label}</slot></label>
-    </div>
-  )}
-  <div class="form-conts">
-    <div class="textarea-wrap">
-      <textarea
-        {...rest}
-        class={recipe.className}
-        id={id}
-        maxlength={maxLength}
-        aria-describedby={consumerDescribedBy}
-      >{initialValue}</textarea>
-      {maxLength !== undefined && (
-        <p class="textarea-count" aria-live="polite">
-          {/* ponytail: docs convention is "0/500자" (single text node keeps parity text identical); the count script targets .count-now */}
-          <span class="count-now">{count}/{maxLength}자</span>
-        </p>
-      )}
-    </div>
-  </div>
-  {hintId && <p id={hintId} class="form-hint"><slot name="hint">{hint}</slot></p>}
-</div>
-
-<script>
-  document.addEventListener('input', (event) => {
-    if (!(event.target instanceof HTMLTextAreaElement) || event.target.maxLength < 0) return;
-    const root = event.target.closest<HTMLElement>('.form-group');
-    const count = root?.querySelector<HTMLElement>('.textarea-count .count-now');
-    if (count) count.textContent = String(Array.from(event.target.value).length);
-  });
-</script>
+<textarea
+  {...rest}
+  class={recipe.className}
+  id={id}
+  maxlength={maxLength}
+  aria-describedby={describedBy}
+>{initialValue}</textarea>
+{(label !== undefined || Astro.slots.has('label')) && (
+  <label for={id}><slot name="label">{label}</slot></label>
+)}
+{hintId && <p id={hintId}><slot name="hint">{hint}</slot></p>}

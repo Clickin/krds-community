@@ -7,7 +7,7 @@ export const Tag = defineComponent({
   inheritAttrs: false,
   props: {
     label: { type: String, default: undefined },
-    removable: Boolean,
+    removable: { type: Boolean, default: true },
     message: { type: String, default: "삭제" },
     size: { type: String, default: undefined },
   },

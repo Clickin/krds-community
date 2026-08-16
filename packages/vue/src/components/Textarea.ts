@@ -65,11 +65,11 @@ export const Textarea = defineComponent({
     };
 
     const hintId = props.hint ? `${id.value}-hint` : undefined;
-
+    const describedBy =
+      [attrs["aria-describedby"], hintId].filter(Boolean).join(" ") || undefined;
     return () => {
       const className = attrs.class as string | undefined;
       return create(Fragment, null, [
-        create("label", { for: id.value }, props.label),
         create("textarea", {
           ...attrs,
           id: id.value,
@@ -79,8 +79,7 @@ export const Textarea = defineComponent({
           placeholder: props.placeholder,
           disabled: props.disabled,
           readonly: props.readonly,
-          required: props.required,
-          "aria-describedby": hintId,
+          "aria-describedby": describedBy,
           onInput: (event: Event) => {
             invokeNativeEvent(attrs.onInput, event);
             setValue((event.target as HTMLTextAreaElement).value);
@@ -91,6 +90,7 @@ export const Textarea = defineComponent({
           },
           class: ["krds-input", className],
         }),
+        create("label", { for: id.value }, props.label),
         props.hint ? create("p", { id: hintId }, props.hint) : null,
       ]);
     };

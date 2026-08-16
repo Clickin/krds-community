@@ -1368,7 +1368,8 @@ describe("Astro server rendering", () => {
         name: "myFile",
         type: "file",
       });
-      expect(uploadInput?.hasAttribute("aria-label")).toBe(false);
+      expect(uploadInput?.hasAttribute("aria-label")).toBe(true);
+      expect(uploadInput?.getAttribute("aria-label")).toBe("파일선택");
       const uploadButton = uploadRoot?.querySelector<HTMLButtonElement>(
         ".file-upload-btn-wrap > button",
       );
@@ -1556,13 +1557,13 @@ describe("Astro server rendering", () => {
       });
       const textarea =
         textareaDocument.querySelector<HTMLTextAreaElement>("#astro-runtime-textarea");
-      expect(textarea?.hasAttribute("aria-describedby")).toBe(false);
+      expect(textarea?.getAttribute("aria-describedby")).toBe("astro-runtime-textarea-hint");
       expect(
         textareaDocument.querySelector('label[for="astro-runtime-textarea"]')?.textContent,
       ).toBe("레이블");
-      expect(textarea?.closest(".form-group")?.querySelector(".form-hint")?.textContent).toBe(
-        "도움말",
-      );
+      expect(
+        textareaDocument.querySelector("#astro-runtime-textarea-hint")?.textContent,
+      ).toBe("도움말");
     } finally {
       doms.forEach((dom) => dom.window.close());
       await server.close();

@@ -79,7 +79,7 @@ export function FileUpload(rawProps: FileUploadProps) {
             id={props.inputId}
             name={props.name}
             type="file"
-            aria-label={props.label ?? props.selectLabel ?? props.title}
+            aria-label={props.selectLabel ?? props.title}
             onChange={(event) => {
               setValue(
                 Array.from(event.currentTarget.files ?? [])

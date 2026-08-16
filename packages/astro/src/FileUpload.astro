@@ -58,17 +58,13 @@ const displayedCount = currentCount ?? files.length;
   {...rootAttributes}
   class={cx('krds-file-upload', line && 'line', className)}
 >
-  {(title !== undefined || description !== undefined || Astro.slots.has('title') || Astro.slots.has('description')) && (
-    <div class="file-head">
-      {(title !== undefined || Astro.slots.has('title')) && <h3 class="tit"><slot name="title">{title}</slot></h3>}
-      {(description !== undefined || Astro.slots.has('description')) && (
-        <div><p><slot name="description">{description}</slot></p></div>
-      )}
-    </div>
-  )}
+  <div class="file-head">
+    <h3 class="tit"><slot name="title">{title}</slot></h3>
+    <div><p><slot name="description">{description}</slot></p></div>
+  </div>
 
   <div class="file-upload">
-    {(prompt !== undefined || Astro.slots.has('prompt')) && <p class="txt"><slot name="prompt">{prompt}</slot></p>}
+    <p class="txt"><slot name="prompt">{prompt}</slot></p>
     <div class="file-upload-btn-wrap">
       <input
         {...rest}
@@ -77,6 +73,7 @@ const displayedCount = currentCount ?? files.length;
         id={inputId}
         multiple={multiple}
         hidden
+        aria-label={selectLabel ?? undefined}
       />
       <button type="button" class="krds-btn medium">
         <i class="svg-icon ico-upload"></i>{' '}<slot name="select-label">{selectLabel}</slot>
@@ -109,19 +106,15 @@ const displayedCount = currentCount ?? files.length;
                     {file.deleteLabel} <i class="svg-icon ico-delete-fill"></i>
                   </button>
                 )}
-                {file.status === 'downloadable' && (
-                  <>
-                    {file.downloadLabel !== undefined && (
-                      <button type="button" class="krds-btn medium text">
-                        {file.downloadLabel} <i class="svg-icon ico-down"></i>
-                      </button>
-                    )}
-                    {file.previewLabel !== undefined && (
-                      <button type="button" class="krds-btn medium text">
-                        {file.previewLabel} <i class="svg-icon ico-angle right"></i>
-                      </button>
-                    )}
-                  </>
+                {file.downloadLabel !== undefined && (
+                  <button type="button" class="krds-btn medium text">
+                    {file.downloadLabel} <i class="svg-icon ico-down"></i>
+                  </button>
+                )}
+                {file.previewLabel !== undefined && (
+                  <button type="button" class="krds-btn medium text">
+                    {file.previewLabel} <i class="svg-icon ico-angle right"></i>
+                  </button>
                 )}
               </div>
             </div>
@@ -135,13 +128,11 @@ const displayedCount = currentCount ?? files.length;
           </li>
         ))}
       </ul>
-      {deleteAllLabel !== undefined && (
-        <div class="upload-delete-btn">
-          <button type="button" class="krds-btn xsmall tertiary">
-            {deleteAllLabel}<i class="svg-icon ico-angle right"></i>
-          </button>
-        </div>
-      )}
+      <div class="upload-delete-btn">
+        <button type="button" class="krds-btn xsmall tertiary">
+          {deleteAllLabel}<i class="svg-icon ico-angle right"></i>
+        </button>
+      </div>
     </div>
 </div>
 <script

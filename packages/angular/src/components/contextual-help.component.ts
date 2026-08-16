@@ -7,6 +7,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div [class]="contextualHelpClass">
       <p class="tooltip-txt">{{ caption }}</p>
@@ -23,8 +24,12 @@ import { createStableId } from "../kinds";
         <div [id]="tooltipPopoverId" class="tooltip-popover" role="tooltip">
           <h4 class="tooltip-title">{{ title }}</h4>
           <div class="tooltip-contents">
-            <p>{{ description }}</p>
-            <div class="btn-wrap">
+            @if (description) {
+              <p>{{ description }}</p>
+            } @else {
+              <p><ng-content></ng-content></p>
+            }
+            <div *ngIf="linkLabel" class="btn-wrap">
               <a [href]="href" class="krds-btn xsmall link basic">
                 {{ linkLabel }} <i class="svg-icon ico-angle right"></i>
               </a>
@@ -43,12 +48,12 @@ export class KrdsContextualHelpComponent {
   @Input() id = createStableId("krds-contextual-help");
   @Input() label = "레이블";
   @Input() caption = "";
-  @Input() title = "제목";
+  @Input() title = "";
   @Input() description = "";
   @Input() href = "#";
   @Input() linkLabel = "";
   @Input() closeLabel = "";
-  @Input() position = "top";
+  @Input() position = "top-left";
 
   get contextualHelpClass(): string {
     return `krds-contextual-help ${this.position.split("-").join(" ")}`;

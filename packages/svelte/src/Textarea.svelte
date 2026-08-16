@@ -65,13 +65,11 @@
   class={`krds-input ${rootClass}`}
   {placeholder}
   maxlength={maxLength}
-  value={inputValue}
+  aria-describedby={hint ? `${id}-hint` : undefined}
   {disabled}
   {required}
   {readonly}
   {autocomplete}
   {form}
   oninput={setValue}
-></textarea>
-{#if label}<label for={id}>{label}</label>{/if}
-{#if hint}<p id={`${id}-hint`}>{hint}</p>{/if}
+></textarea>{#if label}<label for={id}>{label}</label>{/if}{#if hint}<p id={`${id}-hint`}>{hint}</p>{/if}

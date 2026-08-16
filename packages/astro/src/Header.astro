@@ -269,22 +269,20 @@ const resolvedMobileId = mobileMenu?.id ?? mobileMenuId;
             )}
             {myMenu && (
               <div class="krds-drop-wrap my-drop">
-                <button type="button" class="btn-navi my drop-btn" aria-expanded="false">
+                <button type="button" class="btn-navi my drop-btn" aria-expanded="false" aria-controls={`${id}-my-menu`}>
                   {myMenu.label}
                 </button>
-                <div class="drop-menu">
+                <div id={`${id}-my-menu`} class="drop-menu">
                   <div class="drop-in">
                     <div class="drop-top">
-                      {myMenu.userName && <p class="my-name">{myMenu.userName}</p>}
-                      {(myMenu.timeLabel || myMenu.time || myMenu.extendLabel) && (
-                        <dl class="my-time">
-                          <dt>{myMenu.timeLabel}</dt>
-                          <dd>
-                            <span class="time">{myMenu.time}</span>
-                            <button type="button" class="krds-btn medium text">{myMenu.extendLabel}</button>
-                          </dd>
-                        </dl>
-                      )}
+                      <p class="my-name">{myMenu.userName}</p>
+                      <dl class="my-time">
+                        <dt>{myMenu.timeLabel}</dt>
+                        <dd>
+                          <span class="time">{myMenu.time}</span>
+                          <button type="button" class="krds-btn medium text">{myMenu.extendLabel}</button>
+                        </dd>
+                      </dl>
                     </div>
                     <ul class="drop-list">
                       {myMenu.items?.map((item) => (

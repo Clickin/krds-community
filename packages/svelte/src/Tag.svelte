@@ -19,7 +19,7 @@
     id,
     label = '레이블',
     size = 'large',
-    removable = false,
+    removable = true,
     message = '삭제',
     className = '',
     class: classProp = '',

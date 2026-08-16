@@ -48,7 +48,12 @@ export function StructuredList({
                 <p className="c-tit">
                   <span className="span">{item.title}</span>
                 </p>
-                {item.description ? <p className="c-txt">{item.description}</p> : null}
+                {item.description ? (
+                  <>
+                    {" "}
+                    <p className="c-txt">{item.description}</p>
+                  </>
+                ) : null}
                 <p className="c-date">
                   <strong className="key">{dateLabel}</strong>
                   <span className="value">{dateValue}</span>

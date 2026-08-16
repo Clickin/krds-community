@@ -25,8 +25,5 @@
 </script>
 
 <div {...rest} class={`krds-progress-bar ${size} ${state} ${rootClass}`}>
-  <progress class="krds-progress" {value} {max}>{label || `${value}%`}</progress>
-  {#if label}
-    <span class="progress-label">{label}</span>
-  {/if}
+  <progress class="krds-progress" {value} {max}>{label || `${value}%`}</progress>{#if label}<span class="progress-label">{label}</span>{/if}
 </div>

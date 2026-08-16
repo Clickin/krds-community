@@ -66,7 +66,9 @@ export function InPageNavigation(rawProps: InPageNavigationProps) {
             {props.actionLabel}
           </button>
           <p class="quick-info">
-            {props.actionInfo} <strong>{props.actionCount}</strong>
+            {props.actionInfo}
+            {props.actionInfo && props.actionCount ? " " : null}
+            {props.actionCount ? <strong>{props.actionCount}</strong> : null}
           </p>
         </div>
       </div>

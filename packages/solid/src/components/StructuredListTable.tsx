@@ -38,6 +38,11 @@ export function StructuredListTable(rawProps: StructuredListTableProps) {
     "actions",
   ]);
   const className = () => props.class ?? props.className ?? "sample";
+  const pageMax = () =>
+    Math.max(
+      1,
+      ...(props.pagination?.items ?? []).filter((item): item is number => item !== "ellipsis"),
+    );
   return (
     <div
       {...(native as Record<string, any>)}
@@ -72,7 +77,6 @@ export function StructuredListTable(rawProps: StructuredListTableProps) {
             <select
               class="krds-form-select-sort"
               id={`${props.id}-count`}
-              aria-label={props.countLabel}
               value={props.countOptions?.[0]}
             >
               <For each={props.countOptions ?? []}>{(option) => <option>{option}</option>}</For>
@@ -97,7 +101,6 @@ export function StructuredListTable(rawProps: StructuredListTableProps) {
               <select
                 class="krds-form-select-sort"
                 id={`${props.id}-sort`}
-                aria-label={props.sortLabel}
                 value={props.sortValue}
               >
                 <For each={props.sortOptions ?? []}>{(option) => <option>{option}</option>}</For>
@@ -211,9 +214,18 @@ export function StructuredListTable(rawProps: StructuredListTableProps) {
             }
           </For>
         </div>
-        <a class="page-navi next" href="#">
-          {props.pagination?.nextLabel}
-        </a>
+        <Show
+          when={(props.pagination?.current ?? 0) < pageMax()}
+          fallback={
+            <span {...({ href: "#" } as Record<string, string>)} class="page-navi next disabled">
+              {props.pagination?.nextLabel}
+            </span>
+          }
+        >
+          <a class="page-navi next" href="#">
+            {props.pagination?.nextLabel}
+          </a>
+        </Show>
       </div>
     </div>
   );

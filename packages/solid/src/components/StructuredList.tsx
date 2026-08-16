@@ -42,19 +42,20 @@ export function StructuredList(rawProps: StructuredListProps) {
           return (
             <li class="structured-item">
               <div class="in">
-                <Show when={structured?.badge}>
-                  <div class="card-top">
+                <div class="card-top">
+                  <Show when={structured?.badge}>
                     <span class={["krds-badge", structured?.badgeClass].filter(Boolean).join(" ")}>
                       {structured?.badge}
                     </span>
-                  </div>
-                </Show>
+                  </Show>
+                </div>
                 <div class="card-body">
                   <a class="c-text" href={structured?.href ?? "#"}>
                     <p class="c-tit">
                       <span class="span">{labelOf(item)}</span>
                     </p>
                     <Show when={structured?.description}>
+                      {" "}
                       <p class="c-txt">{structured?.description}</p>
                     </Show>
                     <p class="c-date">

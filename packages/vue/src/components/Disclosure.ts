@@ -1,6 +1,13 @@
 import { computed, defineComponent, ref, useId, type PropType } from "vue";
 
-import { children, create, itemLabel, withoutClass, withoutNativeEvents } from "../shared.js";
+import {
+  children,
+  create,
+  createVueInstanceId,
+  itemLabel,
+  withoutClass,
+  withoutNativeEvents,
+} from "../shared.js";
 
 export const Disclosure = defineComponent({
   name: "KrdsDisclosure",
@@ -17,7 +24,7 @@ export const Disclosure = defineComponent({
     openChange: (_open: boolean) => true,
   },
   setup(props, { attrs, emit, slots }) {
-    const generatedId = `krds-disclosure-${useId()}`;
+    const generatedId = `krds-disclosure-${useId()}-${createVueInstanceId("disclosure")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const localOpen = ref(props.defaultOpen);
@@ -38,7 +45,7 @@ export const Disclosure = defineComponent({
         "div",
         {
           ...withoutNativeEvents(attrs),
-          class: ["krds-disclosure", "conts-expand-area", className],
+          class: ["krds-disclosure", "conts-expand-area", open.value ? "active" : undefined, className],
         },
         [
           create(

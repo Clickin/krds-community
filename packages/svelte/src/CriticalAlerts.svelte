@@ -21,6 +21,12 @@
     ...rest
   }: Props = $props();
   const rootClass = $derived(`${classProp} ${className}`.trim());
+  const toneOf = (item: unknown): string => {
+    const tone = fieldOf(item, 'tone');
+    if (tone) return String(tone);
+    const badge = fieldOf(item, 'badge');
+    return badge === 'danger' || badge === 'ok' || badge === 'info' ? String(badge) : 'info';
+  };
 </script>
 
 <div {...rest} class={`main-urgent-wrap ${rootClass}`} role="alert">
@@ -28,7 +34,7 @@
     {#each items as item}
       <li>
         <div class="critical-ban">
-          <span class={`critical-badge ${fieldOf(item, 'tone') || 'info'}`}
+          <span class={`critical-badge ${toneOf(item)}`}
             >{fieldOf(item, 'badgeLabel') || fieldOf(item, 'badge') || labelOf(item)}</span
           >
           <p class="critical-txt"

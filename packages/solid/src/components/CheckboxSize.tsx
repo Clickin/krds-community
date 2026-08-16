@@ -1,4 +1,4 @@
-import { createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
+import { createEffect, createSignal, createUniqueId, mergeProps, splitProps, type JSX } from "solid-js";
 
 export interface CheckboxSizeProps {
   class?: string;
@@ -9,8 +9,8 @@ export interface CheckboxSizeProps {
   name?: string;
   size?: string;
   checked?: boolean;
+  indeterminate?: boolean;
   disabled?: boolean;
-  playing?: boolean;
   modelValue?: boolean;
   [key: string]: unknown;
 }
@@ -26,6 +26,7 @@ export function CheckboxSize(rawProps: CheckboxSizeProps) {
     "name",
     "size",
     "checked",
+    "indeterminate",
     "disabled",
     "playing",
     "modelValue",
@@ -61,7 +62,11 @@ export function CheckboxSize(rawProps: CheckboxSizeProps) {
         type="checkbox"
         name={props.name}
         checked={checked()}
-        disabled={props.disabled}
+        ref={(element) => {
+          createEffect(() => {
+            element.indeterminate = Boolean(props.indeterminate);
+          });
+        }}
         onChange={updateChecked}
       />
       <label for={props.id}>{content()}</label>

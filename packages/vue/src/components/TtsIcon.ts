@@ -68,6 +68,9 @@ export const TtsIcon = defineComponent({
               class: ["svg-icon", isPlaying ? "ico-stop" : "ico-volume"],
             }),
           ),
+          (props.label ?? props.text)
+            ? create("span", { class: "sr-only" }, props.label ?? props.text)
+            : null,
         ],
       );
     };

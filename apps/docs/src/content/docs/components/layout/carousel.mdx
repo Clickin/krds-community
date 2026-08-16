@@ -13,11 +13,11 @@ import { AngularCarousel } from "@docs/angular-previews.ts";
 import { Carousel as AstroCarousel } from "@krds-community/astro";
 
 <FrameworkPreview title="캐러셀">
-  <ReactCarousel slot="react" label="콘텐츠 캐러셀" client:only="react" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} actionLabel="콘텐츠 보기" />
-  <VueCarousel slot="vue" label="콘텐츠 캐러셀" client:only="vue" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} actionLabel="콘텐츠 보기" />
-  <SvelteCarousel slot="svelte" label="콘텐츠 캐러셀" client:only="svelte" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} actionLabel="콘텐츠 보기" />
-  <SolidCarousel slot="solid" label="콘텐츠 캐러셀" client:only="solid-js" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} actionLabel="콘텐츠 보기" />
-  <AngularCarousel slot="angular" label="콘텐츠 캐러셀" client:only="@analogjs/astro-angular" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} actionLabel="콘텐츠 보기" />
+  <ReactCarousel slot="react" label="콘텐츠 캐러셀" client:only="react" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} previousLabel="이전" nextLabel="다음" moreLabel="더 보기" actionLabel="콘텐츠 보기" />
+  <VueCarousel slot="vue" label="콘텐츠 캐러셀" client:only="vue" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} previousLabel="이전" nextLabel="다음" moreLabel="더 보기" actionLabel="콘텐츠 보기" />
+  <SvelteCarousel slot="svelte" label="콘텐츠 캐러셀" client:only="svelte" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} previousLabel="이전" nextLabel="다음" moreLabel="더 보기" actionLabel="콘텐츠 보기" />
+  <SolidCarousel slot="solid" label="콘텐츠 캐러셀" client:only="solid-js" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} previousLabel="이전" nextLabel="다음" moreLabel="더 보기" actionLabel="콘텐츠 보기" />
+  <AngularCarousel slot="angular" label="콘텐츠 캐러셀" client:only="@analogjs/astro-angular" slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]} previousLabel="이전" nextLabel="다음" moreLabel="더 보기" actionLabel="콘텐츠 보기" />
   <AstroCarousel
     slot="astro"
     slides={[{ id: 'slide-1', title: '콘텐츠 제목', description: '콘텐츠 설명', href: '#' }]}

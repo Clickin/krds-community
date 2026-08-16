@@ -18,19 +18,7 @@ import { TutorialPanel as AstroTutorialPanel } from "@krds-community/astro";
   <SvelteTutorialPanel slot="svelte" title="사용 안내" client:only="svelte" />
   <SolidTutorialPanel slot="solid" title="사용 안내" client:only="solid-js" />
   <AngularTutorialPanel slot="angular" title="사용 안내" client:only="@analogjs/astro-angular" />
-  <AstroTutorialPanel
-    slot="astro"
-    title="사용 안내"
-    tabs={[{ id: 'tutorial', label: '튜토리얼', panelId: 'tutorial-panel', value: 'tutorial' }]}
-    selectedLabel="선택됨"
-    helpTitle="도움말"
-    downloadLinks={[]}
-    relatedGroups={[]}
-    tutorialTitle="튜토리얼"
-    tasks={[]}
-    stopLabel="중지"
-        label="튜토리얼 패널"
-  />
+  <AstroTutorialPanel slot="astro" title="사용 안내" />
 
 ```tsx fw=react
 import { TutorialPanel } from "@krds-community/react";

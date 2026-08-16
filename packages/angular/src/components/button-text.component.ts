@@ -1,12 +1,12 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { createStableId } from "../kinds";
 
 @Component({
   selector: "krds-button-text, krds-button-with-icon",
   standalone: true,
   imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <button type="button" [class]="'krds-btn text ' + (className || 'small')" [disabled]="disabled">
       @if (label) {
@@ -28,7 +28,7 @@ export class KrdsButtonTextComponent {
   selector: "krds-button-with-icon",
   standalone: true,
   imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <button type="button" [class]="'krds-btn ' + (className || size)" [disabled]="disabled">
       @if (label) {

@@ -1113,7 +1113,8 @@ describe("Svelte core component contracts", () => {
 
     mountInHost(TtsIcon, { label: "Listen" });
     expect(host.querySelector(".krds-tts-text")).toBeNull();
-    expect(host.querySelector(".krds-tts")?.getAttribute("aria-label")).toBe("Listen");
+    expect(host.querySelector(".krds-tts .sr-only")?.textContent).toBe("Listen");
+    expect(host.querySelector(".krds-tts")?.getAttribute("aria-label")).toBeNull();
     mountInHost(TtsSize, { label: "Small" });
     expect(host.querySelector(".krds-tts")?.classList.contains("xsmall")).toBe(true);
   });

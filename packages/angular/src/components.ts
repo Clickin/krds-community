@@ -3,11 +3,13 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   EventEmitter,
   forwardRef,
   inject,
   Input,
   Output,
+  ViewChild,
 } from "@angular/core";
 import { FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from "@angular/forms";
 import type { ControlValueAccessor } from "@angular/forms";
@@ -70,6 +72,7 @@ export class KrdsButtonComponent implements ButtonContractProps {
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `<div class="form-group">
     <div class="form-tit">
       <label [for]="id">{{ label }}</label>
@@ -86,11 +89,12 @@ export class KrdsButtonComponent implements ButtonContractProps {
         [type]="type"
         [value]="value"
         [attr.value]="value || null"
-        [placeholder]="placeholder"
+        [attr.placeholder]="placeholder || null"
         [disabled]="disabled"
         [readonly]="readonly"
         [required]="required"
         [class]="'krds-input' + (size ? ' ' + size : '') + (className ? ' ' + className : '')"
+        [attr.aria-label]="ariaLabel || null"
         [attr.aria-invalid]="state === 'error' ? 'true' : null"
         [attr.aria-describedby]="hint ? id + '-hint' : null"
         (input)="input($event)"
@@ -114,6 +118,7 @@ export class KrdsTextInputComponent implements ControlValueAccessor, TextInputCo
   @Input() name: string | null = null;
   @Input() type = "text";
   @Input() label = "";
+  @Input("aria-label") ariaLabel = "";
   @Input() hint = "";
   @Input() placeholder = "";
   @Input() state: "default" | "error" | "success" | "information" = "default";
@@ -163,8 +168,10 @@ export class KrdsTextInputComponent implements ControlValueAccessor, TextInputCo
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `<div [class]="'krds-form-check' + (size ? ' ' + size : '')">
     <input
+      #input
       [id]="id"
       [attr.name]="name ?? null"
       type="checkbox"
@@ -189,6 +196,22 @@ export class KrdsCheckboxComponent implements ControlValueAccessor, ChoiceContra
   @Input() checked = false;
   @Input() disabled = false;
   @Output() checkedChange = new EventEmitter<boolean>();
+  @ViewChild("input", { static: true }) private inputElement?: ElementRef<HTMLInputElement>;
+  private indeterminateValue = false;
+  @Input()
+  get indeterminate(): boolean {
+    return this.indeterminateValue;
+  }
+  set indeterminate(value: boolean) {
+    this.indeterminateValue = value;
+    this.syncIndeterminate();
+  }
+  private syncIndeterminate(): void {
+    if (this.inputElement) this.inputElement.nativeElement.indeterminate = this.indeterminateValue;
+  }
+  ngAfterViewInit(): void {
+    this.syncIndeterminate();
+  }
   private onChange: (value: boolean) => void = () => undefined;
   private onTouched: () => void = () => undefined;
 
@@ -232,6 +255,7 @@ export class KrdsCheckboxComponent implements ControlValueAccessor, ChoiceContra
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `<div [class]="'krds-form-check' + (size ? ' ' + size : '')">
     <input
       [id]="id"
@@ -304,10 +328,12 @@ export class KrdsRadioComponent implements ControlValueAccessor, RadioContractPr
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `<div [class]="'krds-form-toggle-switch' + (size ? ' ' + size : '')">
     <input
       [id]="id"
       [attr.name]="name ?? null"
+      [attr.aria-label]="ariaLabel || null"
       type="checkbox"
       [checked]="checked"
       [disabled]="disabled"
@@ -326,6 +352,7 @@ export class KrdsSwitchComponent implements ControlValueAccessor, ChoiceContract
   @Input() size?: "medium" | "large";
   @Input() checked = false;
   @Input() disabled = false;
+  @Input("aria-label") ariaLabel = "";
   @Output() checkedChange = new EventEmitter<boolean>();
   private onChange: (value: boolean) => void = () => undefined;
   private onTouched: () => void = () => undefined;

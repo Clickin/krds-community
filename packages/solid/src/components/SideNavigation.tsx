@@ -1,6 +1,5 @@
 import { For, createSignal, mergeProps, splitProps } from "solid-js";
 import type { KrdsNavItem } from "@krds-community/recipes";
-import type { MenuItem } from "../shared.js";
 
 export interface SideNavigationItem extends KrdsNavItem {
   children?: SideNavigationItem[];
@@ -72,7 +71,7 @@ export function SideNavigation(rawProps: SideNavigationProps) {
             const submenuId = `${props.id}-submenu-${topIndex()}`;
             const expanded = () =>
               selected() === item.id || (selected() === "" && hasCurrentItem(item));
-            return (
+            return item.children?.length ? (
               <li class="lnb-item" classList={{ active: expanded() }} role="none">
                 <button
                   type="button"
@@ -87,10 +86,10 @@ export function SideNavigation(rawProps: SideNavigationProps) {
                 </button>
                 <div class="lnb-submenu">
                   <ul id={submenuId} role="menu">
-                    <For each={(item as MenuItem).children}>
+                    <For each={(item as SideNavigationItem).children}>
                       {(child, childIndex) => {
                         const popupId = `${submenuId}-${childIndex()}`;
-                        return (child as MenuItem).children?.length ? (
+                        return (child as SideNavigationItem).children?.length ? (
                           <li class="lnb-subitem" role="none">
                             <button
                               type="button"
@@ -104,12 +103,12 @@ export function SideNavigation(rawProps: SideNavigationProps) {
                             </button>
                             <div class="lnb-submenu-lv2" id={popupId} role="menu">
                               <button type="button" class="lnb-btn-tit">
-                                {"description" in child && typeof child.description === "string"
+                                {typeof child.description === "string"
                                   ? child.description
-                                  : undefined}
+                                  : child.label}
                               </button>
                               <ul>
-                                <For each={(child as MenuItem).children}>
+                                <For each={(child as SideNavigationItem).children}>
                                   {(leaf) => (
                                     <li role="none">
                                       <a href={leaf.href ?? "#"} class="lnb-btn" role="menuitem">
@@ -137,6 +136,17 @@ export function SideNavigation(rawProps: SideNavigationProps) {
                     </For>
                   </ul>
                 </div>
+              </li>
+            ) : (
+              <li class="lnb-item" classList={{ active: item.current }} role="none">
+                <a
+                  href={item.href ?? "#"}
+                  class="lnb-btn lnb-link"
+                  role="menuitem"
+                  aria-current={item.current ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
               </li>
             );
           }}

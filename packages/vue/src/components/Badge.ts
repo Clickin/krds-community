@@ -26,7 +26,9 @@ export const Badge = defineComponent({
             "krds-badge",
             props.appearance === "outline"
               ? `outline-${tones[props.tone]}`
-              : `bg-${tones[props.tone]}`,
+              : props.appearance === "light"
+                ? `bg-light-${tones[props.tone]}`
+                : `bg-${tones[props.tone]}`,
             props.number ? "number" : "",
             props.size,
             className,
@@ -60,7 +62,9 @@ export const BadgeNumber = defineComponent({
             "krds-badge",
             props.appearance === "outline"
               ? `outline-${tones[props.tone]}`
-              : `bg-${tones[props.tone]}`,
+              : props.appearance === "light"
+                ? `bg-light-${tones[props.tone]}`
+                : `bg-${tones[props.tone]}`,
             "number",
             props.size,
             className,

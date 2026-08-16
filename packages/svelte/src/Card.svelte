@@ -43,7 +43,9 @@
         <img class="card-image" src={image} alt={imageAlt} />
       {/if}
       {#each badges as badge}
-        <Badge label={badge} appearance="solid" className="card-badge" />
+        <div class="card-badge">
+          <Badge label={badge} appearance="solid" />
+        </div>
       {/each}
       {#if checkbox}
         <Checkbox {...checkbox} />

@@ -34,11 +34,9 @@ const recipe = switchRecipe({ size, className });
     checked={checked}
     aria-describedby={ariaDescribedBy}
   />
-  {hasLabel && (
-    <label for={id}>
-      <span class="switch-toggle"><i></i></span><slot>{label}</slot>
-    </label>
-  )}
+  <label for={id}>
+    <span class="switch-toggle"><i></i></span><slot>{label}</slot>
+  </label>
   {hasDescription && (
     <span id={descriptionId} class="krds-field-message">
       <slot name="description">{description}</slot>

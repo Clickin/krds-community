@@ -36,7 +36,7 @@ export function Disclosure({
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const open = controlledOpen ?? uncontrolledOpen;
   return (
-    <div {...props} className={cx("krds-disclosure", "conts-expand-area", className)}>
+    <div {...props} className={cx("krds-disclosure", "conts-expand-area", open && "active", className)}>
       <button
         id={`${panelId}-trigger`}
         type="button"

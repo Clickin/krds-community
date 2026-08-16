@@ -3498,7 +3498,7 @@ function SideNavigationPopup({ item, panelId }: { item: SideNavigationItem; pane
             triggerRef.current?.focus();
           }}
         >
-          {item.description ?? item.title}
+          {item.description ?? item.title ?? item.label}
         </button>
         <ul>
           {item.children?.map((leaf, index) => (
@@ -3561,7 +3561,7 @@ export const SideNavigation = forwardRef<HTMLElement, SideNavigationProps>(funct
           const itemId = item.id ?? String(topIndex);
           const submenuId = `krds-side-${generatedId}-${topIndex}`;
           const expanded = expandedItems.includes(itemId);
-          return (
+          return item.children?.length ? (
             <li className={cx("lnb-item", expanded && "active")} role="none" key={itemId}>
               <button
                 type="button"
@@ -3610,6 +3610,19 @@ export const SideNavigation = forwardRef<HTMLElement, SideNavigationProps>(funct
                   )}
                 </ul>
               </div>
+            </li>
+          ) : (
+            <li className={cx("lnb-item", item.current && "active")} role="none" key={itemId}>
+              <a
+                href={item.href ?? "#"}
+                className="lnb-btn lnb-link"
+                role="menuitem"
+                aria-current={item.current ? "page" : undefined}
+                target={item.target}
+                title={item.title as string | undefined}
+              >
+                {item.label}
+              </a>
             </li>
           );
         })}

@@ -7,6 +7,7 @@ import { createStableId } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-tag-wrap large">
       <span class="krds-btn-tag">
@@ -29,6 +30,7 @@ export class KrdsTagComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div class="krds-tag-wrap large">
       <a class="krds-btn-tag link" [href]="href">{{ label }}</a>

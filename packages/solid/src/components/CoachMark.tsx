@@ -61,7 +61,7 @@ export function CoachMark(rawProps: CoachMarkProps) {
         .join(" ")}
     >
       <div class="coach-balloon">
-        <h5 class="sr-only">{props.title}</h5>
+        {props.title ? <h5 class="sr-only">{props.title}</h5> : null}
         <h6 class="coach-tit">{props.stepTitle}</h6>
         <p class="desc">{props.description}</p>
         <div class="coach-controls">

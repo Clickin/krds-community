@@ -8,7 +8,7 @@ import { createStableId } from "../kinds";
   selector: "krds-tts",
   standalone: true,
   imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <button
       type="button"
@@ -42,16 +42,19 @@ export class KrdsTtsComponent {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <button
       type="button"
       class="krds-tts medium"
-      [attr.aria-label]="label || null"
       (click)="playing = !playing"
     >
       <span class="krds-tts-icon" aria-hidden="true">
         <i class="svg-icon ico-volume"></i>
       </span>
+      @if (label) {
+        <span class="sr-only">{{ label }}</span>
+      }
     </button>
   `,
 })
@@ -63,14 +66,10 @@ export class KrdsTtsIconComponent {
 @Component({
   selector: "krds-tts-size",
   standalone: true,
-  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <button
-      type="button"
-      [class]="'krds-tts ' + size"
-      (click)="playing = !playing"
-    >
+    <button type="button" [class]="'krds-tts ' + size" (click)="playing = !playing">
       <span class="krds-tts-icon" aria-hidden="true">
         <i class="svg-icon ico-volume"></i>
       </span>

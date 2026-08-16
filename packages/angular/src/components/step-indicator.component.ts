@@ -6,6 +6,7 @@ import type { KrdsStep } from "@krds-community/recipes";
   selector: "krds-step-indicator",
   standalone: true,
   imports: [CommonModule],
+  styles: [":host { display: contents; }"],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ol class="krds-step-wrap">

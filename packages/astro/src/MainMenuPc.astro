@@ -70,7 +70,7 @@ const runtimeInitialized = !sample;
 <nav
   {...rest}
   class={cx('krds-main-menu', sample && 'sample', className)}
-  aria-label={ariaLabel ?? navigationLabel}
+  aria-label={ariaLabel ?? navigationLabel ?? (sample ? undefined : menuLabel)}
 >
   <div class="inner">
     <ul class="gnb-menu" aria-label={runtimeInitialized ? menuLabel : undefined}>

@@ -12,6 +12,7 @@ export interface KrdsCardAction {
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <article [class]="'krds-card ' + type">
       @if (image || badges.length > 0) {
@@ -20,7 +21,9 @@ export interface KrdsCardAction {
             <img class="card-image" [src]="image" [attr.alt]="imageAlt" />
           }
           @for (badge of badges; track $index) {
-            <span class="krds-badge bg-primary card-badge">{{ badge }}</span>
+            <div class="card-badge">
+              <span class="krds-badge bg-primary">{{ badge }}</span>
+            </div>
           }
         </div>
       }

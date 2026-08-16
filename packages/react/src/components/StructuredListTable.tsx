@@ -97,7 +97,7 @@ export function StructuredListTable({
       key={page}
     >
       {page === pagination?.current ? (
-        <span className="sr-only">{pagination.currentLabel}</span>
+        <span className="sr-only">{pagination.currentLabel} </span>
       ) : null}
       {page}
     </a>

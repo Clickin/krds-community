@@ -174,11 +174,11 @@ export class KrdsCalendarComponent {
   @Input() eventDays: number[] = [];
   @Input() disabledDays: number[] = [];
   @Input() calendarLabel = "";
-  @Input() previousMonthLabel = "";
-  @Input() nextMonthLabel = "";
-  @Input() yearSelectLabel = "";
-  @Input() monthSelectLabel = "";
-  @Input() weekdays: string[] = [];
+  @Input() previousMonthLabel = "이전 달";
+  @Input() nextMonthLabel = "다음 달";
+  @Input() yearSelectLabel = "연도 선택";
+  @Input() monthSelectLabel = "월 선택";
+  @Input() weekdays: string[] = ["일", "월", "화", "수", "목", "금", "토"];
   @Input() todayLabel = "";
   @Input() eventLabel = "";
   @Input() cancelLabel = "";

@@ -1,4 +1,5 @@
-import { computed, defineComponent, ref, useId, type PropType } from "vue";
+import { computed, defineComponent, ref, type PropType } from "vue";
+import { createVueInstanceId } from "../shared.js";
 
 import { create, invokeNativeEvent } from "../shared.js";
 
@@ -33,8 +34,9 @@ export const TextInputIcon = defineComponent({
     valueChange: (_value: string | number | boolean) => true,
   },
   setup(props, { attrs, emit, slots: _slots }) {
-    const generatedId = `krds-textinputicon-${useId()}`;
+    const generatedId = `krds-textinputicon-${createVueInstanceId("text-input-icon")}`;
     const id = computed(() => props.id ?? generatedId);
+    const hintId = computed(() => (props.hint ? `${id.value}-hint` : undefined));
 
     const initialValue =
       props.defaultValue ??
@@ -86,6 +88,8 @@ export const TextInputIcon = defineComponent({
             readonly: props.readonly,
             required: props.required,
             class: ["krds-input", className],
+            "aria-describedby":
+              [attrs["aria-describedby"], hintId.value].filter(Boolean).join(" ") || undefined,
             onInput: (event: Event) => {
               invokeNativeEvent(attrs.onInput, event);
               setValue((event.target as HTMLInputElement).value);
@@ -107,7 +111,7 @@ export const TextInputIcon = defineComponent({
             }),
           ]),
         ]),
-        props.hint ? create("p", { class: "form-hint" }, props.hint) : null,
+        props.hint ? create("p", { id: hintId.value, class: "form-hint" }, props.hint) : null,
       ]);
     };
   },

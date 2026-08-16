@@ -27,8 +27,7 @@ import { Button as AstroButton } from "@krds-community/astro";
   <AstroHelpPanel
     slot="astro"
     title="도움말"
-    tabs={[{ id: 'help', label: '도움말', panelId: 'help-panel', value: 'help' }]}
-    selectedLabel="선택됨"
+    tabs={[]}
     helpTitle="도움말"
     downloadLinks={[]}
     relatedGroups={[]}
@@ -183,7 +182,6 @@ import { HelpPanel } from '@krds-community/astro';
         helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
       title="도움말"
       tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
-      selectedLabel="선택됨"
       helpTitle="도움말"
       downloadLinks={[]}
       relatedGroups={[]}
@@ -210,33 +208,73 @@ import { HelpPanel } from '@krds-community/astro';
 
 <FrameworkPreview kind="bad" title="화면이 로딩되었을 때 도움 패널은 열린 상태로 제공한다.">
   <div slot="react">
-    <ReactHelpPanel title="도움말" label="도움 패널" client:only="react" />
+    <ReactHelpPanel
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
+      client:only="react"
+    />
   </div>
   <div slot="vue">
-    <VueHelpPanel title="도움말" label="도움 패널" client:only="vue" />
+    <VueHelpPanel
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
+      client:only="vue"
+    />
   </div>
   <div slot="svelte">
-    <SvelteHelpPanel title="도움말" label="도움 패널" client:only="svelte" />
+    <SvelteHelpPanel
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
+      client:only="svelte"
+    />
   </div>
   <div slot="solid">
-    <SolidHelpPanel title="도움말" label="도움 패널" client:only="solid-js" />
+    <SolidHelpPanel
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
+      client:only="solid-js"
+    />
   </div>
   <div slot="astro">
     <AstroHelpPanel
       title="도움말"
       tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
-      selectedLabel="선택됨"
       helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
       downloadLinks={[]}
       relatedGroups={[]}
       tutorialTitle="튜토리얼"
       tasks={[]}
       stopLabel="중지"
-            label="도움 패널"
+      label="도움 패널"
     />
   </div>
   <div slot="angular">
-    <AngularHelpPanel title="도움말" label="도움 패널" client:only="@analogjs/astro-angular" />
+    <AngularHelpPanel
+      title="도움말"
+      label="도움 패널"
+      tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
+      defaultActiveTab="help"
+      helpTitle="도움말"
+      helpDescription="도움말이 필요한 사용자를 위해 패널을 펼친 상태로 제공합니다."
+      client:only="@analogjs/astro-angular"
+    />
   </div>
 </FrameworkPreview>
 
@@ -296,7 +334,6 @@ import { HelpPanel } from '@krds-community/astro';
         helpDescription="도움 패널의 용도와 활용 방법을 간략하게 안내합니다."
       title="도움말"
       tabs={[{ id: "help", label: "도움말", panelId: "help-panel", value: "help" }]}
-      selectedLabel="선택됨"
       helpTitle="도움말"
       downloadLinks={[]}
       relatedGroups={[]}

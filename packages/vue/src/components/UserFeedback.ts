@@ -47,9 +47,10 @@ export const UserFeedback = defineComponent({
               "div",
               { class: "feedback-options" },
               props.options.map((option, optionIndex) =>
-                create("label", { key: optionIndex, class: "krds-form-check" }, [
+                create("div", { key: optionIndex, class: "krds-form-check" }, [
                   create("input", {
                     type: "radio",
+                    id: `${name}-${option.value}`,
                     name,
                     value: option.value,
                     checked: selected.value === option.value,
@@ -57,7 +58,7 @@ export const UserFeedback = defineComponent({
                       selected.value = option.value;
                     },
                   }),
-                  create("span", null, option.label),
+                  create("label", { for: `${name}-${option.value}` }, option.label),
                 ]),
               ),
             ),

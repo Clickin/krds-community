@@ -51,7 +51,7 @@
     </nav>
     <div class="in-page-navigation-action">
       <button class="krds-btn medium" type="button">{actionLabel}</button>
-      <p class="quick-info">{actionInfo} <strong>{actionCount}</strong></p>
+      <p class="quick-info">{actionInfo}{actionInfo && actionCount ? ' ' : ''}{#if actionCount}<strong>{actionCount}</strong>{/if}</p>
     </div>
   </div>
 </div>

@@ -18,11 +18,16 @@ export const CriticalAlerts = defineComponent({
           { ...attrs, class: ["krds-critical-alerts", className] },
           props.items.map((item: AdditionalAlertItem, itemIndex: number) => {
             const alert = item as AdditionalAlertItem;
+            const badgeTone =
+              alert.tone ??
+              (alert.badge === "danger" || alert.badge === "ok" || alert.badge === "info"
+                ? alert.badge
+                : undefined);
             return create("li", { key: alert.id ?? itemIndex }, [
               create("div", { class: "critical-ban" }, [
                 create(
                   "span",
-                  { class: ["critical-badge", alert.tone] },
+                  { class: ["critical-badge", badgeTone] },
                   alert.badgeLabel ?? alert.badge,
                 ),
                 create("p", { class: "critical-txt" }, alert.message ?? alert.text ?? alert.title),

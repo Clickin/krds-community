@@ -8,6 +8,7 @@ export interface PaginationProps {
   message?: string;
   navigationLabel?: string;
   previousDisabled?: boolean;
+  nextDisabled?: boolean;
   previousLabel?: string;
   nextLabel?: string;
   items?: (number | "ellipsis" | string)[];
@@ -29,6 +30,7 @@ export function Pagination(rawProps: PaginationProps) {
     "message",
     "navigationLabel",
     "previousDisabled",
+    "nextDisabled",
     "previousLabel",
     "nextLabel",
     "items",
@@ -53,6 +55,9 @@ export function Pagination(rawProps: PaginationProps) {
     return Number.isFinite(page) && page > 0 ? page : 1;
   };
   const className = () => props.class ?? props.className ?? "";
+  const maxPage = () =>
+    Math.max(...(props.items ?? [1, 2, 3, 4, 5]).map((item) => Number(item)).filter(Number.isFinite), 1);
+  const nextDisabled = () => props.nextDisabled ?? paginationPage() >= maxPage();
   return (
     <div
       {...(native as Record<string, any>)}
@@ -61,7 +66,7 @@ export function Pagination(rawProps: PaginationProps) {
       aria-label={props.navigationLabel || "페이지 이동"}
     >
       <Show
-        when={!props.previousDisabled}
+        when={!props.previousDisabled && paginationPage() > 1}
         fallback={
           <span {...({ href: "#" } as Record<string, string>)} class="page-navi prev disabled">
             {props.previousLabel ?? "이전"}
@@ -87,7 +92,7 @@ export function Pagination(rawProps: PaginationProps) {
                 onClick={() => setSelected(String(item))}
               >
                 <Show when={item === paginationPage()}>
-                  <span class="sr-only">{props.message}</span>
+                  <span class="sr-only">{props.message ?? "현재페이지"} </span>
                 </Show>
                 {item}
               </a>
@@ -97,9 +102,18 @@ export function Pagination(rawProps: PaginationProps) {
           }
         </For>
       </div>
-      <a class="page-navi next" href="#" onClick={() => setSelected(String(paginationPage() + 1))}>
-        {props.nextLabel ?? "다음"}
-      </a>
+      <Show
+        when={!nextDisabled()}
+        fallback={
+          <span {...({ href: "#" } as Record<string, string>)} class="page-navi next disabled">
+            {props.nextLabel ?? "다음"}
+          </span>
+        }
+      >
+        <a class="page-navi next" href="#" onClick={() => setSelected(String(paginationPage() + 1))}>
+          {props.nextLabel ?? "다음"}
+        </a>
+      </Show>
     </div>
   );
 }

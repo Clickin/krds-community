@@ -34,7 +34,7 @@ id?: string;
     tabs = [],
     activeTab = $bindable<'help' | 'tutorial'>('help'),
     selectedLabel = '',
-    label = '',
+    label = '도움 패널',
     title,
     helpTitle = '',
     helpDescription = '',
@@ -64,7 +64,18 @@ id?: string;
   };
 </script>
 
+<button
+  type="button"
+  id={`${id}-trigger`}
+  class="krds-btn small tertiary btn-help-panel expand btn-help-exec"
+  aria-controls={id}
+  aria-expanded={isOpen}
+  onclick={() => (open = true)}
+>
+  <i class="svg-icon ico-fold"></i> {label}
+</button>
 <div
+  id={id}
   {...rest}
   class={`krds-help-panel ${isOpen ? 'expand' : ''} ${rootClass}`}
   hidden={!isOpen}
@@ -92,7 +103,7 @@ id?: string;
                   }}
                 >
                   {tab.label}
-                  {#if activeTab === tabName}<i class="sr-only created"> {selectedLabel}</i>{/if}
+                  {#if activeTab === tabName && selectedLabel}<i class="sr-only created">{` ${selectedLabel}`}</i>{/if}
                 </button>
               </li>
             {/each}
@@ -116,7 +127,14 @@ id?: string;
                   <div class="conts-area help-conts">
                     <div class="conts-wrap">
                       <h4 class="help-title">
-                        {helpTitle}
+                        {#if helpTitle.split(' ').length < 2}
+                          {helpTitle}{' '}
+                        {:else}
+                          {#each helpTitle.split(' ') as part, index}
+                            {#if index > 0}{' '}{/if}<span class="krds-icon-space-right">{part}</span>
+                          {/each}
+                          {' '}
+                        {/if}
                         <span class="krds-btn medium icon">
                           <span class="sr-only">{label}</span>
                           <i class="svg-icon ico-help"></i>
@@ -214,7 +232,16 @@ id?: string;
         class="krds-btn small tertiary btn-help-panel fold"
         onclick={toggleOpen}
       >
-        <span class="sr-only">{label}</span> {collapseLabel || label}
+        <span class="sr-only">{label}</span>
+        {#if (collapseLabel || label).split(' ').length < 2}
+          {' '}{collapseLabel || label}{' '}
+        {:else}
+          {' '}
+          {#each (collapseLabel || label).split(' ') as part, index}
+            {#if index > 0}{' '}{/if}<span class="krds-icon-space-left krds-icon-space-right">{part}</span>
+          {/each}
+          {' '}
+        {/if}
         <i class="svg-icon ico-angle right"></i>
       </button>
     </div>

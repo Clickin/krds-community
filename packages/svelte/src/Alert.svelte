@@ -29,10 +29,4 @@
   );
 </script>
 
-<div {...rest} class={`krds-alert ${state} ${size} ${rootClass}`} role="status">
-  <i class={`svg-icon alert-icon ${icon}`} aria-hidden="true"></i>
-  {#if title}
-    <strong class="alert-title">{title}</strong>
-  {/if}
-  <p class="alert-body">{message}</p>
-</div>
+<div {...rest} class={`krds-alert ${state} ${size} ${rootClass}`} role="status"><i class={`svg-icon alert-icon ${icon}`} aria-hidden="true"></i>{#if title}<strong class="alert-title">{title}</strong>{/if}<p class="alert-body">{message}</p></div>

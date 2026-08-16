@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, inject } from "@angular/core";
 import { createStableId, type AngularNavItem } from "../kinds";
 
 @Component({
@@ -7,12 +7,13 @@ import { createStableId, type AngularNavItem } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
     <div
       id="mobile-nav"
       class="krds-main-menu-mobile sample"
       role="navigation"
-      [attr.aria-label]="menuLabel || '전체 메뉴'"
+      [attr.aria-label]="ariaLabel || hostAriaLabel || menuLabel || '전체 메뉴'"
       [style]="style"
     >
       <div class="gnb-wrap">
@@ -40,8 +41,8 @@ import { createStableId, type AngularNavItem } from "../kinds";
             <input
               type="text"
               class="krds-input"
-              [placeholder]="searchPlaceholder"
-              [attr.title]="searchTitle"
+              [attr.placeholder]="searchPlaceholder || null"
+              [attr.title]="searchTitle || null"
               [attr.aria-label]="searchLabel || searchTitle || null"
             />
             <button type="button" class="krds-btn medium icon ico-search">
@@ -146,6 +147,10 @@ import { createStableId, type AngularNavItem } from "../kinds";
   `,
 })
 export class KrdsMainMenuMobileComponent {
+  private readonly hostElement = inject(ElementRef<HTMLElement>);
+  get hostAriaLabel(): string | null {
+    return this.hostElement.nativeElement.getAttribute("aria-label");
+  }
   @Input() id = createStableId("krds-main-menu-mobile");
   @Input() loginLabel = "";
   @Input() searchPlaceholder = "";
@@ -158,6 +163,7 @@ export class KrdsMainMenuMobileComponent {
   @Input() items: AngularNavItem[] = [];
   @Input() bottomItems: AngularNavItem[] = [];
   @Input() menuLabel = "";
+  @Input("aria-label") ariaLabel = "";
   @Input() style = "display: block; position: static; visibility: visible;";
 
   mobileMenuId(item: AngularNavItem): string {

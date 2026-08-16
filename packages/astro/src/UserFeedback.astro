@@ -31,10 +31,15 @@ const fieldName = `krds-feedback-${crypto.randomUUID()}`;
     <legend class="feedback-title">{title}</legend>
     <div class="feedback-options">
       {options.map((option) => (
-        <label class="krds-form-check">
-          <input type="radio" name={fieldName} value={option.value} />
-          <span>{option.label}</span>
-        </label>
+        <div class="krds-form-check">
+          <input
+            id={`${fieldName}-${option.value}`}
+            type="radio"
+            name={fieldName}
+            value={option.value}
+          />
+          <label for={`${fieldName}-${option.value}`}>{option.label}</label>
+        </div>
       ))}
     </div>
     <button type="button" class="krds-btn small primary">{submitLabel}</button>

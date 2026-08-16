@@ -61,21 +61,21 @@ const {
   id: providedId,
   open = false,
   activeTab,
-  tabs,
+  tabs = [],
   selectedLabel,
   helpTitle,
   helpDescription,
-  downloadLinks,
-  relatedGroups,
+  downloadLinks = [],
+  relatedGroups = [],
   tutorialTitle,
   tutorialHref = '#;',
   tutorialBackTitle,
   backTitle,
   externalTitle,
-  tasks,
+  tasks = [],
   stopLabel,
   collapseLabel,
-  label,
+  label = '튜토리얼 패널',
   title: triggerTitle,
   children,
   class: className,
@@ -284,7 +284,19 @@ const foldLabel = collapseLabel ?? label;
       </div>
 
       <button type="button" class="krds-btn small tertiary btn-help-panel fold">
-        <span class="sr-only">{label}</span> {foldLabel} <i class="svg-icon ico-angle right"></i>
+        <span class="sr-only">{label}</span>
+        {foldLabel.split(' ').length < 2 ? (
+          <>{' '}{foldLabel}{' '}</>
+        ) : (
+          <>
+            {' '}
+            {foldLabel.split(' ').map((part, index) => (
+              <Fragment>{index > 0 && ' '}<span class="krds-icon-space-left krds-icon-space-right">{part}</span></Fragment>
+            ))}
+            {' '}
+          </>
+        )}
+        <i class="svg-icon ico-angle right"></i>
       </button>
     </div>
   </div>

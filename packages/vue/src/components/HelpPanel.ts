@@ -2,6 +2,26 @@ import { computed, defineComponent, ref, useId, type PropType } from "vue";
 
 import { create } from "../shared.js";
 
+function inlineSpacedText(value: string | undefined, leading: boolean, trailing: boolean) {
+  if (!value) return value;
+  const parts = value.split(" ");
+  if (parts.length < 2) {
+    return [`${leading ? " " : ""}${value}${trailing ? " " : ""}`];
+  }
+  const className = [
+    leading ? "krds-icon-space-left" : undefined,
+    trailing ? "krds-icon-space-right" : undefined,
+  ];
+  return [
+    leading ? " " : null,
+    ...parts.flatMap((part, index) => [
+      index > 0 ? " " : null,
+      create("span", { class: className }, part),
+    ]),
+    trailing ? " " : null,
+  ];
+}
+
 import type {
   AdditionalLinkItem,
   AdditionalRelatedGroup,
@@ -16,7 +36,7 @@ export const HelpPanel = defineComponent({
     id: { type: String, default: undefined },
     open: { type: Boolean as PropType<boolean | undefined>, default: undefined },
     defaultOpen: { type: Boolean, default: false },
-    label: { type: String, default: undefined },
+    label: { type: String, default: "도움 패널" },
     tabs: { type: Array as PropType<AdditionalTabItem[]>, default: () => [] },
     activeTab: { type: String, default: undefined },
     selected: { type: String, default: undefined },
@@ -85,14 +105,29 @@ export const HelpPanel = defineComponent({
     return () => {
       const className = attrs.class as string | undefined;
       const activeTab = props.activeTab ?? props.tabs[0]?.value ?? props.tabs[0]?.id;
-      return create(
-        "div",
-        {
-          ...attrs,
-          class: ["krds-help-panel", open.value ? "expand" : undefined, className],
-        },
-        [
-          create("div", { class: "help-panel-wrap", tabindex: open.value ? 0 : undefined }, [
+      return [
+        create(
+          "button",
+          {
+            type: "button",
+            id: `${id.value}-trigger`,
+            class: ["krds-btn", "small", "tertiary", "btn-help-panel", "expand", "btn-help-exec"],
+            "aria-controls": id.value,
+            "aria-expanded": open.value,
+            onClick: () => setOpen(true),
+          },
+          [create("i", { class: ["svg-icon", "ico-fold"] }), ` ${props.label ?? "도움 패널"}`],
+        ),
+        create(
+          "div",
+          {
+            ...attrs,
+            id: id.value,
+            hidden: !open.value,
+            class: ["krds-help-panel", open.value ? "expand" : undefined, className],
+          },
+          [
+            create("div", { class: "help-panel-wrap", tabindex: open.value ? 0 : undefined }, [
             create("div", { class: "help-conts-area" }, [
               create("div", { class: ["krds-tab-area", "layer"] }, [
                 create("div", { class: ["tab", "line"] }, [
@@ -124,8 +159,12 @@ export const HelpPanel = defineComponent({
                           },
                           [
                             tab.label,
-                            isActive
-                              ? create("i", { class: ["sr-only", "created"] }, props.selectedLabel)
+                            isActive && props.selectedLabel
+                              ? create(
+                                  "i",
+                                  { class: ["sr-only", "created"] },
+                                  ` ${props.selectedLabel}`,
+                                )
                               : null,
                           ],
                         ),
@@ -156,9 +195,7 @@ export const HelpPanel = defineComponent({
                               create("div", { class: ["conts-area", "help-conts"] }, [
                                 create("div", { class: "conts-wrap" }, [
                                   create("h4", { class: "help-title" }, [
-                                    props.helpTitle === undefined
-                                      ? undefined
-                                      : `${props.helpTitle} `,
+                                    ...(inlineSpacedText(props.helpTitle, false, true) ?? []),
                                     create("span", { class: ["krds-btn", "icon", "medium"] }, [
                                       create("span", { class: "sr-only" }, props.label),
                                       create("i", { class: ["svg-icon", "ico-help"] }),
@@ -328,14 +365,15 @@ export const HelpPanel = defineComponent({
                 },
                 [
                   create("span", { class: "sr-only" }, props.label),
-                  ` ${props.collapseLabel ?? props.label ?? props.title} `,
+                  ...(inlineSpacedText(props.collapseLabel ?? props.label ?? props.title, true, true) ?? []),
                   create("i", { class: ["svg-icon", "ico-angle", "right"] }),
                 ],
               ),
             ]),
           ]),
-        ],
-      );
+          ],
+        ),
+      ];
     };
   },
 });

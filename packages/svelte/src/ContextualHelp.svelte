@@ -23,11 +23,11 @@
   let {
     id = generatedId,
     label = '레이블',
-    title = '제목',
+    title = '',
     description = '',
-    message = '도움말',
+    message = '',
     caption = '',
-    position = 'top',
+    position = 'top-left',
     href = '#',
     linkLabel = '',
     closeLabel = '',
@@ -47,7 +47,7 @@
 </script>
 
 <div {...rest} class={`krds-contextual-help ${position.split('-').reverse().join(' ')} ${rootClass}`}>
-  {#if caption}<p class="tooltip-txt">{caption}</p>{/if}
+  <p class="tooltip-txt">{caption}</p>
   <div class="tooltip-action">
     <button
       class="icon krds-btn medium tooltip-btn"
@@ -62,7 +62,10 @@
     <div class="tooltip-popover" id={`${id}-popover`} role="tooltip">
       <h4 class="tooltip-title">{title}</h4>
       <div class="tooltip-contents">
-        <p>{description || message}</p>
+        <p>
+          {@render children?.()}
+          {#if !children}{description || message}{/if}
+        </p>
         {#if linkLabel}<div class="btn-wrap"><a class="basic krds-btn link xsmall" href={href}>{linkLabel}<i class="ico-angle right svg-icon"></i></a></div>{/if}
       </div>
       <button class="icon krds-btn tooltip-close xsmall" type="button" onclick={() => toggleOpen()}>

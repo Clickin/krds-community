@@ -9,7 +9,7 @@
     onclick?: (event: Event) => void;
     class?: string;
     className?: string;
-    children?: Snippet;
+    children?: Snippet | string;
     [key: string]: unknown;
   };
   const generatedId = $props.id();
@@ -42,7 +42,15 @@
   aria-labelledby={`${id}-tip`}
   onclick={() => toggleOpen()}
 >
-  {#if children}{@render children()}{:else}{`${label} `}{/if}<i class="ico-angle right svg-icon"></i>
+  {#if children}
+    {#if typeof children === 'string'}
+      {children}{' '}
+    {:else}
+      {@render children()}
+    {/if}
+  {:else}
+    {`${label} `}
+  {/if}<i class="ico-angle right svg-icon"></i>
 </button>
 <div id={`${id}-tip`} class={`krds-tooltip-popover ${isOpen ? placementClass : ''}`.trim()} role="tooltip" aria-hidden={isOpen ? 'false' : 'true'}>
   <span class="sr-only">{label}</span>

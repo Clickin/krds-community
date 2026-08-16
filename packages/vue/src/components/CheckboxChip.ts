@@ -3,6 +3,7 @@ import { computed, defineComponent, ref, useId, type PropType } from "vue";
 import {
   children,
   create,
+  createVueInstanceId,
   invokeNativeEvent,
   withoutClass,
   withoutNativeEvents,
@@ -30,7 +31,8 @@ export const CheckboxChip = defineComponent({
     },
     label: { type: String, default: undefined },
     checked: { type: Boolean as PropType<boolean | undefined>, default: undefined },
-    defaultChecked: { type: Boolean, default: false },
+    defaultChecked: { type: Boolean, default: undefined },
+    indeterminate: { type: Boolean, default: false },
     disabled: Boolean,
     required: Boolean,
     size: { type: String, default: undefined },
@@ -41,7 +43,7 @@ export const CheckboxChip = defineComponent({
     change: (_event: Event) => true,
   },
   setup(props, { attrs, emit, slots }) {
-    const generatedId = `krds-checkbox-chip-${useId()}`;
+    const generatedId = `krds-checkbox-chip-${useId()}-${createVueInstanceId("checkbox-chip")}`;
     const id = computed(() => props.id ?? generatedId);
 
     const initialChecked =
@@ -73,8 +75,8 @@ export const CheckboxChip = defineComponent({
         name: props.name,
         value: props.value,
         checked: isChecked,
+        indeterminate: props.indeterminate,
         disabled: props.disabled,
-        required: props.required,
         onChange: (event: Event) => {
           invokeNativeEvent(attrs.onChange as unknown, event);
           setChecked((event.target as HTMLInputElement).checked);

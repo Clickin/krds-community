@@ -7,8 +7,9 @@ import { createStableId, type AngularNavItem } from "../kinds";
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [":host { display: contents; }"],
   template: `
-    <div class="krds-disclosure conts-expand-area">
+    <div class="krds-disclosure conts-expand-area" [class.active]="open">
       <button
         [id]="id + '-trigger'"
         type="button"
@@ -21,20 +22,21 @@ import { createStableId, type AngularNavItem } from "../kinds";
       </button>
       <div
         class="expand-wrap"
-        [class.show]="open"
         [id]="id + '-contents'"
         [attr.aria-labelledby]="id + '-trigger'"
         role="region"
         [attr.inert]="!open ? '' : null"
       >
         <div class="expand-in">
-          <ul class="krds-info-list dash" role="list">
-            @for (item of items; track $index) {
-              <li role="listitem">
-                {{ navLabel(item) }}
-              </li>
-            }
-          </ul>
+          @if (items.length > 0) {
+            <ul class="krds-info-list dash" role="list">
+              @for (item of items; track $index) {
+                <li role="listitem">{{ navLabel(item) }}</li>
+              }
+            </ul>
+          } @else {
+            <ng-content></ng-content>
+          }
         </div>
       </div>
     </div>

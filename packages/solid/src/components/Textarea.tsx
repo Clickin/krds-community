@@ -9,6 +9,7 @@ export interface TextareaProps {
   maxLength?: number;
   value?: string;
   modelValue?: string;
+  ["aria-describedby"]?: string;
   [key: string]: unknown;
 }
 
@@ -23,6 +24,7 @@ export function Textarea(rawProps: TextareaProps) {
     "maxLength",
     "value",
     "modelValue",
+    "aria-describedby",
   ]);
   const [localValue, setLocalValue] = createSignal("");
   const value = () => {
@@ -41,26 +43,24 @@ export function Textarea(rawProps: TextareaProps) {
     (native as Record<string, any>).onInput?.(event);
   };
   const className = () => props.class ?? props.className ?? "";
+  const hintId = () => (props.hint ? `${props.id}-hint` : undefined);
+  const describedBy = () =>
+    [props["aria-describedby"], hintId()].filter(Boolean).join(" ") || undefined;
   return (
-    <div class="form-group">
-      <div class="form-tit">
-        <label for={props.id}>{props.label}</label>
-      </div>
-      <div class="form-conts">
-        <div class="textarea-wrap">
-          <textarea
-            {...(native as Record<string, any>)}
-            id={props.id}
-            class={["krds-input", className()].filter(Boolean).join(" ")}
-            maxlength={props.maxLength}
-            value={value()}
-            onInput={updateInput}
-          />
-        </div>
-      </div>
+    <>
+      <textarea
+        {...(native as Record<string, any>)}
+        id={props.id}
+        class={["krds-input", className()].filter(Boolean).join(" ")}
+        maxlength={props.maxLength}
+        value={value()}
+        aria-describedby={describedBy()}
+        onInput={updateInput}
+      />
+      <label for={props.id}>{props.label}</label>
       <Show when={props.hint}>
-        <p class="form-hint">{props.hint}</p>
+        <p id={hintId()}>{props.hint}</p>
       </Show>
-    </div>
+    </>
   );
 }
