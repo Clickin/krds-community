@@ -73,29 +73,28 @@ for (const fixture of catalog.fixtures) {
 }
 const temporaryDirectory = await mkdtemp(resolve(tmpdir(), "krds-conformance-"));
 
-const runBrowserFramework = async (framework) => {
-  const shardPath = resolve(temporaryDirectory, `${framework}.browser.json`);
+const runBrowser = async () => {
+  const shardPath = resolve(temporaryDirectory, "browser.json");
   const args = [
     browserRunnerPath,
-    "--framework",
-    framework,
     "--output",
     shardPath,
     ...(catalogArgument ? ["--catalog", resolve(repositoryRoot, catalogArgument)] : []),
   ];
+  let stdout = "";
   let stderr = "";
   const code = await new Promise((resolvePromise, reject) => {
     const child = spawn(process.execPath, args, {
       cwd: repositoryRoot,
       stdio: ["ignore", "pipe", "pipe"],
     });
-    child.stdout.resume();
+    child.stdout.setEncoding("utf8");
+    child.stdout.on("data", (chunk) => (stdout += chunk));
     child.stderr.setEncoding("utf8");
     child.stderr.on("data", (chunk) => (stderr += chunk));
     child.on("error", reject);
     child.on("close", (exitCode, signal) => {
-      if (signal)
-        reject(new Error(`[${framework}] browser worker received ${signal}\n${stderr.trim()}`));
+      if (signal) reject(new Error(`browser worker received ${signal}\n${stderr.trim()}`));
       else resolvePromise(exitCode);
     });
   });
@@ -104,29 +103,20 @@ const runBrowserFramework = async (framework) => {
     shard = JSON.parse(await readFile(shardPath, "utf8"));
   } catch (error) {
     throw new Error(
-      `[${framework}] browser worker did not produce a readable report: ${
+      `browser worker did not produce a readable report: ${
         error instanceof Error ? error.message : String(error)
       }\n${stderr.trim()}`,
     );
   }
-  return { shard, code };
+  return { shard, code, stdout };
 };
 
 try {
-  // Browser workers each own their own collector + browser. Run them
-  // sequentially: concurrent Chromium instances (one per @web/test-runner)
-  // contend for memory and the weaker frameworks lose their browser process.
-  const reports = (
-    await Promise.resolve(
-      (async () => {
-        const collected = [];
-        for (const framework of frameworkIds) {
-          collected.push(await runBrowserFramework(framework));
-        }
-        return collected;
-      })(),
-    )
-  ).map(({ shard }) => shard);
+  // One WTR process owns the collector and browser for the complete framework
+  // sweep, so all framework runs share one Chromium lifecycle.
+  const run = await runBrowser();
+  process.stdout.write(run.stdout);
+  const reports = [run.shard];
   if (
     reports.some(
       (report) =>

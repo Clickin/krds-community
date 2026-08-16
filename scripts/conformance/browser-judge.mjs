@@ -14,6 +14,7 @@
 // captured on the framework during interaction).
 
 const normalizeSnapshot = (value) => JSON.stringify(value);
+const metrics = () => globalThis.__KRDS_CONFORMANCE_METRICS__;
 
 export const compareDom = (upstream, framework) => {
   const expected = normalizeSnapshot(upstream);
@@ -154,7 +155,10 @@ const signaturesEqualWithinWhitespace = (a, b, spaceW, path, diff) => {
 };
 
 export const compareVisualSignatures = (upstreamSignature, frameworkSignature) => {
+  const counters = metrics();
+  if (counters) counters.visualSignaturesCompared += 1;
   if (upstreamSignature == null || frameworkSignature == null) {
+    if (counters) counters.visualSignaturesMismatched += 1;
     return {
       passed: false,
       errors: ["visual signature unavailable on one or both sides"],
@@ -178,6 +182,10 @@ export const compareVisualSignatures = (upstreamSignature, frameworkSignature) =
     const [path, expected, actual] = diff[0];
     signatureDifference = { path, expected, actual };
   }
+  if (counters) {
+    if (passed) counters.visualSignaturesMatched += 1;
+    else counters.visualSignaturesMismatched += 1;
+  }
   return {
     passed,
     passedSmall: passed,
@@ -192,7 +200,10 @@ export const compareVisualSignatures = (upstreamSignature, frameworkSignature) =
 // center, via an integer-pixel shift (a rigid translation never resamples
 // pixels, so no anti-aliasing artefacts are introduced). Returns a new buffer.
 const translateAlign = (image, width, height) => {
-  let minX = Infinity, minY = Infinity, maxX = -1, maxY = -1;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -1,
+    maxY = -1;
   const count = image.data.length / 4;
   for (let i = 0; i < count; i += 1) {
     if (image.data[i * 4 + 3] > 0) {
@@ -246,6 +257,8 @@ export const pixelEquivalent = (
   { upstream, framework },
   { maxRatio = 0.01, channelTolerance = 12, alignTranslation = true } = {},
 ) => {
+  const counters = metrics();
+  if (counters) counters.pixelFallbacks += 1;
   if (!upstream || !framework || !upstream.data || !framework.data) {
     return {
       ...prior,
@@ -504,7 +517,11 @@ export const requiredChecks = [
 // computed from the fixture actions and the framework DOM verdict (mirrors the
 // legacy runtime: with actions it passes iff the DOM matches; without actions
 // it passes trivially) plus the events captured on the framework.
-export const judgeState = (fixture, state, { upstream, framework, frameworkEvents, pixelData }) => {
+export const judgeState = (
+  fixture,
+  state,
+  { upstream, framework, frameworkEvents, pixelData, visualVerdict },
+) => {
   const fullDom = compareDom(upstream.dom, framework.dom);
   // Only ship the normalized expected/actual snapshots when they differ; for a
   // passing comparison they are pure IPC weight.
@@ -518,7 +535,8 @@ export const judgeState = (fixture, state, { upstream, framework, frameworkEvent
     expected: upstream.semantics?.form ?? {},
     actual: framework.semantics?.form ?? {},
   };
-  let visual = compareVisualSignatures(upstream.visualSignature, framework.visualSignature);
+  let visual =
+    visualVerdict ?? compareVisualSignatures(upstream.visualSignature, framework.visualSignature);
   if (!visual.passed && pixelData) {
     visual = pixelEquivalent(visual, pixelData, { maxRatio: 0.01 });
   }

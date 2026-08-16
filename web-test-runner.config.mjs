@@ -76,10 +76,7 @@ export default {
       plugins: [normativeStylesOnly, svelte(), solid(), docsStatic],
     }),
   ],
-  files: [
-    "tests/web-test-runner/conformance-wtr-*.test.mjs",
-    "tests/web-test-runner/conformance-visual-wtr.test.mjs",
-  ],
+  files: ["tests/web-test-runner/conformance-wtr-all.test.mjs"],
   nodeResolve: false,
   esbuildTarget: "chrome120",
   concurrency: 5,

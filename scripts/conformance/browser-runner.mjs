@@ -123,9 +123,13 @@ try {
 
 // ---- captures were POSTed to the local collector by the browser workers ----
 const fixturesByFramework = new Map(activeFrameworks.map((framework) => [framework, new Map()]));
+const metricsByWorker = new Map();
 for (const payload of collectorPayloads ?? []) {
   const byFixture = fixturesByFramework.get(payload.framework);
   if (byFixture) byFixture.set(payload.fixtureId, payload.results ?? []);
+  if (payload.workerId && payload.metrics) {
+    metricsByWorker.set(payload.workerId, payload.metrics);
+  }
 }
 
 const evidenceSource = "scripts/conformance/browser-runner.mjs";
@@ -237,6 +241,29 @@ if (wtrExit !== 0) {
   throw new Error(`web-test-runner exited with ${wtrExit}\n${wtrStderr.trim()}`);
 }
 const passingStates = results.filter((result) => result.status === "passing").length;
+const metrics = [...metricsByWorker.values()].reduce(
+  (total, current) => {
+    for (const key of Object.keys(total)) total[key] += Number(current[key] ?? 0);
+    return total;
+  },
+  {
+    workerStarts: 0,
+    upstreamCaptures: 0,
+    upstreamCacheHits: 0,
+    visualSignaturesCompared: 0,
+    visualSignaturesMatched: 0,
+    visualSignaturesMismatched: 0,
+    pixelFallbacks: 0,
+    rasterizations: 0,
+  },
+);
+console.log(
+  `Conformance metrics ${JSON.stringify({
+    ...metrics,
+    wtrLaunches: 1,
+    chromiumLaunches: metrics.workerStarts,
+  })}`,
+);
 console.log(
   `Browser conformance ${strictConformance ? "passed" : "failed"}: ${passingStates}/${results.length} states.`,
 );
